@@ -38,8 +38,9 @@ g <- setGiotto(g, data_list)
 ```
 
 
-# Spatial Aggregation
-For use with raw subcellular data. Find overlapped feature information and convert to a matrix
+# Spatial Aggregation (subcellular data only)
+For use with raw subcellular data that has spatial boundaries/polygon annotations and spatial features. Find overlapped feature information and convert to a matrix.
+Other examples can be found in the [object creation](object_creation.html) tutorial.
 ```{r, eval=FALSE}
 # overlap of feature points with polygons
 g <- calculateOverlap(g)
@@ -86,7 +87,7 @@ activeSpatUnit(g) <- "aggregate"
 activeFeatType(g) <- "rna"
 ```
 
-# Spatial Centroid Calculation
+# Spatial Centroid Calculation (polygon annotations only)
 
 ```{r, eval=FALSE}
 g <- addSpatialCentroidLocations(g, poly_info = "aggregate")
@@ -94,7 +95,7 @@ g <- addSpatialCentroidLocations(g, poly_info = "aggregate")
 
 # Standard workflow
 
-For more detail, see the standard workflow vignette
+For more detail, see the [standard workflow](general_workflow.html) vignette
 ```{r, eval=FALSE}
 g <- filterGiotto(g,
     expression_threshold = 1,
@@ -143,10 +144,44 @@ dim(g)
 # feature metadata
 fDataDT(g)
 
+# cell metadata
+pDataDT(g)
+
 # get specific values from cell metadata
 g$leiden_clus
 
-# cell metadata
+# set values directly into cell metadata
+# this is safest when directly using values from another metadata column
+# since cell_IDs and their ordering may not as expected.
+g$leiden_clus2 <- sprintf("clus_%s", g$leiden_clus)
+force(g$leiden_clus2)
+
+# annotate based on another column
+g <- annotateGiotto(g, 
+    name = "region",
+    cluster_column = "leiden_clus",
+    annotation_vector = c(
+        "1" = "a",
+        "2" = "b",
+        "3" = "c",
+        "4" = "a",
+        "5" = "d",
+        "6" = "b"
+    )
+)
+spatPlot2D(g, cell_color = "region")
+
+# merge in table of values to metadata
+ann <- data.frame(
+    cell_ID = spatIDs(g),
+    random = rnorm(ncol(g))
+)
+force(ann)
+g <- addCellMetadata(g,
+    new_metadata = ann,
+    by_column = TRUE,
+    column_cell_ID = "cell_ID"
+)
 pDataDT(g)
 ```
 
@@ -261,6 +296,9 @@ joinGiottoObjects(list(g, g), gobject_names = c("a", "b"), dry_run = TRUE)
 
 j <- joinGiottoObjects(list(g, g), gobject_names = c("a", "b"))
 ```
+
+For a more information, see the object [splitting and joining](split_join.html) tutorial
+
 
 ## Splitting objects
 
