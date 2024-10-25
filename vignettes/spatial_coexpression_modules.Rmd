@@ -121,6 +121,24 @@ spatCellPlot(g,
 knitr::include_graphics("images/spatial_coexpression_modules/3-spatCellPlot2D.png")
 ```
 
+# Get the top genes per spatial co-expression module
+
+Run this code for downstream analysis, such as calculation of spatially informed clusters or calculation of spatial domains with HMRF. 
+
+In a real-size dataset, usually you want to extract the top ~30 genes per co-expression module, but this number is variable depending on the number of features available in your dataset.
+
+```{r, eval=FALSE}
+coexpr_dt <- data.table::data.table(
+  genes = names(spat_cor_netw_DT$cor_clusters$spat_netw_clus),
+  cluster = spat_cor_netw_DT$cor_clusters$spat_netw_clus)
+
+data.table::setorder(coexpr_dt, cluster)
+
+top10_coexpr_dt <- coexpr_dt[, head(.SD, 10) , by = cluster]
+
+spatial_genes <- top10_coexpr_dt$genes
+```
+
 # Session Info
 
 ```{r, eval=FALSE}
