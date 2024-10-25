@@ -38,9 +38,9 @@ g <- setGiotto(g, data_list)
 ```
 
 
-# Spatial Aggregation
-For use with raw subcellular data. Find overlapped feature information and convert to a matrix.
-Other examples, starting with different data types can be found in the [object creation](object_creation.html) tutorial.
+# Spatial Aggregation (subcellular data only)
+For use with raw subcellular data that has spatial boundaries/polygon annotations and spatial features. Find overlapped feature information and convert to a matrix.
+Other examples can be found in the [object creation](object_creation.html) tutorial.
 ```{r, eval=FALSE}
 # overlap of feature points with polygons
 g <- calculateOverlap(g)
@@ -87,7 +87,7 @@ activeSpatUnit(g) <- "aggregate"
 activeFeatType(g) <- "rna"
 ```
 
-# Spatial Centroid Calculation
+# Spatial Centroid Calculation (polygon annotations only)
 
 ```{r, eval=FALSE}
 g <- addSpatialCentroidLocations(g, poly_info = "aggregate")
