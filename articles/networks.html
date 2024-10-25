@@ -660,10 +660,72 @@
 </div>
 </div>
 <div class="section level2" number="5">
-<h2 number="5" id="session-info">
-<span class="header-section-number">5</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+<h2 number="5" id="api-function">
+<span class="header-section-number">5</span> API function<a class="anchor" aria-label="anchor" href="#api-function"></a>
 </h2>
+<p><code><a href="https://drieslab.github.io/GiottoClass/reference/createNetwork.html" class="external-link">createNetwork()</a></code> exported from <em>GiottoClass</em> allows creation of any of the above network types, starting from a <code>matrix</code> of nodes. These nodes can be n-dimensional expression information, dimension reduction, or spatial coordinates. The output is either <code>igraph</code> if <code>as.igraph = TRUE</code> and <code>data.table</code> otherwise.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">topo</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">volcano</span><span class="op">)</span>,</span>
+<span>                    y <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">volcano</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">topo</span><span class="op">$</span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">volcano</span><span class="op">)</span></span>
+<span><span class="va">topo</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/as.matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">topo</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNetwork.html" class="external-link">createNetwork</a></span><span class="op">(</span><span class="va">topo</span>, type <span class="op">=</span> <span class="st">"kNN"</span>, k <span class="op">=</span> <span class="fl">8</span><span class="op">)</span> <span class="co"># returns as igraph</span></span></code></pre></div>
+<pre><code>IGRAPH 64720af DNW- 5307 42456 -- 
++ attr: name (v/c), weight (e/n), distance (e/n)
++ edges from 64720af (vertex names):
+ [1] 1 -&gt;88  2 -&gt;89  3 -&gt;90  4 -&gt;91  5 -&gt;92  6 -&gt;7   7 -&gt;6   8 -&gt;94  9 -&gt;95  10-&gt;97  11-&gt;97 
+[12] 12-&gt;99  13-&gt;12  14-&gt;13  15-&gt;102 16-&gt;102 17-&gt;103 18-&gt;19  19-&gt;18  20-&gt;21  21-&gt;22  22-&gt;21 
+[23] 23-&gt;24  24-&gt;25  25-&gt;26  26-&gt;25  27-&gt;115 28-&gt;29  29-&gt;28  30-&gt;31  31-&gt;30  32-&gt;31  33-&gt;120
+[34] 34-&gt;121 35-&gt;36  36-&gt;124 37-&gt;38  38-&gt;37  39-&gt;40  40-&gt;41  41-&gt;40  42-&gt;43  43-&gt;42  44-&gt;45 
+[45] 45-&gt;46  46-&gt;45  47-&gt;134 48-&gt;49  49-&gt;48  50-&gt;51  51-&gt;52  52-&gt;51  53-&gt;52  54-&gt;141 55-&gt;56 
+[56] 56-&gt;57  57-&gt;56  58-&gt;59  59-&gt;60  60-&gt;59  61-&gt;62  62-&gt;63  63-&gt;62  64-&gt;65  65-&gt;64  66-&gt;67 
+[67] 67-&gt;66  68-&gt;69  69-&gt;68  70-&gt;69  71-&gt;158 72-&gt;159 73-&gt;160 74-&gt;161 75-&gt;162 76-&gt;163 77-&gt;165
+[78] 78-&gt;79  79-&gt;78  80-&gt;81  81-&gt;80  82-&gt;83  83-&gt;170 84-&gt;85  85-&gt;172 86-&gt;87  87-&gt;86  88-&gt;1  
++ ... omitted several edges</code></pre>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNetwork.html" class="external-link">createNetwork</a></span><span class="op">(</span><span class="va">topo</span>, type <span class="op">=</span> <span class="st">"kNN"</span>, k <span class="op">=</span> <span class="fl">8</span>, as.igraph <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co"># return as data.table</span></span></code></pre></div>
+<pre><code>        from    to    weight distance
+       &lt;int&gt; &lt;int&gt;     &lt;num&gt;    &lt;num&gt;
+    1:     1    88 0.5000000 1.000000
+    2:     2    89 0.5000000 1.000000
+    3:     3    90 0.5000000 1.000000
+    4:     4    91 0.5000000 1.000000
+    5:     5    92 0.5000000 1.000000
+   ---                               
+42452:  5303  5130 0.3090170 2.236068
+42453:  5304  5306 0.3333333 2.000000
+42454:  5305  5303 0.3333333 2.000000
+42455:  5306  5131 0.3090170 2.236068
+42456:  5307  5131 0.2612039 2.828427</code></pre>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># default weight for kNN was 1 / (d + 1)</span></span>
+<span><span class="co"># use a custom weight function</span></span>
+<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNetwork.html" class="external-link">createNetwork</a></span><span class="op">(</span><span class="va">topo</span>,</span>
+<span>    type <span class="op">=</span> <span class="st">"kNN"</span>, </span>
+<span>    k <span class="op">=</span> <span class="fl">8</span>, </span>
+<span>    as.igraph <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    weight_fun <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">d</span><span class="op">)</span> <span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="va">d</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code>        from    to weight distance
+       &lt;int&gt; &lt;int&gt;  &lt;num&gt;    &lt;num&gt;
+    1:     1    88  1.000 1.000000
+    2:     2    89  1.000 1.000000
+    3:     3    90  1.000 1.000000
+    4:     4    91  1.000 1.000000
+    5:     5    92  1.000 1.000000
+   ---                            
+42452:  5303  5130  0.200 2.236068
+42453:  5304  5306  0.250 2.000000
+42454:  5305  5303  0.250 2.000000
+42455:  5306  5131  0.200 2.236068
+42456:  5307  5131  0.125 2.828427</code></pre>
+</div>
+<div class="section level2" number="6">
+<h2 number="6" id="session-info">
+<span class="header-section-number">6</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+</h2>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code>R version 4.4.1 (2024-06-14)
 Platform: aarch64-apple-darwin20
