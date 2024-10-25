@@ -535,16 +535,18 @@
 <span class="header-section-number">2</span> Create a spatial network<a class="anchor" aria-label="anchor" href="#create-a-spatial-network"></a>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">g</span>,</span>
-<span>                          method <span class="op">=</span> <span class="st">"kNN"</span>, </span>
-<span>                          k <span class="op">=</span> <span class="fl">6</span>,</span>
-<span>                          maximum_distance_knn <span class="op">=</span> <span class="fl">400</span>,</span>
-<span>                          name <span class="op">=</span> <span class="st">"spatial_network"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    method <span class="op">=</span> <span class="st">"kNN"</span>, </span>
+<span>    k <span class="op">=</span> <span class="fl">6</span>,</span>
+<span>    maximum_distance_knn <span class="op">=</span> <span class="fl">400</span>,</span>
+<span>    name <span class="op">=</span> <span class="st">"spatial_network"</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">g</span>,  </span>
-<span>           show_network<span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>           network_color <span class="op">=</span> <span class="st">"blue"</span>, </span>
-<span>           spatial_network_name <span class="op">=</span> <span class="st">"spatial_network"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g</span>,  </span>
+<span>    show_network <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    network_color <span class="op">=</span> <span class="st">"blue"</span>, </span>
+<span>    spatial_network_name <span class="op">=</span> <span class="st">"spatial_network"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fspatial_genes%2F1-spatPlot2D.png" width="60%" style="display: block; margin: auto;"></p>
 <div class="section level3" number="2.1">
 <h3 number="2.1" id="rank-binarization">
@@ -554,10 +556,11 @@
 <p>This step may take a few minutes to run.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ranktest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/binSpect.html">binSpect</a></span><span class="op">(</span><span class="va">g</span>, </span>
-<span>                     bin_method <span class="op">=</span> <span class="st">"rank"</span>,</span>
-<span>                     calc_hub <span class="op">=</span> <span class="cn">TRUE</span>, </span>
-<span>                     hub_min_int <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>                     spatial_network_name <span class="op">=</span> <span class="st">"spatial_network"</span><span class="op">)</span></span></code></pre></div>
+<span>    bin_method <span class="op">=</span> <span class="st">"rank"</span>,</span>
+<span>    calc_hub <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>    hub_min_int <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>    spatial_network_name <span class="op">=</span> <span class="st">"spatial_network"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3" number="2.2">
 <h3 number="2.2" id="visualize-top-results">
@@ -566,10 +569,11 @@
 <p>Plot the scaled expression of genes with the highest probability of being spatial genes.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatFeatPlot2D.html" class="external-link">spatFeatPlot2D</a></span><span class="op">(</span><span class="va">g</span>, </span>
-<span>               expression_values <span class="op">=</span> <span class="st">"scaled"</span>,</span>
-<span>               feats <span class="op">=</span> <span class="va">ranktest</span><span class="op">$</span><span class="va">feats</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span>, </span>
-<span>               cow_n_col <span class="op">=</span> <span class="fl">2</span>, </span>
-<span>               point_size <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<span>    expression_values <span class="op">=</span> <span class="st">"scaled"</span>,</span>
+<span>    feats <span class="op">=</span> <span class="va">ranktest</span><span class="op">$</span><span class="va">feats</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span>, </span>
+<span>    cow_n_col <span class="op">=</span> <span class="fl">2</span>, </span>
+<span>    point_size <span class="op">=</span> <span class="fl">2</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fspatial_genes%2F2-spatFeatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 </div>
@@ -589,8 +593,7 @@
 <span class="header-section-number">3.2</span> Calculate pairwise distances between genes.<a class="anchor" aria-label="anchor" href="#calculate-pairwise-distances-between-genes-"></a>
 </h3>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">spat_cor_netw_DT</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/detectSpatialCorFeats.html">detectSpatialCorFeats</a></span><span class="op">(</span></span>
-<span>    <span class="va">g</span>,</span>
+<code class="sourceCode R"><span><span class="va">spat_cor_netw_DT</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/detectSpatialCorFeats.html">detectSpatialCorFeats</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    method <span class="op">=</span> <span class="st">"network"</span>,</span>
 <span>    spatial_network_name <span class="op">=</span> <span class="st">"spatial_network"</span>,</span>
 <span>    subset_feats <span class="op">=</span> <span class="va">ext_spatial_genes</span><span class="op">)</span></span></code></pre></div>
@@ -601,8 +604,9 @@
 </h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spat_cor_netw_DT</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/clusterSpatialCorFeats.html">clusterSpatialCorFeats</a></span><span class="op">(</span><span class="va">spat_cor_netw_DT</span>, </span>
-<span>                                           name <span class="op">=</span> <span class="st">"spat_netw_clus"</span>, </span>
-<span>                                           k <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
+<span>    name <span class="op">=</span> <span class="st">"spat_netw_clus"</span>, </span>
+<span>    k <span class="op">=</span> <span class="fl">5</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3" number="3.4">
 <h3 number="3.4" id="plot-the-correlation-of-the-top-spatial-genes-with-their-assigned-cluster-">
@@ -610,9 +614,10 @@
 </h3>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/heatmSpatialCorFeats.html">heatmSpatialCorFeats</a></span><span class="op">(</span><span class="va">g</span>,</span>
-<span>                     spatCorObject <span class="op">=</span> <span class="va">spat_cor_netw_DT</span>,</span>
-<span>                     use_clus_name <span class="op">=</span> <span class="st">"spat_netw_clus"</span>,</span>
-<span>                     heatmap_legend_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>title <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>    spatCorObject <span class="op">=</span> <span class="va">spat_cor_netw_DT</span>,</span>
+<span>    use_clus_name <span class="op">=</span> <span class="st">"spat_netw_clus"</span>,</span>
+<span>    heatmap_legend_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>title <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fspatial_genes%2F3-heatmSpatialCorFeats.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="3.5">
@@ -621,8 +626,9 @@
 </h3>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">netw_ranks</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rankSpatialCorGroups.html">rankSpatialCorGroups</a></span><span class="op">(</span><span class="va">g</span>,</span>
-<span>                                   spatCorObject <span class="op">=</span> <span class="va">spat_cor_netw_DT</span>, </span>
-<span>                                   use_clus_name <span class="op">=</span> <span class="st">"spat_netw_clus"</span><span class="op">)</span></span></code></pre></div>
+<span>    spatCorObject <span class="op">=</span> <span class="va">spat_cor_netw_DT</span>, </span>
+<span>    use_clus_name <span class="op">=</span> <span class="st">"spat_netw_clus"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fspatial_genes%2F4-rankSpatialCorGroups.png" width="70%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="3.6">
@@ -631,22 +637,25 @@
 </h3>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cluster_genes_DT</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/showSpatialCorFeats.html">showSpatialCorFeats</a></span><span class="op">(</span><span class="va">spat_cor_netw_DT</span>, </span>
-<span>                                        use_clus_name <span class="op">=</span> <span class="st">"spat_netw_clus"</span>, </span>
-<span>                                        show_top_feats <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>    use_clus_name <span class="op">=</span> <span class="st">"spat_netw_clus"</span>, </span>
+<span>    show_top_feats <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">cluster_genes</span> <span class="op">&lt;-</span> <span class="va">cluster_genes_DT</span><span class="op">$</span><span class="va">clus</span> </span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">cluster_genes</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">cluster_genes_DT</span><span class="op">$</span><span class="va">feat_ID</span></span>
 <span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createMetafeats.html" class="external-link">createMetafeats</a></span><span class="op">(</span><span class="va">g</span>, </span>
-<span>                     feat_clusters <span class="op">=</span> <span class="va">cluster_genes</span>, </span>
-<span>                     name <span class="op">=</span> <span class="st">"cluster_metagene"</span><span class="op">)</span></span></code></pre></div>
+<span>    feat_clusters <span class="op">=</span> <span class="va">cluster_genes</span>, </span>
+<span>    name <span class="op">=</span> <span class="st">"cluster_metagene"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Plot the spatial distribution of the metagene enrichment scores of each spatial co-expression cluster.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatCellPlot.html" class="external-link">spatCellPlot</a></span><span class="op">(</span><span class="va">g</span>,</span>
-<span>             spat_enr_names <span class="op">=</span> <span class="st">"cluster_metagene"</span>,</span>
-<span>             cell_annotation_values <span class="op">=</span> <span class="va">netw_ranks</span><span class="op">$</span><span class="va">clusters</span>,</span>
-<span>             point_size <span class="op">=</span> <span class="fl">2</span>, </span>
-<span>             cow_n_col <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<span>    spat_enr_names <span class="op">=</span> <span class="st">"cluster_metagene"</span>,</span>
+<span>    cell_annotation_values <span class="op">=</span> <span class="va">netw_ranks</span><span class="op">$</span><span class="va">clusters</span>,</span>
+<span>    point_size <span class="op">=</span> <span class="fl">2</span>, </span>
+<span>    cow_n_col <span class="op">=</span> <span class="fl">2</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fspatial_genes%2F5-spatCellPlot2D.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
 </div>
