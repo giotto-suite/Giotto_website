@@ -1,5 +1,5 @@
 ---
-title: "Detection of spatial genes"
+title: "Detection of spatial co-expression modules"
 output: 
   html_document:
     number_sections: true
@@ -7,12 +7,12 @@ output:
 pkgdown:
   as_is: true
 vignette: >
-  %\VignetteIndexEntry{Detection of spatial genes}
+  %\VignetteIndexEntry{Detection of spatial co-expression modules}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-Finding genes or features that follow spatial patterns in their expression can help to better understand the spatial microenvironment of the sample.
+Once you have found Finding genes or features that follow spatial patterns in their expression, you can group them to find clusters with similar expression patterns that create co-expression modules.
 
 # Setup and load example dataset
 
@@ -43,53 +43,82 @@ if(!genv_exists){
 g <- GiottoData::loadGiottoMini("visium")
 ```
 
-# Create a spatial network
+# Select the top spatial genes
 
 ```{r, eval=FALSE}
-g <- createSpatialNetwork(gobject = g,
-                          method = "kNN", 
-                          k = 6,
-                          maximum_distance_knn = 400,
-                          name = "spatial_network")
-
-spatPlot2D(gobject = g,  
-           show_network= TRUE,
-           network_color = "blue", 
-           spatial_network_name = "spatial_network")
+ext_spatial_genes <- ranktest[1:100,]$feats
 ```
 
-```{r, echo=FALSE, out.width="60%", fig.align='center'}
-knitr::include_graphics("images/spatial_genes/1-spatPlot2D.png")
-```
-
-# Rank binarization
-
-Rank the genes on the spatial dataset depending on whether they exhibit a spatial pattern location or not.
-
-This step may take a few minutes to run.
+# Calculate pairwise distances between genes.
 
 ```{r, eval=FALSE}
-ranktest <- binSpect(g, 
-                     bin_method = "rank",
-                     calc_hub = TRUE, 
-                     hub_min_int = 5,
-                     spatial_network_name = "spatial_network")
+spat_cor_netw_DT <- detectSpatialCorFeats(
+    g,
+    method = "network",
+    spatial_network_name = "spatial_network",
+    subset_feats = ext_spatial_genes)
 ```
 
-## Visualize top results
-
-Plot the scaled expression of genes with the highest probability of being spatial genes.
+# Cluster the top spatial genes into 5 clusters
 
 ```{r, eval=FALSE}
-spatFeatPlot2D(g, 
-               expression_values = "scaled",
-               feats = ranktest$feats[1:6], 
-               cow_n_col = 2, 
-               point_size = 2)
+spat_cor_netw_DT <- clusterSpatialCorFeats(spat_cor_netw_DT, 
+                                           name = "spat_netw_clus", 
+                                           k = 5)
+```
+
+# Plot the correlation of the top spatial genes with their assigned cluster.
+
+```{r, eval=FALSE}
+heatmSpatialCorFeats(g,
+                     spatCorObject = spat_cor_netw_DT,
+                     use_clus_name = "spat_netw_clus",
+                     heatmap_legend_param = list(title = NULL))
 ```
 
 ```{r, echo=FALSE, out.width="80%", fig.align='center'}
-knitr::include_graphics("images/spatial_genes/2-spatFeatPlot2D.png")
+knitr::include_graphics("images/spatial_coexpression_modules/1-heatmSpatialCorFeats.png")
+```
+
+## Rank spatial correlated clusters and show genes for selected clusters
+
+```{r, eval=FALSE}
+netw_ranks <- rankSpatialCorGroups(g,
+                                   spatCorObject = spat_cor_netw_DT, 
+                                   use_clus_name = "spat_netw_clus")
+```
+
+```{r, echo=FALSE, out.width="70%", fig.align='center'}
+knitr::include_graphics("images/spatial_coexpression_modules/2-rankSpatialCorGroups.png")
+```
+
+## Create the metagene enrichment score per co-expression cluster
+
+```{r, eval=FALSE}
+cluster_genes_DT <- showSpatialCorFeats(spat_cor_netw_DT, 
+                                        use_clus_name = "spat_netw_clus", 
+                                        show_top_feats = 1)
+
+cluster_genes <- cluster_genes_DT$clus 
+names(cluster_genes) <- cluster_genes_DT$feat_ID
+
+g <- createMetafeats(g, 
+                     feat_clusters = cluster_genes, 
+                     name = "cluster_metagene")
+```
+
+Plot the spatial distribution of the metagene enrichment scores of each spatial co-expression cluster.
+
+```{r, eval=FALSE}
+spatCellPlot(g,
+             spat_enr_names = "cluster_metagene",
+             cell_annotation_values = netw_ranks$clusters,
+             point_size = 2, 
+             cow_n_col = 2)
+```
+
+```{r, echo=FALSE, out.width="100%", fig.align='center'}
+knitr::include_graphics("images/spatial_coexpression_modules/3-spatCellPlot2D.png")
 ```
 
 # Session Info
