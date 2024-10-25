@@ -143,10 +143,44 @@ dim(g)
 # feature metadata
 fDataDT(g)
 
+# cell metadata
+pDataDT(g)
+
 # get specific values from cell metadata
 g$leiden_clus
 
-# cell metadata
+# set values directly into cell metadata
+# this is safest when directly using values from another metadata column
+# since cell_IDs and their ordering may not as expected.
+g$leiden_clus2 <- sprintf("clus_%s", g$leiden_clus)
+force(g$leiden_clus2)
+
+# annotate based on another column
+g <- annotateGiotto(g, 
+    name = "region",
+    cluster_column = "leiden_clus",
+    annotation_vector = c(
+        "1" = "a",
+        "2" = "b",
+        "3" = "c",
+        "4" = "a",
+        "5" = "d",
+        "6" = "b"
+    )
+)
+spatPlot2D(g, cell_color = "region")
+
+# merge in table of values to metadata
+ann <- data.frame(
+    cell_ID = spatIDs(g),
+    random = rnorm(ncol(g))
+)
+force(ann)
+g <- addCellMetadata(g,
+    new_metadata = ann,
+    by_column = TRUE,
+    column_cell_ID = "cell_ID"
+)
 pDataDT(g)
 ```
 
