@@ -46,16 +46,18 @@ g <- GiottoData::loadGiottoMini("visium")
 # Create a spatial network
 
 ```{r, eval=FALSE}
-g <- createSpatialNetwork(gobject = g,
-                          method = "kNN", 
-                          k = 6,
-                          maximum_distance_knn = 400,
-                          name = "spatial_network")
+g <- createSpatialNetwork(g,
+    method = "kNN", 
+    k = 6,
+    maximum_distance_knn = 400,
+    name = "spatial_network"
+)
 
-spatPlot2D(gobject = g,  
-           show_network= TRUE,
-           network_color = "blue", 
-           spatial_network_name = "spatial_network")
+spatPlot2D(g,  
+    show_network = TRUE,
+    network_color = "blue", 
+    spatial_network_name = "spatial_network"
+)
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align='center'}
@@ -70,10 +72,11 @@ This step may take a few minutes to run.
 
 ```{r, eval=FALSE}
 ranktest <- binSpect(g, 
-                     bin_method = "rank",
-                     calc_hub = TRUE, 
-                     hub_min_int = 5,
-                     spatial_network_name = "spatial_network")
+    bin_method = "rank",
+    calc_hub = TRUE, 
+    hub_min_int = 5,
+    spatial_network_name = "spatial_network"
+)
 ```
 
 ## Visualize top results
@@ -82,10 +85,11 @@ Plot the scaled expression of genes with the highest probability of being spatia
 
 ```{r, eval=FALSE}
 spatFeatPlot2D(g, 
-               expression_values = "scaled",
-               feats = ranktest$feats[1:6], 
-               cow_n_col = 2, 
-               point_size = 2)
+    expression_values = "scaled",
+    feats = ranktest$feats[1:6], 
+    cow_n_col = 2, 
+    point_size = 2
+)
 ```
 
 ```{r, echo=FALSE, out.width="80%", fig.align='center'}
@@ -103,8 +107,7 @@ ext_spatial_genes <- ranktest[1:100,]$feats
 ## Calculate pairwise distances between genes.
 
 ```{r, eval=FALSE}
-spat_cor_netw_DT <- detectSpatialCorFeats(
-    g,
+spat_cor_netw_DT <- detectSpatialCorFeats(g,
     method = "network",
     spatial_network_name = "spatial_network",
     subset_feats = ext_spatial_genes)
@@ -114,17 +117,19 @@ spat_cor_netw_DT <- detectSpatialCorFeats(
 
 ```{r, eval=FALSE}
 spat_cor_netw_DT <- clusterSpatialCorFeats(spat_cor_netw_DT, 
-                                           name = "spat_netw_clus", 
-                                           k = 5)
+    name = "spat_netw_clus", 
+    k = 5
+)
 ```
 
 ## Plot the correlation of the top spatial genes with their assigned cluster.
 
 ```{r, eval=FALSE}
 heatmSpatialCorFeats(g,
-                     spatCorObject = spat_cor_netw_DT,
-                     use_clus_name = "spat_netw_clus",
-                     heatmap_legend_param = list(title = NULL))
+    spatCorObject = spat_cor_netw_DT,
+    use_clus_name = "spat_netw_clus",
+    heatmap_legend_param = list(title = NULL)
+)
 ```
 
 ```{r, echo=FALSE, out.width="80%", fig.align='center'}
@@ -135,8 +140,9 @@ knitr::include_graphics("images/spatial_genes/3-heatmSpatialCorFeats.png")
 
 ```{r, eval=FALSE}
 netw_ranks <- rankSpatialCorGroups(g,
-                                   spatCorObject = spat_cor_netw_DT, 
-                                   use_clus_name = "spat_netw_clus")
+    spatCorObject = spat_cor_netw_DT, 
+    use_clus_name = "spat_netw_clus"
+)
 ```
 
 ```{r, echo=FALSE, out.width="70%", fig.align='center'}
@@ -147,25 +153,28 @@ knitr::include_graphics("images/spatial_genes/4-rankSpatialCorGroups.png")
 
 ```{r, eval=FALSE}
 cluster_genes_DT <- showSpatialCorFeats(spat_cor_netw_DT, 
-                                        use_clus_name = "spat_netw_clus", 
-                                        show_top_feats = 1)
+    use_clus_name = "spat_netw_clus", 
+    show_top_feats = 1
+)
 
 cluster_genes <- cluster_genes_DT$clus 
 names(cluster_genes) <- cluster_genes_DT$feat_ID
 
 g <- createMetafeats(g, 
-                     feat_clusters = cluster_genes, 
-                     name = "cluster_metagene")
+    feat_clusters = cluster_genes, 
+    name = "cluster_metagene"
+)
 ```
 
 Plot the spatial distribution of the metagene enrichment scores of each spatial co-expression cluster.
 
 ```{r, eval=FALSE}
 spatCellPlot(g,
-             spat_enr_names = "cluster_metagene",
-             cell_annotation_values = netw_ranks$clusters,
-             point_size = 2, 
-             cow_n_col = 2)
+    spat_enr_names = "cluster_metagene",
+    cell_annotation_values = netw_ranks$clusters,
+    point_size = 2, 
+    cow_n_col = 2
+)
 ```
 
 ```{r, echo=FALSE, out.width="100%", fig.align='center'}
