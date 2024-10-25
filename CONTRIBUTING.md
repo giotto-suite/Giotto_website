@@ -56,19 +56,22 @@ Style Guide. These guidelines are preferences and strongly encouraged!
     -   We follow the BioConductor styling. You can set this up easily
         by installing *biocthis* and *styler.*
 
-        ```{r, eval=FALSE}
-        # package installations
-        BiocManager::install("biocthis")
-        install.packages("styler")
 
-        # styling a file
-        b_style <- biocthis::bioc_style()
-        styler::style_file(path = "[???]", transformers = b_style)
+```{r, eval=FALSE}
+# package installations
+BiocManager::install("biocthis")
+install.packages("styler")
 
-        # styling the active package (may lead to lots of conflicts)
-        # !! This should only be done be core devs with a lot of caution and forewarning !!
-        styler::style_pkg(transformers = b_style)
-        ```
+# styling a file
+b_style <- biocthis::bioc_style()
+styler::style_file(path = "[???]", transformers = b_style)
+
+# styling the active package (may lead to lots of conflicts)
+# !! This should only be done be core devs with a lot of caution and forewarning !!
+styler::style_pkg(transformers = b_style)
+```
+
+
 
     -   setting your default indent size to be 4 spaces instead of 2 is
         also recommended.
@@ -333,7 +336,7 @@ vignette: >
 ---
 ```
 
-- 2. Absolutely no eval=TRUE for example code.
+- 2. Absolutely no `eval=TRUE` for example code.
 
 To save time when rendering the website, all chunks should not evaluate the code. Image results should be
 included via linking or a `knitr` chunk of this style:
