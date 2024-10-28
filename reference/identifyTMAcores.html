@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.1.3</span>
       </span>
     </div>
 
@@ -404,8 +404,12 @@
 <span>  feat_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  spatial_network_name <span class="op">=</span> <span class="st">"Delaunay_network"</span>,</span>
 <span>  core_id_name <span class="op">=</span> <span class="st">"core_id"</span>,</span>
+<span>  id_fmt <span class="op">=</span> <span class="st">"%d"</span>,</span>
 <span>  include_all_ids <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  missing_id_name <span class="op">=</span> <span class="st">"not_connected"</span>,</span>
+<span>  min_nodes <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  join_split_cores <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  join_tolerance <span class="op">=</span> <span class="fl">1.2</span>,</span>
 <span>  return_gobject <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -434,18 +438,37 @@
 <dd><p>metadata column name for the core information</p></dd>
 
 
+<dt id="arg-id-fmt">id_fmt<a class="anchor" aria-label="anchor" href="#arg-id-fmt"></a></dt>
+<dd><p>character. [sprintf] formatting to use for core ids</p></dd>
+
+
 <dt id="arg-include-all-ids">include_all_ids<a class="anchor" aria-label="anchor" href="#arg-include-all-ids"></a></dt>
-<dd><p>Boolean. Include all ids, including vertex ids not found
-in the spatial network</p></dd>
+<dd><p>logical. Include all ids, including vertex ids not
+found in the spatial network</p></dd>
 
 
 <dt id="arg-missing-id-name">missing_id_name<a class="anchor" aria-label="anchor" href="#arg-missing-id-name"></a></dt>
-<dd><p>Character. Name for vertices that were missing from
-spatial network</p></dd>
+<dd><p>character. Name for nodes that are not connected to
+a core.</p></dd>
+
+
+<dt id="arg-min-nodes">min_nodes<a class="anchor" aria-label="anchor" href="#arg-min-nodes"></a></dt>
+<dd><p>numeric. Minimal number of nodes to not be considered
+an unconnected group.</p></dd>
+
+
+<dt id="arg-join-split-cores">join_split_cores<a class="anchor" aria-label="anchor" href="#arg-join-split-cores"></a></dt>
+<dd><p>logical. Attempt to repair core IDs when a core
+is split down the middle and detected as two different cores.</p></dd>
+
+
+<dt id="arg-join-tolerance">join_tolerance<a class="anchor" aria-label="anchor" href="#arg-join-tolerance"></a></dt>
+<dd><p>numeric. Max ratio allowed relative to previous max
+core convex hull area when determining if a pair of cores should be joined.</p></dd>
 
 
 <dt id="arg-return-gobject">return_gobject<a class="anchor" aria-label="anchor" href="#arg-return-gobject"></a></dt>
-<dd><p>Boolean. Return giotto object</p></dd>
+<dd><p>logical. Return giotto object</p></dd>
 
 </dl></div>
     <div id="value">

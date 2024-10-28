@@ -24,7 +24,7 @@ subset + projection"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/a
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.1.3</span>
       </span>
     </div>
 
@@ -419,6 +419,7 @@ subset + projection</p>
 <span>  set_seed <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  seed_number <span class="op">=</span> <span class="fl">1234</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  toplevel <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -499,6 +500,10 @@ subset + projection</p>
 <dd><p>verbosity of the function</p></dd>
 
 
+<dt id="arg-toplevel">toplevel<a class="anchor" aria-label="anchor" href="#arg-toplevel"></a></dt>
+<dd><p>relative stackframe where call was made</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>additional parameters for PCA (see details)</p></dd>
 
@@ -530,7 +535,9 @@ This can significantly increase speed without sacrificing accuracy too much.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 3.2 read Giotto spatial centroid information</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 3.3 read Giotto spatial overlap information</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 4. read Giotto image information</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> python already initialized in this session</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  active environment : '/usr/bin/python3'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  python version : 3.10</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> checking default envname 'giotto_env'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> a system default python environment was found</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using python path:</span>
@@ -547,9 +554,11 @@ This can significantly increase speed without sacrificing accuracy too much.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> pca random subset: done</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> pca prediction: start</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> pca prediction: done</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Setting dimension reduction [cell][rna] pca.projection</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An object of class giotto </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &gt;Active spat_unit:  cell </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &gt;Active feat_type:  rna </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dimensions    : 634, 624 (features, cells)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [SUBCELLULAR INFO]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> polygons      : cell </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [AGGREGATE INFO]</span>

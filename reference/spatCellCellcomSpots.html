@@ -24,7 +24,7 @@ expression of interacting cells at spots resolution"><!-- mathjax --><script src
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.1.3</span>
       </span>
     </div>
 
@@ -406,6 +406,7 @@ expression of interacting cells at spots resolution</p>
 <span>  feat_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">ave_celltype_exp</span>,</span>
 <span>  spatial_network_name <span class="op">=</span> <span class="st">"Delaunay_network"</span>,</span>
+<span>  spat_enr_name <span class="op">=</span> <span class="st">"DWLS"</span>,</span>
 <span>  cluster_column <span class="op">=</span> <span class="st">"cell_ID"</span>,</span>
 <span>  random_iter <span class="op">=</span> <span class="fl">1000</span>,</span>
 <span>  <span class="va">feature_set_1</span>,</span>
@@ -447,6 +448,11 @@ expression of interacting cells at spots resolution</p>
 <dt id="arg-spatial-network-name">spatial_network_name<a class="anchor" aria-label="anchor" href="#arg-spatial-network-name"></a></dt>
 <dd><p>spatial network to use for identifying
 interacting cells</p></dd>
+
+
+<dt id="arg-spat-enr-name">spat_enr_name<a class="anchor" aria-label="anchor" href="#arg-spat-enr-name"></a></dt>
+<dd><p>name of spatial enrichment containing DWLS results.
+Default = <code>"DWLS"</code></p></dd>
 
 
 <dt id="arg-cluster-column">cluster_column<a class="anchor" aria-label="anchor" href="#arg-cluster-column"></a></dt>
@@ -518,32 +524,33 @@ interaction</p>
     <p>Statistical framework to identify if pairs of features
 (such as ligand-receptor combinations) are expressed at higher levels than
 expected based on a reshuffled null distribution of feature expression
-values in cells that are spatially in proximity to each other.</p><ul><li><p>* LR_comb:Pair of ligand and receptor
- * lig_cell_type: cell type to assess expression level of ligand
- * lig_expr: average expression residual(observed - DWLS_predicted) of
- ligand in lig_cell_type
- * ligand: ligand name
- * rec_cell_type: cell type to assess expression level of receptor
- * rec_expr: average expression residual(observed - DWLS_predicted) of
- receptor in rec_cell_type
- * receptor: receptor name
- * LR_expr: combined average ligand and receptor expression residual
- * lig_nr: total number of cells from lig_cell_type that spatially interact
- with cells from rec_cell_type
- * rec_nr: total number of cells from rec_cell_type that spatially interact
- with cells from lig_cell_type
- * rand_expr: average combined ligand and receptor expression residual from
- random spatial permutations
- * av_diff: average difference between LR_expr and rand_expr over all random
- spatial permutations
- * sd_diff: (optional) standard deviation of the difference between LR_expr
- and rand_expr over all random spatial permutations
- * z_score: (optional) z-score
- * log2fc: LR_expr - rand_expr
- * pvalue: p-value
- * LR_cell_comb: cell type pair combination
- * p.adj: adjusted p-value
- * PI: significanc score: log2fc \* -log10(p.adj)</p></li>
+values in cells that are spatially in proximity to each other.</p><ul><li><ul><li><p>LR_comb:Pair of ligand and receptor</p></li>
+<li><p>lig_cell_type: cell type to assess expression level of ligand</p></li>
+<li><p>lig_expr: average expression residual(observed - DWLS_predicted) of
+ligand in lig_cell_type</p></li>
+<li><p>ligand: ligand name</p></li>
+<li><p>rec_cell_type: cell type to assess expression level of receptor</p></li>
+<li><p>rec_expr: average expression residual(observed - DWLS_predicted) of
+receptor in rec_cell_type</p></li>
+<li><p>receptor: receptor name</p></li>
+<li><p>LR_expr: combined average ligand and receptor expression residual</p></li>
+<li><p>lig_nr: total number of cells from lig_cell_type that spatially interact
+with cells from rec_cell_type</p></li>
+<li><p>rec_nr: total number of cells from rec_cell_type that spatially interact
+with cells from lig_cell_type</p></li>
+<li><p>rand_expr: average combined ligand and receptor expression residual from
+random spatial permutations</p></li>
+<li><p>av_diff: average difference between LR_expr and rand_expr over all random
+spatial permutations</p></li>
+<li><p>sd_diff: (optional) standard deviation of the difference between LR_expr
+and rand_expr over all random spatial permutations</p></li>
+<li><p>z_score: (optional) z-score</p></li>
+<li><p>log2fc: LR_expr - rand_expr</p></li>
+<li><p>pvalue: p-value</p></li>
+<li><p>LR_cell_comb: cell type pair combination</p></li>
+<li><p>p.adj: adjusted p-value</p></li>
+<li><p>PI: significanc score: log2fc \* -log10(p.adj)</p></li>
+</ul></li>
 </ul></div>
 
   </div>

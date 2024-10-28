@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.1.3</span>
       </span>
     </div>
 
@@ -607,7 +607,7 @@
 </h3>
 <p>A technique that decomposes non-negative data into two non-negative matrices. In biology, it’s useful for analyzing gene expression, metagenomics, and protein-ligand interactions. NMF can reveal underlying patterns and molecular signatures in complex biological datasets. While it is fine to calculate as many PCs as desired for PCA, the k (rank) value for NMF requires more fine tuning since the k value essentially define how many metafeatures to split the expression information into. Too few, and there is not enough extracted information. Too many, and single signatures will be split and diluted. Giotto implements NMF through RcppML.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu">runNMF</span><span class="op">(</span><span class="va">g</span>, k <span class="op">=</span> <span class="fl">20</span>, feats_to_use <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runNMF.html">runNMF</a></span><span class="op">(</span><span class="va">g</span>, k <span class="op">=</span> <span class="fl">20</span>, feats_to_use <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/dimPlot.html" class="external-link">dimPlot2D</a></span><span class="op">(</span><span class="va">g</span>, dim_reduction_to_use <span class="op">=</span> <span class="st">"nmf"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fdimension_reduction%2F4_nmf.png" width="60%" style="display: block; margin: auto;"></p>
 </div>
@@ -688,10 +688,10 @@
 <h2 number="6" id="api-function">
 <span class="header-section-number">6</span> API function<a class="anchor" aria-label="anchor" href="#api-function"></a>
 </h2>
-<p>A convenient single function for access to the above functions is <code>reduceDims()</code>. This makes it easy to create workflow functions or parallelized implementations to perform several dimension reductions with programmatically defined settings.</p>
+<p>A convenient single function for access to the above functions is <code><a href="../reference/reduceDims.html">reduceDims()</a></code>. This makes it easy to create workflow functions or parallelized implementations to perform several dimension reductions with programmatically defined settings.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># example of a pca run with projection approach through reduceDims()</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu">reduceDims</span><span class="op">(</span><span class="va">g</span>, method <span class="op">=</span> <span class="st">"pca"</span>, feats_to_use <span class="op">=</span> <span class="cn">NULL</span>, projection <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reduceDims.html">reduceDims</a></span><span class="op">(</span><span class="va">g</span>, method <span class="op">=</span> <span class="st">"pca"</span>, feats_to_use <span class="op">=</span> <span class="cn">NULL</span>, projection <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="7">
 <h2 number="7" id="session-info">

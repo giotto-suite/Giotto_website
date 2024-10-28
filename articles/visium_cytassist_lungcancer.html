@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.1.3</span>
       </span>
     </div>
 
@@ -843,7 +843,7 @@
 <span><span class="va">pdcs_markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SLC32A1"</span>, <span class="st">"SHD"</span>, <span class="st">"LRRC26"</span>, <span class="st">"PACSIN1"</span>, </span>
 <span>                  <span class="st">"LILRA4"</span>, <span class="st">"CLEC4C"</span>, <span class="st">"DNASE1L3"</span>, <span class="st">"SCT"</span>, <span class="st">"LAMP5"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">signature_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/makeSignMatrixPAGE.html">makeSignMatrixPAGE</a></span><span class="op">(</span></span>
+<span><span class="va">signature_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/enrichment_PAGE.html">makeSignMatrixPAGE</a></span><span class="op">(</span></span>
 <span>  sign_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"T_Cells"</span>, <span class="st">"Macrophage"</span>, <span class="st">"Dendritic"</span>, <span class="st">"Mast"</span>, </span>
 <span>                 <span class="st">"B_cell"</span>, <span class="st">"Bcell_PB"</span>, <span class="st">"Bcells_memory"</span>,</span>
 <span>                 <span class="st">"Housekeeping"</span>, <span class="st">"Neutrophils"</span>, <span class="st">"pDCs"</span><span class="op">)</span>,</span>
@@ -875,11 +875,11 @@
 <span>  <span class="va">sign_list</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">topgenes_scran</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">topgenes_scran</span><span class="op">$</span><span class="va">cluster</span> <span class="op">==</span> <span class="va">celltypes</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span>,<span class="op">]</span><span class="op">$</span><span class="va">feats</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">PAGE_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/makeSignMatrixPAGE.html">makeSignMatrixPAGE</a></span><span class="op">(</span>sign_names <span class="op">=</span> <span class="va">celltypes</span>,</span>
+<span><span class="va">PAGE_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/enrichment_PAGE.html">makeSignMatrixPAGE</a></span><span class="op">(</span>sign_names <span class="op">=</span> <span class="va">celltypes</span>,</span>
 <span>                                  sign_list <span class="op">=</span> <span class="va">sign_list</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#  runSpatialEnrich() can also be used as a wrapper for all currently provided enrichment options</span></span>
-<span><span class="va">visium_lungcancer</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPAGEEnrich.html">runPAGEEnrich</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_lungcancer</span>, </span>
+<span><span class="va">visium_lungcancer</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/enrichment_PAGE.html">runPAGEEnrich</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_lungcancer</span>, </span>
 <span>                                   sign_matrix <span class="op">=</span> <span class="va">signature_matrix</span>, </span>
 <span>                                   min_overlap_genes <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>

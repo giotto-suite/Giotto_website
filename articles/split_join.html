@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.1.3</span>
       </span>
     </div>
 
@@ -510,10 +510,10 @@
 
     
     
-<p><code>splitGiotto()</code> and <code><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects()</a></code> are how Giotto works with multiple samples.</p>
+<p><code><a href="https://drieslab.github.io/GiottoClass/reference/splitGiotto.html" class="external-link">splitGiotto()</a></code> and <code><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects()</a></code> are how Giotto works with multiple samples.</p>
 <ul>
 <li>
-<code>splitGiotto()</code> - separate a single <code>giotto</code> object into a list of several based on a cell metadata column</li>
+<code><a href="https://drieslab.github.io/GiottoClass/reference/splitGiotto.html" class="external-link">splitGiotto()</a></code> - separate a single <code>giotto</code> object into a list of several based on a cell metadata column</li>
 <li>
 <code><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects()</a></code> - combine a list of multiple <code>giotto</code> objects into a single <code>giotto</code> object.</li>
 </ul>
@@ -658,7 +658,7 @@
 </h2>
 <p>A split operation will split a single <code>giotto</code> object into a list of several based on a cell metadata column defined by the <code>by</code> param.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">object_list</span> <span class="op">&lt;-</span> <span class="fu">splitGiotto</span><span class="op">(</span><span class="va">tma</span>, by <span class="op">=</span> <span class="st">"sample"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">object_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/splitGiotto.html" class="external-link">splitGiotto</a></span><span class="op">(</span><span class="va">tma</span>, by <span class="op">=</span> <span class="st">"sample"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">object_list</span><span class="op">)</span></span></code></pre></div>
 <pre><code>[1] 10</code></pre>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -671,7 +671,7 @@
 <span class="header-section-number">6</span> Join Giotto Objects<a class="anchor" aria-label="anchor" href="#join-giotto-objects"></a>
 </h2>
 <p><code>giotto</code> objects can be joined together into a single one. This requires both the list of <code>giotto</code> objects and a list of names to assign those objects in the joined object. This involves updating the cell IDs used throughout the object so that they are disambiguated from possibly similar cell IDs in other objects. A new column (called “list_ID” by default) is also added to the cell metadata to help differentiate between samples. Additionally, a spatial x shift is performed by default, so that spatial data does not accidentally overlap each other and become hard to tell apart between samples. In this case, we do not need any additional shifting of values to avoid overlaps, and we can use <code>join_method = "no_change</code>.</p>
-<p><code><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects()</a></code> is used to join together any sets of <code>giotto</code> objects for joint analysis, and it is not needed for the objects to have been from the same source object or to have first been split with <code>splitGiotto()</code>.</p>
+<p><code><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects()</a></code> is used to join together any sets of <code>giotto</code> objects for joint analysis, and it is not needed for the objects to have been from the same source object or to have first been split with <code><a href="https://drieslab.github.io/GiottoClass/reference/splitGiotto.html" class="external-link">splitGiotto()</a></code>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lung_reps</span> <span class="op">&lt;-</span> <span class="va">object_list</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lung1"</span>, <span class="st">"lung2"</span>, <span class="st">"lung3"</span>, <span class="st">"lung4"</span>, <span class="st">"lung5"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="va">brain_reps</span> <span class="op">&lt;-</span> <span class="va">object_list</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"brain1"</span>, <span class="st">"brain2"</span>, <span class="st">"brain3"</span>, <span class="st">"brain4"</span><span class="op">)</span><span class="op">]</span></span>

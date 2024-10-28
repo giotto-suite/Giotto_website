@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.1.3</span>
       </span>
     </div>
 
@@ -401,15 +401,13 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">runWNN</span><span class="op">(</span></span>
 <span>  <span class="va">gobject</span>,</span>
 <span>  spat_unit <span class="op">=</span> <span class="st">"cell"</span>,</span>
-<span>  modality_1 <span class="op">=</span> <span class="st">"rna"</span>,</span>
-<span>  modality_2 <span class="op">=</span> <span class="st">"protein"</span>,</span>
-<span>  pca_name_modality_1 <span class="op">=</span> <span class="st">"rna.pca"</span>,</span>
-<span>  pca_name_modality_2 <span class="op">=</span> <span class="st">"protein.pca"</span>,</span>
+<span>  feat_types <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rna"</span>, <span class="st">"protein"</span><span class="op">)</span>,</span>
+<span>  reduction_methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pca"</span>, <span class="st">"pca"</span><span class="op">)</span>,</span>
+<span>  reduction_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rna.pca"</span>, <span class="st">"protein.pca"</span><span class="op">)</span>,</span>
 <span>  k <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  integrated_feat_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  matrix_result_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  w_name_modality_1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  w_name_modality_2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  w_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NULL</span>, <span class="cn">NULL</span><span class="op">)</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -419,31 +417,27 @@
 
 
 <dl><dt id="arg-gobject">gobject<a class="anchor" aria-label="anchor" href="#arg-gobject"></a></dt>
-<dd><p>A Giotto object with individual PCA modalities pre-calculated</p></dd>
+<dd><p>A Giotto object with individual PCA feat_types pre-calculated</p></dd>
 
 
 <dt id="arg-spat-unit">spat_unit<a class="anchor" aria-label="anchor" href="#arg-spat-unit"></a></dt>
 <dd><p>spatial unit</p></dd>
 
 
-<dt id="arg-modality-">modality_1<a class="anchor" aria-label="anchor" href="#arg-modality-"></a></dt>
-<dd><p>modality 1 name. Default = "rna"</p></dd>
+<dt id="arg-feat-types">feat_types<a class="anchor" aria-label="anchor" href="#arg-feat-types"></a></dt>
+<dd><p>feature types to integrate. Default = c("rna", "protein")</p></dd>
 
 
-<dt id="arg-modality-">modality_2<a class="anchor" aria-label="anchor" href="#arg-modality-"></a></dt>
-<dd><p>modality 2 name. Default = "protein"</p></dd>
+<dt id="arg-reduction-methods">reduction_methods<a class="anchor" aria-label="anchor" href="#arg-reduction-methods"></a></dt>
+<dd><p>reduction methods for each feature type. Default = c("pca", "pca")</p></dd>
 
 
-<dt id="arg-pca-name-modality-">pca_name_modality_1<a class="anchor" aria-label="anchor" href="#arg-pca-name-modality-"></a></dt>
-<dd><p>Default = 'rna.pca'</p></dd>
-
-
-<dt id="arg-pca-name-modality-">pca_name_modality_2<a class="anchor" aria-label="anchor" href="#arg-pca-name-modality-"></a></dt>
-<dd><p>Default = 'protein.pca'</p></dd>
+<dt id="arg-reduction-names">reduction_names<a class="anchor" aria-label="anchor" href="#arg-reduction-names"></a></dt>
+<dd><p>names of the reduction methods to use. Default = c("rna.pca", "protein.pca")</p></dd>
 
 
 <dt id="arg-k">k<a class="anchor" aria-label="anchor" href="#arg-k"></a></dt>
-<dd><p>k number, default = 20</p></dd>
+<dd><p>number of neighbors to calculate cell distances, default = 20</p></dd>
 
 
 <dt id="arg-integrated-feat-type">integrated_feat_type<a class="anchor" aria-label="anchor" href="#arg-integrated-feat-type"></a></dt>
@@ -454,12 +448,8 @@
 <dd><p>Default = 'theta_weighted_matrix'</p></dd>
 
 
-<dt id="arg-w-name-modality-">w_name_modality_1<a class="anchor" aria-label="anchor" href="#arg-w-name-modality-"></a></dt>
-<dd><p>name for modality 1 weights</p></dd>
-
-
-<dt id="arg-w-name-modality-">w_name_modality_2<a class="anchor" aria-label="anchor" href="#arg-w-name-modality-"></a></dt>
-<dd><p>name for modality 2 weights</p></dd>
+<dt id="arg-w-names">w_names<a class="anchor" aria-label="anchor" href="#arg-w-names"></a></dt>
+<dd><p>optional. Names for the weighted matrices. If NULL, automatic names composed by w_feat_type will be created.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
@@ -468,9 +458,7 @@
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A Giotto object with integrated UMAP (integrated.umap) within the
-dimension_reduction slot and Leiden clusters (integrated_leiden_clus) in the
-cellular metadata.</p>
+    <p>A Giotto object with a new multiomics slot containing the theta_weighted_matrix and individual weight matrices.</p>
     </div>
 
   </div>
