@@ -518,10 +518,7 @@
 <code><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects()</a></code> - combine a list of multiple <code>giotto</code> objects into a single <code>giotto</code> object.</li>
 </ul>
 <p>This example shows working with a 10x Visium <a href="https://www.10xgenomics.com/datasets/mouse-tissue-microarray-in-3x3-layout-with-2-mm-edge-to-edge-spacing-ffpe-2-standard" class="external-link">mouse TMA</a> dataset.</p>
-<div class="section level2" number="1">
-<h2 number="1" id="setup">
-<span class="header-section-number">1</span> Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
-</h2>
+<p><em>Check Giotto installation</em></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed.</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -534,11 +531,14 @@
 <span>  <span class="co"># The following command need only be run once to install the Giotto environment.</span></span>
 <span>  <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-</div>
-<div class="section level2" number="2">
-<h2 number="2" id="download-the-data">
-<span class="header-section-number">2</span> Download the Data<a class="anchor" aria-label="anchor" href="#download-the-data"></a>
+<div class="section level2" number="1">
+<h2 number="1" id="setup-example-tma-dataset">
+<span class="header-section-number">1</span> Setup example TMA dataset<a class="anchor" aria-label="anchor" href="#setup-example-tma-dataset"></a>
 </h2>
+<div class="section level3" number="1.1">
+<h3 number="1.1" id="download-the-data">
+<span class="header-section-number">1.1</span> Download the Data<a class="anchor" aria-label="anchor" href="#download-the-data"></a>
+</h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## provide path to a folder to save the example data to</span></span>
 <span><span class="va">data_path</span> <span class="op">&lt;-</span> <span class="st">"/path/to/data/"</span></span>
@@ -556,10 +556,10 @@
 <span><span class="fu"><a href="https://rdrr.io/r/utils/untar.html" class="external-link">untar</a></span><span class="op">(</span><span class="va">spat_path</span>, exdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_path</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">spat_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"spatial"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2" number="3">
-<h2 number="3" id="create-giotto-object">
-<span class="header-section-number">3</span> Create Giotto Object<a class="anchor" aria-label="anchor" href="#create-giotto-object"></a>
-</h2>
+<div class="section level3" number="1.2">
+<h3 number="1.2" id="create-giotto-object">
+<span class="header-section-number">1.2</span> Create Giotto Object<a class="anchor" aria-label="anchor" href="#create-giotto-object"></a>
+</h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://drieslab.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span>
 <span></span>
@@ -585,10 +585,10 @@
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">tma</span>, show_image <span class="op">=</span> <span class="cn">TRUE</span>, point_size <span class="op">=</span> <span class="fl">1.5</span>, point_alpha <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fsplit_join%2F1_spatplot.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
-<div class="section level2" number="4">
-<h2 number="4" id="detect-individual-cores">
-<span class="header-section-number">4</span> Detect individual cores<a class="anchor" aria-label="anchor" href="#detect-individual-cores"></a>
-</h2>
+<div class="section level3" number="1.3">
+<h3 number="1.3" id="detect-individual-tma-cores">
+<span class="header-section-number">1.3</span> Detect individual TMA cores<a class="anchor" aria-label="anchor" href="#detect-individual-tma-cores"></a>
+</h3>
 <p>By building a spatial network, we can find out which data points are spatially contiguous by looking checking spatial distance, breaking ones that are too far away, and then checking for graph membership.</p>
 <p>This functionality is implemented as <code><a href="../reference/identifyTMAcores.html">identifyTMAcores()</a></code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -631,9 +631,10 @@
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fsplit_join%2F3_annotated.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
-<div class="section level2" number="5">
-<h2 number="5" id="split-giotto-object">
-<span class="header-section-number">5</span> Split Giotto Object<a class="anchor" aria-label="anchor" href="#split-giotto-object"></a>
+</div>
+<div class="section level2" number="2">
+<h2 number="2" id="split-giotto-object">
+<span class="header-section-number">2</span> Split Giotto Object<a class="anchor" aria-label="anchor" href="#split-giotto-object"></a>
 </h2>
 <p>A split operation will split a single <code>giotto</code> object into a list of several based on a cell metadata column defined by the <code>by</code> param.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -645,9 +646,9 @@
 <pre><code> [1] "lung1"         "brain2"        "brain3"        "lung5"         "brain1"       
  [6] "brain4"        "lung4"         "lung3"         "not_connected" "lung2"   </code></pre>
 </div>
-<div class="section level2" number="6">
-<h2 number="6" id="join-giotto-objects">
-<span class="header-section-number">6</span> Join Giotto Objects<a class="anchor" aria-label="anchor" href="#join-giotto-objects"></a>
+<div class="section level2" number="3">
+<h2 number="3" id="join-giotto-objects">
+<span class="header-section-number">3</span> Join Giotto Objects<a class="anchor" aria-label="anchor" href="#join-giotto-objects"></a>
 </h2>
 <p><code>giotto</code> objects can be joined together into a single one. This requires both the list of <code>giotto</code> objects and a list of names to assign those objects in the joined object. This involves updating the cell IDs used throughout the object so that they are disambiguated from possibly similar cell IDs in other objects. A new column (called “list_ID” by default) is also added to the cell metadata to help differentiate between samples. Additionally, a spatial x shift is performed by default, so that spatial data does not accidentally overlap each other and become hard to tell apart between samples. In this case, we do not need any additional shifting of values to avoid overlaps, and we can use <code>join_method = "no_change</code>.</p>
 <p><code><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects()</a></code> is used to join together any sets of <code>giotto</code> objects for joint analysis, and it is not needed for the objects to have been from the same source object or to have first been split with <code><a href="https://drieslab.github.io/GiottoClass/reference/splitGiotto.html" class="external-link">splitGiotto()</a></code>.</p>
@@ -691,9 +692,9 @@
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fsplit_join%2F5_brain_joined.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
-<div class="section level2" number="7">
-<h2 number="7" id="session-info">
-<span class="header-section-number">7</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+<div class="section level2" number="4">
+<h2 number="4" id="session-info">
+<span class="header-section-number">4</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>

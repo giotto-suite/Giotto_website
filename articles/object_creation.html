@@ -546,14 +546,19 @@
 <p>Single cell datasets (shown at the bottom) can also be worked using Giotto, and only need a matrix without the need for paired spatial locations.</p>
 </div>
 <div class="section level2" number="3">
-<h2 number="3" id="create-from-matrix-and-spatial-locations">
-<span class="header-section-number">3</span> Create from matrix and spatial locations<a class="anchor" aria-label="anchor" href="#create-from-matrix-and-spatial-locations"></a>
+<h2 number="3" id="create-from">
+<span class="header-section-number">3</span> Create from:<a class="anchor" aria-label="anchor" href="#create-from"></a>
 </h2>
-<p>This example will be shown using an osmFISH dataset. To download this data, please ensure that <a href="https://www.gnu.org/software/wget/?" class="external-link">wget</a> is installed locally.</p>
 <div class="section level3" number="3.1">
-<h3 number="3.1" id="download-data-to-use">
-<span class="header-section-number">3.1</span> Download data to use<a class="anchor" aria-label="anchor" href="#download-data-to-use"></a>
+<h3 number="3.1" id="matrix-and-spatial-locations">
+<span class="header-section-number">3.1</span> Matrix and spatial locations<a class="anchor" aria-label="anchor" href="#matrix-and-spatial-locations"></a>
 </h3>
+<details><p><summary>expand</summary></p>
+<p>This example will be shown using an osmFISH dataset. To download this data, please ensure that <a href="https://www.gnu.org/software/wget/?" class="external-link">wget</a> is installed locally.</p>
+<div class="section level4" number="3.1.1">
+<h4 number="3.1.1" id="download-data-to-use">
+<span class="header-section-number">3.1.1</span> Download data to use<a class="anchor" aria-label="anchor" href="#download-data-to-use"></a>
+</h4>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Specify path from which data may be retrieved/stored</span></span>
 <span><span class="va">data_path</span> <span class="op">&lt;-</span> <span class="st">"/path/to/data/"</span></span>
@@ -568,10 +573,10 @@
 <span>    method <span class="op">=</span> <span class="st">"wget"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3" number="3.2">
-<h3 number="3.2" id="read-data-into-giotto-suite">
-<span class="header-section-number">3.2</span> Read data into Giotto Suite<a class="anchor" aria-label="anchor" href="#read-data-into-giotto-suite"></a>
-</h3>
+<div class="section level4" number="3.1.2">
+<h4 number="3.1.2" id="read-data-into-giotto-suite">
+<span class="header-section-number">3.1.2</span> Read data into Giotto Suite<a class="anchor" aria-label="anchor" href="#read-data-into-giotto-suite"></a>
+</h4>
 <p>Aggregate data (matrix and spatial locations -based data) can be read in using <code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObject.html" class="external-link">createGiottoObject()</a></code>. There are two examples. Data formatting guidelines are shown below this code block.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Example 1.</span></span>
@@ -623,10 +628,10 @@ spatial locations ----------------
 
 Use objHistory() to see steps and params used</code></pre>
 </div>
-<div class="section level3" number="3.3">
-<h3 number="3.3" id="example-plot">
-<span class="header-section-number">3.3</span> Example plot<a class="anchor" aria-label="anchor" href="#example-plot"></a>
-</h3>
+<div class="section level4" number="3.1.3">
+<h4 number="3.1.3" id="example-plot">
+<span class="header-section-number">3.1.3</span> Example plot<a class="anchor" aria-label="anchor" href="#example-plot"></a>
+</h4>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatFeatPlot2D.html" class="external-link">spatFeatPlot2D</a></span><span class="op">(</span><span class="va">minimum_gobject1</span>,</span>
 <span>    feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sox10"</span>, <span class="st">"Gfap"</span><span class="op">)</span>, </span>
@@ -637,10 +642,10 @@ Use objHistory() to see steps and params used</code></pre>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fobject_creation%2F1_spatplot_aggregate.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
-<div class="section level3" number="3.4">
-<h3 number="3.4" id="data-formatting-notes">
-<span class="header-section-number">3.4</span> Data formatting notes<a class="anchor" aria-label="anchor" href="#data-formatting-notes"></a>
-</h3>
+<div class="section level4" number="3.1.4">
+<h4 number="3.1.4" id="data-formatting-notes">
+<span class="header-section-number">3.1.4</span> Data formatting notes<a class="anchor" aria-label="anchor" href="#data-formatting-notes"></a>
+</h4>
 <p><strong>Expression file formatting</strong></p>
 <ul>
 <li><p>Expression count matrices accepted by <em>Giotto</em> should be oriented with columns corresponding to individual cells/observations (<strong>cell IDs</strong>) and rows to individual features (<strong>feature IDs</strong>). It is also preferred for the rows and cols to be named by the features and cells they describe.</p></li>
@@ -684,17 +689,20 @@ spatial locations ----------------
 
 
 Use objHistory() to see steps and params used</code></pre>
+
 </div>
+</details>
 </div>
-<div class="section level2" number="4">
-<h2 number="4" id="create-from-feature-detection-points-and-cell-annotations-polygons">
-<span class="header-section-number">4</span> Create from feature detection (points) and cell annotations (polygons)<a class="anchor" aria-label="anchor" href="#create-from-feature-detection-points-and-cell-annotations-polygons"></a>
-</h2>
-<p>You can also make giotto objects starting from raw spatial feature information and annotations that give them spatial context. This will be shown using the vizgen MERSCOPE mini object’s raw data available from GiottoData</p>
-<div class="section level3" number="4.1">
-<h3 number="4.1" id="get-filepaths-from-giottodata">
-<span class="header-section-number">4.1</span> Get filepaths from GiottoData<a class="anchor" aria-label="anchor" href="#get-filepaths-from-giottodata"></a>
+<div class="section level3" number="3.2">
+<h3 number="3.2" id="feature-detection-points-and-cell-annotations-polygons">
+<span class="header-section-number">3.2</span> Feature detection (points) and cell annotations (polygons)<a class="anchor" aria-label="anchor" href="#feature-detection-points-and-cell-annotations-polygons"></a>
 </h3>
+<details><p><summary>expand</summary></p>
+<p>You can also make giotto objects starting from raw spatial feature information and annotations that give them spatial context. This will be shown using the vizgen MERSCOPE mini object’s raw data available from GiottoData</p>
+<div class="section level4" number="3.2.1">
+<h4 number="3.2.1" id="get-filepaths-from-giottodata">
+<span class="header-section-number">3.2.1</span> Get filepaths from GiottoData<a class="anchor" aria-label="anchor" href="#get-filepaths-from-giottodata"></a>
+</h4>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># function to get a filepath from GiottoData</span></span>
 <span><span class="va">mini_viz_raw</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
@@ -707,10 +715,10 @@ Use objHistory() to see steps and params used</code></pre>
 <span><span class="va">mini_viz_poly_path</span> <span class="op">&lt;-</span> <span class="fu">mini_viz_raw</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"cell_boundaries"</span>, <span class="st">"z0_polygons.gz"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">mini_viz_tx_path</span> <span class="op">&lt;-</span> <span class="fu">mini_viz_raw</span><span class="op">(</span><span class="st">"vizgen_transcripts.gz"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3" number="4.2">
-<h3 number="4.2" id="read-into-giotto-subobjects-and-assemble-into-giotto-object">
-<span class="header-section-number">4.2</span> Read into Giotto subobjects and assemble into giotto object<a class="anchor" aria-label="anchor" href="#read-into-giotto-subobjects-and-assemble-into-giotto-object"></a>
-</h3>
+<div class="section level4" number="3.2.2">
+<h4 number="3.2.2" id="read-into-giotto-subobjects-and-assemble-into-giotto-object">
+<span class="header-section-number">3.2.2</span> Read into Giotto subobjects and assemble into giotto object<a class="anchor" aria-label="anchor" href="#read-into-giotto-subobjects-and-assemble-into-giotto-object"></a>
+</h4>
 <p>Polygons can be read into Giotto Suite in multiple ways.</p>
 <p>When using <code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygon()</a></code>:</p>
 <ul>
@@ -805,10 +813,10 @@ Feature Information:
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">viz_gpoints</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fobject_creation%2F3_viz_gpoints.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
-<div class="section level3" number="4.3">
-<h3 number="4.3" id="checking-spatial-alignment">
-<span class="header-section-number">4.3</span> Checking spatial alignment<a class="anchor" aria-label="anchor" href="#checking-spatial-alignment"></a>
-</h3>
+<div class="section level4" number="3.2.3">
+<h4 number="3.2.3" id="checking-spatial-alignment">
+<span class="header-section-number">3.2.3</span> Checking spatial alignment<a class="anchor" aria-label="anchor" href="#checking-spatial-alignment"></a>
+</h4>
 <p>Care should always be taken when assembling a spatial dataset to make sure that the spatial information is spatially aligned. We can check this by plotting the subobjects. When the data is not properly aligned, the polygons will extract the incorrect features or even find no values.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">viz_gpoints</span>, raster <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -824,10 +832,10 @@ Feature Information:
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">viz_gpoly</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, border <span class="op">=</span> <span class="st">"cyan"</span>, lwd <span class="op">=</span> <span class="fl">0.7</span>, ext <span class="op">=</span> <span class="va">ROI</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fobject_creation%2F5_align_ROI.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
-<div class="section level3" number="4.4">
-<h3 number="4.4" id="creating-the-subcellular-giotto-object">
-<span class="header-section-number">4.4</span> Creating the subcellular Giotto object<a class="anchor" aria-label="anchor" href="#creating-the-subcellular-giotto-object"></a>
-</h3>
+<div class="section level4" number="3.2.4">
+<h4 number="3.2.4" id="creating-the-subcellular-giotto-object">
+<span class="header-section-number">3.2.4</span> Creating the subcellular Giotto object<a class="anchor" aria-label="anchor" href="#creating-the-subcellular-giotto-object"></a>
+</h4>
 <p>Datasets with raw spatial features and polygon information are created using <code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObjectSubcellular.html" class="external-link">createGiottoObjectSubcellular()</a></code>.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mini_viz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObjectSubcellular.html" class="external-link">createGiottoObjectSubcellular</a></span><span class="op">(</span></span>
@@ -845,10 +853,10 @@ features      : rna
 
 Use objHistory() to see steps and params used</code></pre>
 </div>
-<div class="section level3" number="4.5">
-<h3 number="4.5" id="spatially-aggregate-values">
-<span class="header-section-number">4.5</span> Spatially aggregate values<a class="anchor" aria-label="anchor" href="#spatially-aggregate-values"></a>
-</h3>
+<div class="section level4" number="3.2.5">
+<h4 number="3.2.5" id="spatially-aggregate-values">
+<span class="header-section-number">3.2.5</span> Spatially aggregate values<a class="anchor" aria-label="anchor" href="#spatially-aggregate-values"></a>
+</h4>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># calculate centroids</span></span>
 <span><span class="va">mini_viz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addSpatialCentroidLocations.html" class="external-link">addSpatialCentroidLocations</a></span><span class="op">(</span><span class="va">mini_viz</span><span class="op">)</span></span>
@@ -856,10 +864,10 @@ Use objHistory() to see steps and params used</code></pre>
 <span><span class="va">mini_viz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span><span class="va">mini_viz</span><span class="op">)</span></span>
 <span><span class="va">mini_viz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span><span class="va">mini_viz</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3" number="4.6">
-<h3 number="4.6" id="example-plot-1">
-<span class="header-section-number">4.6</span> Example plot<a class="anchor" aria-label="anchor" href="#example-plot-1"></a>
-</h3>
+<div class="section level4" number="3.2.6">
+<h4 number="3.2.6" id="example-plot-1">
+<span class="header-section-number">3.2.6</span> Example plot<a class="anchor" aria-label="anchor" href="#example-plot-1"></a>
+</h4>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatFeatPlot2D.html" class="external-link">spatFeatPlot2D</a></span><span class="op">(</span></span>
 <span>  <span class="va">mini_viz</span>, </span>
@@ -870,17 +878,20 @@ Use objHistory() to see steps and params used</code></pre>
 <span>  background_color <span class="op">=</span> <span class="st">"black"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fobject_creation%2F6_example_featplot_sub.png" width="100%" style="display: block; margin: auto;"></p>
+
 </div>
+</details>
 </div>
-<div class="section level2" number="5">
-<h2 number="5" id="create-from-staining-images-and-polygons">
-<span class="header-section-number">5</span> Create from staining images and polygons<a class="anchor" aria-label="anchor" href="#create-from-staining-images-and-polygons"></a>
-</h2>
-<p>The IMC data to run this tutorial can be found in the <em>imcdatasets</em> package. We will be using one of the smaller example datasets. These IMC outputs provide multilayer images in the format of <em>cytomapper</em> <code>CytoImageList</code> collections of <em>EBImage</em> <code>Image</code> objects, which can be easily coerced to simple matrices.</p>
-<div class="section level3" number="5.1">
-<h3 number="5.1" id="download-data-to-use-1">
-<span class="header-section-number">5.1</span> Download data to use<a class="anchor" aria-label="anchor" href="#download-data-to-use-1"></a>
+<div class="section level3" number="3.3">
+<h3 number="3.3" id="staining-images-and-polygons">
+<span class="header-section-number">3.3</span> Staining images and polygons<a class="anchor" aria-label="anchor" href="#staining-images-and-polygons"></a>
 </h3>
+<details><p><summary>expand</summary></p>
+<p>The IMC data to run this tutorial can be found in the <em>imcdatasets</em> package. We will be using one of the smaller example datasets. These IMC outputs provide multilayer images in the format of <em>cytomapper</em> <code>CytoImageList</code> collections of <em>EBImage</em> <code>Image</code> objects, which can be easily coerced to simple matrices.</p>
+<div class="section level4" number="3.3.1">
+<h4 number="3.3.1" id="download-data-to-use-1">
+<span class="header-section-number">3.3.1</span> Download data to use<a class="anchor" aria-label="anchor" href="#download-data-to-use-1"></a>
+</h4>
 <p>The package <em>exactextractr</em> is also used due to its speed with image data extractions.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Ensure imcdatasets and exactextractr are installed.</span></span>
@@ -904,10 +915,10 @@ Use objHistory() to see steps and params used</code></pre>
 <span><span class="op">)</span></span>
 <span><span class="va">channels</span> <span class="op">&lt;-</span> <span class="fu">cytomapper</span><span class="fu">::</span><span class="fu">channelNames</span><span class="op">(</span><span class="va">imc_imgs</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3" number="5.2">
-<h3 number="5.2" id="read-data-into-giotto-suite-1">
-<span class="header-section-number">5.2</span> Read data into Giotto Suite<a class="anchor" aria-label="anchor" href="#read-data-into-giotto-suite-1"></a>
-</h3>
+<div class="section level4" number="3.3.2">
+<h4 number="3.3.2" id="read-data-into-giotto-suite-1">
+<span class="header-section-number">3.3.2</span> Read data into Giotto Suite<a class="anchor" aria-label="anchor" href="#read-data-into-giotto-suite-1"></a>
+</h4>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create the mask polys</span></span>
 <span><span class="va">mask_poly</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygonsFromMask</a></span><span class="op">(</span><span class="va">mask_mat</span>, </span>
@@ -959,19 +970,19 @@ File path               : ''</code></pre>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">imglist</span><span class="op">[[</span><span class="st">"H3"</span><span class="op">]</span><span class="op">]</span>, max_intensity <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fobject_creation%2F8_img_H3.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
-<div class="section level3" number="5.3">
-<h3 number="5.3" id="checking-spatial-alignment-1">
-<span class="header-section-number">5.3</span> Checking spatial alignment<a class="anchor" aria-label="anchor" href="#checking-spatial-alignment-1"></a>
-</h3>
+<div class="section level4" number="3.3.3">
+<h4 number="3.3.3" id="checking-spatial-alignment-1">
+<span class="header-section-number">3.3.3</span> Checking spatial alignment<a class="anchor" aria-label="anchor" href="#checking-spatial-alignment-1"></a>
+</h4>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">imglist</span><span class="op">[[</span><span class="st">"H3"</span><span class="op">]</span><span class="op">]</span>, max_intensity <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mask_poly</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, border <span class="op">=</span> <span class="st">"cyan"</span>, lwd <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fobject_creation%2F9_align2.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
-<div class="section level3" number="5.4">
-<h3 number="5.4" id="creating-the-giotto-object">
-<span class="header-section-number">5.4</span> Creating the giotto object<a class="anchor" aria-label="anchor" href="#creating-the-giotto-object"></a>
-</h3>
+<div class="section level4" number="3.3.4">
+<h4 number="3.3.4" id="creating-the-giotto-object">
+<span class="header-section-number">3.3.4</span> Creating the giotto object<a class="anchor" aria-label="anchor" href="#creating-the-giotto-object"></a>
+</h4>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">imc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObjectSubcellular.html" class="external-link">createGiottoObjectSubcellular</a></span><span class="op">(</span></span>
 <span>    gpolygons <span class="op">=</span> <span class="va">mask_poly</span>,</span>
@@ -990,10 +1001,10 @@ images      : 40 items...
 
 Use objHistory() to see steps and params used</code></pre>
 </div>
-<div class="section level3" number="5.5">
-<h3 number="5.5" id="spatially-aggregate-values-1">
-<span class="header-section-number">5.5</span> Spatially aggregate values<a class="anchor" aria-label="anchor" href="#spatially-aggregate-values-1"></a>
-</h3>
+<div class="section level4" number="3.3.5">
+<h4 number="3.3.5" id="spatially-aggregate-values-1">
+<span class="header-section-number">3.3.5</span> Spatially aggregate values<a class="anchor" aria-label="anchor" href="#spatially-aggregate-values-1"></a>
+</h4>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># calculate centroids</span></span>
 <span><span class="va">imc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addSpatialCentroidLocations.html" class="external-link">addSpatialCentroidLocations</a></span><span class="op">(</span><span class="va">imc</span><span class="op">)</span></span>
@@ -1001,10 +1012,10 @@ Use objHistory() to see steps and params used</code></pre>
 <span><span class="va">imc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span><span class="va">imc</span>, image_names <span class="op">=</span> <span class="va">channels</span>, name_overlap <span class="op">=</span> <span class="st">"protein"</span><span class="op">)</span></span>
 <span><span class="va">imc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span><span class="va">imc</span>, type <span class="op">=</span> <span class="st">"intensity"</span>, feat_info <span class="op">=</span> <span class="st">"protein"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3" number="5.6">
-<h3 number="5.6" id="example-plot-2">
-<span class="header-section-number">5.6</span> Example plot<a class="anchor" aria-label="anchor" href="#example-plot-2"></a>
-</h3>
+<div class="section level4" number="3.3.6">
+<h4 number="3.3.6" id="example-plot-2">
+<span class="header-section-number">3.3.6</span> Example plot<a class="anchor" aria-label="anchor" href="#example-plot-2"></a>
+</h4>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatFeatPlot2D.html" class="external-link">spatFeatPlot2D</a></span><span class="op">(</span></span>
 <span>  <span class="va">imc</span>, </span>
@@ -1016,12 +1027,15 @@ Use objHistory() to see steps and params used</code></pre>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fobject_creation%2F10_example_plot_imc.png" width="100%" style="display: block; margin: auto;"></p>
 <p><strong>Note:</strong> If you notice a single extremely bright center spot, then there was likely a background polygon that was not removed.</p>
+
 </div>
+</details>
 </div>
-<div class="section level2" number="6">
-<h2 number="6" id="create-piecewise">
-<span class="header-section-number">6</span> Create piecewise<a class="anchor" aria-label="anchor" href="#create-piecewise"></a>
-</h2>
+<div class="section level3" number="3.4">
+<h3 number="3.4" id="create-piecewise">
+<span class="header-section-number">3.4</span> Create piecewise<a class="anchor" aria-label="anchor" href="#create-piecewise"></a>
+</h3>
+<details><p><summary>expand</summary></p>
 <p>Giotto objects can also be created in a piecewise manner as long as all inputs are converted to Giotto subobject formats first. <code>giottoPoints</code> and <code>giottoPolygon</code> are two examples of subobjects.</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto-class.html" class="external-link">giotto</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># initialize empty gobject</span></span>
@@ -1040,15 +1054,17 @@ features      : rna
 
 Use objHistory() to see steps and params used</code></pre>
 <p>This is essentially the same object as the one created through <code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObjectSubcellular.html" class="external-link">createGiottoObjectSubcellular()</a></code> with the vizgen MERSCOPE data earlier.</p>
+</details>
 </div>
-<div class="section level2" number="7">
-<h2 number="7" id="create-a-single-cell-analysis-giotto-object">
-<span class="header-section-number">7</span> Create a single cell analysis Giotto object<a class="anchor" aria-label="anchor" href="#create-a-single-cell-analysis-giotto-object"></a>
-</h2>
-<div class="section level3" number="7.1">
-<h3 number="7.1" id="download-data-to-use-2">
-<span class="header-section-number">7.1</span> Download data to use<a class="anchor" aria-label="anchor" href="#download-data-to-use-2"></a>
+<div class="section level3" number="3.5">
+<h3 number="3.5" id="single-cell-data">
+<span class="header-section-number">3.5</span> Single cell data<a class="anchor" aria-label="anchor" href="#single-cell-data"></a>
 </h3>
+<details><p><summary>expand</summary></p>
+<div class="section level4" number="3.5.1">
+<h4 number="3.5.1" id="download-data-to-use-2">
+<span class="header-section-number">3.5.1</span> Download data to use<a class="anchor" aria-label="anchor" href="#download-data-to-use-2"></a>
+</h4>
 <p>The example dataset used here is from 10X <a href="https://www.10xgenomics.com/datasets/Human_PBMCs_Next_GEM_Flex_GEM-X_Flex_Comparison" class="external-link">link</a></p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">link</span> <span class="op">&lt;-</span> <span class="st">"https://cf.10xgenomics.com/samples/cell-exp/8.0.1/Human_PBMCs_Next_GEM_Flex_GEM-X_Flex_Comparison/Human_PBMCs_Next_GEM_Flex_GEM-X_Flex_Comparison_count_filtered_feature_bc_matrix.h5"</span></span>
@@ -1059,17 +1075,17 @@ Use objHistory() to see steps and params used</code></pre>
 <span></span>
 <span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span><span class="va">link</span>, destfile <span class="op">=</span> <span class="va">save_path</span>, method <span class="op">=</span> <span class="st">"wget"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3" number="7.2">
-<h3 number="7.2" id="read-the-data">
-<span class="header-section-number">7.2</span> Read the data<a class="anchor" aria-label="anchor" href="#read-the-data"></a>
-</h3>
+<div class="section level4" number="3.5.2">
+<h4 number="3.5.2" id="read-the-data">
+<span class="header-section-number">3.5.2</span> Read the data<a class="anchor" aria-label="anchor" href="#read-the-data"></a>
+</h4>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pbmc_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get10Xmatrix_h5.html">get10Xmatrix_h5</a></span><span class="op">(</span><span class="va">save_path</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3" number="7.3">
-<h3 number="7.3" id="load-into-giotto-as-a-single-cell-analysis">
-<span class="header-section-number">7.3</span> Load into Giotto as a single cell analysis<a class="anchor" aria-label="anchor" href="#load-into-giotto-as-a-single-cell-analysis"></a>
-</h3>
+<div class="section level4" number="3.5.3">
+<h4 number="3.5.3" id="load-into-giotto-as-a-single-cell-analysis">
+<span class="header-section-number">3.5.3</span> Load into Giotto as a single cell analysis<a class="anchor" aria-label="anchor" href="#load-into-giotto-as-a-single-cell-analysis"></a>
+</h4>
 <div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pbmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObject.html" class="external-link">createGiottoObject</a></span><span class="op">(</span>expression <span class="op">=</span> <span class="va">pbmc_mat</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/force.html" class="external-link">force</a></span><span class="op">(</span><span class="va">pbmc</span><span class="op">)</span></span></code></pre></div>
@@ -1086,11 +1102,14 @@ spatial locations ----------------
 
 
 Use objHistory() to see steps and params used</code></pre>
+
+</div>
+</details>
 </div>
 </div>
-<div class="section level2" number="8">
-<h2 number="8" id="convenience-functions-for-specific-platforms">
-<span class="header-section-number">8</span> Convenience functions for specific platforms<a class="anchor" aria-label="anchor" href="#convenience-functions-for-specific-platforms"></a>
+<div class="section level2" number="4">
+<h2 number="4" id="convenience-functions-for-specific-platforms">
+<span class="header-section-number">4</span> Convenience functions for specific platforms<a class="anchor" aria-label="anchor" href="#convenience-functions-for-specific-platforms"></a>
 </h2>
 <p>There are also several convenience functions we provide for loading in data from popular platforms. These functions take care of reading the expected output folder structures, auto-detecting where needed data items are, formatting items for ingestion, then object creation. These technologies also have expanded tutorials under the examples tab.</p>
 <pre><code><span><span class="fu"><a href="../reference/createGiottoVisiumObject.html">createGiottoVisiumObject</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -1099,9 +1118,9 @@ Use objHistory() to see steps and params used</code></pre>
 <span><span class="fu"><a href="../reference/createGiottoCosMxObject.html">createGiottoCosMxObject</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/createGiottoMerscopeObject.html">createGiottoMerscopeObject</a></span><span class="op">(</span><span class="op">)</span></span></code></pre>
 </div>
-<div class="section level2" number="9">
-<h2 number="9" id="customizing-the-giotto-object">
-<span class="header-section-number">9</span> Customizing the Giotto Object<a class="anchor" aria-label="anchor" href="#customizing-the-giotto-object"></a>
+<div class="section level2" number="5">
+<h2 number="5" id="customizing-the-giotto-object">
+<span class="header-section-number">5</span> Customizing the Giotto Object<a class="anchor" aria-label="anchor" href="#customizing-the-giotto-object"></a>
 </h2>
 <p>By providing values to other <code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObject.html" class="external-link">createGiottoObject()</a></code> or <code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObjectSubcellular.html" class="external-link">createGiottoObjectSubcellular()</a></code> parameters, it is possible to add:</p>
 <ul>
@@ -1122,9 +1141,9 @@ Use objHistory() to see steps and params used</code></pre>
 </li>
 </ul>
 </div>
-<div class="section level2" number="10">
-<h2 number="10" id="session-info">
-<span class="header-section-number">10</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+<div class="section level2" number="6">
+<h2 number="6" id="session-info">
+<span class="header-section-number">6</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
