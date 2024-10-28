@@ -519,6 +519,7 @@ reference:
 - contents:
   - GiottoClass::createGiottoObject
   - createGiottoVisiumObject
+  - createGiottoVisiumHDObject
   - GiottoClass::createGiottoObjectSubcellular
   - createGiottoCosMxObject
   - createGiottoMerscopeObject
@@ -614,6 +615,7 @@ reference:
   - GiottoClass::removeFeatAnnotation
   - GiottoClass::addCellMetadata
   - GiottoClass::addFeatMetadata
+  - labelTransfer
   - addFeatStatistics
   - addCellStatistics
   - addStatistics
@@ -629,6 +631,8 @@ reference:
   - screePlot
   - create_screeplot
   - jackstrawPlot
+  - reduceDims
+  - runNMF
   - runPCA
   - runUMAP
   - runtSNE
@@ -688,13 +692,8 @@ reference:
   - makeSignMatrixRank
   - runSpatialEnrich
   - runPAGEEnrich
-  - runPAGEEnrich_OLD
   - runRankEnrich
-  - rankEnrich
   - runHyperGeometricEnrich
-  - hyperGeometricEnrich
-  - PAGEEnrich
-  - createSpatialEnrich
   - createSpatialGenomicsObject
   - doFeatureSetEnrichment
   - selectPatternGenes
@@ -750,7 +749,6 @@ reference:
   - detectSpatialCorFeatsMatrix
   - detectSpatialPatterns
   - heatmSpatialCorFeats
-  - heatmSpatialCorGenes
   - showSpatialCorFeats
   - showSpatialCorGenes
   - rankSpatialCorGroups
@@ -950,6 +948,7 @@ reference:
   - GiottoClass::giottoToSeurat
   - GiottoClass::giottoToSpatialExperiment
   - GiottoClass::giottoToAnnData
+  - giottoToAnndataZarr
   - GiottoClass::anndataToGiotto
   - GiottoClass::giottoMasterToSuite
   - convertEnsemblToGeneSymbol
@@ -960,17 +959,19 @@ reference:
 - title: ONTraC integration
   desc: Functions to interact with ONTraC.
 - contents:
+  - installGiottoONTraCEnvironment
+  - runONTraCV1
   - getONTraCv1Input
-  - getONTraCv2Input
   - loadOntraCResults
   - load_cell_NT_score
-  - load_cell_bin_niche_cluster
   - load_cell_niche_cluster_prob
+  - load_niche_cluster_nt_score
+  - cal_cell_niche_cluster_bin
   - load_nc_connectivity
   - plotCTCompositionInNicheCluster
-  - plotCTCompositionInProbCluster
   - plotCellTypeNTScore
-  - plotDiscreteAlongContinuous
+  - plotSpatNicheClusterBin
+  - plotSpatNicheClusterProb
   - plotNicheClusterConnectivity
 - title: AI technologies
   desc:
