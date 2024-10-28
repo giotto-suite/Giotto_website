@@ -119,34 +119,13 @@ The cores have been assigned numerical IDs. There is also a "not_connected"
 group which are too small to be considered a spatial region and not connected to
 a larger group of data points.
 
-The identification also split one cores it did not need to, so let's manually repair it
+We can also now add the core annotations from the 10X dataset description
 
 ```{r, eval=FALSE}
-# fix the core id annotation
-tma <- annotateGiotto(tma, 
-    name = "core_id_fixed", 
-    cluster_column = "core_id", 
-    annotation_vector = c(
-        "1" = "1",
-        "2" = "2",
-        "3" = "3",
-        "4" = "4",
-        "5" = "5",
-        "6" = "6",
-        "7" = "7",
-        "8" = "8",
-        "9" = "9",
-        "10" = "9",
-        "11" = "not_connected",
-        "12" = "not_connected",
-        "not_connected" = "not_connected"
-    )
-)
-
 # also add the core annotations from the 10x dataset description
 tma <- annotateGiotto(tma, 
     name = "sample", 
-    cluster_column = "core_id_fixed", 
+    cluster_column = "core_id", 
     annotation_vector = c(
         "1" = "lung1",
         "2" = "brain2",
@@ -261,7 +240,7 @@ sessionInfo()
 ```
 R version 4.4.1 (2024-06-14)
 Platform: aarch64-apple-darwin20
-Running under: macOS Sonoma 14.4
+Running under: macOS 15.0.1
 
 Matrix products: default
 BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
@@ -277,40 +256,49 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] Giotto_4.1.3      GiottoClass_0.4.0
+[1] Giotto_4.1.3      GiottoClass_0.4.1
 
 loaded via a namespace (and not attached):
- [1] tidyselect_1.2.1            viridisLite_0.4.2           farver_2.1.2               
- [4] dplyr_1.1.4                 GiottoVisuals_0.2.5         R.utils_2.12.3             
- [7] fastmap_1.2.0               SingleCellExperiment_1.26.0 lazyeval_0.2.2             
-[10] digest_0.6.37               lifecycle_1.0.4             terra_1.7-78               
-[13] magrittr_2.0.3              compiler_4.4.1              rlang_1.1.4                
-[16] tools_4.4.1                 igraph_2.0.3                utf8_1.2.4                 
-[19] data.table_1.16.0           knitr_1.48                  labeling_0.4.3             
-[22] S4Arrays_1.4.0              htmlwidgets_1.6.4           bit_4.5.0                  
-[25] sp_2.1-4                    reticulate_1.39.0           DelayedArray_0.30.0        
-[28] RColorBrewer_1.1-3          abind_1.4-8                 withr_3.0.1                
-[31] purrr_1.0.2                 BiocGenerics_0.50.0         R.oo_1.26.0                
-[34] grid_4.4.1                  stats4_4.4.1                fansi_1.0.6                
-[37] colorspace_2.1-1            ggplot2_3.5.1               scales_1.3.0               
-[40] gtools_3.9.5                SummarizedExperiment_1.34.0 cli_3.6.3                  
-[43] rmarkdown_2.28              crayon_1.5.3                generics_0.1.3             
-[46] rstudioapi_0.16.0           httr_1.4.7                  rjson_0.2.21               
-[49] zlibbioc_1.50.0             parallel_4.4.1              XVector_0.44.0             
-[52] matrixStats_1.4.1           vctrs_0.6.5                 Matrix_1.7-0               
-[55] jsonlite_1.8.9              IRanges_2.38.0              S4Vectors_0.42.0           
-[58] bit64_4.5.2                 ggrepel_0.9.6               scattermore_1.2            
-[61] hdf5r_1.3.10                magick_2.8.4                GiottoUtils_0.2.0          
-[64] plotly_4.10.4               tidyr_1.3.1                 glue_1.8.0                 
-[67] codetools_0.2-20            cowplot_1.1.3               gtable_0.3.5               
-[70] deldir_2.0-4                GenomeInfoDb_1.40.0         GenomicRanges_1.56.0       
-[73] UCSC.utils_1.0.0            munsell_0.5.1               tibble_3.2.1               
-[76] pillar_1.9.0                htmltools_0.5.8.1           GenomeInfoDbData_1.2.12    
-[79] R6_2.5.1                    evaluate_1.0.0              lattice_0.22-6             
-[82] Biobase_2.64.0              png_0.1-8                   R.methodsS3_1.8.2          
-[85] backports_1.5.0             SpatialExperiment_1.14.0    Rcpp_1.0.13                
-[88] SparseArray_1.4.1           checkmate_2.3.2             colorRamp2_0.1.0           
-[91] xfun_0.47                   MatrixGenerics_1.16.0       pkgconfig_2.0.3  
+  [1] colorRamp2_0.1.0            deldir_2.0-4                gridExtra_2.3              
+  [4] rlang_1.1.4                 magrittr_2.0.3              GiottoUtils_0.2.0          
+  [7] matrixStats_1.4.1           compiler_4.4.1              png_0.1-8                  
+ [10] vctrs_0.6.5                 hdf5r_1.3.10                pkgconfig_2.0.3            
+ [13] SpatialExperiment_1.14.0    crayon_1.5.3                fastmap_1.2.0              
+ [16] backports_1.5.0             magick_2.8.4                XVector_0.44.0             
+ [19] labeling_0.4.3              ggraph_2.2.1                utf8_1.2.4                 
+ [22] rmarkdown_2.28              UCSC.utils_1.0.0            bit_4.5.0                  
+ [25] purrr_1.0.2                 xfun_0.47                   zlibbioc_1.50.0            
+ [28] cachem_1.1.0                beachmat_2.20.0             GenomeInfoDb_1.40.0        
+ [31] jsonlite_1.8.9              DelayedArray_0.30.0         tweenr_2.0.3               
+ [34] BiocParallel_1.38.0         terra_1.7-78                irlba_2.3.5.1              
+ [37] parallel_4.4.1              R6_2.5.1                    RColorBrewer_1.1-3         
+ [40] reticulate_1.39.0           pkgload_1.3.4               GenomicRanges_1.56.0       
+ [43] scattermore_1.2             Rcpp_1.0.13                 SummarizedExperiment_1.34.0
+ [46] knitr_1.48                  IRanges_2.38.0              Matrix_1.7-0               
+ [49] igraph_2.0.3                tidyselect_1.2.1            viridis_0.6.5              
+ [52] rstudioapi_0.16.0           abind_1.4-8                 yaml_2.3.10                
+ [55] codetools_0.2-20            pkgbuild_1.4.4              lattice_0.22-6             
+ [58] tibble_3.2.1                Biobase_2.64.0              withr_3.0.1                
+ [61] evaluate_1.0.0              desc_1.4.3                  polyclip_1.10-7            
+ [64] xml2_1.3.6                  pillar_1.9.0                MatrixGenerics_1.16.0      
+ [67] whisker_0.4.1               checkmate_2.3.2             stats4_4.4.1               
+ [70] plotly_4.10.4               generics_0.1.3              dbscan_1.2-0               
+ [73] rprojroot_2.0.4             S4Vectors_0.42.0            ggplot2_3.5.1              
+ [76] sparseMatrixStats_1.16.0    munsell_0.5.1               scales_1.3.0               
+ [79] GiottoData_0.2.15           gtools_3.9.5                glue_1.8.0                 
+ [82] lazyeval_0.2.2              tools_4.4.1                 GiottoVisuals_0.2.6        
+ [85] data.table_1.16.0           ScaledMatrix_1.12.0         graphlayouts_1.1.1         
+ [88] fs_1.6.4                    tidygraph_1.3.1             cowplot_1.1.3              
+ [91] grid_4.4.1                  tidyr_1.3.1                 colorspace_2.1-1           
+ [94] SingleCellExperiment_1.26.0 GenomeInfoDbData_1.2.12     ggforce_0.4.2              
+ [97] BiocSingular_1.20.0         cli_3.6.3                   rsvd_1.0.5                 
+[100] fansi_1.0.6                 S4Arrays_1.4.0              viridisLite_0.4.2          
+[103] dplyr_1.1.4                 uwot_0.2.2                  downlit_0.4.4              
+[106] gtable_0.3.5                digest_0.6.37               BiocGenerics_0.50.0        
+[109] SparseArray_1.4.1           ggrepel_0.9.6               farver_2.1.2               
+[112] rjson_0.2.21                htmlwidgets_1.6.4           memoise_2.0.1              
+[115] htmltools_0.5.8.1           pkgdown_2.1.0               lifecycle_1.0.4            
+[118] httr_1.4.7                  bit64_4.5.2                 MASS_7.3-60.2 
 ```
 
 
