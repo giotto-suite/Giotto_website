@@ -21,7 +21,10 @@ This example shows working with a 10x Visium
 [mouse TMA](https://www.10xgenomics.com/datasets/mouse-tissue-microarray-in-3x3-layout-with-2-mm-edge-to-edge-spacing-ffpe-2-standard) 
 dataset.
 
-# Setup
+
+
+*Check Giotto installation*
+
 ```{r, eval=FALSE}
 # Ensure Giotto Suite is installed.
 if(!"Giotto" %in% installed.packages()) {
@@ -36,8 +39,9 @@ if(!genv_exists){
 }
 ```
 
+# Setup example TMA dataset
 
-# Download the Data
+## Download the Data
 
 ```{r, eval=FALSE}
 ## provide path to a folder to save the example data to
@@ -58,7 +62,7 @@ spat_dir <- file.path(data_path, "spatial")
 ```
 
 
-# Create Giotto Object
+## Create Giotto Object
 
 ```{r, eval=FALSE}
 library(Giotto)
@@ -91,7 +95,7 @@ spatPlot2D(tma, show_image = TRUE, point_size = 1.5, point_alpha = 0.7)
 knitr::include_graphics("images/split_join/1_spatplot.png")
 ```
 
-# Detect individual cores
+## Detect individual TMA cores
 
 By building a spatial network, we can find out which data points are spatially
 contiguous by looking checking spatial distance, breaking ones that are too

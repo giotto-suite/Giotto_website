@@ -44,12 +44,20 @@ With Giotto, the minimal requirements for a spatial dataset are either:
 
 Single cell datasets (shown at the bottom) can also be worked using Giotto, and only need a matrix without the need for paired spatial locations.
 
-# Create from matrix and spatial locations
+
+
+# Create from:
+
+## Matrix and spatial locations
+
+<details>
+<summary>expand</summary>
+
 
 This example will be shown using an osmFISH dataset.
 To download this data, please ensure that [wget](https://www.gnu.org/software/wget/?) is installed locally.
 
-## Download data to use
+### Download data to use
 ```{r, eval=FALSE}
 # Specify path from which data may be retrieved/stored
 data_path <- "/path/to/data/"
@@ -65,8 +73,7 @@ GiottoData::getSpatialDataset(
 )
 ```
 
-
-## Read data into Giotto Suite
+### Read data into Giotto Suite
 
 Aggregate data (matrix and spatial locations -based data) can be read in using `createGiottoObject()`.
 There are two examples. Data formatting guidelines are shown below this code block.
@@ -127,7 +134,7 @@ spatial locations ----------------
 Use objHistory() to see steps and params used
 ```
 
-## Example plot 
+### Example plot 
 ```{r, eval=FALSE}
 spatFeatPlot2D(minimum_gobject1,
     feats = c("Sox10", "Gfap"), 
@@ -143,7 +150,7 @@ knitr::include_graphics("images/object_creation/1_spatplot_aggregate.png")
 ```
 
 
-## Data formatting notes
+### Data formatting notes
 
 **Expression file formatting**
 
@@ -205,13 +212,22 @@ spatial locations ----------------
 Use objHistory() to see steps and params used
 ```
 
+</details>
 
 
-# Create from feature detection (points) and cell annotations (polygons)
+
+
+
+
+## Feature detection (points) and cell annotations (polygons)
+
+<details>
+<summary>expand</summary>
+
 
 You can also make giotto objects starting from raw spatial feature information and annotations that give them spatial context. This will be shown using the vizgen MERSCOPE mini object's raw data available from GiottoData
 
-## Get filepaths from GiottoData
+### Get filepaths from GiottoData
 
 ```{r, eval=FALSE}
 # function to get a filepath from GiottoData
@@ -227,7 +243,7 @@ mini_viz_tx_path <- mini_viz_raw("vizgen_transcripts.gz")
 ```
 
 
-## Read into Giotto subobjects and assemble into giotto object
+### Read into Giotto subobjects and assemble into giotto object
 
 Polygons can be read into Giotto Suite in multiple ways. 
 
@@ -368,7 +384,7 @@ knitr::include_graphics("images/object_creation/3_viz_gpoints.png")
 ```
 
 
-## Checking spatial alignment
+### Checking spatial alignment
 
 Care should always be taken when assembling a spatial dataset to make sure that 
 the spatial information is spatially aligned. We can check this by plotting the subobjects.
@@ -401,7 +417,7 @@ knitr::include_graphics("images/object_creation/5_align_ROI.png")
 ```
 
 
-## Creating the subcellular Giotto object
+### Creating the subcellular Giotto object
 
 Datasets with raw spatial features and polygon information are created using `createGiottoObjectSubcellular()`.
 
@@ -425,7 +441,7 @@ features      : rna
 Use objHistory() to see steps and params used
 ```
 
-## Spatially aggregate values
+### Spatially aggregate values
 
 ```{r, eval=FALSE}
 # calculate centroids
@@ -435,7 +451,7 @@ mini_viz <- calculateOverlap(mini_viz)
 mini_viz <- overlapToMatrix(mini_viz)
 ```
 
-## Example plot
+### Example plot
 
 ```{r, eval=FALSE}
 spatFeatPlot2D(
@@ -452,11 +468,25 @@ spatFeatPlot2D(
 knitr::include_graphics("images/object_creation/6_example_featplot_sub.png")
 ```
 
-# Create from staining images and polygons
+</details>
+
+
+
+
+
+
+
+
+
+## Staining images and polygons
+
+<details>
+<summary>expand</summary>
+
 
 The IMC data to run this tutorial can be found in the *imcdatasets* package. We will be using one of the smaller example datasets. These IMC outputs provide multilayer images in the format of *cytomapper* `CytoImageList` collections of *EBImage* `Image` objects, which can be easily coerced to simple matrices.
 
-## Download data to use
+### Download data to use
 
 The package *exactextractr* is also used due to its speed with image data extractions.
 
@@ -483,7 +513,7 @@ img_mat <- lapply(
 channels <- cytomapper::channelNames(imc_imgs)
 ```
 
-## Read data into Giotto Suite
+### Read data into Giotto Suite
 
 ```{r, eval=FALSE}
 # create the mask polys
@@ -556,7 +586,7 @@ plot(imglist[["H3"]], max_intensity = 30)
 knitr::include_graphics("images/object_creation/8_img_H3.png")
 ```
 
-## Checking spatial alignment
+### Checking spatial alignment
 
 ```{r, eval=FALSE}
 plot(imglist[["H3"]], max_intensity = 30)
@@ -567,7 +597,7 @@ plot(mask_poly, add = TRUE, border = "cyan", lwd = 0.15)
 knitr::include_graphics("images/object_creation/9_align2.png")
 ```
 
-## Creating the giotto object
+### Creating the giotto object
 
 ```{r, eval=FALSE}
 imc <- createGiottoObjectSubcellular(
@@ -591,7 +621,7 @@ images      : 40 items...
 Use objHistory() to see steps and params used
 ```
 
-## Spatially aggregate values
+### Spatially aggregate values
 
 ```{r, eval=FALSE}
 # calculate centroids
@@ -601,7 +631,7 @@ imc <- calculateOverlap(imc, image_names = channels, name_overlap = "protein")
 imc <- overlapToMatrix(imc, type = "intensity", feat_info = "protein")
 ```
 
-## Example plot
+### Example plot
 
 ```{r, eval=FALSE}
 spatFeatPlot2D(
@@ -621,8 +651,16 @@ knitr::include_graphics("images/object_creation/10_example_plot_imc.png")
 **Note:** If you notice a single extremely bright center spot, then there was likely a background polygon that was not removed.
 
 
+</details>
 
-# Create piecewise
+
+
+
+
+## Create piecewise
+
+<details>
+<summary>expand</summary>
 
 Giotto objects can also be created in a piecewise manner as long as all inputs
 are converted to Giotto subobject formats first. `giottoPoints` and `giottoPolygon`
@@ -651,11 +689,18 @@ Use objHistory() to see steps and params used
 
 This is essentially the same object as the one created through `createGiottoObjectSubcellular()` with the vizgen MERSCOPE data earlier.
 
+</details>
 
 
-# Create a single cell analysis Giotto object
 
-## Download data to use
+
+## Single cell data
+
+<details>
+<summary>expand</summary>
+
+
+### Download data to use
 
 The example dataset used here is from 10X [link](https://www.10xgenomics.com/datasets/Human_PBMCs_Next_GEM_Flex_GEM-X_Flex_Comparison)
 
@@ -669,13 +714,13 @@ save_path <- file.path(data_path, "pbmc_matrix.h5")
 utils::download.file(link, destfile = save_path, method = "wget")
 ```
 
-## Read the data
+### Read the data
 
 ```{r, eval=FALSE}
 pbmc_mat <- get10Xmatrix_h5(save_path)
 ```
 
-## Load into Giotto as a single cell analysis
+### Load into Giotto as a single cell analysis
 
 ```{r, eval=FALSE}
 pbmc <- createGiottoObject(expression = pbmc_mat)
@@ -697,6 +742,13 @@ spatial locations ----------------
 
 Use objHistory() to see steps and params used
 ```
+
+</details>
+
+
+
+
+
 
 
 # Convenience functions for specific platforms
