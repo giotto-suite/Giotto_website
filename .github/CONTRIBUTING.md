@@ -1,16 +1,3 @@
----
-title: "Contributing to Giotto"
-output: 
-  html_document:
-    number_sections: true
-    toc: true
-pkgdown:
-  as_is: true
-vignette: >
-  %\VignetteIndexEntry{Contributing to Giotto}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
 
 # Contribution guidelines
 
@@ -377,5 +364,5 @@ knitr::include_graphics("images/TUTORIAL_FOLDER/#_IMAGE_NAME.png")
 - **7.** Push the changes to Github. If you are an outside collaborator, you may need to create a Pull Request.
    Changes usually take roughly 30 min to build and deploy on the website.
 
-
+<br><br><br>
 
