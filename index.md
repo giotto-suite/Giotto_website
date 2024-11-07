@@ -20,20 +20,24 @@ Giotto Suite is a major upgrade to the Giotto package that provides tools to pro
 
 ## Installation
 
+### Local installation
+
 To install Giotto suite use
 `pak::pkg_install("drieslab/Giotto")`. 
 
 Visit the Giotto [Discussions](https://github.com/drieslab/Giotto/discussions) page for more information.
 
-## Docker and Singularity images
+### Containers
 
 If you prefer to skip the installation process, check the tutorials for using Giotto Suite with our [Docker](https://drieslab.github.io/Giotto_website/articles/docker.html) and [Singularity](https://drieslab.github.io/Giotto_website/articles/singularity.html) containers.
 
-## Website Update!
+## Website Updates
+
+### Location change
 
 With Giotto version 4.0, we updated the website at http://giottosuite.com, you can still find the previous website at https://giottosuite.readthedocs.io/en/latest/
 
-## Website description  
+### Website description  
 
 - **Get started:** Here you can find more advanced information about the Giotto object, Giotto ecosystem, Giotto configuration, and installation FAQs.
 - **Documentation:** Here you will find all Giotto functions grouped by their purpose (Helpers, Getters & Setters, Visualization, ...)
