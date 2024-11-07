@@ -15,7 +15,7 @@ Latest](https://img.shields.io/github/commits-since/drieslab/Giotto/latest/suite
 [![R-CMD-check](https://github.com/drieslab/Giotto/actions/workflows/main_check.yaml/badge.svg?branch=suite)](https://github.com/drieslab/Giotto/actions/workflows/main_check.yaml)
 <!-- badges: end -->
 
-Giotto Suite is a major upgrade to the Giotto package that provides tools to process, analyze and visualize **spatial multi-omics data at all scales and multiple resolutions**. The underlying framework is generalizable to virtually all current and emerging spatial technologies. Our Giotto Suite prototype pipeline is generally applicable on various different datasets, such as those created by state-of-the-art spatial technologies, including *in situ* hybridization (seqFISH+, merFISH, osmFISH, CosMx), sequencing (Slide-seq, Visium, STARmap, Seq-Scope, Stereo-Seq) and imaging-based multiplexing/proteomics (CyCIF, MIBI, CODEX). These technologies differ in terms of resolution (subcellular, single cell or multiple cells), spatial dimension (2D vs 3D), molecular modality (protein, RNA, DNA, …), and throughput (number of cells and analytes).
+Giotto Suite is a major upgrade to the Giotto package that provides tools to process, analyze and visualize **spatial multi-omics data at all scales and multiple resolutions**. The underlying framework is generalizable to virtually all current and emerging spatial technologies. Our Giotto Suite prototype pipeline is generally applicable on various different datasets, such as those created by state-of-the-art spatial technologies, including *in situ* hybridization, sequencing, and imaging-based multiplexing/proteomics. These technologies differ in terms of resolution (subcellular, single cell or multiple cells), spatial dimension (2D vs 3D), molecular modality (protein, RNA, DNA, …), and throughput (number of cells and analytes).
 
 
 ## Installation
@@ -44,7 +44,7 @@ With Giotto version 4.0, we updated the website at http://giottosuite.com, you c
 - **Examples:** Here you can find end-to-end  examples for different technologies and datasets.
 - **Tutorials:** Here you can find various tutorials on working with Giotto (analysis, visualizations, working on the cloud, ...)
 - **News:** Here you can find the changelog for every Giotto release and video recordings from previous presentations. 
-
+- **Contributing:** Here you can find guidelines for submitting a pull-request, creating code following the Giotto style, creation of tutorials for the website, and more.
 
 ## References
 
