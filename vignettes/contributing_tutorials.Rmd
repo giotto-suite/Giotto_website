@@ -1,0 +1,94 @@
+---
+title: "Contributing tutorials to the website"
+output: 
+  html_document:
+    number_sections: true
+    toc: true
+pkgdown:
+  as_is: true
+vignette: >
+  %\VignetteIndexEntry{Contributing tutorials to the website}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+To add a new example to the website <https://drieslab.github.io/Giotto_website/>, please follow these steps:
+
+
+# Clone the Giotto_website repository 
+
+Clone the Giotto_website repository from <https://github.com/drieslab/Giotto_website> and switch to the "suite" branch.
+
+# Create a new R markdown file
+
+Create a new .Rmd (R markdown) file under the folder "vignettes".
+
+- If you are planning to include figures as part of the tutorial, create a 
+     new folder under "vignettes/images" with the same name as your .Rmd file.
+- All scripts need a header like shown below that starts at line 1.
+- Here you should edit the title.
+
+```
+---
+title: "TITLE TO USE"
+output: 
+  html_document:
+    number_sections: true
+    toc: true
+pkgdown:
+  as_is: true
+vignette: >
+  %\VignetteIndexEntry{TITLE TO USE}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+```
+
+# Set the R chuncks correctly
+
+Absolutely no `eval=TRUE` for example code. To save time when rendering the website, all chunks should not evaluate the code. 
+
+Image results should be included via linking or a `knitr` chunk of this style:
+
+````r
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/TUTORIAL_FOLDER/#_IMAGE_NAME.png")
+```
+````
+  
+*The upper case sections just show which areas should be edited, not that they need to be upper case*
+
+# Create your example
+
+Add the text and code of your tutorial. Please use  similar variable names to previous tutorials, we have created a list of common variables and default values in this [spreadsheet](https://docs.google.com/spreadsheets/d/1ciK9-A0wR7IRotM6XwiTlImciDRnH-wMhJ0FKBcIWCI/edit?gid=0#gid=0).
+
+# Session info 
+
+Files should have a session info section at the end of the tutorial.
+
+# Preview the document
+
+Knit the document to check if the vignette looks how you like, and that it actually knits properly.
+
+Optionally, you can run `pkgdown::build_site()`, but this may be hard to run locally.
+
+# Edit the pkgdown.yml file
+
+`pkgdown.yml` is a file at the repo toplevel and it details how the links are set up for the navbars and documentation in the website.
+
+For most new articles:
+
+  - Under navbar:
+    - Determine which section your tutorial fits better between Get started, Examples, and Tutorials.
+    - Select or setup the subsection if needed.
+    - Add a **text** (what menu name it has) and **href** ("articles/VIGNETTE_NAME.html") field for your new article.
+
+  - Under articles:
+    - Find the appropriate title for your new vignette (should be the same to the previous navbar section).
+    - Add your new vignette, with the same name as the VIGNETTE_NAME used for the href section used in navbar (minus the `.html`).
+
+# Push the changes to Github
+
+If you are an outside collaborator, you may need to create a Pull Request. Changes usually take roughly 30 min to build and deploy on the website.
+
+

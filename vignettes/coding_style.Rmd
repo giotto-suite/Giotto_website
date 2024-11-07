@@ -1,0 +1,87 @@
+---
+title: "Coding style"
+output: 
+  html_document:
+    number_sections: true
+    toc: true
+pkgdown:
+  as_is: true
+vignette: >
+  %\VignetteIndexEntry{Coding style}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Following a particular programming style will help programmers read and
+understand source code conforming to the style, and help to avoid
+introducing errors. Here we present a small list of guidelines on what
+is considered a good practice when writing R code in Giotto package.
+Most of them are adapted from Bioconductor - coding style or Google’s R
+Style Guide. These guidelines are preferences and strongly encouraged!
+
+# Overall Style
+
+-   We follow the BioConductor styling. You can set this up easily
+    by installing *biocthis* and *styler.*
+
+
+```r
+# package installations
+BiocManager::install("biocthis")
+install.packages("styler")
+
+# styling a file
+b_style <- biocthis::bioc_style()
+styler::style_file(path = "[???]", transformers = b_style)
+
+# styling the active package (may lead to lots of conflicts)
+# generally only run by core devs
+styler::style_pkg(transformers = b_style)
+```
+
+-   setting your default indent size to be 4 spaces instead of 2 is
+    also recommended.
+
+<!-- -->
+
+# Function Types in Giotto Suite
+
+-   **exported** - Core functionality for users to directly use.
+    These should have clear names and documentation
+
+-   **exported utility** - Secondary functionalities that are
+    helpful to also have available, but are not directly related to
+    data processing, analysis, and visualization. Examples are
+    `dt_to_matrix()` or `wrap_msg()`. Another reason for this type
+    of function is because Giotto is modular and some functions that are not 
+    expected to be commonly used by end users also need to be exported so that
+    they are available across the Giotto ecosystem.
+
+-   **internal** - Functions that are never intended to be used
+    outside of a module package. These are functions only relevant
+    to the internals of one package, for example `.detect_in_dir()`
+    from *Giotto's* internals which is pretty nondescript and mainly
+    there to help with code organization.
+
+# Function Naming
+
+-   Use `camelCase` for **exported** functions. ex: `functionName()`
+
+-   Use `snake_case` for **exported utiliity** functions. ex:
+    `function_name()`
+
+-   Use `.` prefix AND `snake_case` for **internal** functions. ex:
+    `.function_name()`
+
+-   Use `snake_case` for parameter/argument names.
+
+-   Never use `.` as a separator in function naming. (in the S3
+    class system, `fun(x)` where `x` is class foo will dispatch to
+    `fun.foo()`)
+
+# Use of Symbols
+
+- Do not use any non-UTF-8 characters unless
+  provided as the escape code. 
+  - For example: use `\u00F6` for `ö`.
+
