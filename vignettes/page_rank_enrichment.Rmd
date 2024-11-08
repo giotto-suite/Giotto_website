@@ -1,5 +1,5 @@
 ---
-title: "Deconvolution"
+title: "PAGE and Rank Enrichment"
 output: 
   html_document:
     number_sections: true
@@ -7,14 +7,14 @@ output:
 pkgdown:
   as_is: true
 vignette: >
-  %\VignetteIndexEntry{Deconvolution}
+  %\VignetteIndexEntry{PAGE and Rank Enrichment}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 Visium spatial transcriptomics does not provide single-cell resolution, making cell type annotation a harder problem. Giotto provides ways to calculate enrichment of specific cell-type signature gene lists.
 
-Spatial Dampened Weighted Least Squares (DWLS) estimates the proportions of different cell types across spots in a tissue.
+Parametric Analysis of Gene Set Enrichment (PAGE) and Rank enrichment both aim to determine whether a predefined set of genes show statistically significant differences in expression compared to other genes in the dataset.
 
 # Setup and load example dataset
 
@@ -87,43 +87,66 @@ markers_scran <- findMarkers_one_vs_all(gobject = giotto_SC,
                                         cluster_column = "Class", 
                                         min_feats = 3)
 
-top_markers <- markers_scran[, head(.SD, 10), by = "cluster"]$feats
+top_markers <- markers_scran[, head(.SD, 10), by = "cluster"]
 ```
 
 # Create the signature matrix
 
 ```{r, eval=FALSE}
-sign_matrix <- makeSignMatrixDWLSfromMatrix(
-    matrix = getExpression(giotto_SC,
-                           values = "normalized",
-                           output = "matrix"),
-    cell_type = pDataDT(giotto_SC)$Class,
-    sign_gene = top_markers)
+celltypes <- levels(factor(markers_scran$cluster)) 
+
+sign_list <- list()
+
+for (i in 1:length(celltypes)){
+  sign_list[[i]] = top_markers[which(top_markers$cluster == celltypes[i]),]$feats
+}
+
+sign_matrix <- makeSignMatrixPAGE(sign_names = celltypes,
+                                  sign_list = sign_list)
 ```
 
-# Run the DWLS Deconvolution
-
-This step may take a couple of minutes to run.
+# Run the enrichment test with PAGE
 
 ```{r, eval=FALSE}
-g <- runDWLSDeconv(gobject = g, 
-                   sign_matrix = sign_matrix)
+g <- runPAGEEnrich(gobject = g, 
+                   sign_matrix = sign_matrix,
+                   min_overlap_genes = 1)
 ```
 
 # Visualize
 
-Plot the DWLS deconvolution result creating with pie plots showing the proportion of each cell type per spot.
+Create a heatmap showing the enrichment of cell types (from the single-cell data annotation) in the spatial dataset clusters.
 
 ```{r, eval=FALSE}
-spatDeconvPlot(g, 
-               show_image = FALSE,
-               radius = 50)
+cell_types_PAGE <- colnames(sign_matrix)
+
+plotMetaDataCellsHeatmap(gobject = g,
+                         metadata_cols = "leiden_clus",
+                         value_cols = cell_types_PAGE,
+                         spat_enr_names = "PAGE",
+                         x_text_size = 8,
+                         y_text_size = 8)
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align='center'}
+knitr::include_graphics("images/page_rank_enrichment/1-plotMetaDataCellsHeatmap.png")
+```
+
+Plot the spatial distribution of the cell types.
+
+```{r, eval=FALSE}
+spatCellPlot2D(gobject = g,
+               spat_enr_names = "PAGE",
+               cell_annotation_values = cell_types_PAGE,
+               cow_n_col = 2,
+               coord_fix_ratio = 1, 
+               point_size = 4, 
+               show_legend = TRUE)
 ```
 
 ```{r, echo=FALSE, out.width="80%", fig.align='center'}
-knitr::include_graphics("images/deconvolution/0-spatDeconvPlot.png")
+knitr::include_graphics("images/page_rank_enrichment/2-spatCellPlot2D.png")
 ```
-
 
 # Session info
 
@@ -215,6 +238,6 @@ loaded via a namespace (and not attached):
 [119] htmlwidgets_1.6.4           htmltools_0.5.8.1          
 [121] R.oo_1.26.0                 lifecycle_1.0.4            
 [123] httr_1.4.7                  statmod_1.5.0              
-[125] MASS_7.3-61 
+[125] MASS_7.3-61  
 ```
 
