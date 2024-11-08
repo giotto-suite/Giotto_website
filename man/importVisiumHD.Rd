@@ -59,9 +59,10 @@ Loading functions are generated after the `visiumHD_dir` is added.
 }
 \examples{
 # Create a `VisiumHDReader` object
-reader <- importVisiumHD()
+
 
 \dontrun{
+reader <- importVisiumHD()
 # Set the visiumHD_dir
 reader$visiumHD_dir <- "path to visium HD dir"
 readerHD$visiumHD_dir <- visiumHD_dir
@@ -70,12 +71,12 @@ readerHD$visiumHD_dir <- visiumHD_dir
 tissue_pos <- readerHD$load_tissue_position()
 metadata <- readerHD$load_metadata()
 
-Load matrix or create expression object
+# Load matrix or create expression object
 matrix <- readerHD$load_matrix()
 expression_obj <- readerHD$load_expression()
 
-Load transcript data (cell metadata, expression object, and transcripts per 
-pixel)
+# Load transcript data (cell metadata, expression object, and transcripts per 
+# pixel)
 my_transcripts <- readerHD$load_transcripts(array_subset_row = c(500, 1000),
                                             array_subset_col = c(500, 1000))
 
