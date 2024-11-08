@@ -1,0 +1,195 @@
+---
+title: "Spatially Informed clusters"
+output: 
+  html_document:
+    number_sections: true
+    toc: true
+pkgdown:
+  as_is: true
+vignette: >
+  %\VignetteIndexEntry{Spatially Informed clusters}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Setup and load example dataset
+
+```{r, eval=FALSE}
+# Ensure Giotto Suite is installed
+if(!"Giotto" %in% installed.packages()) {
+  pak::pkg_install("drieslab/Giotto")
+}
+
+# Ensure Giotto Data is installed
+if(!"GiottoData" %in% installed.packages()) {
+  pak::pkg_install("drieslab/GiottoData")
+}
+
+library(Giotto)
+
+# Ensure the Python environment for Giotto has been installed
+genv_exists <- checkGiottoEnvironment()
+
+if(!genv_exists){
+  # The following command need only be run once to install the Giotto environment
+  installGiottoEnvironment()
+}
+```
+
+```{r, eval=FALSE}
+# load the object
+g <- GiottoData::loadGiottoMini("visium")
+```
+
+# Get the spatial genes
+
+Get the top genes per spatial co-expression module. For more information about how to calculate these genes, see the tutorial for [Detection of spatial co-expression modules](https://drieslab.github.io/Giotto_website/spatial_coexpression_modules.html).
+
+```{r, eval=FALSE}
+spatial_genes <- c("Hlf", "Amotl1", "Adarb1", "Rab3c",
+                   "Prkcd", "Prph", "Tcf7l2", "Bok",
+                   "Ptpn4", "Rgs16", "Cnp", "Bcas1",
+                   "Qdpr", "Plekhb1", "Cryab", "Mobp",
+                   "Stx1a", "Arpp19", "Ttc9b", "Fam163b",
+                   "Igfbp6", "Ngef", "Lamp5", "Dkk3",
+                   "Dkkl1", "Tbr1", "Cabp7", "Gria1",
+                   "Cpne6", "Bhlhe22", "Lct", "1700001C02Rik",
+                   "Crym", "Wfs1", "Scn3b", "Spink8",
+                   "Syn2", "Nptxr", "Ppp1r1a", "Kcnip2",
+                   "Nptx1", "Cplx2", "Snca", "2010300C02Rik",
+                   "Itpka", "Hpca")
+```
+
+# Re-calculate the clustering
+
+Use the spatial genes to calculate again the principal components, umap, network and clustering.
+
+```{r, eval=FALSE}
+g <- runPCA(gobject = g,
+            feats_to_use = spatial_genes,
+            name = "custom_pca")
+
+g <- runUMAP(g, 
+             dim_reduction_name = "custom_pca", 
+             dimensions_to_use = 1:20,
+             name = "custom_umap")
+
+g <- createNearestNetwork(gobject = g,
+                          dim_reduction_name = "custom_pca",
+                          dimensions_to_use = 1:20, 
+                          k = 5,
+                          name = "custom_NN")
+
+g <- doLeidenCluster(gobject = g, 
+                     network_name = "custom_NN",
+                     resolution = 0.15, 
+                     n_iterations = 1000,
+                     name = "custom_leiden")
+```
+
+# Visualize
+
+Plot the spatial distribution of the Leiden clusters calculated based on the spatial genes.
+
+```{r, eval=FALSE}
+spatPlot2D(g, 
+           cell_color = "custom_leiden",
+           point_size = 7)
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align='center'}
+knitr::include_graphics("images/spatial_informed_clusters/1-spatPlot2D.png")
+```
+
+Plot the UMAP and color the spots using the Leiden clusters calculated based on the spatial genes.
+
+```{r, eval=FALSE}
+plotUMAP(gobject = g, 
+         cell_color = "custom_leiden")
+```
+
+```{r, echo=FALSE, out.width="80%", fig.align='center'}
+knitr::include_graphics("images/spatial_informed_clusters/2-UMAP.png")
+```
+
+# Session Info
+
+```{r, eval=FALSE}
+sessionInfo()
+```
+
+```{r, eval=FALSE}
+R version 4.4.2 (2024-10-31)
+Platform: x86_64-apple-darwin20
+Running under: macOS Sequoia 15.0.1
+
+Matrix products: default
+BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/New_York
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] Giotto_4.1.4      GiottoClass_0.4.3
+
+loaded via a namespace (and not attached):
+  [1] colorRamp2_0.1.0            rlang_1.1.4                
+  [3] magrittr_2.0.3              GiottoUtils_0.2.0          
+  [5] matrixStats_1.4.1           compiler_4.4.2             
+  [7] systemfonts_1.1.0           png_0.1-8                  
+  [9] vctrs_0.6.5                 pkgconfig_2.0.3            
+ [11] SpatialExperiment_1.14.0    crayon_1.5.3               
+ [13] fastmap_1.2.0               backports_1.5.0            
+ [15] magick_2.8.5                XVector_0.44.0             
+ [17] labeling_0.4.3              utf8_1.2.4                 
+ [19] rmarkdown_2.28              UCSC.utils_1.0.0           
+ [21] ragg_1.3.3                  purrr_1.0.2                
+ [23] xfun_0.47                   zlibbioc_1.50.0            
+ [25] beachmat_2.20.0             GenomeInfoDb_1.40.1        
+ [27] jsonlite_1.8.9              DelayedArray_0.30.1        
+ [29] BiocParallel_1.38.0         terra_1.7-78               
+ [31] irlba_2.3.5.1               parallel_4.4.2             
+ [33] R6_2.5.1                    RColorBrewer_1.1-3         
+ [35] reticulate_1.39.0           GenomicRanges_1.56.1       
+ [37] scattermore_1.2             Rcpp_1.0.13                
+ [39] SummarizedExperiment_1.34.0 knitr_1.48                 
+ [41] R.utils_2.12.3              IRanges_2.38.1             
+ [43] FNN_1.1.4.1                 Matrix_1.7-1               
+ [45] igraph_2.0.3                tidyselect_1.2.1           
+ [47] rstudioapi_0.16.0           abind_1.4-8                
+ [49] yaml_2.3.10                 codetools_0.2-20           
+ [51] lattice_0.22-6              tibble_3.2.1               
+ [53] Biobase_2.64.0              withr_3.0.1                
+ [55] evaluate_1.0.0              pillar_1.9.0               
+ [57] MatrixGenerics_1.16.0       checkmate_2.3.2            
+ [59] stats4_4.4.2                plotly_4.10.4              
+ [61] generics_0.1.3              dbscan_1.2-0               
+ [63] S4Vectors_0.42.1            ggplot2_3.5.1              
+ [65] munsell_0.5.1               scales_1.3.0               
+ [67] GiottoData_0.2.15           gtools_3.9.5               
+ [69] glue_1.8.0                  lazyeval_0.2.2             
+ [71] tools_4.4.2                 GiottoVisuals_0.2.7        
+ [73] data.table_1.16.0           ScaledMatrix_1.12.0        
+ [75] cowplot_1.1.3               grid_4.4.2                 
+ [77] tidyr_1.3.1                 colorspace_2.1-1           
+ [79] SingleCellExperiment_1.26.0 GenomeInfoDbData_1.2.12    
+ [81] BiocSingular_1.20.0         cli_3.6.3                  
+ [83] rsvd_1.0.5                  textshaping_0.4.0          
+ [85] fansi_1.0.6                 S4Arrays_1.4.1             
+ [87] viridisLite_0.4.2           dplyr_1.1.4                
+ [89] uwot_0.2.2                  gtable_0.3.5               
+ [91] R.methodsS3_1.8.2           digest_0.6.37              
+ [93] BiocGenerics_0.50.0         SparseArray_1.4.8          
+ [95] ggrepel_0.9.6               rjson_0.2.23               
+ [97] htmlwidgets_1.6.4           farver_2.1.2               
+ [99] htmltools_0.5.8.1           R.oo_1.26.0                
+[101] lifecycle_1.0.4             httr_1.4.7 
+```
+
