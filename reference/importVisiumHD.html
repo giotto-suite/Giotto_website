@@ -225,6 +225,9 @@ directories or paths."><!-- mathjax --><script src="https://cdnjs.cloudflare.com
         <li>
           <a href="../articles/create_simulated_object.html">Create a simulated dataset object</a>
         </li>
+        <li>
+          <a href="../articles/instructions.html">Create and change Giotto instructions</a>
+        </li>
       </ul></li>
     <li class="divider">
     <li class="dropdown-submenu">
@@ -235,7 +238,7 @@ directories or paths."><!-- mathjax --><script src="https://cdnjs.cloudflare.com
       </ul></li>
     <li class="divider">
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data Processing</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/process_giotto.html">Process Giotto convenience function</a>
         </li>
@@ -249,10 +252,26 @@ directories or paths."><!-- mathjax --><script src="https://cdnjs.cloudflare.com
           <a href="../articles/networks.html">Spatial and feature networks</a>
         </li>
         <li>
+          <a href="../articles/find_degs.html">Finding Differential Expressed Genes</a>
+        </li>
+        <li>
+          <a href="../articles/deconvolution.html">Deconvolution</a>
+        </li>
+        <li>
+          <a href="../articles/page_rank_enrichment.html">PAGE and Rank Enrichment</a>
+        </li>
+      </ul></li>
+    <li class="divider">
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Spatial Patterns</a>
+      <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/spatial_genes.html">Detection of spatial genes</a>
         </li>
         <li>
           <a href="../articles/spatial_coexpression_modules.html">Detection of spatial co-expression modules</a>
+        </li>
+        <li>
+          <a href="../articles/spatial_informed_clusters.html">Spatially Informed clusters</a>
         </li>
         <li>
           <a href="../articles/hmrf.html">Spatial domain analysis using HMRF</a>
@@ -384,6 +403,34 @@ directories or paths."><!-- mathjax --><script src="https://cdnjs.cloudflare.com
       <a href="../articles/branches.html">Branches</a>
     </li>
   </ul></li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Contributing
+
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/creating_a_pull_request.html">Creating a Pull Request</a>
+    </li>
+    <li>
+      <a href="../articles/coding_style.html">Coding style</a>
+    </li>
+    <li>
+      <a href="../articles/dispatch_functions.html">Giotto-specific Dispatch Functions</a>
+    </li>
+    <li>
+      <a href="../articles/package_imports.html">Package imports</a>
+    </li>
+    <li>
+      <a href="../articles/getters_setters.html">Getters and Setters</a>
+    </li>
+    <li>
+      <a href="../articles/python_code.html">Python code</a>
+    </li>
+    <li>
+      <a href="../articles/contributing_tutorials.html">Contributing tutorials to the website</a>
+    </li>
+  </ul></li>
 <li>
   <a></a>
 </li>
@@ -487,7 +534,32 @@ values to subset based on column pixels</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Create a `VisiumHDReader` object</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="va">reader</span> <span class="op">&lt;-</span> <span class="fu">importVisiumHD</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Set the visiumHD_dir</span></span></span>
+<span class="r-in"><span><span class="va">reader</span><span class="op">$</span><span class="va">visiumHD_dir</span> <span class="op">&lt;-</span> <span class="st">"path to visium HD dir"</span></span></span>
+<span class="r-in"><span><span class="va">readerHD</span><span class="op">$</span><span class="va">visiumHD_dir</span> <span class="op">&lt;-</span> <span class="va">visiumHD_dir</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Load tissue positions or create cell metadata</span></span></span>
+<span class="r-in"><span><span class="va">tissue_pos</span> <span class="op">&lt;-</span> <span class="va">readerHD</span><span class="op">$</span><span class="fu">load_tissue_position</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="va">readerHD</span><span class="op">$</span><span class="fu">load_metadata</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Load matrix or create expression object</span></span></span>
+<span class="r-in"><span><span class="va">matrix</span> <span class="op">&lt;-</span> <span class="va">readerHD</span><span class="op">$</span><span class="fu">load_matrix</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">expression_obj</span> <span class="op">&lt;-</span> <span class="va">readerHD</span><span class="op">$</span><span class="fu">load_expression</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Load transcript data (cell metadata, expression object, and transcripts per </span></span></span>
+<span class="r-in"><span><span class="co"># pixel)</span></span></span>
+<span class="r-in"><span><span class="va">my_transcripts</span> <span class="op">&lt;-</span> <span class="va">readerHD</span><span class="op">$</span><span class="fu">load_transcripts</span><span class="op">(</span>array_subset_row <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">1000</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                            array_subset_col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">1000</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create a `giotto` object and add the loaded data</span></span></span>
+<span class="r-in"><span><span class="co"># TODO</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+</code></pre></div>
     </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

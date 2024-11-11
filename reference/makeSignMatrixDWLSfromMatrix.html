@@ -219,6 +219,9 @@
         <li>
           <a href="../articles/create_simulated_object.html">Create a simulated dataset object</a>
         </li>
+        <li>
+          <a href="../articles/instructions.html">Create and change Giotto instructions</a>
+        </li>
       </ul></li>
     <li class="divider">
     <li class="dropdown-submenu">
@@ -229,7 +232,7 @@
       </ul></li>
     <li class="divider">
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data Processing</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/process_giotto.html">Process Giotto convenience function</a>
         </li>
@@ -243,10 +246,26 @@
           <a href="../articles/networks.html">Spatial and feature networks</a>
         </li>
         <li>
+          <a href="../articles/find_degs.html">Finding Differential Expressed Genes</a>
+        </li>
+        <li>
+          <a href="../articles/deconvolution.html">Deconvolution</a>
+        </li>
+        <li>
+          <a href="../articles/page_rank_enrichment.html">PAGE and Rank Enrichment</a>
+        </li>
+      </ul></li>
+    <li class="divider">
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Spatial Patterns</a>
+      <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/spatial_genes.html">Detection of spatial genes</a>
         </li>
         <li>
           <a href="../articles/spatial_coexpression_modules.html">Detection of spatial co-expression modules</a>
+        </li>
+        <li>
+          <a href="../articles/spatial_informed_clusters.html">Spatially Informed clusters</a>
         </li>
         <li>
           <a href="../articles/hmrf.html">Spatial domain analysis using HMRF</a>
@@ -378,6 +397,34 @@
       <a href="../articles/branches.html">Branches</a>
     </li>
   </ul></li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Contributing
+
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/creating_a_pull_request.html">Creating a Pull Request</a>
+    </li>
+    <li>
+      <a href="../articles/coding_style.html">Coding style</a>
+    </li>
+    <li>
+      <a href="../articles/dispatch_functions.html">Giotto-specific Dispatch Functions</a>
+    </li>
+    <li>
+      <a href="../articles/package_imports.html">Package imports</a>
+    </li>
+    <li>
+      <a href="../articles/getters_setters.html">Getters and Setters</a>
+    </li>
+    <li>
+      <a href="../articles/python_code.html">Python code</a>
+    </li>
+    <li>
+      <a href="../articles/contributing_tutorials.html">Contributing tutorials to the website</a>
+    </li>
+  </ul></li>
 <li>
   <a></a>
 </li>
@@ -452,37 +499,37 @@
 <span class="r-in"><span>    matrix <span class="op">=</span> <span class="va">sign_matrix</span>, sign_gene <span class="op">=</span> <span class="va">sign_gene</span>,</span></span>
 <span class="r-in"><span>    cell_type_vector <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cell_type1"</span>, <span class="st">"cell_type2"</span>, <span class="st">"cell_type3"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          cell_type1   cell_type2  cell_type3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bcl11b  -1.43641822  0.095258399 -2.69637656</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Lmo1     0.46016974  0.998264083 -0.48233270</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> F3       0.60242534  0.608337017  0.95775858</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cnih3    1.72656638 -0.031142397  0.43198460</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Ppp1r3c -1.04820985  0.226272049  0.40468917</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Rims2   -0.56514906  0.375380340 -1.83142143</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Gfap     1.53116847  0.087051525  0.07655979</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Gjc3     0.06339105  0.009879049  1.10243762</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chrna4  -0.56278051  0.883155070 -0.62980300</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Prkcd    0.11099959 -1.259692348  1.70126688</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Prr18    0.34010843  1.917064993  0.40030556</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Grb14   -0.54717628  2.038393508  1.51105399</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Tprn    -1.41146300 -1.392008627  0.58074901</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Clic1    0.85394947 -0.793485791 -1.41739475</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Olig2    1.34831687 -0.873490939  1.98477408</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Hrh3    -1.62032374 -0.705944737  0.13401638</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Tmbim1  -0.77334080 -0.192843387  0.20906941</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Carhsp1 -1.28735609 -2.321713400  1.41846246</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Tmem88b  1.11535099 -1.682934694  0.10597267</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Ugt8a    0.71227453  0.170679736 -0.32669534</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Arpp19   0.06937438 -0.817450218  0.55561158</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Lamp5   -0.93459235 -0.718907345 -1.86211471</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Galnt6  -0.56304288  0.834179870 -1.15144347</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Hlf     -0.12339571 -0.616341955 -0.61160394</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Hs3st2   2.01128389 -0.703354037 -0.48035713</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Tbr1    -0.56457762  0.615901957  0.19699277</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Myl4     0.72299516  0.293632454 -1.23213296</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cygb     1.26697659  0.206545605  1.68908507</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Ttc9b    1.04563709 -1.129703497 -0.01368524</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Ipcef1  -0.44989253  0.379469496 -0.66998016</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           cell_type1  cell_type2  cell_type3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bcl11b   0.760409358 -0.11445774 -0.72064985</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Lmo1     0.168073875 -1.36078423 -0.69613035</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> F3       0.968229964  0.21016115  0.89660713</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cnih3    0.884487792  0.91224909 -1.68726335</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Ppp1r3c -0.091638982  1.78197982  1.46099032</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rims2   -1.897518660 -1.58522816  0.19684387</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Gfap     0.280779919 -1.59669721 -0.63656730</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Gjc3     1.390847017  1.10889374 -1.02714360</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chrna4  -0.369885533 -1.15035245  1.37922856</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Prkcd   -0.082099435  0.94579740 -1.54325623</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Prr18    0.142665202 -0.20421103  1.29251976</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Grb14    1.825619753  0.30352932 -1.36796419</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tprn    -2.110878655 -0.34832878  1.20275385</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Clic1   -0.412014672  1.50193518 -1.72103865</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Olig2   -1.651582505  1.24847613  1.51192942</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Hrh3     0.621253448 -0.25023287  0.27781601</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tmbim1  -0.831799282  3.11023479  0.01089767</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Carhsp1 -1.262777361 -0.35258794  0.19231276</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tmem88b -0.007981246  1.52757416 -0.39879543</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Ugt8a    0.323923755 -1.38577128  0.74946511</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Arpp19   0.953029277 -0.25270938 -0.41908832</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Lamp5    0.637671554 -0.09417837  0.72178432</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Galnt6   0.060454107 -0.98376514 -0.33478649</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Hlf     -0.671077792  0.78424100  1.03671349</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Hs3st2  -0.091941281  2.00904718  0.37181295</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tbr1    -0.062346508  1.97451581 -0.61388741</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Myl4     0.202070979  1.45099596 -0.62067321</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cygb    -0.378007505  1.58900558 -0.20235197</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Ttc9b    1.803114917 -1.43658398  0.78923369</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Ipcef1   0.608732237  0.22662889 -1.96373471</span>
 </code></pre></div>
     </div>
   </div>
