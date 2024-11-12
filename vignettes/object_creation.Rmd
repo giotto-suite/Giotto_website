@@ -13,10 +13,55 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{css, echo=FALSE}
+/* Container for each datatype section */
+.datatype-section {
+  display: flex;
+  align-items: start;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Text content container */
+.datatype-content {
+  flex: 1;
+}
+
+/* Image container */
+.datatype-image {
+  flex: 0 0 45%;
+  margin: 0;
+  align-items: start;
+}
+
+/* Ensure images are responsive */
+.datatype-image img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Clear any existing floats */
+.datatype-section::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* custom header */
+.header-custom {
+    margin-top: 0px;
+    margin-bottom: 5px;
+    display: block;
+    font-size: 1.4em;
+    font-weight: bold;
+}
+```
 
 # Spatial Omic Datatypes
 
 Spatial omics data can be provided either as aggregated data or raw features information.
+
+<br>
 
 ```{r, echo=FALSE}
 heads <- c("Aggregated Data", "Raw Features", "Spatial Unit")
@@ -25,18 +70,18 @@ txt <- c(
     "Feature information about the tissue that has not been aggregated. These features can be paired with a spatial unit to enable aggregate data-based analyses. <br> Raw features can include molecule detections with an ID and xy(z) coordinates in tabular format (e.g., transcripts), or a matrix of intensity values, typically in image format.",
     "Spatial units provide functional context to raw features, allowing them to be aggregated and treated as units of study. These can be artificial (e.g., spatial bins), biological (e.g., cell or nuclear segmentations), or technical (e.g., arrays of spots reflecting the assay's construction). <br> Annotations can either be provided as 2D raster image/matrix-like format where the integer values of matrix cells or raster pixels both identify and define the region covered by each annotation, or as a vector-type format where the vertices of the polygons are provided."
 )
-imgs <- sprintf(
-    '<img src="%s" style="float: right; width: 45%%;"/>',
-    c(
+imgs <- c(
         "images/object_creation/Giotto_Datatypes-agg.png",
         "images/object_creation/Giotto_Datatypes-ft.png",
         "images/object_creation/Giotto_Datatypes-su.png"
-    )
 )
-knitr::asis_output(paste0(sprintf(
-    '<div style="margin-bottom: 20px;">%s<div style="width: 50%%;"><h3 style="margin: 0;">%s</h3><p style="padding-left: 15px; margin-top: 5px;">%s</p></div><div style="clear: both;"></div></div>',
-    imgs, heads, txt
-)))
+
+sprintf(
+    '<div class="datatype-section"><div class="datatype-content"><p class="header-custom">%s</p><p>%s</p></div><div class="datatype-image"><img src="%s" alt="%s"/></div></div>',
+    heads, txt, imgs, heads
+) |> 
+    paste0() |>
+    knitr::asis_output()
 ```
 
 
@@ -52,37 +97,35 @@ See the following for instructions on setting up a custom `giotto` object with t
 
 
 ```{r, echo=FALSE}
-tile_imgs <- vapply(
+tile_imgs <- sprintf(
+    '<img src="%s"/>',
     c(
         "images/object_creation/1_spatplot_aggregate.png",
         "images/object_creation/4_align.png",
         "images/object_creation/9_align2.png"
-    ),
-    function(im_path) knitr::sew(knitr::include_graphics(im_path)),
-    FUN.VALUE = character(1L)
+    )
+)
+
+tile_links <- c(
+    "obj_create_agg.html",
+    "obj_create_pnts.html",
+    "obj_create_img.html"
+)
+
+tile_txt <- c(
+    "Matrix and Spatial Locations", 
+    "Feature detection (points) and cell annotations (vector polygons)",
+    "Staining images and cell annotations (raster mask/polygons)"
 )
 
 tile <- sprintf(
-    "<strong>%s</strong>%s", 
-    c(
-        "Matrix and Spatial Locations", 
-        "Feature detection (points) and cell annotations (vector polygons)",
-        "Staining images and cell annotations (raster mask/polygons)"
-    ),
-    tile_imgs
+    '<a href="%s" class="tile"><div><strong>%s</strong></div>%s</a>',
+    tile_links, tile_txt, tile_imgs
 )
 
 knitr::asis_output(paste0(
     '<div class="gallery">',
-    '<a href="obj_create_agg.html" class="tile">',
-        tile[[1L]],
-    '</a>',
-    '<a href="obj_create_pnts.html" class="tile">',
-        tile[[2L]],
-    '</a>',
-    '<a href="obj_create_img.html" class="tile">',
-        tile[[3L]],
-    '</a>',
+        tile[[1L]], tile[[2L]], tile[[3L]],
     '</div>'
 ))
 ```

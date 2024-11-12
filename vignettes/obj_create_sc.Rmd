@@ -29,7 +29,7 @@ library(Giotto)
 
 
 
-### Download data to use
+# Download data to use
 
 The example dataset used here is from 10X [link](https://www.10xgenomics.com/datasets/Human_PBMCs_Next_GEM_Flex_GEM-X_Flex_Comparison)
 
@@ -43,7 +43,7 @@ save_path <- file.path(data_path, "pbmc_matrix.h5")
 utils::download.file(link, destfile = save_path, method = "wget")
 ```
 
-### Read the data
+# Read the data
 
 Read the expression matrix, which is provided from 10X as an h5 format. `get10Xmatrix_h5()` is a convenience function from `Giotto` that will import this format as a *Matrix* `dgCMatrix` sparse matrix.
 
@@ -51,7 +51,7 @@ Read the expression matrix, which is provided from 10X as an h5 format. `get10Xm
 pbmc_mat <- get10Xmatrix_h5(save_path)
 ```
 
-### Load into Giotto as a single cell analysis
+# Load into Giotto as a single cell analysis
 
 Single cell datasets should be loaded in through `createGiottoObject()`.
 During the load, a set of dummy spatial locations that can be safely ignored will also be generated.
