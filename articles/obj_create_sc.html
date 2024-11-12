@@ -586,10 +586,10 @@
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://drieslab.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span></code></pre></div>
-<div class="section level4" number="0.0.1">
-<h4 number="0.0.1" id="download-data-to-use">
-<span class="header-section-number">0.0.1</span> Download data to use<a class="anchor" aria-label="anchor" href="#download-data-to-use"></a>
-</h4>
+<div class="section level2" number="1">
+<h2 number="1" id="download-data-to-use">
+<span class="header-section-number">1</span> Download data to use<a class="anchor" aria-label="anchor" href="#download-data-to-use"></a>
+</h2>
 <p>The example dataset used here is from 10X <a href="https://www.10xgenomics.com/datasets/Human_PBMCs_Next_GEM_Flex_GEM-X_Flex_Comparison" class="external-link">link</a></p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">link</span> <span class="op">&lt;-</span> <span class="st">"https://cf.10xgenomics.com/samples/cell-exp/8.0.1/Human_PBMCs_Next_GEM_Flex_GEM-X_Flex_Comparison/Human_PBMCs_Next_GEM_Flex_GEM-X_Flex_Comparison_count_filtered_feature_bc_matrix.h5"</span></span>
@@ -600,18 +600,18 @@
 <span></span>
 <span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span><span class="va">link</span>, destfile <span class="op">=</span> <span class="va">save_path</span>, method <span class="op">=</span> <span class="st">"wget"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4" number="0.0.2">
-<h4 number="0.0.2" id="read-the-data">
-<span class="header-section-number">0.0.2</span> Read the data<a class="anchor" aria-label="anchor" href="#read-the-data"></a>
-</h4>
+<div class="section level2" number="2">
+<h2 number="2" id="read-the-data">
+<span class="header-section-number">2</span> Read the data<a class="anchor" aria-label="anchor" href="#read-the-data"></a>
+</h2>
 <p>Read the expression matrix, which is provided from 10X as an h5 format. <code><a href="../reference/get10Xmatrix_h5.html">get10Xmatrix_h5()</a></code> is a convenience function from <code>Giotto</code> that will import this format as a <em>Matrix</em> <code>dgCMatrix</code> sparse matrix.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pbmc_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get10Xmatrix_h5.html">get10Xmatrix_h5</a></span><span class="op">(</span><span class="va">save_path</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4" number="0.0.3">
-<h4 number="0.0.3" id="load-into-giotto-as-a-single-cell-analysis">
-<span class="header-section-number">0.0.3</span> Load into Giotto as a single cell analysis<a class="anchor" aria-label="anchor" href="#load-into-giotto-as-a-single-cell-analysis"></a>
-</h4>
+<div class="section level2" number="3">
+<h2 number="3" id="load-into-giotto-as-a-single-cell-analysis">
+<span class="header-section-number">3</span> Load into Giotto as a single cell analysis<a class="anchor" aria-label="anchor" href="#load-into-giotto-as-a-single-cell-analysis"></a>
+</h2>
 <p>Single cell datasets should be loaded in through <code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObject.html" class="external-link">createGiottoObject()</a></code>. During the load, a set of dummy spatial locations that can be safely ignored will also be generated.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pbmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObject.html" class="external-link">createGiottoObject</a></span><span class="op">(</span>expression <span class="op">=</span> <span class="va">pbmc_mat</span><span class="op">)</span></span>
@@ -630,9 +630,9 @@ spatial locations ----------------
 
 Use objHistory() to see steps and params used</code></pre>
 </div>
-<div class="section level2" number="1">
-<h2 number="1" id="session-info">
-<span class="header-section-number">1</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+<div class="section level2" number="4">
+<h2 number="4" id="session-info">
+<span class="header-section-number">4</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>

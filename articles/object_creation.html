@@ -573,47 +573,91 @@
 
     
     
+<style type="text/css">
+/* Container for each datatype section */
+.datatype-section {
+  display: flex;
+  align-items: start;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Text content container */
+.datatype-content {
+  flex: 1;
+}
+
+/* Image container */
+.datatype-image {
+  flex: 0 0 45%;
+  margin: 0;
+  align-items: start;
+}
+
+/* Ensure images are responsive */
+.datatype-image img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Clear any existing floats */
+.datatype-section::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* custom header */
+.header-custom {
+    margin-top: 0px;
+    margin-bottom: 5px;
+    display: block;
+    font-size: 1.4em;
+    font-weight: bold;
+}
+</style>
 <div class="section level2">
 <h2 id="spatial-omic-datatypes">Spatial Omic Datatypes<a class="anchor" aria-label="anchor" href="#spatial-omic-datatypes"></a>
 </h2>
 <p>Spatial omics data can be provided either as aggregated data or raw features information.</p>
-<div style="margin-bottom: 20px;">
-<img src="images%2Fobject_creation%2FGiotto_Datatypes-agg.png" style="float: right; width: 45%;"><div style="width: 50%;">
-<h4 style="margin: 0;">
+<p><br></p>
+<div class="datatype-section">
+<div class="datatype-content">
+<p class="header-custom">
 Aggregated Data
-</h4>
-<p style="padding-left: 15px; margin-top: 5px;">
+</p>
+<p>
 Feature information that has been calculated for a particular set of spatial locations. <br> These are commonly presented as an expression matrix paired with a set of xy(z) coordinates in tabular or matrix format.
 </p>
 </div>
-<div style="clear: both;">
-
+<div class="datatype-image">
+<img src="images%2Fobject_creation%2FGiotto_Datatypes-agg.png" alt="Aggregated Data">
 </div>
 </div>
-<div style="margin-bottom: 20px;">
-<img src="images%2Fobject_creation%2FGiotto_Datatypes-ft.png" style="float: right; width: 45%;"><div style="width: 50%;">
-<h4 style="margin: 0;">
+<div class="datatype-section">
+<div class="datatype-content">
+<p class="header-custom">
 Raw Features
-</h4>
-<p style="padding-left: 15px; margin-top: 5px;">
+</p>
+<p>
 Feature information about the tissue that has not been aggregated. These features can be paired with a spatial unit to enable aggregate data-based analyses. <br> Raw features can include molecule detections with an ID and xy(z) coordinates in tabular format (e.g., transcripts), or a matrix of intensity values, typically in image format.
 </p>
 </div>
-<div style="clear: both;">
-
+<div class="datatype-image">
+<img src="images%2Fobject_creation%2FGiotto_Datatypes-ft.png" alt="Raw Features">
 </div>
 </div>
-<div style="margin-bottom: 20px;">
-<img src="images%2Fobject_creation%2FGiotto_Datatypes-su.png" style="float: right; width: 45%;"><div style="width: 50%;">
-<h4 style="margin: 0;">
+<div class="datatype-section">
+<div class="datatype-content">
+<p class="header-custom">
 Spatial Unit
-</h4>
-<p style="padding-left: 15px; margin-top: 5px;">
+</p>
+<p>
 Spatial units provide functional context to raw features, allowing them to be aggregated and treated as units of study. These can be artificial (e.g., spatial bins), biological (e.g., cell or nuclear segmentations), or technical (e.g., arrays of spots reflecting the assay’s construction). <br> Annotations can either be provided as 2D raster image/matrix-like format where the integer values of matrix cells or raster pixels both identify and define the region covered by each annotation, or as a vector-type format where the vertices of the polygons are provided.
 </p>
 </div>
-<div style="clear: both;">
-
+<div class="datatype-image">
+<img src="images%2Fobject_creation%2FGiotto_Datatypes-su.png" alt="Spatial Unit">
 </div>
 </div>
 <p>Raw features and spatial units can be combined to generate aggregated datasets, but the reverse transformation is generally not possible.</p>
@@ -624,7 +668,19 @@ Spatial units provide functional context to raw features, allowing them to be ag
 </h2>
 <p>Giotto Suite can work with any of the above types of spatial omic data, and has the flexibility to handle multiple of these modalities when the data is available. See the following for instructions on setting up a custom <code>giotto</code> object with the respective input data.</p>
 <div class="gallery">
-<a href="obj_create_agg.html" class="tile"><strong>Matrix and Spatial Locations</strong><img src="images%2Fobject_creation%2F1_spatplot_aggregate.png" width="834"></a><a href="obj_create_pnts.html" class="tile"><strong>Feature detection (points) and cell annotations (vector polygons)</strong><img src="images%2Fobject_creation%2F4_align.png" width="1370"></a><a href="obj_create_img.html" class="tile"><strong>Staining images and cell annotations (raster mask/polygons)</strong><img src="images%2Fobject_creation%2F9_align2.png" width="1370"></a>
+<a href="obj_create_agg.html" class="tile">
+<div>
+<strong>Matrix and Spatial Locations</strong>
+</div>
+<img src="images%2Fobject_creation%2F1_spatplot_aggregate.png"></a><a href="obj_create_pnts.html" class="tile">
+<div>
+<strong>Feature detection (points) and cell annotations (vector polygons)</strong>
+</div>
+<img src="images%2Fobject_creation%2F4_align.png"></a><a href="obj_create_img.html" class="tile">
+<div>
+<strong>Staining images and cell annotations (raster mask/polygons)</strong>
+</div>
+<img src="images%2Fobject_creation%2F9_align2.png"></a>
 </div>
 </div>
 <div class="section level2">
