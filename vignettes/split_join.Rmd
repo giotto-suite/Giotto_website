@@ -248,7 +248,7 @@ The CosMx mini dataset loaded in previously as `a` and `b` are already spatially
 located in the correct locations relative to each other. For these cases, we
 can join the objects with `join_method = "no_change"`
 
-```{r}
+```{r, eval=FALSE}
 join_nc <- joinGiottoObjects(
     list(a, b),
     gobject_names = sprintf("fov_%d", seq(2)),
@@ -264,7 +264,7 @@ join_nc <- joinGiottoObjects(
     addStatistics()
 ```
 
-```{r}
+```{r, eval=FALSE}
 spatInSituPlotPoints(join_nc,
     polygon_fill = "nr_feats",
     polygon_fill_as_factor = FALSE, 
@@ -287,7 +287,7 @@ of a categorical variable within a dataset such as cell type.
 
 Do note however, that this will not reverse the naming changes applied to the cell IDs.
 
-```{r}
+```{r, eval=FALSE}
 glist <- splitGiotto(join_nc, by = "list_ID")
 force(glist)
 ```
