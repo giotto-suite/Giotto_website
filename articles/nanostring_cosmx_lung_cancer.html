@@ -329,6 +329,9 @@
         <li>
           <a href="../articles/page_rank_enrichment.html">PAGE and Rank Enrichment</a>
         </li>
+        <li>
+          <a href="../articles/kriging.html">Kriging</a>
+        </li>
       </ul>
 </li>
     <li class="divider">
@@ -675,7 +678,7 @@
 </ul>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load transcript coordinates</span></span>
-<span><span class="va">tx_coord_all</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"Lung12_tx_file.csv"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">tx_coord_all</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"Lung12_tx_file.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">tx_coord_all</span><span class="op">)</span></span>
 <span></span>
@@ -731,7 +734,7 @@
 <p><code>fov_positions_file.csv</code> contains information on the x and y shifts needed in order to put the FOVs tiles together into a cohesive whole. This information is needed during the image attachment and alignment process.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#  load field of vision (fov) positions</span></span>
-<span><span class="va">fov_offset_file</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"Lung12_fov_positions_file.csv"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">fov_offset_file</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"Lung12_fov_positions_file.csv"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3" number="4.4">
 <h3 number="4.4" id="choose-field-of-view-for-analysis">
@@ -954,7 +957,7 @@
 <p>Comparison of Giotto’s aggregated matrix results and those provided by Nanostring. Only FOV2 will be used in this comparison. Matrices are expected to be similar when the same sets of cell polygons/masks are used for both.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load and prepare data</span></span>
-<span><span class="va">nanoDT</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"Lung12_exprMat_file.csv"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">nanoDT</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"Lung12_exprMat_file.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">test1</span> <span class="op">&lt;-</span> <span class="va">nanoDT</span><span class="op">[</span><span class="va">fov</span> <span class="op">==</span> <span class="fl">2</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># Set up cell_IDs</span></span>
@@ -979,11 +982,11 @@
 <span></span>
 <span><span class="co"># Prepare matrix comparison</span></span>
 <span><span class="co"># Summarise sparse matrices (i and j are matrix indices, x is value)</span></span>
-<span><span class="va">testg_f2_DT</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="fu">Matrix</span><span class="fu">::</span><span class="fu">summary</span><span class="op">(</span><span class="va">testg_f2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">testg_f2_DT</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="fu">Matrix</span><span class="fu">::</span><span class="fu">summary</span><span class="op">(</span><span class="va">testg_f2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">testg_f2_DT</span><span class="op">[</span>, <span class="va">method</span> <span class="op">:=</span> <span class="st">"giotto"</span><span class="op">]</span></span>
-<span><span class="va">testnano_f2_DT</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="fu">Matrix</span><span class="fu">::</span><span class="fu">summary</span><span class="op">(</span><span class="va">testnano_f2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">testnano_f2_DT</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="fu">Matrix</span><span class="fu">::</span><span class="fu">summary</span><span class="op">(</span><span class="va">testnano_f2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">testnano_f2_DT</span><span class="op">[</span>, <span class="va">method</span> <span class="op">:=</span> <span class="st">"nanostring"</span><span class="op">]</span></span>
-<span><span class="va">testDT</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/rbindlist.html" class="external-link">rbindlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">testg_f2_DT</span>, <span class="va">testnano_f2_DT</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">testDT</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/rbindlist.html" class="external-link">rbindlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">testg_f2_DT</span>, <span class="va">testnano_f2_DT</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Combine sparse matrix indices</span></span>
 <span><span class="va">testDT</span><span class="op">[</span>, <span class="va">combo</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">i</span>,<span class="st">"-"</span>,<span class="va">j</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
@@ -1018,7 +1021,7 @@
 <code class="sourceCode R"><span><span class="co"># directly compare differences in matrix values (counts assigned)</span></span>
 <span><span class="va">vartestDT</span> <span class="op">&lt;-</span> <span class="va">testDT</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, diff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>, by <span class="op">=</span> <span class="fu">.</span><span class="op">(</span><span class="va">i</span>,<span class="va">j</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
-<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">vartestDT</span>, <span class="va">var</span><span class="op">)</span></span>
+<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">vartestDT</span>, <span class="va">var</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># check arbitrary index values</span></span>
 <span><span class="va">testDT</span><span class="op">[</span><span class="va">i</span> <span class="op">==</span> <span class="st">"812"</span> <span class="op">&amp;</span> <span class="va">j</span> <span class="op">==</span> <span class="st">"2"</span><span class="op">]</span></span>

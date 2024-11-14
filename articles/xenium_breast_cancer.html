@@ -329,6 +329,9 @@
         <li>
           <a href="../articles/page_rank_enrichment.html">PAGE and Rank Enrichment</a>
         </li>
+        <li>
+          <a href="../articles/kriging.html">Kriging</a>
+        </li>
       </ul>
 </li>
     <li class="divider">
@@ -662,7 +665,7 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load features metadata</span></span>
 <span><span class="co"># (make sure cell_feature_matrix folder is unpacked)</span></span>
-<span><span class="va">feature_dt</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">feat_meta_path</span>, header <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">feature_dt</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">feat_meta_path</span>, header <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">feature_dt</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ensembl_ID'</span>,<span class="st">'feat_name'</span>,<span class="st">'feat_type'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># find the feature IDs that belong to each feature type</span></span>
@@ -817,8 +820,8 @@
 </h4>
 <p><code>transcripts.csv.gz</code> is a file containing x, y, z coordinates for individual transcript molecules detected during the Xenium run. It also contains a QC Phred score for which this tutorial will set a cutoff at 20, the same as what 10x uses.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tx_dt</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">tx_path</span><span class="op">)</span></span>
-<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setattr.html" class="external-link">setnames</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">tx_dt</span>,</span>
+<code class="sourceCode R"><span><span class="va">tx_dt</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">tx_path</span><span class="op">)</span></span>
+<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setattr.html" class="external-link">setnames</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">tx_dt</span>,</span>
 <span>                     old <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'feature_name'</span>, <span class="st">'x_location'</span>, <span class="st">'y_location'</span><span class="op">)</span>,</span>
 <span>                     new <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'feat_ID'</span>, <span class="st">'x'</span>, <span class="st">'y'</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">'Transcripts info available:\n '</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'"'</span>, <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">tx_dt</span><span class="op">)</span>, <span class="st">'"'</span><span class="op">)</span>, <span class="st">'\n'</span>,</span>
@@ -880,13 +883,13 @@
 </h4>
 <p>Xenium output provides segmentation/cell boundary information in .csv.gz files. These are represented within Giotto as <code>giottoPolygon</code> objects and can also be directly plotted. This function also determines the correct columns to use by looking for columns named <code>'poly_ID'</code>, <code>'x'</code>, and <code>'y'</code>.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cellPoly_dt</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">cell_bound_path</span><span class="op">)</span></span>
-<span><span class="va">nucPoly_dt</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">nuc_bound_path</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">cellPoly_dt</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">cell_bound_path</span><span class="op">)</span></span>
+<span><span class="va">nucPoly_dt</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">nuc_bound_path</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setattr.html" class="external-link">setnames</a></span><span class="op">(</span><span class="va">cellPoly_dt</span>,</span>
+<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setattr.html" class="external-link">setnames</a></span><span class="op">(</span><span class="va">cellPoly_dt</span>,</span>
 <span>                     old <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'cell_id'</span>, <span class="st">'vertex_x'</span>, <span class="st">'vertex_y'</span><span class="op">)</span>,</span>
 <span>                     new <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'poly_ID'</span>, <span class="st">'x'</span>, <span class="st">'y'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setattr.html" class="external-link">setnames</a></span><span class="op">(</span><span class="va">nucPoly_dt</span>,</span>
+<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setattr.html" class="external-link">setnames</a></span><span class="op">(</span><span class="va">nucPoly_dt</span>,</span>
 <span>                     old <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'cell_id'</span>, <span class="st">'vertex_x'</span>, <span class="st">'vertex_y'</span><span class="op">)</span>,</span>
 <span>                     new <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'poly_ID'</span>, <span class="st">'x'</span>, <span class="st">'y'</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -1333,8 +1336,8 @@
 </h3>
 <p>Append features metadata from <code>panel.tsv</code> which includes information on what cell types the features are commonly markers for. There are 313 rows in this file. One for each of the gene expression probes, thus these metadata should be appended only to feat_type ‘rna’.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">panel_meta</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">panel_meta_path</span><span class="op">)</span></span>
-<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setattr.html" class="external-link">setnames</a></span><span class="op">(</span><span class="va">panel_meta</span>, <span class="st">'Name'</span>, <span class="st">'feat_ID'</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">panel_meta</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">panel_meta_path</span><span class="op">)</span></span>
+<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setattr.html" class="external-link">setnames</a></span><span class="op">(</span><span class="va">panel_meta</span>, <span class="st">'Name'</span>, <span class="st">'feat_ID'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Append this metadata</span></span>
 <span><span class="va">xenium_gobj</span> <span class="op">=</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addFeatMetadata.html" class="external-link">addFeatMetadata</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">xenium_gobj</span>,</span>

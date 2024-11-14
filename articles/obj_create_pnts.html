@@ -329,6 +329,9 @@
         <li>
           <a href="../articles/page_rank_enrichment.html">PAGE and Rank Enrichment</a>
         </li>
+        <li>
+          <a href="../articles/kriging.html">Kriging</a>
+        </li>
       </ul>
 </li>
     <li class="divider">
@@ -631,7 +634,7 @@
 <p>See also <code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">?GiottoClass::createGiottoPolygon</a></code></p>
 <p>For this example, a <code>data.frame</code> input will be used.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">poly_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">mini_viz_poly_path</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">poly_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">mini_viz_poly_path</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/force.html" class="external-link">force</a></span><span class="op">(</span><span class="va">poly_dt</span><span class="op">)</span></span></code></pre></div>
 <pre><code>              x         y                                poly_ID
           &lt;num&gt;     &lt;num&gt;                                 &lt;char&gt;
@@ -671,7 +674,7 @@ Spatial Information:
 <p>See also <code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPoints.html" class="external-link">?GiottoClass::createGiottoPoints</a></code></p>
 <p>For this example, the following <code>data.table</code> will be used.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tx_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">mini_viz_tx_path</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">tx_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">mini_viz_tx_path</span><span class="op">)</span></span>
 <span><span class="va">tx_dt</span><span class="op">[</span>, <span class="va">global_y</span> <span class="op">:=</span> <span class="op">-</span><span class="va">global_y</span><span class="op">]</span> <span class="co"># flip values to match polys </span></span>
 <span><span class="co"># (this can also be done after `giottoPoints` creation using flip())</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/force.html" class="external-link">force</a></span><span class="op">(</span><span class="va">tx_dt</span><span class="op">)</span></span></code></pre></div>

@@ -329,6 +329,9 @@
         <li>
           <a href="../articles/page_rank_enrichment.html">PAGE and Rank Enrichment</a>
         </li>
+        <li>
+          <a href="../articles/kriging.html">Kriging</a>
+        </li>
       </ul>
 </li>
     <li class="divider">
@@ -826,7 +829,7 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># read expression matrix and metadata</span></span>
 <span><span class="va">expr_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/readExprMatrix.html" class="external-link">readExprMatrix</a></span><span class="op">(</span><span class="va">expr_path</span><span class="op">)</span></span>
-<span><span class="va">meta_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">meta_path</span><span class="op">)</span></span>
+<span><span class="va">meta_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">meta_path</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># create giotto object</span></span>
 <span><span class="va">vizgen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObject.html" class="external-link">createGiottoObject</a></span><span class="op">(</span>expression <span class="op">=</span> <span class="fu">Giottot_flex</span><span class="op">(</span><span class="va">expr_matrix</span><span class="op">)</span>,</span>
@@ -912,7 +915,7 @@
 <span>                         negative_y <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Read in image scale transform values</span></span>
-<span><span class="va">img_scale_DT</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">img_scale_path</span><span class="op">)</span></span>
+<span><span class="va">img_scale_DT</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">img_scale_path</span><span class="op">)</span></span>
 <span><span class="va">x_scale</span> <span class="op">&lt;-</span> <span class="va">img_scale_DT</span><span class="op">$</span><span class="va">V1</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">y_scale</span> <span class="op">&lt;-</span> <span class="va">img_scale_DT</span><span class="op">$</span><span class="va">V2</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">x_shift</span> <span class="op">&lt;-</span> <span class="va">img_scale_DT</span><span class="op">$</span><span class="va">V3</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
@@ -1139,7 +1142,7 @@
 </h3>
 <p>Giotto represents single-molecule transcript level spatial data as <code>giottoPoints</code> objects.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tx_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">tx_path</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">tx_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">tx_path</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># select transcripts in FOVs</span></span>
 <span><span class="va">tx_dt_selected</span> <span class="op">&lt;-</span> <span class="va">tx_dt</span><span class="op">[</span><span class="va">fov</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">subsetFOVs</span><span class="op">]</span></span>
@@ -1235,7 +1238,7 @@
 <code class="sourceCode R"><span><span class="co"># identify genes for visualization</span></span>
 <span><span class="va">gene_meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">vizgen_subset</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">gene_meta</span>, <span class="va">perc_cells</span><span class="op">)</span></span>
+<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">gene_meta</span>, <span class="va">perc_cells</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">gene_meta</span><span class="op">[</span><span class="va">perc_cells</span> <span class="op">&gt;</span> <span class="fl">25</span> <span class="op">&amp;</span> <span class="va">perc_cells</span> <span class="op">&lt;</span> <span class="fl">50</span><span class="op">]</span></span>
 <span></span>

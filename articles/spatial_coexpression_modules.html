@@ -329,6 +329,9 @@
         <li>
           <a href="../articles/page_rank_enrichment.html">PAGE and Rank Enrichment</a>
         </li>
+        <li>
+          <a href="../articles/kriging.html">Kriging</a>
+        </li>
       </ul>
 </li>
     <li class="divider">
@@ -684,11 +687,11 @@
 <p>Run this code for downstream analysis, such as calculation of spatially informed clusters or calculation of spatial domains with HMRF.</p>
 <p>In a real-size dataset, usually you want to extract the top ~30 genes per co-expression module, but this number is variable depending on the number of features available in your dataset.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">coexpr_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">coexpr_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span></span>
 <span>  genes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">spat_cor_netw_DT</span><span class="op">$</span><span class="va">cor_clusters</span><span class="op">$</span><span class="va">spat_netw_clus</span><span class="op">)</span>,</span>
 <span>  cluster <span class="op">=</span> <span class="va">spat_cor_netw_DT</span><span class="op">$</span><span class="va">cor_clusters</span><span class="op">$</span><span class="va">spat_netw_clus</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">coexpr_dt</span>, <span class="va">cluster</span><span class="op">)</span></span>
+<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">coexpr_dt</span>, <span class="va">cluster</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">top10_coexpr_dt</span> <span class="op">&lt;-</span> <span class="va">coexpr_dt</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">10</span><span class="op">)</span> , by <span class="op">=</span> <span class="va">cluster</span><span class="op">]</span></span>
 <span></span>

@@ -329,6 +329,9 @@
         <li>
           <a href="../articles/page_rank_enrichment.html">PAGE and Rank Enrichment</a>
         </li>
+        <li>
+          <a href="../articles/kriging.html">Kriging</a>
+        </li>
       </ul>
 </li>
     <li class="divider">
@@ -616,7 +619,7 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data_path</span> <span class="op">&lt;-</span> <span class="st">"/path/to/data/"</span></span>
 <span></span>
-<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"GSE213264_RAW/GSM6578065_humanskin_RNA.tsv.gz"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"GSE213264_RAW/GSM6578065_humanskin_RNA.tsv.gz"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">spatial_coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>cell_ID <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span>
 <span><span class="va">spatial_coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">spatial_coords</span>,</span>
@@ -629,7 +632,7 @@
 <span><span class="va">spatial_coords</span><span class="op">$</span><span class="va">sdimy</span> <span class="op">&lt;-</span> <span class="va">spatial_coords</span><span class="op">$</span><span class="va">sdimy</span><span class="op">*</span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <p>Read rna and protein expression matrix</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">rna_matrix</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"GSE213264_RAW/GSM6578065_humanskin_RNA.tsv.gz"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">rna_matrix</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"GSE213264_RAW/GSM6578065_humanskin_RNA.tsv.gz"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">rna_matrix</span> <span class="op">&lt;-</span> <span class="va">rna_matrix</span><span class="op">[</span><span class="va">rna_matrix</span><span class="op">$</span><span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">spatial_coords</span><span class="op">$</span><span class="va">cell_ID</span>,<span class="op">]</span></span>
 <span></span>
@@ -639,7 +642,7 @@
 <span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">rna_matrix</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">spatial_coords</span><span class="op">$</span><span class="va">cell_ID</span></span>
 <span></span>
-<span><span class="va">protein_matrix</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"GSE213264_RAW/GSM6578074_humanskin_protein.tsv.gz"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">protein_matrix</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"GSE213264_RAW/GSM6578074_humanskin_protein.tsv.gz"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">protein_matrix</span> <span class="op">&lt;-</span> <span class="va">protein_matrix</span><span class="op">[</span><span class="va">protein_matrix</span><span class="op">$</span><span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">spatial_coords</span><span class="op">$</span><span class="va">cell_ID</span>,<span class="op">]</span></span>
 <span></span>
