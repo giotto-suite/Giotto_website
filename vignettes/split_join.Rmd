@@ -17,18 +17,21 @@ vignette: >
 - `splitGiotto()` - separate a single `giotto` object into a list of several based on a cell metadata column
 - `joinGiottoObjects()` - combine a list of multiple `giotto` objects into a single `giotto` object.
 
-This example shows working with a 10x Visium 
-[mouse TMA](https://www.10xgenomics.com/datasets/mouse-tissue-microarray-in-3x3-layout-with-2-mm-edge-to-edge-spacing-ffpe-2-standard) 
-dataset.
+An example set of FOVs from the lung 12 sample of the CosMx SMI NSCLC FFPE [dataset](https://nanostring.com/products/cosmx-spatial-molecular-imager/ffpe-dataset/nsclc-ffpe-dataset/)
+and a mini dataset from a 10X visium mouse brain dataset will be used for this tutorial.
 
 
-
-*Check Giotto installation*
+# Check Giotto installation
 
 ```{r, eval=FALSE}
 # Ensure Giotto Suite is installed.
 if(!"Giotto" %in% installed.packages()) {
   pak::pkg_install("drieslab/Giotto")
+}
+
+# Ensure Giotto Suite is installed.
+if(!"GiottoData" %in% installed.packages()) {
+  pak::pkg_install("drieslab/GiottoData")
 }
 
 # Ensure the Python environment for Giotto has been installed.
@@ -37,210 +40,304 @@ if(!genv_exists){
   # The following command need only be run once to install the Giotto environment.
   Giotto::installGiottoEnvironment()
 }
-```
 
-# Setup example TMA dataset
-
-## Download the Data
-
-```{r, eval=FALSE}
-## provide path to a folder to save the example data to
-data_path <- "/path/to/data/"
-
-mat_link <- "https://cf.10xgenomics.com/samples/spatial-exp/2.0.1/CytAssist_11mm_FFPE_Mouse_TMA_3x3_2mm/CytAssist_11mm_FFPE_Mouse_TMA_3x3_2mm_filtered_feature_bc_matrix.h5"
-spat_link <- "https://cf.10xgenomics.com/samples/spatial-exp/2.0.1/CytAssist_11mm_FFPE_Mouse_TMA_3x3_2mm/CytAssist_11mm_FFPE_Mouse_TMA_3x3_2mm_spatial.tar.gz"
-
-mat_path <- file.path(data_path, "filtered_matrix.h5")
-spat_path <- file.path(data_path, "spatial.tar.gz")
-
-download.file(mat_link, destfile = mat_path)
-download.file(spat_link, destfile = spat_path)
-
-# untar the spatial folder
-untar(spat_path, exdir = file.path(data_path))
-spat_dir <- file.path(data_path, "spatial")
-```
-
-
-## Create Giotto Object
-
-```{r, eval=FALSE}
 library(Giotto)
+```
 
-# 1. set working directory
-results_folder <- "path/to/results"
 
-# Optional: Specify a path to a Python executable within a conda or miniconda 
-# environment. If set to NULL (default), the Python executable within the previously
-# installed Giotto environment will be used.
-python_path <- NULL # alternatively, "/local/python/path/python" if desired.
+# Load in Data
 
-instrs <- instructions(python_path = python_path, save_dir = results_folder)
+For the first sets of examples we load a mini visium object from *GiottoData* in as `g` .
 
-tma <- createGiottoVisiumObject(
-    h5_visium_path = mat_path, 
-    h5_tissue_positions_path = file.path(spat_dir, "tissue_positions.csv"),
-    h5_image_png_path = file.path(spat_dir, "tissue_hires_image.png"),
-    h5_json_scalefactors_path = file.path(spat_dir, "scalefactors_json.json"),
-    instructions = instrs
+```{r, eval=FALSE}
+g <- GiottoData::loadGiottoMini("visium")
+```
+
+Next, two Nanostring CosMx FOVs will be loaded in from *GiottoData* example files as `giotto` objects
+called `a` and `b`.
+
+**This is from an edited mini dataset, and some parts of loading and object
+creation should not be taken as guidance so the steps will be hidden by default.**
+
+For information on how to load in a standard CosMx dataset, see the Nanostring
+CosMx section under the Examples tab, or the [giotto object creation tutorial](object_creation.html)
+for general instructions.
+
+
+<details><summary>Load in `a` and `b` `giotto` objects</summary>
+
+**Dataset Paths**
+
+```{r, eval=FALSE}
+gdata_cosmx_dir <- system.file(package = "GiottoData", file.path("Mini_datasets", "CosMx", "Raw"))
+tx_path <- file.path(gdata_cosmx_dir, "Lung12_tx_file.csv")
+bounds_paths <- list.files(file.path(gdata_cosmx_dir, "CellLabels"), full.names = TRUE)
+img_paths <- list.files(file.path(gdata_cosmx_dir, "CellComposite"), pattern = "jpg$", full.names = TRUE)
+```
+
+**Data Loading**
+```{r, eval=FALSE}
+# load transcripts
+tx_dt <- data.table::fread(tx_path)
+tx <- split(tx_dt, tx_dt$fov) |> setNames(c("a", "b"))
+gpoints_a <- createGiottoPoints(tx$a, feat_type = c("rna", "NegPrb"), split_keyword = list(c("NegPrb")))
+gpoints_b <- createGiottoPoints(tx$b, feat_type = c("rna", "NegPrb"), split_keyword = list(c("NegPrb")))
+# load polys from mask
+gpoly_a <- createGiottoPolygon(bounds_paths[[1L]], remove_background_polygon = TRUE)
+gpoly_b <- createGiottoPolygon(bounds_paths[[2L]], remove_background_polygon = TRUE)
+# load images
+img_a <- createGiottoLargeImage(img_paths[[1]])
+img_b <- createGiottoLargeImage(img_paths[[2]])
+
+# adjust polys and images to match points extent
+# *********************************************************************************
+#    setting all extents based on points info is an approximation and generally 
+#    not the right way to align the objects since more accurate values are usually
+#    provided. We do this here for expediency to put together an example object.
+# *********************************************************************************
+ext(img_a) <- ext(gpoly_a) <- ext(gpoints_a$rna)
+ext(img_b) <- ext(gpoly_b) <- ext(gpoints_b$rna)
+```
+
+**Check Spatial Alignment**
+```{r, eval=FALSE}
+plot(img_a)
+plot(gpoints_a$rna, col = "magenta", raster = FALSE, add = TRUE)
+plot(gpoly_a, border = "cyan", add = TRUE)
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align="left"}
+knitr::include_graphics("images/split_join/1_align_a.png")
+```
+
+```{r, eval=FALSE}
+plot(img_b)
+plot(gpoints_b$rna, col = "magenta", raster = FALSE, add = TRUE)
+plot(gpoly_b, border = "cyan", add = TRUE)
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align="left"}
+knitr::include_graphics("images/split_join/2_align_b.png")
+```
+
+**Objects Creation**
+```{r, eval=FALSE}
+a <- b <- giotto()
+
+a <- a |>
+    setGiotto(gpoints_a) |>
+    setGiotto(gpoly_a) |>
+    setGiotto(img_a) |>
+    addSpatialCentroidLocations() |>
+    calculateOverlap() |>
+    overlapToMatrix()
+
+b <- b |>
+    setGiotto(gpoints_b) |>
+    setGiotto(gpoly_b) |>
+    setGiotto(img_b) |>
+    addSpatialCentroidLocations() |>
+    calculateOverlap() |>
+    overlapToMatrix()
+# filter and norm skipped since these objects will be joined anyways.
+```
+
+<details>
+
+
+
+# Join Giotto Objects
+
+Multiple `giotto` objects can be combined into a single one through `joinGiottoObjects()`. This requires both the list of `giotto` objects and a list of names to assign those objects in the joined object. The operation updates the cell IDs used throughout the object so that they are disambiguated from possibly similar cell IDs in other objects. A new column (called "list_ID" by default) is also added to the cell metadata to help differentiate between samples. 
+
+Since Giotto primarily handles spatial data, the object joining operations also allow customization of how the spatial joining is performed.
+
+## Join with shift (default)
+
+The default join method is to apply a spatial x padding of 1000, so that spatial data does not accidentally overlap each other and become hard to tell apart between samples. `dry_run = TRUE` can be set in order to get a preview of how the datasets will be spatially positioned relative to each other in 2D join operations.
+
+```{r, eval=FALSE}
+joinGiottoObjects(
+    list(g, g),
+    gobject_names = c("g1", "g2"),
+    dry_run = TRUE
+)
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align="left"}
+knitr::include_graphics("images/split_join/3_join_dry.png")
+```
+
+Alternative positionings can be set by supplying vectors of numerical values to `x_shift` and `y_shift` params.
+
+```{r, eval=FALSE}
+joinGiottoObjects(
+    list(g, g),
+    gobject_names = c("g1", "g2"),
+    x_shift = c(0, 3000),
+    y_shift = c(0, -4000),
+    dry_run = TRUE
+)
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align="left"}
+knitr::include_graphics("images/split_join/4_join_dry_specific.png")
+```
+
+```{r, eval=FALSE}
+j_shift <- joinGiottoObjects(
+    list(g, g),
+    gobject_names = c("g1", "g2"),
+    x_shift = c(0, 3000),
+    y_shift = c(0, -4000),
+    dry_run = FALSE
+)
+spatPlot2D(j_shift, 
+    cell_color = "nr_feats", 
+    gradient_style = "sequential",
+    color_as_factor = FALSE
+)
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align="left"}
+knitr::include_graphics("images/split_join/5_join_shift.png")
+```
+
+
+## Join with Z-stack
+
+Spatial datasets are often generated in slices. If multiple datasets were generated
+from sequential slices of the same or very similar tissue, after spatial 
+alignment/registration, it can be helpful to stack them on the Z axis to
+generate a 3D volume to analyze.
+
+This stacking can be performed during the object joining operation. Here we
+show an example of this with the example visium 
+
+```{r, eval=FALSE}
+j_stack <- joinGiottoObjects(
+    list(g, g, g, g, g),
+    gobject_names = sprintf("obj_%d", seq(5)),
+    join_method = c("z_stack"),
+    z_vals = 100
 )
 ```
 
 ```{r, eval=FALSE}
-# plot the data
-spatPlot2D(tma, show_image = TRUE, point_size = 1.5, point_alpha = 0.7)
+spatPlot3D(j_stack,
+    cell_color = "nr_feats",
+    color_as_factor = FALSE,
+    gradient_style = "sequential",
+    point_alpha = 0.2,
+    point_size = 10,
+    axis_scale = "real"
+)
 ```
 
-```{r, echo=FALSE, out.width="100%", fig.align="center"}
-knitr::include_graphics("images/split_join/1_spatplot.png")
+```{r, echo=FALSE, out.width="60%", fig.align="left"}
+knitr::include_graphics("images/split_join/6_join_stack.png")
 ```
 
-## Detect individual TMA cores
+The above uses 100 as the stepwise distance between all stacks, but z positioning 
+can be customized by providing a specific numerical z value for each slice to add.
 
-By building a spatial network, we can find out which data points are spatially
-contiguous by looking checking spatial distance, breaking ones that are too
-far away, and then checking for graph membership. 
 
-This functionality is implemented as `identifyTMAcores()`.
+## Join with no change
+
+The CosMx mini dataset loaded in previously as `a` and `b` are already spatially
+located in the correct locations relative to each other. For these cases, we
+can join the objects with `join_method = "no_change"`
 
 ```{r, eval=FALSE}
-# create a default delaunay spatial network
-tma <- createSpatialNetwork(tma)
-tma <- identifyTMAcores(tma)
-spatPlot2D(tma,
+join_nc <- joinGiottoObjects(
+    list(a, b),
+    gobject_names = sprintf("fov_%d", seq(2)),
+    join_method = "no_change"
+) |>
+    # also perform some other steps so we have values to plot
+    filterGiotto(
+        expression_threshold = 1,
+        feat_det_in_min_cells = 2,
+        min_det_feats_per_cell = 5
+    ) |>
+    normalizeGiotto() |>
+    addStatistics()
+```
+
+```{r, eval=FALSE}
+spatInSituPlotPoints(join_nc,
+    polygon_fill = "nr_feats",
+    polygon_fill_as_factor = FALSE, 
     show_image = TRUE, 
-    cell_color = "core_id", 
-    point_size = 1.5, 
-    point_alpha = 0.7
+    image_name = c("fov_1-image", "fov_2-image")
 )
 ```
 
-```{r, echo=FALSE, out.width="100%", fig.align="center"}
-knitr::include_graphics("images/split_join/2_identify_tma.png")
-```
-
-The cores have been assigned numerical IDs. There is also a "not_connected"
-group which are too small to be considered a spatial region and not connected to
-a larger group of data points.
-
-We can also now add the core annotations from the 10X dataset description
-
-```{r, eval=FALSE}
-# also add the core annotations from the 10x dataset description
-tma <- annotateGiotto(tma, 
-    name = "sample", 
-    cluster_column = "core_id", 
-    annotation_vector = c(
-        "1" = "lung1",
-        "2" = "brain2",
-        "3" = "brain3",
-        "4" = "lung5",
-        "5" = "brain1",
-        "6" = "brain4",
-        "7" = "lung4",
-        "8" = "lung3",
-        "9" = "lung2",
-        "not_connected" = "not_connected"
-    )
-)
-
-spatPlot2D(tma,
-    show_image = TRUE,
-    cell_color = "sample", 
-    point_size = 1.5, 
-    point_alpha = 1
-)
-```
-
-```{r, echo=FALSE, out.width="100%", fig.align="center"}
-knitr::include_graphics("images/split_join/3_annotated.png")
+```{r, echo=FALSE, out.width="60%", fig.align="left"}
+knitr::include_graphics("images/split_join/7_join_nc.png")
 ```
 
 
 # Split Giotto Object
 
-A split operation will split a single `giotto` object into a list of several based on a cell metadata column defined by the `by` param.
+The reverse can also be done. A split operation will split a single `giotto` 
+object into a list of several based on a cell metadata column defined by the `by` param.
+This can be helpful for splitting apart samples again or examining all subsets
+of a categorical variable within a dataset such as cell type.
+
+Do note however, that this will not reverse the naming changes applied to the cell IDs.
 
 ```{r, eval=FALSE}
-object_list <- splitGiotto(tma, by = "sample")
-length(object_list)
+glist <- splitGiotto(join_nc, by = "list_ID")
+force(glist)
 ```
 
 ```
-[1] 10
-```
-
-```{r, eval=FALSE}
-names(object_list)
-```
-
-```
- [1] "lung1"         "brain2"        "brain3"        "lung5"         "brain1"       
- [6] "brain4"        "lung4"         "lung3"         "not_connected" "lung2"   
-```
-
-# Join Giotto Objects
-
-`giotto` objects can be joined together into a single one. This requires both the list of `giotto` objects and a list of names to assign those objects in the joined object. This involves updating the cell IDs used throughout the object so that they are disambiguated from possibly similar cell IDs in other objects. A new column (called "list_ID" by default) is also added to the cell metadata to help differentiate between samples. Additionally, a spatial x shift is performed by default, so that spatial data does not accidentally overlap each other and become hard to tell apart between samples. In this case, we do not need any additional shifting of values to avoid overlaps, and we can use `join_method = "no_change`.
-
-`joinGiottoObjects()` is used to join together any sets of `giotto` objects for joint analysis, and it is not needed for the objects to have been from the same source object or to have first been split with `splitGiotto()`.
-
-```{r, eval=FALSE}
-lung_reps <- object_list[c("lung1", "lung2", "lung3", "lung4", "lung5")]
-brain_reps <- object_list[c("brain1", "brain2", "brain3", "brain4")]
-
-lung <- joinGiottoObjects(
-    gobject_list = lung_reps, 
-    gobject_names = names(lung_reps), 
-    join_method = "no_change"
-)
-lung <- addStatistics(lung, expression_values = "raw")
-spatPlot2D(lung,
-    cell_color = "total_expr", 
-    color_as_factor = FALSE, 
-    gradient_style = "sequential",
-    group_by = "sample",
-    point_size = 3,
-    point_border_stroke = 0,
-    point_alpha = 0.7,
-    show_image = TRUE
-)
-```
+$fov_1
+An object of class giotto 
+>Active spat_unit:  cell 
+>Active feat_type:  rna 
+dimensions    : 958, 64 (features, cells)
+[SUBCELLULAR INFO]
+polygons      : cell 
+features      : rna NegPrb 
+[AGGREGATE INFO]
+expression -----------------------
+  [cell][rna] raw normalized scaled
+spatial locations ----------------
+  [cell] raw
+attached images ------------------
+images      : fov_1-image fov_2-image 
 
 
-```{r, echo=FALSE, out.width="100%", fig.align="center"}
-knitr::include_graphics("images/split_join/4_lung_joined.png")
-```
+Use objHistory() to see steps and params used
 
-```{r, eval=FALSE}
-brain <- joinGiottoObjects(
-    gobject_list = brain_reps, 
-    gobject_names = names(brain_reps), 
-    join_method = "no_change"
-)
-brain <- addStatistics(brain, expression_values = "raw")
-spatPlot2D(brain,
-    cell_color = "total_expr", 
-    color_as_factor = FALSE, 
-    gradient_style = "sequential",
-    group_by = "sample",
-    point_size = 3,
-    point_border_stroke = 0,
-    point_alpha = 0.7,
-    show_image = TRUE
-)
-```
+$fov_2
+An object of class giotto 
+>Active spat_unit:  cell 
+>Active feat_type:  rna 
+dimensions    : 958, 53 (features, cells)
+[SUBCELLULAR INFO]
+polygons      : cell 
+features      : rna NegPrb 
+[AGGREGATE INFO]
+expression -----------------------
+  [cell][rna] raw normalized scaled
+spatial locations ----------------
+  [cell] raw
+attached images ------------------
+images      : fov_1-image fov_2-image 
 
-```{r, echo=FALSE, out.width="80%", fig.align="center"}
-knitr::include_graphics("images/split_join/5_brain_joined.png")
+
+Use objHistory() to see steps and params used
 ```
 
 
 # Session Info
+
 ```{r, eval=FALSE}
 sessionInfo()
 ```
-
 ```
 R version 4.4.1 (2024-06-14)
 Platform: aarch64-apple-darwin20
@@ -260,49 +357,40 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] Giotto_4.1.3      GiottoClass_0.4.1
+[1] Giotto_4.1.5      GiottoClass_0.4.3
 
 loaded via a namespace (and not attached):
-  [1] colorRamp2_0.1.0            deldir_2.0-4                gridExtra_2.3              
-  [4] rlang_1.1.4                 magrittr_2.0.3              GiottoUtils_0.2.0          
-  [7] matrixStats_1.4.1           compiler_4.4.1              png_0.1-8                  
- [10] vctrs_0.6.5                 hdf5r_1.3.10                pkgconfig_2.0.3            
- [13] SpatialExperiment_1.14.0    crayon_1.5.3                fastmap_1.2.0              
- [16] backports_1.5.0             magick_2.8.4                XVector_0.44.0             
- [19] labeling_0.4.3              ggraph_2.2.1                utf8_1.2.4                 
- [22] rmarkdown_2.28              UCSC.utils_1.0.0            bit_4.5.0                  
- [25] purrr_1.0.2                 xfun_0.47                   zlibbioc_1.50.0            
- [28] cachem_1.1.0                beachmat_2.20.0             GenomeInfoDb_1.40.0        
- [31] jsonlite_1.8.9              DelayedArray_0.30.0         tweenr_2.0.3               
- [34] BiocParallel_1.38.0         terra_1.7-78                irlba_2.3.5.1              
- [37] parallel_4.4.1              R6_2.5.1                    RColorBrewer_1.1-3         
- [40] reticulate_1.39.0           pkgload_1.3.4               GenomicRanges_1.56.0       
- [43] scattermore_1.2             Rcpp_1.0.13                 SummarizedExperiment_1.34.0
- [46] knitr_1.48                  IRanges_2.38.0              Matrix_1.7-0               
- [49] igraph_2.0.3                tidyselect_1.2.1            viridis_0.6.5              
- [52] rstudioapi_0.16.0           abind_1.4-8                 yaml_2.3.10                
- [55] codetools_0.2-20            pkgbuild_1.4.4              lattice_0.22-6             
- [58] tibble_3.2.1                Biobase_2.64.0              withr_3.0.1                
- [61] evaluate_1.0.0              desc_1.4.3                  polyclip_1.10-7            
- [64] xml2_1.3.6                  pillar_1.9.0                MatrixGenerics_1.16.0      
- [67] whisker_0.4.1               checkmate_2.3.2             stats4_4.4.1               
- [70] plotly_4.10.4               generics_0.1.3              dbscan_1.2-0               
- [73] rprojroot_2.0.4             S4Vectors_0.42.0            ggplot2_3.5.1              
- [76] sparseMatrixStats_1.16.0    munsell_0.5.1               scales_1.3.0               
- [79] GiottoData_0.2.15           gtools_3.9.5                glue_1.8.0                 
- [82] lazyeval_0.2.2              tools_4.4.1                 GiottoVisuals_0.2.6        
- [85] data.table_1.16.0           ScaledMatrix_1.12.0         graphlayouts_1.1.1         
- [88] fs_1.6.4                    tidygraph_1.3.1             cowplot_1.1.3              
- [91] grid_4.4.1                  tidyr_1.3.1                 colorspace_2.1-1           
- [94] SingleCellExperiment_1.26.0 GenomeInfoDbData_1.2.12     ggforce_0.4.2              
- [97] BiocSingular_1.20.0         cli_3.6.3                   rsvd_1.0.5                 
-[100] fansi_1.0.6                 S4Arrays_1.4.0              viridisLite_0.4.2          
-[103] dplyr_1.1.4                 uwot_0.2.2                  downlit_0.4.4              
-[106] gtable_0.3.5                digest_0.6.37               BiocGenerics_0.50.0        
-[109] SparseArray_1.4.1           ggrepel_0.9.6               farver_2.1.2               
-[112] rjson_0.2.21                htmlwidgets_1.6.4           memoise_2.0.1              
-[115] htmltools_0.5.8.1           pkgdown_2.1.0               lifecycle_1.0.4            
-[118] httr_1.4.7                  bit64_4.5.2                 MASS_7.3-60.2 
+ [1] tidyselect_1.2.1            viridisLite_0.4.2           dplyr_1.1.4                
+ [4] farver_2.1.2                GiottoVisuals_0.2.8         fastmap_1.2.0              
+ [7] SingleCellExperiment_1.26.0 lazyeval_0.2.2              digest_0.6.37              
+[10] lifecycle_1.0.4             terra_1.7-78                magrittr_2.0.3             
+[13] compiler_4.4.1              rlang_1.1.4                 tools_4.4.1                
+[16] yaml_2.3.10                 igraph_2.1.1                utf8_1.2.4                 
+[19] data.table_1.16.2           knitr_1.48                  S4Arrays_1.4.0             
+[22] labeling_0.4.3              htmlwidgets_1.6.4           reticulate_1.39.0          
+[25] DelayedArray_0.30.0         RColorBrewer_1.1-3          abind_1.4-8                
+[28] withr_3.0.1                 purrr_1.0.2                 BiocGenerics_0.50.0        
+[31] grid_4.4.1                  stats4_4.4.1                fansi_1.0.6                
+[34] colorspace_2.1-1            ggplot2_3.5.1               scales_1.3.0               
+[37] gtools_3.9.5                SummarizedExperiment_1.34.0 cli_3.6.3                  
+[40] rmarkdown_2.28              crayon_1.5.3                generics_0.1.3             
+[43] rstudioapi_0.16.0           httr_1.4.7                  rjson_0.2.21               
+[46] zlibbioc_1.50.0             parallel_4.4.1              XVector_0.44.0             
+[49] matrixStats_1.4.1           vctrs_0.6.5                 Matrix_1.7-0               
+[52] jsonlite_1.8.9              GiottoData_0.2.15           IRanges_2.38.0             
+[55] S4Vectors_0.42.0            ggrepel_0.9.6               scattermore_1.2            
+[58] crosstalk_1.2.1             magick_2.8.5                GiottoUtils_0.2.1          
+[61] plotly_4.10.4               tidyr_1.3.1                 glue_1.8.0                 
+[64] codetools_0.2-20            cowplot_1.1.3               gtable_0.3.5               
+[67] GenomeInfoDb_1.40.0         GenomicRanges_1.56.0        UCSC.utils_1.0.0           
+[70] munsell_0.5.1               tibble_3.2.1                pillar_1.9.0               
+[73] htmltools_0.5.8.1           GenomeInfoDbData_1.2.12     R6_2.5.1                   
+[76] evaluate_1.0.0              lattice_0.22-6              Biobase_2.64.0             
+[79] png_0.1-8                   backports_1.5.0             SpatialExperiment_1.14.0   
+[82] Rcpp_1.0.13                 SparseArray_1.4.1           checkmate_2.3.2            
+[85] colorRamp2_0.1.0            xfun_0.47                   MatrixGenerics_1.16.0      
+[88] pkgconfig_2.0.3    
 ```
+
 
 
