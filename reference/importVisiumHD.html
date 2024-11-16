@@ -546,11 +546,10 @@ values to subset based on column pixels</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Create a `VisiumHDReader` object</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co"># Create a `VisiumHDReader` object</span></span></span>
 <span class="r-in"><span><span class="va">reader</span> <span class="op">&lt;-</span> <span class="fu">importVisiumHD</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Set the visiumHD_dir</span></span></span>
 <span class="r-in"><span><span class="va">reader</span><span class="op">$</span><span class="va">visiumHD_dir</span> <span class="op">&lt;-</span> <span class="st">"path to visium HD dir"</span></span></span>
 <span class="r-in"><span><span class="va">readerHD</span><span class="op">$</span><span class="va">visiumHD_dir</span> <span class="op">&lt;-</span> <span class="va">visiumHD_dir</span></span></span>
@@ -563,10 +562,12 @@ values to subset based on column pixels</p></dd>
 <span class="r-in"><span><span class="va">matrix</span> <span class="op">&lt;-</span> <span class="va">readerHD</span><span class="op">$</span><span class="fu">load_matrix</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">expression_obj</span> <span class="op">&lt;-</span> <span class="va">readerHD</span><span class="op">$</span><span class="fu">load_expression</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Load transcript data (cell metadata, expression object, and transcripts per </span></span></span>
-<span class="r-in"><span><span class="co"># pixel)</span></span></span>
-<span class="r-in"><span><span class="va">my_transcripts</span> <span class="op">&lt;-</span> <span class="va">readerHD</span><span class="op">$</span><span class="fu">load_transcripts</span><span class="op">(</span>array_subset_row <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">1000</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                                            array_subset_col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">1000</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Load transcript data (cell metadata, expression object, and transcripts</span></span></span>
+<span class="r-in"><span><span class="co"># per pixel)</span></span></span>
+<span class="r-in"><span><span class="va">my_transcripts</span> <span class="op">&lt;-</span> <span class="va">readerHD</span><span class="op">$</span><span class="fu">load_transcripts</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    array_subset_row <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">1000</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    array_subset_col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">1000</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create a `giotto` object and add the loaded data</span></span></span>
 <span class="r-in"><span><span class="co"># TODO</span></span></span>
