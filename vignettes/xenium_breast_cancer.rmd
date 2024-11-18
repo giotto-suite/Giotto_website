@@ -12,121 +12,425 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-# 1. Set up Giotto environment
+**This is a legacy dataset.** 
 
+For a more recent example, see [Xenium FFPE Human Lung Cancer with Multimodal Cell Segmentation](https://drieslab.github.io/giotto_workshop_2024/xenium-1.html)
+
+
+# Install Extra Packages
+
+## _arrow_ installation
+
+Xenium datasets requires arrow with ZTSD support to be installed to work with 
+parquet files.
+This is optional if you want to use a different format for the tabular data.
 ```{r, eval=FALSE}
-# Ensure Giotto Suite is installed.
-if(!"Giotto" %in% installed.packages()) {
-  pak::pkg_install("drieslab/Giotto")
+has_arrow <- requireNamespace("arrow", quietly = TRUE)
+zstd <- TRUE
+if (has_arrow) {
+    # check arrow_info() to see that zstd support should be TRUE
+    # See https://arrow.apache.org/docs/r/articles/install.html for details
+    zstd <- arrow::arrow_info()$capabilities[["zstd"]]
 }
-
-# Ensure the Python environment for Giotto has been installed.
-genv_exists = Giotto::checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment.
-  Giotto::installGiottoEnvironment()
+if (!has_arrow || !zstd) {
+    # install with compression library needed for 10x parquet files
+    # this may take a while
+    Sys.setenv(ARROW_WITH_ZSTD = "ON")
+    install.packages("arrow", repos = c("https://apache.r-universe.dev"), type = "source")
 }
 ```
+
+## _tifffile_ and _imagecodecs_ installation
+
+_tifffile_ is a python package for working with tif images. 
+_imagecodecs_ provides the needed JPEG2000 compression codec.
+10x provides their images as `ome.tif` but _Giotto_ usually either cannot open 
+or incurs a large speed penalty when accessing these files. Instead we use
+_tifffile_ to convert these images into normal `tif` images.
+
+Check that _Giotto_ can access a python env and install one if it can't. Then
+activate that python env.
 
 ```{r, eval=FALSE}
 library(Giotto)
 
-# 1. ** SET WORKING DIRECTORY WHERE PROJECT OUPUTS WILL SAVE TO **
-results_folder = '/path/to/save/directory/'
+# Ensure Giotto can access a python env
+genv_exists <- checkGiottoEnvironment()
+if(!genv_exists){
+  # The following command need only be run once to 
+  # install a default Giotto environment
+  installGiottoEnvironment()
+}
 
-# 2. Create Giotto instructions
-# Directly saving plots to the working directory without rendering them in the editor saves time.
-instrs = createGiottoInstructions(save_dir = results_folder,
-                                  save_plot = TRUE,
-                                  show_plot = FALSE,
-                                  return_plot = FALSE)
+# set specific python path to use or python environment name
+# leaving NULL will use default (see ?set_giotto_python_path())
+python_path <- NULL
+set_giotto_python_path(python_path = python_path)
+```
+
+Check for presence of _tifffile_ and _imagecodecs_ in selected python env then
+install if missing.
+```{r, eval=FALSE}
+# install packages if not already installed in environment
+need_py_inst <- try(GiottoUtils::package_check(
+    pkg_name = c("tifffile", "imagecodecs"), repository = c("pip:tifffile", "pip:imagecodecs")
+), silent = TRUE)
+if (!isTRUE(need_py_inst)) {
+    active_env <- GiottoUtils::py_active_env()
+    reticulate::conda_install(
+        envname = active_env, packages = c("tifffile", "imagecodecs"), pip = TRUE
+    )
+    # may need a session restart after installation
+}
 ```
 
 
-# 2. Dataset explanation
+# Dataset Explanation
 
 This vignette covers Giotto object creation and simple exploratory analysis with 10x Genomics' subcellular *Xenium In Situ* platform data using their [Human Breast Cancer Dataset](https://www.10xgenomics.com/products/xenium-in-situ/preview-dataset-human-breast) provided with their [bioRxiv
 pre-print](https://www.biorxiv.org/content/10.1101/2022.10.06.510405v1). This is a legacy pre-release dataset, and some aspects such as file and QC probe naming and image alignment have changed since.
 
-The data from the first tissue replicate will be worked with:
+## Download Links
 
-![](images/xenium_breast_cancer/large_preview.png)
+The data from the first tissue replicate will be worked with. The files to download are:
 
-# 3. Project data paths
+<details><summary>`curl` lnks from 10x genomics</summary>
+```
+# Input Files
 
-The folder structure within the dataset is as shown below.
-**Note:** The cell_feature_matrix.tar.gz must be unpacked into a subdirectory within the xenium working directory before starting.
+curl -O https://cf.10xgenomics.com/samples/xenium/1.0.1/Xenium_FFPE_Human_Breast_Cancer_Rep1/Xenium_FFPE_Human_Breast_Cancer_Rep1_panel.tsv
+curl -O https://cf.10xgenomics.com/samples/xenium/1.0.1/Xenium_FFPE_Human_Breast_Cancer_Rep1/Xenium_FFPE_Human_Breast_Cancer_Rep1_gene_groups.csv
+curl -O https://cf.10xgenomics.com/samples/xenium/1.0.1/Xenium_FFPE_Human_Breast_Cancer_Rep1/Xenium_FFPE_Human_Breast_Cancer_Rep1_he_image.ome.tif
+curl -O https://cf.10xgenomics.com/samples/xenium/1.0.1/Xenium_FFPE_Human_Breast_Cancer_Rep1/Xenium_FFPE_Human_Breast_Cancer_Rep1_he_imagealignment.csv
+curl -O https://cf.10xgenomics.com/samples/xenium/1.0.1/Xenium_FFPE_Human_Breast_Cancer_Rep1/Xenium_FFPE_Human_Breast_Cancer_Rep1_if_image.ome.tif
+curl -O https://cf.10xgenomics.com/samples/xenium/1.0.1/Xenium_FFPE_Human_Breast_Cancer_Rep1/Xenium_FFPE_Human_Breast_Cancer_Rep1_if_imagealignment.csv
 
+# Output Files
+curl -O https://cf.10xgenomics.com/samples/xenium/1.0.1/Xenium_FFPE_Human_Breast_Cancer_Rep1/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip
 
-```{r, eval=FALSE}
-# ** SET PATH TO FOLDER CONTAINING XENIUM DATA **
-xenium_folder = '/path/to/xenium/data/outputs'
-
-# general files (some are supplemental files)
-settings_path = paste0(xenium_folder, 'experiment.xenium')
-he_img_path = paste0(xenium_folder, 'Xenium_FFPE_Human_Breast_Cancer_Rep1_he_image.tif')
-if_img_path = paste0(xenium_folder, 'Xenium_FFPE_Human_Breast_Cancer_Rep1_if_image.tif')
-panel_meta_path = paste0(xenium_folder, 'Xenium_FFPE_Human_Breast_Cancer_Rep1_panel.tsv') # (optional)
-
-# files (SUBCELLULAR): (tutorial focuses on working with these files)
-cell_bound_path = paste0(xenium_folder, 'cell_boundaries.csv.gz')
-nuc_bound_path = paste0(xenium_folder, 'nucleus_boundaries.csv.gz')
-tx_path = paste0(xenium_folder, 'transcripts.csv.gz')
-feat_meta_path = paste0(xenium_folder, 'cell_feature_matrix/features.tsv.gz') # (also used in aggregate)
-
-# files (AGGREGATE):
-expr_mat_path = paste0(xenium_folder, 'cell_feature_matrix')
-cell_meta_path = paste0(xenium_folder, 'cells.csv.gz') # contains spatlocs
 ```
 
+</details>
 
-# 4. Xenium feature types exploration
+<br>
 
-`features.tsv.gz` within `cell_feature_matrix.tar.gz` provides  information on the different feature types available within Xenium's two types of expression outputs:
+Do not download the provided `.tif` images. They are cropped and scaled 
+differently from the `ome.tif` images, which presents difficulties when using
+the provided alignment information.
 
-1. aggregated cell by feature matrix
-2. transcript detections in `transcripts.csv.gz`
 
-There are four types of probes used, each of which is represented in both exports:
+## Expected Directory Structure
 
-- `gene expression`: Gene expression detection
-- `blank codeword`: Unused codeword - there are no probes that will generate the codeword
-- `negative control codeword`: Valid codewords that do not have any probes that should yield that code, so they can be used to assess the specificity of the decoding algorithm
-- `negative control probe`: Probes that exist in the panel, but target ERCC or other non-biological sequences, which can be used to assess the specificity of the assay
+When unzipped, you should have the following directory structure:
 
+<details><summary>expand</summary>
+```
+/path/to/data/
+├── Xenium_FFPE_Human_Breast_Cancer_Rep1_gene_groups.csv
+├── Xenium_FFPE_Human_Breast_Cancer_Rep1_he_image.ome.tif
+├── Xenium_FFPE_Human_Breast_Cancer_Rep1_he_imagealignment.csv
+├── Xenium_FFPE_Human_Breast_Cancer_Rep1_if_image.ome.tif
+├── Xenium_FFPE_Human_Breast_Cancer_Rep1_if_imagealignment.csv
+├── Xenium_FFPE_Human_Breast_Cancer_Rep1_panel.tsv
+└── outs
+    ├── analysis
+    │   ├── clustering
+    │   │   ├── ...
+    │   ├── diffexp
+    │   │   ├── ...
+    │   ├── pca
+    │   │   └── ...
+    │   ├── tsne
+    │   │   └── ...
+    │   └── umap
+    │       └── ...
+    ├── analysis.zarr.zip
+    ├── analysis_summary.html
+    ├── cell_boundaries.csv.gz
+    ├── cell_boundaries.parquet
+    ├── cell_feature_matrix
+    │   ├── barcodes.tsv.gz
+    │   ├── features.tsv.gz
+    │   └── matrix.mtx.gz
+    ├── cell_feature_matrix.h5
+    ├── cell_feature_matrix.zarr.zip
+    ├── cells.csv.gz
+    ├── cells.parquet
+    ├── cells.zarr.zip
+    ├── experiment.xenium
+    ├── gene_panel.json
+    ├── metrics_summary.csv
+    ├── morphology.ome.tif
+    ├── morphology_focus.ome.tif
+    ├── morphology_mip.ome.tif
+    ├── nucleus_boundaries.csv.gz
+    ├── nucleus_boundaries.parquet
+    ├── transcripts.csv.gz
+    ├── transcripts.parquet
+    └── transcripts.zarr.zip
+```
+</details>
+
+<br>
+
+**The actual Xenium output directory is under `outs` in this layout**. 
+
+The `outs` folder will be used with the convenience functions to load into a 
+`giotto` analysis object.
+
+Input files are one directory level up. Of note are the `.ome.tif` image and
+alignment `.csv` files. These are images of stainings (H&E and IF) generated
+after the Xenium run has finished. Since these were imaged on external systems, 
+they have been aligned to the rest of the data using *Xenium Explorer*.
+The alignment `.csv` file is an affine transformation matrix used to align the image
+to the Xenium dataset.
+
+<details>
+<summary>more about xenium pre-release image types</summary>
+
+<hr>
+
+This dataset provides several images
+
+**images to load**
+
+- `Xenium_FFPE_Human_Breast_Cancer_Rep1_he_image.ome.tif`
+  - post-Xenium H&E. Used with alignment matrix.
+- `Xenium_FFPE_Human_Breast_Cancer_Rep1_if_image.ome.tif`
+  - post-Xenium IF. Used with alignment matrix.
+- `morphology_focus.ome.tif`
+  - DAPI image combined from the most in-focus regions from multiple z stacks
+
+**images not loaded**
+
+- `morphology.ome.tif`
+  - z-stacked image. Many planes may be less focused
+- `morphology_mip.ome.tif`
+  - [maximum intensity projection](https://en.wikipedia.org/wiki/Maximum_intensity_projection) 
+  image created from the `morphology.ome.tif`.
+  Has more even brightness compared against `morphology_focus.ome.tif`, but is
+  also slightly blurrier. This image type was only provided with the
+  pre-release and does not show up in later Xenium pipeline versions.
+
+</details>
+
+<br>
+
+Also note that 10x provides several formats for many of the outputs. This
+will be touched on later when loading the data in.
+
+
+
+# Load Xenium Data
+
+The Xenium data can be loaded using `createGiottoXeniumObject()`
+
+The default behavior is to load:
+
+- transcripts information
+- cell and nucleus boundaries
+- morphology focus images (DAPI and IF cell boundary stains if any)
+- feature metadata (gene_panel.json)
+
+<details><summary>Alternative data to load</summary>
+
+<hr>
+
+We skip loading of:
+
+- expression
+- cell metadata
+
+They can be loaded if `load_expression` and `load_cellmeta` respectively are set to `TRUE`.
+We normally skip them since Giotto's aggregation results may produce slightly different
+results than those from 10X. 
+
+The molecule transcript detections can also be skipped if directly using the 10X
+expression information alongside the polygons. You can do this by setting 
+`load_transcripts` to `FALSE`. It will not be possible to plot the individual
+transcript detections if they are not loaded in, but memory usage is greatly 
+reduced. 
+
+As an additional note, the provided expression
+values are generated from a QV threshold of 20 (described below) with the cell polygons. 
+If a different QV threshold or usage of the nuclear segmentations is desired, 
+then de novo aggregation from polygons and points will be required.
+
+Expected peak RAM usage:
+
+- with transcripts: ~70GB
+- without transcripts: ~5GB
+
+</details>
+
+<br>
+
+For the full dataset (HPC): _time: 5-6min | memory: 50GB_   
 
 ```{r, eval=FALSE}
-# load features metadata
-# (make sure cell_feature_matrix folder is unpacked)
-feature_dt = data.table::fread(feat_meta_path, header = FALSE)
-colnames(feature_dt) = c('ensembl_ID','feat_name','feat_type')
+# 1. ** SET PATH TO FOLDER CONTAINING XENIUM DATA **
+data_path <- "path/to/data"
 
-# find the feature IDs that belong to each feature type
-feature_dt[, table(feat_type)]
-feat_types = names(feature_dt[, table(feat_type)])
+# 2. ** SET WORKING DIRECTORY WHERE PROJECT OUTPUTS WILL SAVE TO **
+results_folder = '/path/to/results/'
 
-feat_types_IDs = lapply(
-  feat_types, function(type) feature_dt[feat_type == type, unique(feat_name)]
+# 3. Create Giotto instructions
+# Directly saving plots to the working directory without rendering them in the viewer saves time.
+instrs = createGiottoInstructions(
+    save_dir = results_folder,
+    save_plot = TRUE,
+    show_plot = FALSE,
+    return_plot = FALSE,
+    python_path = python_path
 )
-names(feat_types_IDs) = feat_types
+
+# These feat_type and split_keyword settings are specific to
+# pre-release and early versions of the Xenium pipeline
+
+feat_types <- c(
+    "rna",
+    "UnassignedCodeword", 
+    "NegControlCodeword",  
+    "NegControlProbe"
+)
+split_keywords = list(
+    c("BLANK"),
+    c("NegControlCodeword"),
+    c("NegControlProbe", "antisense")
+)
+
+# 4. Create the object
+xenium_gobj <- createGiottoXeniumObject(
+    xenium_dir = file.path(data_path, "outs"),
+    qv_threshold = 20, # qv of 20 is the default and also what 10x uses
+    feat_type = feat_types,
+    split_keyword = split_keywords,
+    # * if aligned images already converted to .tif, they could be added as named list
+    # * instead, see next section
+    # load_aligned_images = list(
+    #     post_he = c(
+    #         "path/to/...he_image.tif",
+    #         "path/to/...he_imagealignment.csv"
+    #     ),
+    #     CD20 = ...,
+    #     HER2 = ...,
+    #     DAPI = ...
+    # ),
+    instructions = instrs
+)
+
+force(xenium_gobj)
 ```
 
+```
+An object of class giotto 
+>Active spat_unit:  cell 
+>Active feat_type:  rna 
+dimensions    : 313, 167780 (features, cells)
+[SUBCELLULAR INFO]
+polygons      : cell nucleus 
+features      : rna blank_codeword neg_control_codeword neg_control_probe 
+[AGGREGATE INFO]
+spatial locations ----------------
+  [cell] raw
+  [nucleus] raw
+attached images ------------------
+images      : dapi 
 
 
-```{r, eval=FALSE}
-# feat_type
-#            Blank Codeword           Gene Expression
-#                       159                       313
-#            Negative Control Codeword    Negative Control Probe 
-#                                   41                        28 
+Use objHistory() to see steps and params used
 ```
 
+There are several parameters for additional or alternative items you can load. See dropdowns.
 
-This dataset has 313 probes that are dedicated for gene expression transcript detection.
+<details>
+<summary>Loading from non-standard directories or other provided file formats</summary>
 
+The convenience function auto-detects filepaths based on the Xenium directory 
+path and the preferred file formats
 
+- `.parquet` for tabular (vs `.csv`)
+- `.h5` for matrix over other formats when available (vs `.mtx`)
+- `.zarr` is currently not supported.
 
+When you need to use a different file format or something is not in the 
+standard Xenium output directory structure or naming scheme shown above, 
+you can supply a specific filepath to `createGiottoXeniumObject()` using these 
+parameters:
+
+```
+expression_path = ,
+cell_metadata_path = ,
+transcript_path = ,
+bounds_path = ,
+gene_panel_json_path = , 
+```
+
+Note that if loading in the `.mtx` file, `expression_path` param should be passed
+the filepath to the `cell_feature_matrix` subdirectory instead of the `.mtx` 
+file.
+
+<br>
+
+</details>
+
+<details>
+<summary>qv_threshold setting</summary>
+
+```
+qv_threshold = 20 # default
+```
+
+The _Quality Value_ is a Phred-based 0-40 value that 10X provides for every 
+detection in their transcripts output. Higher values mean higher confidence 
+in the decoded transcript identity. By default 10X uses a cutoff of QV = 20 
+for transcripts to use downstream.
+
+*Setting a value other than 20 will make the loaded dataset different from the 10X-provided expression matrix and cell metadata.*
+
+**QV Calculation**
+
+1. Raw Q-score based on how likely it is that an observed code is to be the codeword that it gets mapped to vs less likely codeword.
+2. Adjustment of raw Q-score by binning the transcripts by Q-value then adjusting the exact Q per bin based on proportion of **Negative Control Codewords** detected within.
+
+[further info from 10x documentation](https://www.10xgenomics.com/support/software/xenium-onboard-analysis/latest/algorithms-overview/xoa-algorithms#qvs)
+
+<br>
+
+</details>
+
+<details>
+<summary>feat_types and split_keywords</summary>
+
+These parameters govern how transcript types are split into different groups when loading.
+```
+feat_types <- c(
+    "rna",
+    "UnassignedCodeword", 
+    "NegControlCodeword",  
+    "NegControlProbe"
+)
+split_keywords = list(
+    c("BLANK"),
+    c("NegControlCodeword"),
+    c("NegControlProbe", "antisense")
+)
+```
+
+There are 4 types of transcript detections that 10X reports with this dataset.
+
+<details>
+<summary>**Gene expression** (313) - These are the `'rna'` gene detections.</summary>
 ```{r, eval=FALSE}
+rna <- xenium_gobj[["feat_info", "rna"]][[1]]
+plot(rna, dens = TRUE)
+```
+
+```{r, echo=FALSE, fig.cap="plot of Gene expression (rna) density"}
+knitr::include_graphics("images/xenium_breast_cancer/gpoints.png")
+```
+
+```
 #   [1] "ABCC11"   "ACTA2"    "ACTG2"    "ADAM9"    "ADGRE5"   "ADH1B"   
 #   [7] "ADIPOQ"   "AGR3"     "AHSP"     "AIF1"     "AKR1C1"   "AKR1C3"  
 #  [13] "ALDH1A3"  "ANGPT2"   "ANKRD28"  "ANKRD29"  "ANKRD30A" "APOBEC3A"
@@ -181,9 +485,11 @@ This dataset has 313 probes that are dedicated for gene expression transcript de
 # [307] "USP53"    "VOPP1"    "VWF"      "WARS"     "ZEB1"     "ZEB2"    
 # [313] "ZNF562"  
 ```
+</details>
 
-
-```{r, eval=FALSE}
+<details>
+<summary>**Blank Codeword** (159) - (QC) Codewords that should not be used in the current panel. (named **Unassigned Codeword** in later Xenium pipelines)</summary>
+```
 #   [1] "BLANK_0006" "BLANK_0013" "BLANK_0037" "BLANK_0069" "BLANK_0072"
 #   [6] "BLANK_0087" "BLANK_0110" "BLANK_0114" "BLANK_0120" "BLANK_0147"
 #  [11] "BLANK_0180" "BLANK_0186" "BLANK_0272" "BLANK_0278" "BLANK_0319"
@@ -217,9 +523,11 @@ This dataset has 313 probes that are dedicated for gene expression transcript de
 # [151] "BLANK_0483" "BLANK_0484" "BLANK_0485" "BLANK_0486" "BLANK_0487"
 # [156] "BLANK_0488" "BLANK_0489" "BLANK_0497" "BLANK_0499"
 ```
+</details>
 
-
-```{r, eval=FALSE}
+<details>
+<summary>**Negative Control Codeword** (41) - (QC) Codewords that do not map to genes, but are in the codebook. Used to determine specificity of decoding algorithm</summary>
+```
 #  [1] "NegControlCodeword_0500" "NegControlCodeword_0501"
 #  [3] "NegControlCodeword_0502" "NegControlCodeword_0503"
 #  [5] "NegControlCodeword_0504" "NegControlCodeword_0505"
@@ -242,9 +550,11 @@ This dataset has 313 probes that are dedicated for gene expression transcript de
 # [39] "NegControlCodeword_0538" "NegControlCodeword_0539"
 # [41] "NegControlCodeword_0540"
 ```
+</details>
 
-
-```{r, eval=FALSE}
+<details>
+<summary>**Negative Control Probe** (28) - (QC) Probes in panel but target non-biological sequences. Used to determine specificity of assay.</summary>
+```
 #  [1] "NegControlProbe_00042" "NegControlProbe_00041" "NegControlProbe_00039"
 #  [4] "NegControlProbe_00035" "NegControlProbe_00034" "NegControlProbe_00033"
 #  [7] "NegControlProbe_00031" "NegControlProbe_00025" "NegControlProbe_00024"
@@ -256,1114 +566,442 @@ This dataset has 313 probes that are dedicated for gene expression transcript de
 # [25] "antisense_MYLIP"       "antisense_LGI3"        "antisense_BCL2L15"    
 # [28] "antisense_ADCY4"   
 ```
+</details>
 
 
-# 5. Loading Xenium data
 
-## 5.1 Manual Method
+<hr>
 
-Giotto objects can be manually assembled feeding data and subobjects into a creation function. A convenience function for automatically loading the xenium data from the directory and generating a giotto object is also available. (See Section 5.2])
+The main thing to watch out for is that the other probe types should be separated out from the the **Gene expression** or **rna** feature type so that they do not interfere with expression normalization and other analyses.
 
-Xenium outputs can be analyzed as either the subcellular information or as aggregated data where each detected cell's subcellular data has been spatially assigned to a cell centroid. This tutorial will work mainly with the subcellular data and how to work with it, however a workflow to load in just the aggregated data is also available through the convenience function.
+How to deal with these different types of detections is easily adjustable. With the `feat_type` param you declare which categories/`feat_types` you want to split transcript detections into. Then with `split_keyword`, you provide a list of character vectors containing `grep()` terms to search for.
 
-### 5.1.1 Load transcript-level data
+Note that there are 4 `feat_types` declared in this set of defaults, but 3 items passed to `split_keyword`. Any transcripts not matched by items in `split_keyword`, get categorized as the first provided `feat_type` ("rna").
 
-`transcripts.csv.gz` is a file containing x, y, z coordinates for individual transcript molecules detected during the Xenium run. It also contains a QC Phred score for which this tutorial will set a cutoff at 20, the same as what 10x uses.
+<br>
+
+</details>
 
 
-```{r, eval=FALSE}
-tx_dt = data.table::fread(tx_path)
-data.table::setnames(x = tx_dt,
-                     old = c('feature_name', 'x_location', 'y_location'),
-                     new = c('feat_ID', 'x', 'y'))
-cat('Transcripts info available:\n ', paste0('"', colnames(tx_dt), '"'), '\n',
-    'with', tx_dt[,.N], 'unfiltered detections\n')
 
-# filter by qv (Phred score)
-tx_dt_filtered = tx_dt[qv >= 20]
-cat('and', tx_dt_filtered[,.N], 'filtered detections\n\n')
-
-# separate detections by feature type
-tx_dt_types = lapply(
-  feat_types_IDs, function(types) tx_dt_filtered[feat_ID %in% types]
-)
-
-invisible(lapply(seq_along(tx_dt_types), function(x) {
-  cat(names(tx_dt_types)[[x]], 'detections: ', tx_dt_types[[x]][,.N], '\n')
-}))
-```
 
 
 
 ```{r, eval=FALSE}
-# Transcripts info available:
-#   "transcript_id" "cell_id" "overlaps_nucleus" "feat_ID" "x" "y" "z_location" "qv" 
-#  with 43664530 unfiltered detections
-#  and 34813341 filtered detections
-# 
-# Blank Codeword detections: 8805 
-# Gene Expression detections: 34764833 
-# Negative Control Codeword detections: 1855 
-# Negative Control Probe detections: 37848 
-```
-
-
-Giotto loads these filtered subcellular detections in as a `giottoPoints` object and determines the correct columns by looking   for columns named `'feat_ID',` `'x'`, and `'y'`.
-
-Here, we use the list of `data.table`s generated in the previous step to create a list of `giottoPoints` objects. When previewing these objects using `plot()`, the default behavior is to plot ALL points within the object. For objects that contain many feature points, it is highly recommended to specify a subset of features to plot using the `feats` param.
-
-
-```{r, eval=FALSE}
-gpoints_list = lapply(
-  tx_dt_types, function(x) createGiottoPoints(x = x)
-) # 208.499 sec elapsed
-
-# preview QC probe detections
-plot(gpoints_list$`Blank Codeword`,
-     point_size = 0.3,
-     main = 'Blank Codeword')
-plot(gpoints_list$`Negative Control Codeword`,
-     point_size = 0.3,
-     main = 'Negative Control Codeword')
-plot(gpoints_list$`Negative Control Probe`,
-     point_size = 0.3,
-     main = 'Negative Control Probe')
-
-# preview two genes (slower)
-plot(gpoints_list$`Gene Expression`,  # 77.843 sec elapsed
-     feats = c('KRT8', 'MS4A1'))
-tx_dt_types$`Gene Expression`[feat_ID %in% c('KRT8', 'MS4A1'), table(feat_ID)]
-```
-
-
-
-```{r, eval=FALSE}
-# feat_ID
-#   KRT8  MS4A1 
-# 530190  20926 
-```
-
-
-![](images/xenium_breast_cancer/gpoints_blnk.png)
-![](images/xenium_breast_cancer/gpoints_ngcode.png)
-![](images/xenium_breast_cancer/gpoints_ngprbe.png)
-![](images/xenium_breast_cancer/gpoints_expr.png)
-
-### 5.1.2 Load polygon data
-
-Xenium output provides segmentation/cell boundary information in .csv.gz files. These are represented within Giotto as `giottoPolygon` objects and can also be directly plotted. This function also determines the correct columns to use by looking for columns named `'poly_ID'`, `'x'`, and `'y'`.
-
-
-```{r, eval=FALSE}
-cellPoly_dt = data.table::fread(cell_bound_path)
-nucPoly_dt = data.table::fread(nuc_bound_path)
-
-data.table::setnames(cellPoly_dt,
-                     old = c('cell_id', 'vertex_x', 'vertex_y'),
-                     new = c('poly_ID', 'x', 'y'))
-data.table::setnames(nucPoly_dt,
-                     old = c('cell_id', 'vertex_x', 'vertex_y'),
-                     new = c('poly_ID', 'x', 'y'))
-
-gpoly_cells = createGiottoPolygonsFromDfr(segmdfr = cellPoly_dt,
-                                          name = 'cell',
-                                          calc_centroids = TRUE)
-gpoly_nucs = createGiottoPolygonsFromDfr(segmdfr = nucPoly_dt,
-                                         name = 'nucleus',
-                                         calc_centroids = TRUE)
-```
-
-
-`giottoPolygon` objects can be directly plotted with `plot()`, but the field of view here is so large that it would take a long time and the details would be lost. Here, we will only plot the polygon centroids for the cell nucleus polygons by accessing the calculated results within the `giottoPolygon`'s `spatVectorCentroids` slot.
-
-
-```{r, eval=FALSE}
-plot(x = gpoly_nucs, point_size = 0.1, type = 'centroid')
-```
-
-
-![](images/xenium_breast_cancer/gpolys_centroids.png)
-
-### 5.1.3 Create Giotto Object
-
-Now that both the feature data and the boundaries are loaded in, a subcellular Giotto object can be created.
-
-
-```{r, eval=FALSE}
-xenium_gobj = createGiottoObjectSubcellular(
-  gpoints = list(rna = gpoints_list$`Gene Expression`,
-                 blank_code = gpoints_list$`Blank Codeword`,
-                 neg_code = gpoints_list$`Negative Control Codeword`,
-                 neg_probe = gpoints_list$`Negative Control Probe`),
-  gpolygons = list(cell = gpoly_cells,
-                   nucleus = gpoly_nucs),
-  instructions = instrs
-)
-```
-
-
-## 5.2 Load dataset - Convenience Function {#sec-autoload}
-
-The dataset can also be loaded through a convenience function.
-
-
-```{r, eval=FALSE}
-subcellular = createGiottoXeniumObject(xenium_dir = xenium_folder,
-                                       data_to_use = 'subcellular',
-                                       bounds_to_load = c('cell', 'nucleus'),
-                                       qv_threshold = 20,
-                                       h5_expression = F,
-                                       instructions = instrs,
-                                       cores = NA) # set number of cores to use
-```
-
-
-```{r, eval=FALSE}
-# A structured Xenium directory will be used
-# 
-# Checking directory contents...
-#    > analysis info found
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_analysis.tar.gz
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_analysis.zarr.zip
-#    > boundary info found
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cell_boundaries.csv.gz
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cell_boundaries.parquet
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_nucleus_boundaries.csv.gz
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_nucleus_boundaries.parquet
-#    > cell feature matrix found
-#       └──cell_feature_matrix
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cell_feature_matrix.h5
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cell_feature_matrix.zarr.zip
-#    > cell metadata found
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cells.csv.gz
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cells.parquet
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cells.zarr.zip
-#    > image info found
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_he_image.tif
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_morphology_focus.ome.tif
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_morphology_mip.ome.tif
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_morphology.ome.tif
-#    > panel metadata found
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_panel.tsv
-#    > raw transcript info found
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_transcripts.csv.gz
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_transcripts.parquet
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_transcripts.zarr.zip
-#    > experiment info found
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_experiment.xenium
-# Directory check done
-# Loading feature metadata...
-# Loading transcript level info...
-# |--------------------------------------------------|
-# |==================================================|
-# Loading boundary info...
-# Loading cell metadata...
-# Building subcellular giotto object...
-# > points data...
-#   Selecting col "feature_name" as feat_ID column
-#   Selecting cols "x_location" and "y_location" as x and y respectively
-# > polygons data...
-#   [cell] bounds...
-#   Selecting col "cell_id" as poly_ID column
-#   Selecting cols "vertex_x" and "vertex_y" as x and y respectively
-#   [nucleus] bounds...
-#   Selecting col "cell_id" as poly_ID column
-#   Selecting cols "vertex_x" and "vertex_y" as x and y respectively
-# 1. Start extracting polygon information 
-# 2. Finished extracting polygon information 
-# 3. Add centroid / spatial locations if available 
-# 3. Finish adding centroid / spatial locations 
-# 3. Start extracting spatial feature information 
-# 4. Finished extracting spatial feature information 
-# Calculating polygon centroids...
-# Start centroid calculation for polygon information layer:  cell 
-# Start centroid calculation for polygon information layer:  nucleus 
-```
-
-
-```{r, eval=FALSE}
-aggregate = createGiottoXeniumObject(xenium_dir = xenium_folder,
-                                     data_to_use = 'aggregate',
-                                     h5_expression = F,
-                                     instructions = instrs,
-                                     cores = NA) # set number of cores to use
-```
-
-
-```{r, eval=FALSE}
-# A structured Xenium directory will be used
-# 
-# Checking directory contents...
-#    > analysis info found
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_analysis.tar.gz
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_analysis.zarr.zip
-#    > boundary info found
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cell_boundaries.csv.gz
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cell_boundaries.parquet
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_nucleus_boundaries.csv.gz
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_nucleus_boundaries.parquet
-#    > cell feature matrix found
-#       └──cell_feature_matrix
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cell_feature_matrix.h5
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cell_feature_matrix.zarr.zip
-#    > cell metadata found
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cells.csv.gz
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cells.parquet
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cells.zarr.zip
-#    > image info found
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_he_image.tif
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_morphology_focus.ome.tif
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_morphology_mip.ome.tif
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_morphology.ome.tif
-#    > panel metadata found
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_panel.tsv
-#    > raw transcript info found
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_transcripts.csv.gz
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_transcripts.parquet
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_transcripts.zarr.zip
-#    > experiment info found
-#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_experiment.xenium
-# Directory check done
-# Loading feature metadata...
-# Loading cell metadata...
-# Loading aggregated expression...
-# Building aggregate giotto object...
-# Consider to install these (optional) packages to run all possible
-# Giotto commands for spatial analyses: trendsceek multinet RTriangle
-# Giotto does not automatically install all these packages as they are
-# not absolutely required and this reduces the number of dependencies
-# List of 4
-#  $ raw                      :Formal class 'dgTMatrix' [package "Matrix"] with 6 slots
-#   .. ..@ i       : int [1:10663545] 1 2 29 30 36 37 39 42 44 47 ...
-#   .. ..@ j       : int [1:10663545] 0 0 0 0 0 0 0 0 0 0 ...
-#   .. ..@ Dim     : int [1:2] 313 167782
-#   .. ..@ Dimnames:List of 2
-#   .. .. ..$ : Named chr [1:313] "ABCC11" "ACTA2" "ACTG2" "ADAM9" ...
-#   .. .. .. ..- attr(*, "names")= chr [1:313] "1" "2" "3" "4" ...
-#   .. .. ..$ : chr [1:167782] "1" "2" "3" "4" ...
-#   .. ..@ x       : num [1:10663545] 3 1 1 3 1 1 1 1 1 1 ...
-#   .. ..@ factors : list()
-#  $ Negative_Control_Probe   :Formal class 'dgTMatrix' [package "Matrix"] with 6 slots
-#   .. ..@ i       : int [1:24312] 18 20 22 22 22 22 20 25 26 20 ...
-#   .. ..@ j       : int [1:24312] 48 79 79 130 175 205 214 215 223 248 ...
-#   .. ..@ Dim     : int [1:2] 28 167782
-#   .. ..@ Dimnames:List of 2
-#   .. .. ..$ : Named chr [1:28] "NegControlProbe_00042" "NegControlProbe_00041" "NegControlProbe_00039" "NegControlProbe_00035" ...
-#   .. .. .. ..- attr(*, "names")= chr [1:28] "314" "315" "316" "317" ...
-#   .. .. ..$ : chr [1:167782] "1" "2" "3" "4" ...
-#   .. ..@ x       : num [1:24312] 1 1 1 1 1 1 1 1 1 1 ...
-#   .. ..@ factors : list()
-#  $ Negative_Control_Codeword:Formal class 'dgTMatrix' [package "Matrix"] with 6 slots
-#   .. ..@ i       : int [1:1777] 33 14 3 31 3 8 24 10 22 27 ...
-#   .. ..@ j       : int [1:1777] 177 373 381 583 605 673 733 850 924 1033 ...
-#   .. ..@ Dim     : int [1:2] 41 167782
-#   .. ..@ Dimnames:List of 2
-#   .. .. ..$ : Named chr [1:41] "NegControlCodeword_0500" "NegControlCodeword_0501" "NegControlCodeword_0502" "NegControlCodeword_0503" ...
-#   .. .. .. ..- attr(*, "names")= chr [1:41] "342" "343" "344" "345" ...
-#   .. .. ..$ : chr [1:167782] "1" "2" "3" "4" ...
-#   .. ..@ x       : num [1:1777] 1 1 1 1 1 1 1 1 1 1 ...
-#   .. ..@ factors : list()
-#  $ Blank_Codeword           :Formal class 'dgTMatrix' [package "Matrix"] with 6 slots
-#   .. ..@ i       : int [1:8404] 114 76 33 7 34 8 119 91 6 116 ...
-#   .. ..@ j       : int [1:8404] 83 111 114 138 183 245 312 322 338 354 ...
-#   .. ..@ Dim     : int [1:2] 159 167782
-#   .. ..@ Dimnames:List of 2
-#   .. .. ..$ : Named chr [1:159] "BLANK_0006" "BLANK_0013" "BLANK_0037" "BLANK_0069" ...
-#   .. .. .. ..- attr(*, "names")= chr [1:159] "383" "384" "385" "386" ...
-#   .. .. ..$ : chr [1:167782] "1" "2" "3" "4" ...
-#   .. ..@ x       : num [1:8404] 1 1 1 1 1 1 1 1 1 1 ...
-#   .. ..@ factors : list()
-# NULL
-# list depth of 1 
-# finished expression data
-# List of 1
-#  $ raw:Classes ‘data.table’ and 'data.frame': 167782 obs. of  3 variables:
-#   ..$ x_centroid: num [1:167782] 378 382 320 259 371 ...
-#   ..$ y_centroid: num [1:167782] 844 859 869 852 865 ...
-#   ..$ cell_ID   : chr [1:167782] "1" "2" "3" "4" ...
-#   ..- attr(*, ".internal.selfref")=<externalptr> 
-# NULL
-# list depth of 1 
-# There are non numeric or integer columns for the spatial location input at column position(s): 3
-#  The first non-numeric column will be considered as a cell ID to test for consistency with the expression matrix
-#  Other non numeric columns will be removed
-# finished spatial location data
-# finished cell metadata
-# No spatial networks are provided
-# No spatial enrichment results are provided
-# No dimension reduction results are provided
-# No nearest network results are provided
-```
-
-
-# 6. Visualize Giotto object and cells
-
-## 6.1 Spatial info
-
-Print the available spatial cell and nucleus boundary information (polygons) within the Giotto object `spatial_info` slot.
-
-
-```{r, eval=FALSE}
-showGiottoSpatialInfo(xenium_gobj)
-```
-
-
-
-```{r, eval=FALSE}
-# For Spatial info:  cell 
-# 
-# An object of class "giottoPolygon"
-# Slot "name":
-# [1] "cell"
-# 
-# Slot "spatVector":
-#  class       : SpatVector 
-#  geometry    : polygons 
-#  dimensions  : 167782, 1  (geometries, attributes)
-#  extent      : 0, 7525.9, 0, 5478.038  (xmin, xmax, ymin, ymax)
-#  coord. ref. :  
-# 
-# Slot "spatVectorCentroids":
-#  class       : SpatVector 
-#  geometry    : points 
-#  dimensions  : 167782, 1  (geometries, attributes)
-#  extent      : 2.189156, 7523.163, 1.406448, 5476.467  (xmin, xmax, ymin, ymax)
-#  coord. ref. :  
-# 
-# Slot "overlaps":
-# NULL
-# 
-# -----------------------------
-#  
-# For Spatial info:  nucleus 
-# 
-# An object of class "giottoPolygon"
-# Slot "name":
-# [1] "nucleus"
-# 
-# Slot "spatVector":
-#  class       : SpatVector 
-#  geometry    : polygons 
-#  dimensions  : 167782, 1  (geometries, attributes)
-#  extent      : 1.4875, 7524.413, 0, 5478.038  (xmin, xmax, ymin, ymax)
-#  coord. ref. :  
-# 
-# Slot "spatVectorCentroids":
-#  class       : SpatVector 
-#  geometry    : points 
-#  dimensions  : 167782, 1  (geometries, attributes)
-#  extent      : 2.596845, 7523.503, 0.8111559, 5477.374  (xmin, xmax, ymin, ymax)
-#  coord. ref. :  
-# 
-# Slot "overlaps":
-# NULL
-# 
-# -----------------------------
-```
-
-
-## 6.2 Spatial locations
-
-Print the available spatial locations within the Giotto object's `spatial_locs` slot. These are generated from the centroids calculation for the polygons, and will be used for any generated aggregate information.
-
-
-```{r, eval=FALSE}
-showGiottoSpatLocs(xenium_gobj)
-```
-
-
-
-```{r, eval=FALSE}
-# ├──Spatial unit "cell"
-# │  └──S4 spatLocsObj "raw" coordinates:   (167782 rows)
-# │        An object of class spatLocsObj 
-# │        provenance: cell
-# │            ------------------------
-# │           cell_ID    sdimx    sdimy
-# │        1:       1 377.6355 843.5235
-# │        2:       2 382.0902 858.9148
-# │        3:       3 319.8592 869.1546
-# │        4:       4 259.2721 851.8312
-# │        
-# │        ranges:
-# │                   sdimx       sdimy
-# │        [1,]    2.189156    1.406448
-# │        [2,] 7523.162860 5476.466538
-# │        
-# │        
-# │     
-# └──Spatial unit "nucleus"
-#    └──S4 spatLocsObj "raw" coordinates:   (167782 rows)
-#          An object of class spatLocsObj 
-#          provenance: nucleus
-#              ------------------------
-#             cell_ID    sdimx    sdimy
-#          1:       1 377.8125 842.8358
-#          2:       2 384.3298 858.9976
-#          3:       3 321.9175 869.2366
-#          4:       4 257.3259 851.5493
-#          
-#          ranges:
-#                     sdimx        sdimy
-#          [1,]    2.596845    0.8111559
-#          [2,] 7523.503184 5477.3741650
-```
-
-
-## 6.3 Plot the generated centroids information
-
-
-```{r, eval=FALSE}
+# Example plot
 spatPlot2D(xenium_gobj,
-           spat_unit = 'cell',
-           point_shape = 'no_border',
-           point_size = 0.5,
-           point_alpha = 0.4,
-           save_param = list(
-             base_width = 7,
-             base_height = 7,
-             save_name = '1_spatplot'))
+    # scattermore speeds up plotting
+    plot_method = "scattermore",
+    point_shape = "no_border",
+    point_size = 1
+)
+```
+
+```{r, echo=FALSE}
+knitr::include_graphics("images/xenium_breast_cancer/scatter_example.png")
+```
+
+```{r, eval=FALSE}
+# zoomed in region with polygons and image
+spatInSituPlotPoints(xenium_gobj,
+    show_image = TRUE,
+    polygon_line_size = 0.1,
+    polygon_color = "#BB0000",
+    polygon_alpha = 0.2,
+    xlim = c(1000, 2000),
+    ylim = c(-3000, -2000)
+)
+```
+
+```{r, echo=FALSE}
+knitr::include_graphics("images/xenium_breast_cancer/poly_example.png")
 ```
 
 
-![](images/xenium_breast_cancer/1_spatplot.png)
+## Attaching Post-Xenium Aligned Images (Optional)
 
-# 7. Generate aggregated expression based on feature and boundary (polygon) information
+Xenium runs will come with one or more IF morphology images. In this dataset,
+it is just the DAPI image. Additional images of the tissue generated after the
+Xenium run can be added by aligning new images to the rest of the Xenium information.
+These alignments are provided as affine matrices.
 
-## 7.1 Calculate the overlaps of the `'rna'` feature data within the `'cell'` polygon boundary info.
+Here we will load in the post-Xenium H&E and IF images.
 
-This updates the `'cell'` `giottoPolygon` overlaps slot with features that are overlapping the `'cell'` polygons. 
+The images used in this process are `ome.tif` images which Giotto is not fully
+compatible with, so we convert any images we will use to normal `tif` images using `ometif_to_tif()`.
 
+This image format conversion is a step that is automatically done with the morphology images.
 
 ```{r, eval=FALSE}
-xenium_gobj = calculateOverlapRaster(xenium_gobj,
-                                     spatial_info = 'cell',
-                                     feat_info = 'rna')
+# image conversions
+path_he <- "path/to/...he_image.ome.tif"
+path_if <- "path/to/...if_image.ome.tif"
 
-showGiottoSpatialInfo(xenium_gobj)
+# conversion `output_dir` can be specified
+# default is a new subdirectory called `tif_exports`
+conv_path_he <- GiottoClass::ometif_to_tif(path_he)
+
+# IF staining is a 3 page .ome.tif
+conv_path_if <- lapply(1:3, function(p) {
+    GiottoClass::ometif_to_tif(path_if, page = p)
+})
+
+# with the following channel names
+# 1. CD20, 2. HER2, 3. DAPI
+if_channels <- GiottoClass::ometif_metadata(path_if, node = "Channel")$Name
+
+# use the `importXenium()` custom loading utility
+x <- importXenium(file.path(data_path, "outs"))
+
+img_he <- x$load_aligned_image(
+    name = "post_he",
+    path = conv_path_he, # "path/to/tif_exports/...he_image.tif"
+    imagealignment_path = "path/to/...he_imagealignment.csv"
+)
+img_if <- lapply(1:3, function(if_i) {
+    x$load_aligned_image(
+        name = if_channels[[if_i]],
+        path = conv_path_if[[if_i]], # "path/to/tif_exports/...if_image.tif"
+        imagealignment_path = "path/to/...if_imagealignment.csv"
+    )
+})
+
+plot(img_he)
+```
+
+```{r, echo=FALSE, out.width="60%"}
+knitr::include_graphics("images/xenium_breast_cancer/he_prev.png")
+```
+
+```{r, eval=FALSE}
+plot(img_if[[2]])
+```
+
+```{r, echo=FALSE, out.width="60%"}
+knitr::include_graphics("images/xenium_breast_cancer/her2_prev.png")
 ```
 
 
-
 ```{r, eval=FALSE}
-# For Spatial info:  cell 
-# 
-# An object of class "giottoPolygon"
-# Slot "name":
-# [1] "cell"
-# 
-# Slot "spatVector":
-#  class       : SpatVector 
-#  geometry    : polygons 
-#  dimensions  : 167782, 1  (geometries, attributes)
-#  extent      : 0, 7525.9, 0, 5478.038  (xmin, xmax, ymin, ymax)
-#  coord. ref. :  
-#  names       : poly_ID
-#  type        :   <chr>
-#  values      :       1
-#                      2
-#                      3
-# 
-# Slot "spatVectorCentroids":
-#  class       : SpatVector 
-#  geometry    : points 
-#  dimensions  : 167782, 1  (geometries, attributes)
-#  extent      : 2.189156, 7523.163, 1.406448, 5476.467  (xmin, xmax, ymin, ymax)
-#  coord. ref. :  
-#  names       : poly_ID
-#  type        :   <chr>
-#  values      :       1
-#                      2
-#                      3
-# 
-# Slot "overlaps":
-# $rna
-#  class       : SpatVector 
-#  geometry    : points 
-#  dimensions  : 43664530, 3  (geometries, attributes)
-#  extent      : -1.874261, 7522.837, 4.415276, 5473.721  (xmin, xmax, ymin, ymax)
-#  coord. ref. :  
-#  names       : poly_ID    feat_ID feat_ID_uniq
-#  type        :   <chr>      <chr>        <int>
-#  values      :   18790 BLANK_0180            1
-#                    370        LUM            2
-#                  18183     CLECL1            3
-# 
-# 
-# -----------------------------
-#  
-# For Spatial info:  nucleus 
-#         ... 
-#      truncated
+# append to giotto object
+xenium_gobj <- setGiotto(xenium_gobj, c(list(img_he), img_if))
+
+# example plot with HER2
+spatInSituPlotPoints(xenium_gobj,
+    xlim = c(1000, 2000),
+    ylim = c(-3000, -2000),
+    show_image = TRUE,
+    image_name = "HER2",
+    polygon_line_size = 0.1,
+    polygon_color = "#BB0000",
+    polygon_alpha = 0.2
+)
+```
+
+```{r, echo=FALSE, out.width="100%"}
+knitr::include_graphics("images/xenium_breast_cancer/her2_example.png")
 ```
 
 
-## 7.2 Assign polygon overlaps information to expression matrix
-
-In order to create an aggregated expression matrix, the `'rna'` features overlapped by the `'cell'` polygon boundaries are sent to be combined into a cell/feature matrix (named as `'raw'`) in the Giotto object's `expression` slot. 
+# Aggregate Data
 
 
 ```{r, eval=FALSE}
-xenium_gobj = overlapToMatrix(xenium_gobj,
-                              poly_info = 'cell',
-                              feat_info = 'rna',
-                              name = 'raw')
+# Calculate Overlaps of `"rna"` Features with the `"cell"` Polygon Boundaries
+xenium_gobj <- calculateOverlapRaster(xenium_gobj,
+    spatial_info = 'cell',
+    feat_info = 'rna'
+)
+
+# Assign polygon overlaps information to expression matrix
+xenium_gobj <- overlapToMatrix(xenium_gobj,
+    poly_info = 'cell',
+    feat_info = 'rna',
+    name = 'raw'
+)
 
 showGiottoExpression(xenium_gobj)
 ```
 
-
-
-```{r, eval=FALSE}
-# └──Spatial unit "cell"
-#    └──Feature type "rna"
-#       └──Expression data "raw" values:
-#             An object of class exprObj 
-#             for spatial unit: "cell" and feature type: "rna" 
-#               Provenance:  cell 
-#             
-#             contains:
-#             313 x 167782 sparse Matrix of class "dgCMatrix"
-#                                                    
-#             LUM   2 . 3 . 1 1  2 . . 2 . 5 . ......
-#             TCIM  1 1 . 4 1 1 13 . . . . . . ......
-#             RUNX1 . . . . . .  . . . . 1 . . ......
-#             
-#              ..............................
-#              ........suppressing 167769 columns and 307 rows 
-#              ..............................
-#                                                    
-#             CD1C   1 . . . . . . . . . . . . ......
-#             CYP1A1 . . . . . . . . . . . . . ......
-#             CRHBP  . . . . . . . . . . . . . ......
-#             
-#              First four colnames:
-#              1 2 3 4 
+```
+└──Spatial unit "cell"
+   └──Feature type "rna"
+      └──Expression data "raw" values:
+            An object of class exprObj : "raw"
+            spat_unit : "cell"
+            feat_type : "rna"
+            provenance: cell 
+            
+            contains:
+            313 x 167780 sparse Matrix of class "dgCMatrix"
+                                                   
+            ABCC11 . . . . . . . . . . . . . ......
+            ACTA2  . . . . . . . 1 . . . . 1 ......
+            ACTG2  . 2 . . . . 1 . . . . . 1 ......
+            
+             ........suppressing 167767 columns and 307 rows in show()
+                                                   
+            ZEB1   . . . . . . . . . 1 . . . ......
+            ZEB2   . . . . . 2 . . 2 1 1 . . ......
+            ZNF562 . . . . . . . . . . . . . ......
+            
+             First four colnames:
+             1 2 3 4 
 ```
 
-
-## 7.3 Feature metadata
-
-Append features metadata from `panel.tsv` which includes information on what cell types the features are commonly markers for. There are 313 rows in this file. One for each of the gene expression probes, thus these metadata should be appended only to feat_type 'rna'.
-
-
-```{r, eval=FALSE}
-panel_meta = data.table::fread(panel_meta_path)
-data.table::setnames(panel_meta, 'Name', 'feat_ID')
-
-# Append this metadata
-xenium_gobj = addFeatMetadata(gobject = xenium_gobj,
-                              feat_type = 'rna',
-                              spat_unit = 'cell',
-                              new_metadata = panel_meta,
-                              by_column = TRUE,
-                              column_feat_ID = 'feat_ID')
-xenium_gobj = addFeatMetadata(gobject = xenium_gobj,
-                              feat_type = 'rna',
-                              spat_unit = 'nucleus',
-                              new_metadata = panel_meta,
-                              by_column = TRUE,
-                              column_feat_ID = 'feat_ID')
-
-# to return a specific metadata as data.table 
-# (spat_unit = 'cell', feat_type = 'rna' are default)
-# fDataDT(xenium_gobj)
-
-# Print a preview of all available features metadata
-showGiottoFeatMetadata(xenium_gobj)
-```
+This is now a fully functioning Xenium `giotto` object. From here, we can
+do the standard data processing pipeline to cluster.
 
 
 
-```{r, eval=FALSE}
-# ├──Spatial unit "cell"
-# │  ├──Feature type "rna"
-# │  │     An object of class featMetaObj 
-# │  │     Provenance: cell 
-# │  │        feat_ID      Ensembl ID             Annotation
-# │  │     1:     LUM ENSG00000139329            Fibroblasts
-# │  │     2:    TCIM ENSG00000176907 Breast glandular cells
-# │  │     3:   RUNX1 ENSG00000159216          Breast cancer
-# │  │     4: RAPGEF3 ENSG00000079337             Adipocytes
-# │  │  
-# │  ├──Feature type "blank_code"
-# │  │     An object of class featMetaObj 
-# │  │     Provenance: cell 
-# │  │           feat_ID
-# │  │     1: BLANK_0424
-# │  │     2: BLANK_0401
-# │  │     3: BLANK_0447
-# │  │     4: BLANK_0449
-# │  │  
-# │  ├──Feature type "neg_code"
-# │  │     An object of class featMetaObj 
-# │  │     Provenance: cell 
-# │  │                        feat_ID
-# │  │     1: NegControlCodeword_0503
-# │  │     2: NegControlCodeword_0514
-# │  │     3: NegControlCodeword_0535
-# │  │     4: NegControlCodeword_0519
-# │  │  
-# │  └──Feature type "neg_probe"
-# │        An object of class featMetaObj 
-# │        Provenance: cell 
-# │                         feat_ID
-# │        1: NegControlProbe_00003
-# │        2:       antisense_SCRIB
-# │        3: NegControlProbe_00012
-# │        4:        antisense_LGI3
-# │     
-# └──Spatial unit "nucleus"
-#    ├──Feature type "rna"
-#    │     An object of class featMetaObj 
-#    │     Provenance: nucleus 
-#    │        feat_ID      Ensembl ID             Annotation
-#    │     1:     LUM ENSG00000139329            Fibroblasts
-#    │     2:    TCIM ENSG00000176907 Breast glandular cells
-#    │     3:   RUNX1 ENSG00000159216          Breast cancer
-#    │     4: RAPGEF3 ENSG00000079337             Adipocytes
-#    │  
-#    ├──Feature type "blank_code"
-#    │     An object of class featMetaObj 
-#    │     Provenance: nucleus 
-#    │           feat_ID
-#    │     1: BLANK_0424
-#    │     2: BLANK_0401
-#    │     3: BLANK_0447
-#    │     4: BLANK_0449
-#    │  
-#    ├──Feature type "neg_code"
-#    │     An object of class featMetaObj 
-#    │     Provenance: nucleus 
-#    │                        feat_ID
-#    │     1: NegControlCodeword_0503
-#    │     2: NegControlCodeword_0514
-#    │     3: NegControlCodeword_0535
-#    │     4: NegControlCodeword_0519
-#    │  
-#    └──Feature type "neg_probe"
-#          An object of class featMetaObj 
-#          Provenance: nucleus 
-#                           feat_ID
-#          1: NegControlProbe_00003
-#          2:       antisense_SCRIB
-#          3: NegControlProbe_00012
-#          4:        antisense_LGI3
-```
+# Data Processing
 
 
-## 7.4 Data filtering
-
-Now that an aggregated expression matrix is generated the usual data filtering and processing can be applied We start by setting a count of 1 to be the minimum to consider a feature expressed. A feature must be
+Now that an aggregated expression matrix is generated, the usual data filtering and processing can be applied We start by setting a count of 1 to be the minimum to consider a feature expressed. A feature must be
 detected in at least 3 cells to be included. Lastly, a cell must have a minimum of 5 features detected to be included. 
 
 
 ```{r, eval=FALSE}
-xenium_gobj = filterGiotto(gobject = xenium_gobj,
-                           spat_unit = 'cell',
-                           poly_info = 'cell',
-                           expression_threshold = 1,
-                           feat_det_in_min_cells = 3,
-                           min_det_feats_per_cell = 5)
-```
-
-
-
-```{r, eval=FALSE}
-#    truncated
-#      ...
-# Feature type:  rna 
-# Number of cells removed:  2945  out of  167782 
-# Number of feats removed:  0  out of  313 
-```
-
-
-## 7.5 Add data statistics
-
-
-```{r, eval=FALSE}
-xenium_gobj = addStatistics(xenium_gobj, expression_values = 'raw')
-
-showGiottoCellMetadata(xenium_gobj)
-showGiottoFeatMetadata(xenium_gobj)
-```
-
-
-```{=html}
-<details>
-```
-```{=html}
-<summary>cell metadata
-```
-```{=html}
-</summary>
-```
-
-```{r, eval=FALSE}
-# ├──Spatial unit "cell"
-# │  ├──Feature type "rna"
-# │  │     An object of class cellMetaObj 
-# │  │     Provenance: cell 
-# │  │        cell_ID nr_feats perc_feats total_expr
-# │  │     1:       1       62   19.80831        156
-# │  │     2:       2       41   13.09904         63
-# │  │     3:       3       38   12.14058         54
-# │  │     4:       4       47   15.01597        114
-# │  │  
-# │  ├──Feature type "blank_code"
-# │  │     An object of class cellMetaObj 
-# │  │     Provenance: cell 
-# │  │        cell_ID
-# │  │     1:       1
-# │  │     2:       2
-# │  │     3:       3
-# │  │     4:       4
-# │  │  
-# │  ├──Feature type "neg_code"
-# │  │     An object of class cellMetaObj 
-# │  │     Provenance: cell 
-# │  │        cell_ID
-# │  │     1:       1
-# │  │     2:       2
-# │  │     3:       3
-# │  │     4:       4
-# │  │  
-# │  └──Feature type "neg_probe"
-# │        An object of class cellMetaObj 
-# │        Provenance: cell 
-# │           cell_ID
-# │        1:       1
-# │        2:       2
-# │        3:       3
-# │        4:       4
-# │     
-# └──Spatial unit "nucleus"
-#    ├──Feature type "rna"
-#    │     An object of class cellMetaObj 
-#    │     Provenance: nucleus 
-#    │        cell_ID
-#    │     1:       1
-#    │     2:       2
-#    │     3:       3
-#    │     4:       4
-#    │  
-#    ├──Feature type "blank_code"
-#    │     An object of class cellMetaObj 
-#    │     Provenance: nucleus 
-#    │        cell_ID
-#    │     1:       1
-#    │     2:       2
-#    │     3:       3
-#    │     4:       4
-#    │  
-#    ├──Feature type "neg_code"
-#    │     An object of class cellMetaObj 
-#    │     Provenance: nucleus 
-#    │        cell_ID
-#    │     1:       1
-#    │     2:       2
-#    │     3:       3
-#    │     4:       4
-#    │  
-#    └──Feature type "neg_probe"
-#          An object of class cellMetaObj 
-#          Provenance: nucleus 
-#             cell_ID
-#          1:       1
-#          2:       2
-#          3:       3
-#          4:       4
-```
-
-
-```{r, eval=FALSE}
-# ├──Spatial unit "cell"
-# │  ├──Feature type "rna"
-# │  │     An object of class featMetaObj 
-# │  │     Provenance: cell 
-# │  │        feat_ID      Ensembl ID             Annotation nr_cells perc_cells
-# │  │     1:     LUM ENSG00000139329            Fibroblasts   101666  61.676687
-# │  │     2:    TCIM ENSG00000176907 Breast glandular cells    84842  51.470240
-# │  │     3:   RUNX1 ENSG00000159216          Breast cancer    94086  57.078205
-# │  │     4: RAPGEF3 ENSG00000079337             Adipocytes    13286   8.060084
-# │  │        total_expr mean_expr mean_expr_det
-# │  │     1:     946217 5.7403192      9.307113
-# │  │     2:     300377 1.8222668      3.540428
-# │  │     3:     229633 1.3930914      2.440671
-# │  │     4:      16645 0.1009785      1.252823
-# │  │  
-# │  ├──Feature type "blank_code"
-# │  │     An object of class featMetaObj 
-# │  │     Provenance: cell 
-# │  │           feat_ID
-# │  │     1: BLANK_0424
-# │  │     2: BLANK_0401
-# │  │     3: BLANK_0447
-# │  │     4: BLANK_0449
-# │  │  
-# │  ├──Feature type "neg_code"
-# │  │     An object of class featMetaObj 
-# │  │     Provenance: cell 
-# │  │                        feat_ID
-# │  │     1: NegControlCodeword_0503
-# │  │     2: NegControlCodeword_0514
-# │  │     3: NegControlCodeword_0535
-# │  │     4: NegControlCodeword_0519
-# │  │  
-# │  └──Feature type "neg_probe"
-# │        An object of class featMetaObj 
-# │        Provenance: cell 
-# │                         feat_ID
-# │        1: NegControlProbe_00003
-# │        2:       antisense_SCRIB
-# │        3: NegControlProbe_00012
-# │        4:        antisense_LGI3
-# │     
-# └──Spatial unit "nucleus"
-#    ├──Feature type "rna"
-#    │     An object of class featMetaObj 
-#    │     Provenance: nucleus 
-#    │        feat_ID      Ensembl ID             Annotation
-#    │     1:     LUM ENSG00000139329            Fibroblasts
-#    │     2:    TCIM ENSG00000176907 Breast glandular cells
-#    │     3:   RUNX1 ENSG00000159216          Breast cancer
-#    │     4: RAPGEF3 ENSG00000079337             Adipocytes
-#    │  
-#    ├──Feature type "blank_code"
-#    │     An object of class featMetaObj 
-#    │     Provenance: nucleus 
-#    │           feat_ID
-#    │     1: BLANK_0424
-#    │     2: BLANK_0401
-#    │     3: BLANK_0447
-#    │     4: BLANK_0449
-#    │  
-#    ├──Feature type "neg_code"
-#    │     An object of class featMetaObj 
-#    │     Provenance: nucleus 
-#    │                        feat_ID
-#    │     1: NegControlCodeword_0503
-#    │     2: NegControlCodeword_0514
-#    │     3: NegControlCodeword_0535
-#    │     4: NegControlCodeword_0519
-#    │  
-#    └──Feature type "neg_probe"
-#          An object of class featMetaObj 
-#          Provenance: nucleus 
-#                           feat_ID
-#          1: NegControlProbe_00003
-#          2:       antisense_SCRIB
-#          3: NegControlProbe_00012
-#          4:        antisense_LGI3
-```
-
-
-## 7.6 Normalize expression
-
-
-```{r, eval=FALSE}
-xenium_gobj = normalizeGiotto(gobject = xenium_gobj,
-                              spat_unit = 'cell',
-                              scalefactor = 5000,
-                              verbose = T)
-```
-
-
-## 7.7 Calculate highly variable features
-
-
-```{r, eval=FALSE}
-xenium_gobj = calculateHVF(gobject = xenium_gobj,
-                           spat_unit = 'cell',
-                           save_param = list(
-                             save_name = '2_HVF'))
-
-cat(fDataDT(xenium_gobj)[, sum(hvf == 'yes')], 'hvf found')
-```
-
-
-
-```{r, eval=FALSE}
-# 22 hvf found
-```
-
-
-![](images/xenium_breast_cancer/2_HVF.png)
-
-Basing clustering on only 22 highly variable genes will not be helpful. Will be using all 313 genes for clustering.
-
-# 8. Dimension reduction and clustering
-
-## 8.1 PCA
-
-By default, `runPCA()` uses the subset of genes discovered to be highly variable and then assigned as such in the feature metadata. Instead, this time, using all genes is desireable, so `feats_to_use` will be set to `NULL`.
-
-
-```{r, eval=FALSE}
-xenium_gobj = runPCA(gobject = xenium_gobj,
-                     spat_unit = 'cell',
-                     expression_values = 'scaled',
-                     feats_to_use = NULL,
-                     scale_unit = F,
-                     center = F)
-
-# Visualize Screeplot and PCA
-screePlot(xenium_gobj,
-          ncp = 20,
-          save_param = list(
-            save_name = '3a_screePlot'))
-showGiottoDimRed(xenium_gobj)
-plotPCA(xenium_gobj,
+# process the data up to PCA calculation
+xenium_gobj <- xenium_gobj |>
+    filterGiotto(,
         spat_unit = 'cell',
-        dim_reduction_name = 'pca',
-        dim1_to_use = 1,
-        dim2_to_use = 2)
+        expression_threshold = 1,
+        feat_det_in_min_cells = 3,
+        min_det_feats_per_cell = 5
+    ) |>
+    normalizeGiotto() |> 
+    addStatistics() |>
+    runPCA(feats_to_use = NULL) # don't use HVFs since there are too few features*
+```
+
+**By default, `runPCA()` uses the subset of genes discovered to be highly variable and then assigned as such in the feature metadata. Instead, this time, using all genes is desireable, so `feats_to_use` will be set to `NULL`.*
+
+```{r, eval=FALSE}
+# Visualize Screeplot and PCA
+screePlot(xenium_gobj, ncp = 20)
+```
+
+```{r, echo=FALSE, out.width="100%"}
+knitr::include_graphics("images/xenium_breast_cancer/scree.png")
+```
+
+```{r, eval=FALSE}
+plotPCA(xenium_gobj, point_size = 0.1)
+```
+
+```{r, echo=FALSE, out.width="80%"}
+knitr::include_graphics("images/xenium_breast_cancer/pca.png")
 ```
 
 
+## Dimension Reduction
+
 
 ```{r, eval=FALSE}
-# Dim reduction on cells:
-#  ------------------------- 
-# 
-# .
-# └──Spatial unit "cell"
-#    └──Feature type "rna"
-#       └──Dim reduction type "pca"
-#          └──S4 dimObj "pca" coordinates:   (165019 rows 21 cols)
-#                      Dim.1     Dim.2
-#                1 -2.459551 -0.418277
-#                2 -2.002147 -3.239184
-#                3 -1.588884 -2.195826
+xenium_gobj = runtSNE(xenium_gobj, dimensions_to_use = 1:10)
+xenium_gobj = runUMAP(xenium_gobj, dimensions_to_use = 1:10)
+
+plotTSNE(xenium_gobj, point_size = 0.01)
 ```
 
-
-![](images/xenium_breast_cancer/3a_screePlot.png)
-![](images/xenium_breast_cancer/3b_PCA.png)
-
-## 8.2 tSNE and UMAP
-
-
-```{r, eval=FALSE}
-xenium_gobj = runtSNE(xenium_gobj,
-                      dimensions_to_use = 1:10,
-                      spat_unit = 'cell')
-xenium_gobj = runUMAP(xenium_gobj,
-                      dimensions_to_use = 1:10,
-                      spat_unit = 'cell')
-
-plotTSNE(xenium_gobj,
-         point_size = 0.01,
-         save_param = list(
-           save_name = '4a_tSNE'))
-plotUMAP(xenium_gobj,
-         point_size = 0.01,
-         save_param = list(
-           save_name = '4b_UMAP'))
+```{r, echo=FALSE, out.width="80%"}
+knitr::include_graphics("images/xenium_breast_cancer/tsne.png")
 ```
 
+```{r, eval=FALSE}
+plotUMAP(xenium_gobj, point_size = 0.01)
+```
 
-![](images/xenium_breast_cancer/4a_tSNE.png)
-![](images/xenium_breast_cancer/4b_UMAP.png)
+```{r, echo=FALSE, out.width="80%"}
+knitr::include_graphics("images/xenium_breast_cancer/umap.png")
+```
 
-## 8.3 sNN and Leiden clustering
-
+## Clustering
 
 ```{r, eval=FALSE}
-xenium_gobj = createNearestNetwork(xenium_gobj,
-                                   dimensions_to_use = 1:10,
-                                   k = 10,
-                                   spat_unit = 'cell')
-xenium_gobj = doLeidenCluster(xenium_gobj,
-                              resolution = 0.25,
-                              n_iterations = 100,
-                              spat_unit = 'cell')
+# create Shared Nearest Neighbors Network
+xenium_gobj <- xenium_gobj |>
+        createNearestNetwork(dimensions_to_use = 1:10, k = 10) |> 
+        doLeidenCluster(resolution = 0.25, n_iterations = 100)
 
 # visualize UMAP cluster results
-plotUMAP(gobject = xenium_gobj,
-         spat_unit = 'cell',
-         cell_color = 'leiden_clus',
-         show_legend = FALSE,
-         point_size = 0.01,
-         point_shape = 'no_border',
-         save_param = list(save_name = '5_umap_leiden'))
+plotTSNE(xenium_gobj,
+    cell_color = 'leiden_clus',
+    show_legend = FALSE,
+    point_size = 0.01,
+    point_shape = 'no_border'
+)
+```
+
+```{r, echo=FALSE, out.width="80%"}
+knitr::include_graphics("images/xenium_breast_cancer/leiden_tsne.png")
+```
+
+```{r, eval=FALSE}
+plotUMAP(xenium_gobj,
+    cell_color = 'leiden_clus',
+    show_legend = FALSE,
+    point_size = 0.01,
+    point_shape = 'no_border'
+)
+```
+
+```{r, echo=FALSE, out.width="80%"}
+knitr::include_graphics("images/xenium_breast_cancer/leiden_umap.png")
 ```
 
 
-![](images/xenium_breast_cancer/5_umap_leiden.png)
 
-## 8.4 Visualize UMAP and spatial results
+# Visualize UMAP and Spatial Results
 
 
 ```{r, eval=FALSE}
-spatPlot2D(gobject = xenium_gobj,
-           spat_unit = 'cell',
-           cell_color = 'leiden_clus',
-           point_size = 0.1,
-           point_shape = 'no_border',
-           background_color = 'black',
-           show_legend = TRUE,
-           save_param = list(
-             save_name = '6_spat_leiden',
-             base_width = 15,
-             base_height = 15))
+# centroids plotting
+spatPlot2D(xenium_gobj,
+    plot_method = "scattermore",
+    cell_color = 'leiden_clus',
+    point_size = 0.1,
+    point_shape = 'no_border',
+    background_color = 'black'
+)
+```
+
+```{r, echo=FALSE, out.width="80%"}
+knitr::include_graphics("images/xenium_breast_cancer/spat_leiden.png")
 ```
 
 
-![](images/xenium_breast_cancer/6_spat_leiden.png)
-
-# 9. Subcellular visualization
+# Subcellular Visualization
 
 
 ```{r, eval=FALSE}
+# plot with polygons
 spatInSituPlotPoints(xenium_gobj,
-                     show_image = FALSE,
-                     feats = NULL,
-                     point_size = 0.05,
-                     show_polygon = TRUE,
-                     polygon_feat_type = 'cell',
-                     polygon_alpha = 1,
-                     polygon_color = 'black',
-                     polygon_line_size = 0.01,
-                     polygon_fill = 'leiden_clus',
-                     polygon_fill_as_factor = TRUE,
-                     coord_fix_ratio = TRUE,
-                     save_para = list(
-                       save_name = '7_polys'))
+    polygon_feat_type = 'cell',
+    polygon_alpha = 1,
+    polygon_line_size = 0.01,
+    polygon_color = 'black',
+    polygon_fill = 'leiden_clus',
+    polygon_fill_as_factor = TRUE
+)
 ```
 
-
-![](images/xenium_breast_cancer/7_polys.png)
-
-The dataset is too large to visualize with subcellular polygons and features clearly so a spatial subset is needed.
+```{r, echo=FALSE, out.width="80%"}
+knitr::include_graphics("images/xenium_breast_cancer/poly_leiden.png")
+```
 
 
 ```{r, eval=FALSE}
-xenium_gobj_subset = subsetGiottoLocs(xenium_gobj,
-                                      x_max = 4500,
-                                      x_min = 3500,
-                                      y_max = 5500,
-                                      y_min = 4500)
+# visualize with points in a spatial subset
+spatInSituPlotPoints(xenium_gobj,
+    feats = list('rna' = c(
+        "LUM", "CXCR4", "ITGAX"
+    )),
+    feats_color_code = c(
+        "LUM" = 'cyan',
+        'CXCR4' = 'magenta',
+        'ITGAX' = 'yellow'
+    ),
+    point_size = 0.1,
+    xlim = c(1000, 2000),
+    ylim = c(-3000, -2000),
+    plot_last = "polygons",
+    polygon_feat_type = 'cell',
+    polygon_alpha = 0.3,
+    polygon_line_size = 0.01,
+    polygon_color = 'black',
+    polygon_fill = 'leiden_clus',
+    polygon_fill_as_factor = TRUE,
+    show_image = TRUE,
+    image_name = "dapi"
+)
+```
 
-spatInSituPlotPoints(xenium_gobj_subset,
-                     show_image = FALSE,
-                     feats = list('rna' = c(
-                       "LUM", "CXCR4", "ITGAX")),
-                     feats_color_code = c(
-                       "LUM" = 'green',
-                       'CXCR4' = 'blue',
-                       'ITGAX' = 'red'),
-                     point_size = 0.05,
-                     show_polygon = TRUE,
-                     polygon_feat_type = 'cell',
-                     polygon_color = 'black',
-                     polygon_line_size = 0.01,
-                     polygon_fill = 'leiden_clus',
-                     polygon_fill_as_factor = TRUE,
-                     coord_fix_ratio = TRUE,
-                     save_param = list(
-                       save_name = '8_subset_in_situ'))
+```{r, echo=FALSE, out.width="100%"}
+knitr::include_graphics("images/xenium_breast_cancer/zoomin.png")
 ```
 
 
-![](images/xenium_breast_cancer/8_subset_in_situ.png)
+```{r, eval=FALSE}
+sessionInfo()
+```
+
+```
+R version 4.4.0 (2024-04-24)
+Platform: x86_64-pc-linux-gnu
+Running under: AlmaLinux 8.10 (Cerulean Leopard)
+
+Matrix products: default
+BLAS/LAPACK: FlexiBLAS NETLIB;  LAPACK version 3.11.0
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C               LC_TIME=en_US.UTF-8       
+ [4] LC_COLLATE=en_US.UTF-8     LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                  LC_ADDRESS=C              
+[10] LC_TELEPHONE=C             LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+time zone: America/New_York
+tzcode source: system (glibc)
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] Giotto_4.1.5      GiottoClass_0.4.4
+
+loaded via a namespace (and not attached):
+  [1] RcppAnnoy_0.0.22            splines_4.4.0               ggplotify_0.1.2            
+  [4] tibble_3.2.1                R.oo_1.26.0                 polyclip_1.10-7            
+  [7] lifecycle_1.0.4             lattice_0.22-6              MASS_7.3-60.2              
+ [10] backports_1.5.0             magrittr_2.0.3              plotly_4.10.4              
+ [13] rmarkdown_2.28              yaml_2.3.10                 reticulate_1.38.0          
+ [16] cowplot_1.1.3               DBI_1.2.3                   RColorBrewer_1.1-3         
+ [19] pkgload_1.3.4               abind_1.4-5                 zlibbioc_1.50.0            
+ [22] Rtsne_0.17                  GenomicRanges_1.56.0        purrr_1.0.2                
+ [25] R.utils_2.12.3              ggraph_2.2.1                BiocGenerics_0.50.0        
+ [28] yulab.utils_0.1.7           tweenr_2.0.3                rappdirs_0.3.3             
+ [31] job_0.3.1                   GenomeInfoDbData_1.2.12     IRanges_2.38.0             
+ [34] S4Vectors_0.42.1            enrichplot_1.24.4           ggrepel_0.9.6              
+ [37] irlba_2.3.5.1               tidytree_0.4.6              terra_1.7-78               
+ [40] colorRamp2_0.1.0            codetools_0.2-20            DelayedArray_0.30.1        
+ [43] DOSE_3.30.0                 xml2_1.3.6                  ggforce_0.4.2              
+ [46] tidyselect_1.2.1            aplot_0.2.2                 UCSC.utils_1.0.0           
+ [49] farver_2.1.2                ScaledMatrix_1.12.0         viridis_0.6.5              
+ [52] matrixStats_1.4.1           stats4_4.4.0                jsonlite_1.8.8             
+ [55] tidygraph_1.3.1             progressr_0.14.0            systemfonts_1.1.0          
+ [58] dbscan_1.2-0                tictoc_1.2.1                tools_4.4.0                
+ [61] treeio_1.28.0               ragg_1.3.0                  Rcpp_1.0.13                
+ [64] glue_1.7.0                  gridExtra_2.3               SparseArray_1.4.8          
+ [67] xfun_0.47                   qvalue_2.36.0               MatrixGenerics_1.16.0      
+ [70] GenomeInfoDb_1.40.0         dplyr_1.1.4                 withr_3.0.1                
+ [73] fastmap_1.2.0               fansi_1.0.6                 digest_0.6.37              
+ [76] rsvd_1.0.5                  R6_2.5.1                    gridGraphics_0.5-1         
+ [79] textshaping_0.3.7           colorspace_2.1-1            scattermore_1.2            
+ [82] GO.db_3.19.1                gtools_3.9.5                RSQLite_2.3.6              
+ [85] R.methodsS3_1.8.2           utf8_1.2.4                  tidyr_1.3.1                
+ [88] generics_0.1.3              data.table_1.16.0           graphlayouts_1.2.0         
+ [91] httr_1.4.7                  htmlwidgets_1.6.4           S4Arrays_1.4.1             
+ [94] scatterpie_0.2.2            uwot_0.2.2                  pkgconfig_2.0.3            
+ [97] gtable_0.3.5                blob_1.2.4                  GiottoVisuals_0.2.8        
+[100] SingleCellExperiment_1.26.0 XVector_0.44.0              clusterProfiler_4.12.6     
+[103] shadowtext_0.1.3            htmltools_0.5.8.1           fgsea_1.30.0               
+[106] scales_1.3.0                Biobase_2.64.0              GiottoUtils_0.2.1          
+[109] png_0.1-8                   SpatialExperiment_1.14.0    ggfun_0.1.4                
+[112] knitr_1.48                  rstudioapi_0.16.0           reshape2_1.4.4             
+[115] rjson_0.2.21                checkmate_2.3.2             nlme_3.1-164               
+[118] cachem_1.1.0                stringr_1.5.1               parallel_4.4.0             
+[121] HDO.db_0.99.1               arrow_16.1.0                AnnotationDbi_1.66.0       
+[124] pillar_1.9.0                grid_4.4.0                  vctrs_0.6.5                
+[127] BiocSingular_1.20.0         beachmat_2.20.0             evaluate_0.24.0            
+[130] magick_2.8.4                cli_3.6.3                   compiler_4.4.0             
+[133] rlang_1.1.4                 crayon_1.5.2                labeling_0.4.3             
+[136] plyr_1.8.9                  fs_1.6.4                    stringi_1.8.4              
+[139] viridisLite_0.4.2           BiocParallel_1.38.0         assertthat_0.2.1           
+[142] munsell_0.5.1               Biostrings_2.72.0           lazyeval_0.2.2             
+[145] GOSemSim_2.30.0             Matrix_1.7-0                patchwork_1.2.0            
+[148] bit64_4.0.5                 ggplot2_3.5.1               KEGGREST_1.44.0            
+[151] SummarizedExperiment_1.34.0 igraph_2.0.3                memoise_2.0.1              
+[154] ggtree_3.12.0               fastmatch_1.1-4             bit_4.0.5                  
+[157] ape_5.8                     gson_0.1.0            
+```
