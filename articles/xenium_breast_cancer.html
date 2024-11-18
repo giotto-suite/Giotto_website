@@ -585,112 +585,341 @@
 
     
     
+<p><strong>This is a legacy dataset.</strong></p>
+<p>For a more recent example, see <a href="https://drieslab.github.io/giotto_workshop_2024/xenium-1.html" class="external-link">Xenium FFPE Human Lung Cancer with Multimodal Cell Segmentation</a></p>
 <div class="section level2" number="1">
-<h2 number="1" id="set-up-giotto-environment">
-<span class="header-section-number">1</span> 1. Set up Giotto environment<a class="anchor" aria-label="anchor" href="#set-up-giotto-environment"></a>
+<h2 number="1" id="install-extra-packages">
+<span class="header-section-number">1</span> Install Extra Packages<a class="anchor" aria-label="anchor" href="#install-extra-packages"></a>
 </h2>
+<div class="section level3" number="1.1">
+<h3 number="1.1" id="arrow-installation">
+<span class="header-section-number">1.1</span> <em>arrow</em> installation<a class="anchor" aria-label="anchor" href="#arrow-installation"></a>
+</h3>
+<p>Xenium datasets requires arrow with ZTSD support to be installed to work with parquet files. This is optional if you want to use a different format for the tabular data.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed.</span></span>
-<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"drieslab/Giotto"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">has_arrow</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"arrow"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">zstd</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="va">has_arrow</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="co"># check arrow_info() to see that zstd support should be TRUE</span></span>
+<span>    <span class="co"># See https://arrow.apache.org/docs/r/articles/install.html for details</span></span>
+<span>    <span class="va">zstd</span> <span class="op">&lt;-</span> <span class="fu">arrow</span><span class="fu">::</span><span class="fu">arrow_info</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">capabilities</span><span class="op">[[</span><span class="st">"zstd"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># Ensure the Python environment for Giotto has been installed.</span></span>
-<span><span class="va">genv_exists</span> <span class="op">=</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="co"># The following command need only be run once to install the Giotto environment.</span></span>
-<span>  <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="va">has_arrow</span> <span class="op">||</span> <span class="op">!</span><span class="va">zstd</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="co"># install with compression library needed for 10x parquet files</span></span>
+<span>    <span class="co"># this may take a while</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>ARROW_WITH_ZSTD <span class="op">=</span> <span class="st">"ON"</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"arrow"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://apache.r-universe.dev"</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"source"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
+</div>
+<div class="section level3" number="1.2">
+<h3 number="1.2" id="tifffile-and-imagecodecs-installation">
+<span class="header-section-number">1.2</span> <em>tifffile</em> and <em>imagecodecs</em> installation<a class="anchor" aria-label="anchor" href="#tifffile-and-imagecodecs-installation"></a>
+</h3>
+<p><em>tifffile</em> is a python package for working with tif images. <em>imagecodecs</em> provides the needed JPEG2000 compression codec. 10x provides their images as <code>ome.tif</code> but <em>Giotto</em> usually either cannot open or incurs a large speed penalty when accessing these files. Instead we use <em>tifffile</em> to convert these images into normal <code>tif</code> images.</p>
+<p>Check that <em>Giotto</em> can access a python env and install one if it can’t. Then activate that python env.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://drieslab.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># 1. ** SET WORKING DIRECTORY WHERE PROJECT OUPUTS WILL SAVE TO **</span></span>
-<span><span class="va">results_folder</span> <span class="op">=</span> <span class="st">'/path/to/save/directory/'</span></span>
+<span><span class="co"># Ensure Giotto can access a python env</span></span>
+<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="co"># The following command need only be run once to </span></span>
+<span>  <span class="co"># install a default Giotto environment</span></span>
+<span>  <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
 <span></span>
-<span><span class="co"># 2. Create Giotto instructions</span></span>
-<span><span class="co"># Directly saving plots to the working directory without rendering them in the editor saves time.</span></span>
-<span><span class="va">instrs</span> <span class="op">=</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span>save_dir <span class="op">=</span> <span class="va">results_folder</span>,</span>
-<span>                                  save_plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                                  show_plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                                  return_plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># set specific python path to use or python environment name</span></span>
+<span><span class="co"># leaving NULL will use default (see ?set_giotto_python_path())</span></span>
+<span><span class="va">python_path</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
+<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">set_giotto_python_path</a></span><span class="op">(</span>python_path <span class="op">=</span> <span class="va">python_path</span><span class="op">)</span></span></code></pre></div>
+<p>Check for presence of <em>tifffile</em> and <em>imagecodecs</em> in selected python env then install if missing.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install packages if not already installed in environment</span></span>
+<span><span class="va">need_py_inst</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">GiottoUtils</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoUtils/reference/package_check.html" class="external-link">package_check</a></span><span class="op">(</span></span>
+<span>    pkg_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tifffile"</span>, <span class="st">"imagecodecs"</span><span class="op">)</span>, repository <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pip:tifffile"</span>, <span class="st">"pip:imagecodecs"</span><span class="op">)</span></span>
+<span><span class="op">)</span>, silent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/Logic.html" class="external-link">isTRUE</a></span><span class="op">(</span><span class="va">need_py_inst</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">active_env</span> <span class="op">&lt;-</span> <span class="fu">GiottoUtils</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoUtils/reference/py_active_env.html" class="external-link">py_active_env</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>    <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/conda-tools.html" class="external-link">conda_install</a></span><span class="op">(</span></span>
+<span>        envname <span class="op">=</span> <span class="va">active_env</span>, packages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tifffile"</span>, <span class="st">"imagecodecs"</span><span class="op">)</span>, pip <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>    <span class="op">)</span></span>
+<span>    <span class="co"># may need a session restart after installation</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2" number="2">
 <h2 number="2" id="dataset-explanation">
-<span class="header-section-number">2</span> 2. Dataset explanation<a class="anchor" aria-label="anchor" href="#dataset-explanation"></a>
+<span class="header-section-number">2</span> Dataset Explanation<a class="anchor" aria-label="anchor" href="#dataset-explanation"></a>
 </h2>
 <p>This vignette covers Giotto object creation and simple exploratory analysis with 10x Genomics’ subcellular <em>Xenium In Situ</em> platform data using their <a href="https://www.10xgenomics.com/products/xenium-in-situ/preview-dataset-human-breast" class="external-link">Human Breast Cancer Dataset</a> provided with their <a href="https://www.biorxiv.org/content/10.1101/2022.10.06.510405v1" class="external-link">bioRxiv pre-print</a>. This is a legacy pre-release dataset, and some aspects such as file and QC probe naming and image alignment have changed since.</p>
-<p>The data from the first tissue replicate will be worked with:</p>
-<p><img src="images%2Fxenium_breast_cancer%2Flarge_preview.png"></p>
+<div class="section level3" number="2.1">
+<h3 number="2.1" id="download-links">
+<span class="header-section-number">2.1</span> Download Links<a class="anchor" aria-label="anchor" href="#download-links"></a>
+</h3>
+<p>The data from the first tissue replicate will be worked with. The files to download are:</p>
+<details><p><summary><code>curl</code> lnks from 10x genomics</summary></p>
+<pre><code># Input Files
+
+curl -O https://cf.10xgenomics.com/samples/xenium/1.0.1/Xenium_FFPE_Human_Breast_Cancer_Rep1/Xenium_FFPE_Human_Breast_Cancer_Rep1_panel.tsv
+curl -O https://cf.10xgenomics.com/samples/xenium/1.0.1/Xenium_FFPE_Human_Breast_Cancer_Rep1/Xenium_FFPE_Human_Breast_Cancer_Rep1_gene_groups.csv
+curl -O https://cf.10xgenomics.com/samples/xenium/1.0.1/Xenium_FFPE_Human_Breast_Cancer_Rep1/Xenium_FFPE_Human_Breast_Cancer_Rep1_he_image.ome.tif
+curl -O https://cf.10xgenomics.com/samples/xenium/1.0.1/Xenium_FFPE_Human_Breast_Cancer_Rep1/Xenium_FFPE_Human_Breast_Cancer_Rep1_he_imagealignment.csv
+curl -O https://cf.10xgenomics.com/samples/xenium/1.0.1/Xenium_FFPE_Human_Breast_Cancer_Rep1/Xenium_FFPE_Human_Breast_Cancer_Rep1_if_image.ome.tif
+curl -O https://cf.10xgenomics.com/samples/xenium/1.0.1/Xenium_FFPE_Human_Breast_Cancer_Rep1/Xenium_FFPE_Human_Breast_Cancer_Rep1_if_imagealignment.csv
+
+# Output Files
+curl -O https://cf.10xgenomics.com/samples/xenium/1.0.1/Xenium_FFPE_Human_Breast_Cancer_Rep1/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip
+</code></pre>
+</details><p><br></p>
+<p>Do not download the provided <code>.tif</code> images. They are cropped and scaled differently from the <code>ome.tif</code> images, which presents difficulties when using the provided alignment information.</p>
 </div>
-<div class="section level2" number="3">
-<h2 number="3" id="project-data-paths">
-<span class="header-section-number">3</span> 3. Project data paths<a class="anchor" aria-label="anchor" href="#project-data-paths"></a>
-</h2>
-<p>The folder structure within the dataset is as shown below. <strong>Note:</strong> The cell_feature_matrix.tar.gz must be unpacked into a subdirectory within the xenium working directory before starting.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># ** SET PATH TO FOLDER CONTAINING XENIUM DATA **</span></span>
-<span><span class="va">xenium_folder</span> <span class="op">=</span> <span class="st">'/path/to/xenium/data/outputs'</span></span>
-<span></span>
-<span><span class="co"># general files (some are supplemental files)</span></span>
-<span><span class="va">settings_path</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">xenium_folder</span>, <span class="st">'experiment.xenium'</span><span class="op">)</span></span>
-<span><span class="va">he_img_path</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">xenium_folder</span>, <span class="st">'Xenium_FFPE_Human_Breast_Cancer_Rep1_he_image.tif'</span><span class="op">)</span></span>
-<span><span class="va">if_img_path</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">xenium_folder</span>, <span class="st">'Xenium_FFPE_Human_Breast_Cancer_Rep1_if_image.tif'</span><span class="op">)</span></span>
-<span><span class="va">panel_meta_path</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">xenium_folder</span>, <span class="st">'Xenium_FFPE_Human_Breast_Cancer_Rep1_panel.tsv'</span><span class="op">)</span> <span class="co"># (optional)</span></span>
-<span></span>
-<span><span class="co"># files (SUBCELLULAR): (tutorial focuses on working with these files)</span></span>
-<span><span class="va">cell_bound_path</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">xenium_folder</span>, <span class="st">'cell_boundaries.csv.gz'</span><span class="op">)</span></span>
-<span><span class="va">nuc_bound_path</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">xenium_folder</span>, <span class="st">'nucleus_boundaries.csv.gz'</span><span class="op">)</span></span>
-<span><span class="va">tx_path</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">xenium_folder</span>, <span class="st">'transcripts.csv.gz'</span><span class="op">)</span></span>
-<span><span class="va">feat_meta_path</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">xenium_folder</span>, <span class="st">'cell_feature_matrix/features.tsv.gz'</span><span class="op">)</span> <span class="co"># (also used in aggregate)</span></span>
-<span></span>
-<span><span class="co"># files (AGGREGATE):</span></span>
-<span><span class="va">expr_mat_path</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">xenium_folder</span>, <span class="st">'cell_feature_matrix'</span><span class="op">)</span></span>
-<span><span class="va">cell_meta_path</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">xenium_folder</span>, <span class="st">'cells.csv.gz'</span><span class="op">)</span> <span class="co"># contains spatlocs</span></span></code></pre></div>
-</div>
-<div class="section level2" number="4">
-<h2 number="4" id="xenium-feature-types-exploration">
-<span class="header-section-number">4</span> 4. Xenium feature types exploration<a class="anchor" aria-label="anchor" href="#xenium-feature-types-exploration"></a>
-</h2>
-<p><code>features.tsv.gz</code> within <code>cell_feature_matrix.tar.gz</code> provides information on the different feature types available within Xenium’s two types of expression outputs:</p>
-<ol style="list-style-type: decimal">
-<li>aggregated cell by feature matrix</li>
-<li>transcript detections in <code>transcripts.csv.gz</code>
-</li>
-</ol>
-<p>There are four types of probes used, each of which is represented in both exports:</p>
+<div class="section level3" number="2.2">
+<h3 number="2.2" id="expected-directory-structure">
+<span class="header-section-number">2.2</span> Expected Directory Structure<a class="anchor" aria-label="anchor" href="#expected-directory-structure"></a>
+</h3>
+<p>When unzipped, you should have the following directory structure:</p>
+<details><p><summary>expand</summary></p>
+<pre><code>/path/to/data/
+├── Xenium_FFPE_Human_Breast_Cancer_Rep1_gene_groups.csv
+├── Xenium_FFPE_Human_Breast_Cancer_Rep1_he_image.ome.tif
+├── Xenium_FFPE_Human_Breast_Cancer_Rep1_he_imagealignment.csv
+├── Xenium_FFPE_Human_Breast_Cancer_Rep1_if_image.ome.tif
+├── Xenium_FFPE_Human_Breast_Cancer_Rep1_if_imagealignment.csv
+├── Xenium_FFPE_Human_Breast_Cancer_Rep1_panel.tsv
+└── outs
+    ├── analysis
+    │   ├── clustering
+    │   │   ├── ...
+    │   ├── diffexp
+    │   │   ├── ...
+    │   ├── pca
+    │   │   └── ...
+    │   ├── tsne
+    │   │   └── ...
+    │   └── umap
+    │       └── ...
+    ├── analysis.zarr.zip
+    ├── analysis_summary.html
+    ├── cell_boundaries.csv.gz
+    ├── cell_boundaries.parquet
+    ├── cell_feature_matrix
+    │   ├── barcodes.tsv.gz
+    │   ├── features.tsv.gz
+    │   └── matrix.mtx.gz
+    ├── cell_feature_matrix.h5
+    ├── cell_feature_matrix.zarr.zip
+    ├── cells.csv.gz
+    ├── cells.parquet
+    ├── cells.zarr.zip
+    ├── experiment.xenium
+    ├── gene_panel.json
+    ├── metrics_summary.csv
+    ├── morphology.ome.tif
+    ├── morphology_focus.ome.tif
+    ├── morphology_mip.ome.tif
+    ├── nucleus_boundaries.csv.gz
+    ├── nucleus_boundaries.parquet
+    ├── transcripts.csv.gz
+    ├── transcripts.parquet
+    └── transcripts.zarr.zip</code></pre>
+</details><p><br></p>
+<p><strong>The actual Xenium output directory is under <code>outs</code> in this layout</strong>.</p>
+<p>The <code>outs</code> folder will be used with the convenience functions to load into a <code>giotto</code> analysis object.</p>
+<p>Input files are one directory level up. Of note are the <code>.ome.tif</code> image and alignment <code>.csv</code> files. These are images of stainings (H&amp;E and IF) generated after the Xenium run has finished. Since these were imaged on external systems, they have been aligned to the rest of the data using <em>Xenium Explorer</em>. The alignment <code>.csv</code> file is an affine transformation matrix used to align the image to the Xenium dataset.</p>
+<details><p><summary>more about xenium pre-release image types</summary></p>
+<hr>
+<p>This dataset provides several images</p>
+<p><strong>images to load</strong></p>
 <ul>
 <li>
-<code>gene expression</code>: Gene expression detection</li>
-<li>
-<code>blank codeword</code>: Unused codeword - there are no probes that will generate the codeword</li>
-<li>
-<code>negative control codeword</code>: Valid codewords that do not have any probes that should yield that code, so they can be used to assess the specificity of the decoding algorithm</li>
-<li>
-<code>negative control probe</code>: Probes that exist in the panel, but target ERCC or other non-biological sequences, which can be used to assess the specificity of the assay</li>
+<code>Xenium_FFPE_Human_Breast_Cancer_Rep1_he_image.ome.tif</code>
+<ul>
+<li>post-Xenium H&amp;E. Used with alignment matrix.</li>
 </ul>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># load features metadata</span></span>
-<span><span class="co"># (make sure cell_feature_matrix folder is unpacked)</span></span>
-<span><span class="va">feature_dt</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">feat_meta_path</span>, header <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">feature_dt</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ensembl_ID'</span>,<span class="st">'feat_name'</span>,<span class="st">'feat_type'</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># find the feature IDs that belong to each feature type</span></span>
-<span><span class="va">feature_dt</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">feat_type</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="va">feat_types</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">feature_dt</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">feat_type</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">feat_types_IDs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span></span>
-<span>  <span class="va">feat_types</span>, <span class="kw">function</span><span class="op">(</span><span class="va">type</span><span class="op">)</span> <span class="va">feature_dt</span><span class="op">[</span><span class="va">feat_type</span> <span class="op">==</span> <span class="va">type</span>, <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">feat_name</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">feat_types_IDs</span><span class="op">)</span> <span class="op">=</span> <span class="va">feat_types</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># feat_type</span></span>
-<span><span class="co">#            Blank Codeword           Gene Expression</span></span>
-<span><span class="co">#                       159                       313</span></span>
-<span><span class="co">#            Negative Control Codeword    Negative Control Probe </span></span>
-<span><span class="co">#                                   41                        28 </span></span></code></pre></div>
-<p>This dataset has 313 probes that are dedicated for gene expression transcript detection.</p>
+</li>
+<li>
+<code>Xenium_FFPE_Human_Breast_Cancer_Rep1_if_image.ome.tif</code>
+<ul>
+<li>post-Xenium IF. Used with alignment matrix.</li>
+</ul>
+</li>
+<li>
+<code>morphology_focus.ome.tif</code>
+<ul>
+<li>DAPI image combined from the most in-focus regions from multiple z stacks</li>
+</ul>
+</li>
+</ul>
+<p><strong>images not loaded</strong></p>
+<ul>
+<li>
+<code>morphology.ome.tif</code>
+<ul>
+<li>z-stacked image. Many planes may be less focused</li>
+</ul>
+</li>
+<li>
+<code>morphology_mip.ome.tif</code>
+<ul>
+<li>
+<a href="https://en.wikipedia.org/wiki/Maximum_intensity_projection" class="external-link">maximum intensity projection</a> image created from the <code>morphology.ome.tif</code>. Has more even brightness compared against <code>morphology_focus.ome.tif</code>, but is also slightly blurrier. This image type was only provided with the pre-release and does not show up in later Xenium pipeline versions.</li>
+</ul>
+</li>
+</ul></details><p><br></p>
+<p>Also note that 10x provides several formats for many of the outputs. This will be touched on later when loading the data in.</p>
+</div>
+</div>
+<div class="section level2" number="3">
+<h2 number="3" id="load-xenium-data">
+<span class="header-section-number">3</span> Load Xenium Data<a class="anchor" aria-label="anchor" href="#load-xenium-data"></a>
+</h2>
+<p>The Xenium data can be loaded using <code><a href="../reference/createGiottoXeniumObject.html">createGiottoXeniumObject()</a></code></p>
+<p>The default behavior is to load:</p>
+<ul>
+<li>transcripts information</li>
+<li>cell and nucleus boundaries</li>
+<li>morphology focus images (DAPI and IF cell boundary stains if any)</li>
+<li>feature metadata (gene_panel.json)</li>
+</ul>
+<details><p><summary>Alternative data to load</summary></p>
+<hr>
+<p>We skip loading of:</p>
+<ul>
+<li>expression</li>
+<li>cell metadata</li>
+</ul>
+<p>They can be loaded if <code>load_expression</code> and <code>load_cellmeta</code> respectively are set to <code>TRUE</code>. We normally skip them since Giotto’s aggregation results may produce slightly different results than those from 10X.</p>
+<p>The molecule transcript detections can also be skipped if directly using the 10X expression information alongside the polygons. You can do this by setting <code>load_transcripts</code> to <code>FALSE</code>. It will not be possible to plot the individual transcript detections if they are not loaded in, but memory usage is greatly reduced.</p>
+<p>As an additional note, the provided expression values are generated from a QV threshold of 20 (described below) with the cell polygons. If a different QV threshold or usage of the nuclear segmentations is desired, then de novo aggregation from polygons and points will be required.</p>
+<p>Expected peak RAM usage:</p>
+<ul>
+<li>with transcripts: ~70GB</li>
+<li>without transcripts: ~5GB</li>
+</ul></details><p><br></p>
+<p>For the full dataset (HPC): <em>time: 5-6min | memory: 50GB</em></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#   [1] "ABCC11"   "ACTA2"    "ACTG2"    "ADAM9"    "ADGRE5"   "ADH1B"   </span></span>
+<code class="sourceCode R"><span><span class="co"># 1. ** SET PATH TO FOLDER CONTAINING XENIUM DATA **</span></span>
+<span><span class="va">data_path</span> <span class="op">&lt;-</span> <span class="st">"path/to/data"</span></span>
+<span></span>
+<span><span class="co"># 2. ** SET WORKING DIRECTORY WHERE PROJECT OUTPUTS WILL SAVE TO **</span></span>
+<span><span class="va">results_folder</span> <span class="op">=</span> <span class="st">'/path/to/results/'</span></span>
+<span></span>
+<span><span class="co"># 3. Create Giotto instructions</span></span>
+<span><span class="co"># Directly saving plots to the working directory without rendering them in the viewer saves time.</span></span>
+<span><span class="va">instrs</span> <span class="op">=</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span></span>
+<span>    save_dir <span class="op">=</span> <span class="va">results_folder</span>,</span>
+<span>    save_plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    show_plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    return_plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    python_path <span class="op">=</span> <span class="va">python_path</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># These feat_type and split_keyword settings are specific to</span></span>
+<span><span class="co"># pre-release and early versions of the Xenium pipeline</span></span>
+<span></span>
+<span><span class="va">feat_types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"rna"</span>,</span>
+<span>    <span class="st">"UnassignedCodeword"</span>, </span>
+<span>    <span class="st">"NegControlCodeword"</span>,  </span>
+<span>    <span class="st">"NegControlProbe"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">split_keywords</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BLANK"</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NegControlCodeword"</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NegControlProbe"</span>, <span class="st">"antisense"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 4. Create the object</span></span>
+<span><span class="va">xenium_gobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createGiottoXeniumObject.html">createGiottoXeniumObject</a></span><span class="op">(</span></span>
+<span>    xenium_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"outs"</span><span class="op">)</span>,</span>
+<span>    qv_threshold <span class="op">=</span> <span class="fl">20</span>, <span class="co"># qv of 20 is the default and also what 10x uses</span></span>
+<span>    feat_type <span class="op">=</span> <span class="va">feat_types</span>,</span>
+<span>    split_keyword <span class="op">=</span> <span class="va">split_keywords</span>,</span>
+<span>    <span class="co"># * if aligned images already converted to .tif, they could be added as named list</span></span>
+<span>    <span class="co"># * instead, see next section</span></span>
+<span>    <span class="co"># load_aligned_images = list(</span></span>
+<span>    <span class="co">#     post_he = c(</span></span>
+<span>    <span class="co">#         "path/to/...he_image.tif",</span></span>
+<span>    <span class="co">#         "path/to/...he_imagealignment.csv"</span></span>
+<span>    <span class="co">#     ),</span></span>
+<span>    <span class="co">#     CD20 = ...,</span></span>
+<span>    <span class="co">#     HER2 = ...,</span></span>
+<span>    <span class="co">#     DAPI = ...</span></span>
+<span>    <span class="co"># ),</span></span>
+<span>    instructions <span class="op">=</span> <span class="va">instrs</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/force.html" class="external-link">force</a></span><span class="op">(</span><span class="va">xenium_gobj</span><span class="op">)</span></span></code></pre></div>
+<pre><code>An object of class giotto 
+&gt;Active spat_unit:  cell 
+&gt;Active feat_type:  rna 
+dimensions    : 313, 167780 (features, cells)
+[SUBCELLULAR INFO]
+polygons      : cell nucleus 
+features      : rna blank_codeword neg_control_codeword neg_control_probe 
+[AGGREGATE INFO]
+spatial locations ----------------
+  [cell] raw
+  [nucleus] raw
+attached images ------------------
+images      : dapi 
+
+
+Use objHistory() to see steps and params used</code></pre>
+<p>There are several parameters for additional or alternative items you can load. See dropdowns.</p>
+<details><p><summary>Loading from non-standard directories or other provided file formats</summary></p>
+<p>The convenience function auto-detects filepaths based on the Xenium directory path and the preferred file formats</p>
+<ul>
+<li>
+<code>.parquet</code> for tabular (vs <code>.csv</code>)</li>
+<li>
+<code>.h5</code> for matrix over other formats when available (vs <code>.mtx</code>)</li>
+<li>
+<code>.zarr</code> is currently not supported.</li>
+</ul>
+<p>When you need to use a different file format or something is not in the standard Xenium output directory structure or naming scheme shown above, you can supply a specific filepath to <code><a href="../reference/createGiottoXeniumObject.html">createGiottoXeniumObject()</a></code> using these parameters:</p>
+<pre><code>expression_path = ,
+cell_metadata_path = ,
+transcript_path = ,
+bounds_path = ,
+gene_panel_json_path = , </code></pre>
+<p>Note that if loading in the <code>.mtx</code> file, <code>expression_path</code> param should be passed the filepath to the <code>cell_feature_matrix</code> subdirectory instead of the <code>.mtx</code> file.</p>
+<p><br></p>
+</details><details><p><summary>qv_threshold setting</summary></p>
+<pre><code><span><span class="va">qv_threshold</span> <span class="op">=</span> <span class="fl">20</span> <span class="co"># default</span></span></code></pre>
+<p>The <em>Quality Value</em> is a Phred-based 0-40 value that 10X provides for every detection in their transcripts output. Higher values mean higher confidence in the decoded transcript identity. By default 10X uses a cutoff of QV = 20 for transcripts to use downstream.</p>
+<p><em>Setting a value other than 20 will make the loaded dataset different from the 10X-provided expression matrix and cell metadata.</em></p>
+<p><strong>QV Calculation</strong></p>
+<ol style="list-style-type: decimal">
+<li>Raw Q-score based on how likely it is that an observed code is to be the codeword that it gets mapped to vs less likely codeword.</li>
+<li>Adjustment of raw Q-score by binning the transcripts by Q-value then adjusting the exact Q per bin based on proportion of <strong>Negative Control Codewords</strong> detected within.</li>
+</ol>
+<p><a href="https://www.10xgenomics.com/support/software/xenium-onboard-analysis/latest/algorithms-overview/xoa-algorithms#qvs" class="external-link">further info from 10x documentation</a></p>
+<p><br></p>
+</details><details><p><summary>feat_types and split_keywords</summary></p>
+<p>These parameters govern how transcript types are split into different groups when loading.</p>
+<pre><code><span><span class="va">feat_types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"rna"</span>,</span>
+<span>    <span class="st">"UnassignedCodeword"</span>, </span>
+<span>    <span class="st">"NegControlCodeword"</span>,  </span>
+<span>    <span class="st">"NegControlProbe"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">split_keywords</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BLANK"</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NegControlCodeword"</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NegControlProbe"</span>, <span class="st">"antisense"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre>
+<p>There are 4 types of transcript detections that 10X reports with this dataset.</p>
+<details><p><summary><strong>Gene expression</strong> (313) - These are the <code>'rna'</code> gene detections.</summary></p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">rna</span> <span class="op">&lt;-</span> <span class="va">xenium_gobj</span><span class="op">[[</span><span class="st">"feat_info"</span>, <span class="st">"rna"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">rna</span>, dens <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="images%2Fxenium_breast_cancer%2Fgpoints.png" alt="plot of Gene expression (rna) density" width="868"><p class="caption">
+plot of Gene expression (rna) density
+</p>
+</div>
+<pre><code><span><span class="co">#   [1] "ABCC11"   "ACTA2"    "ACTG2"    "ADAM9"    "ADGRE5"   "ADH1B"   </span></span>
 <span><span class="co">#   [7] "ADIPOQ"   "AGR3"     "AHSP"     "AIF1"     "AKR1C1"   "AKR1C3"  </span></span>
 <span><span class="co">#  [13] "ALDH1A3"  "ANGPT2"   "ANKRD28"  "ANKRD29"  "ANKRD30A" "APOBEC3A"</span></span>
 <span><span class="co">#  [19] "APOBEC3B" "APOC1"    "AQP1"     "AQP3"     "AR"       "AVPR1A"  </span></span>
@@ -742,9 +971,9 @@
 <span><span class="co"># [295] "TOMM7"    "TOP2A"    "TPD52"    "TPSAB1"   "TRAC"     "TRAF4"   </span></span>
 <span><span class="co"># [301] "TRAPPC3"  "TRIB1"    "TUBA4A"   "TUBB2B"   "TYROBP"   "UCP1"    </span></span>
 <span><span class="co"># [307] "USP53"    "VOPP1"    "VWF"      "WARS"     "ZEB1"     "ZEB2"    </span></span>
-<span><span class="co"># [313] "ZNF562"  </span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#   [1] "BLANK_0006" "BLANK_0013" "BLANK_0037" "BLANK_0069" "BLANK_0072"</span></span>
+<span><span class="co"># [313] "ZNF562"  </span></span></code></pre>
+</details><details><p><summary><strong>Blank Codeword</strong> (159) - (QC) Codewords that should not be used in the current panel. (named <strong>Unassigned Codeword</strong> in later Xenium pipelines)</summary></p>
+<pre><code><span><span class="co">#   [1] "BLANK_0006" "BLANK_0013" "BLANK_0037" "BLANK_0069" "BLANK_0072"</span></span>
 <span><span class="co">#   [6] "BLANK_0087" "BLANK_0110" "BLANK_0114" "BLANK_0120" "BLANK_0147"</span></span>
 <span><span class="co">#  [11] "BLANK_0180" "BLANK_0186" "BLANK_0272" "BLANK_0278" "BLANK_0319"</span></span>
 <span><span class="co">#  [16] "BLANK_0321" "BLANK_0337" "BLANK_0350" "BLANK_0351" "BLANK_0352"</span></span>
@@ -775,9 +1004,9 @@
 <span><span class="co"># [141] "BLANK_0473" "BLANK_0474" "BLANK_0475" "BLANK_0476" "BLANK_0477"</span></span>
 <span><span class="co"># [146] "BLANK_0478" "BLANK_0479" "BLANK_0480" "BLANK_0481" "BLANK_0482"</span></span>
 <span><span class="co"># [151] "BLANK_0483" "BLANK_0484" "BLANK_0485" "BLANK_0486" "BLANK_0487"</span></span>
-<span><span class="co"># [156] "BLANK_0488" "BLANK_0489" "BLANK_0497" "BLANK_0499"</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#  [1] "NegControlCodeword_0500" "NegControlCodeword_0501"</span></span>
+<span><span class="co"># [156] "BLANK_0488" "BLANK_0489" "BLANK_0497" "BLANK_0499"</span></span></code></pre>
+</details><details><p><summary><strong>Negative Control Codeword</strong> (41) - (QC) Codewords that do not map to genes, but are in the codebook. Used to determine specificity of decoding algorithm</summary></p>
+<pre><code><span><span class="co">#  [1] "NegControlCodeword_0500" "NegControlCodeword_0501"</span></span>
 <span><span class="co">#  [3] "NegControlCodeword_0502" "NegControlCodeword_0503"</span></span>
 <span><span class="co">#  [5] "NegControlCodeword_0504" "NegControlCodeword_0505"</span></span>
 <span><span class="co">#  [7] "NegControlCodeword_0506" "NegControlCodeword_0507"</span></span>
@@ -797,9 +1026,9 @@
 <span><span class="co"># [35] "NegControlCodeword_0534" "NegControlCodeword_0535"</span></span>
 <span><span class="co"># [37] "NegControlCodeword_0536" "NegControlCodeword_0537"</span></span>
 <span><span class="co"># [39] "NegControlCodeword_0538" "NegControlCodeword_0539"</span></span>
-<span><span class="co"># [41] "NegControlCodeword_0540"</span></span></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#  [1] "NegControlProbe_00042" "NegControlProbe_00041" "NegControlProbe_00039"</span></span>
+<span><span class="co"># [41] "NegControlCodeword_0540"</span></span></code></pre>
+</details><details><p><summary><strong>Negative Control Probe</strong> (28) - (QC) Probes in panel but target non-biological sequences. Used to determine specificity of assay.</summary></p>
+<pre><code><span><span class="co">#  [1] "NegControlProbe_00042" "NegControlProbe_00041" "NegControlProbe_00039"</span></span>
 <span><span class="co">#  [4] "NegControlProbe_00035" "NegControlProbe_00034" "NegControlProbe_00033"</span></span>
 <span><span class="co">#  [7] "NegControlProbe_00031" "NegControlProbe_00025" "NegControlProbe_00024"</span></span>
 <span><span class="co"># [10] "NegControlProbe_00022" "NegControlProbe_00019" "NegControlProbe_00017"</span></span>
@@ -808,1004 +1037,340 @@
 <span><span class="co"># [19] "NegControlProbe_00003" "NegControlProbe_00002" "antisense_PROKR2"     </span></span>
 <span><span class="co"># [22] "antisense_ULK3"        "antisense_SCRIB"       "antisense_TRMU"       </span></span>
 <span><span class="co"># [25] "antisense_MYLIP"       "antisense_LGI3"        "antisense_BCL2L15"    </span></span>
-<span><span class="co"># [28] "antisense_ADCY4"   </span></span></code></pre></div>
-</div>
-<div class="section level2" number="5">
-<h2 number="5" id="loading-xenium-data">
-<span class="header-section-number">5</span> 5. Loading Xenium data<a class="anchor" aria-label="anchor" href="#loading-xenium-data"></a>
-</h2>
-<div class="section level3" number="5.1">
-<h3 number="5.1" id="manual-method">
-<span class="header-section-number">5.1</span> 5.1 Manual Method<a class="anchor" aria-label="anchor" href="#manual-method"></a>
+<span><span class="co"># [28] "antisense_ADCY4"   </span></span></code></pre>
+</details><hr>
+<p>The main thing to watch out for is that the other probe types should be separated out from the the <strong>Gene expression</strong> or <strong>rna</strong> feature type so that they do not interfere with expression normalization and other analyses.</p>
+<p>How to deal with these different types of detections is easily adjustable. With the <code>feat_type</code> param you declare which categories/<code>feat_types</code> you want to split transcript detections into. Then with <code>split_keyword</code>, you provide a list of character vectors containing <code><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep()</a></code> terms to search for.</p>
+<p>Note that there are 4 <code>feat_types</code> declared in this set of defaults, but 3 items passed to <code>split_keyword</code>. Any transcripts not matched by items in <code>split_keyword</code>, get categorized as the first provided <code>feat_type</code> (“rna”).</p>
+<p><br></p>
+</details><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Example plot</span></span>
+<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">xenium_gobj</span>,</span>
+<span>    <span class="co"># scattermore speeds up plotting</span></span>
+<span>    plot_method <span class="op">=</span> <span class="st">"scattermore"</span>,</span>
+<span>    point_shape <span class="op">=</span> <span class="st">"no_border"</span>,</span>
+<span>    point_size <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="images%2Fxenium_breast_cancer%2Fscatter_example.png" width="1125"></p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># zoomed in region with polygons and image</span></span>
+<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">xenium_gobj</span>,</span>
+<span>    show_image <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    polygon_line_size <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>    polygon_color <span class="op">=</span> <span class="st">"#BB0000"</span>,</span>
+<span>    polygon_alpha <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>    xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fl">2000</span><span class="op">)</span>,</span>
+<span>    ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3000</span>, <span class="op">-</span><span class="fl">2000</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="images%2Fxenium_breast_cancer%2Fpoly_example.png" width="1125"></p>
+<div class="section level3" number="3.1">
+<h3 number="3.1" id="attaching-post-xenium-aligned-images-optional">
+<span class="header-section-number">3.1</span> Attaching Post-Xenium Aligned Images (Optional)<a class="anchor" aria-label="anchor" href="#attaching-post-xenium-aligned-images-optional"></a>
 </h3>
-<p>Giotto objects can be manually assembled feeding data and subobjects into a creation function. A convenience function for automatically loading the xenium data from the directory and generating a giotto object is also available. (See Section 5.2])</p>
-<p>Xenium outputs can be analyzed as either the subcellular information or as aggregated data where each detected cell’s subcellular data has been spatially assigned to a cell centroid. This tutorial will work mainly with the subcellular data and how to work with it, however a workflow to load in just the aggregated data is also available through the convenience function.</p>
-<div class="section level4" number="5.1.1">
-<h4 number="5.1.1" id="load-transcript-level-data">
-<span class="header-section-number">5.1.1</span> 5.1.1 Load transcript-level data<a class="anchor" aria-label="anchor" href="#load-transcript-level-data"></a>
-</h4>
-<p><code>transcripts.csv.gz</code> is a file containing x, y, z coordinates for individual transcript molecules detected during the Xenium run. It also contains a QC Phred score for which this tutorial will set a cutoff at 20, the same as what 10x uses.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tx_dt</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">tx_path</span><span class="op">)</span></span>
-<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setattr.html" class="external-link">setnames</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">tx_dt</span>,</span>
-<span>                     old <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'feature_name'</span>, <span class="st">'x_location'</span>, <span class="st">'y_location'</span><span class="op">)</span>,</span>
-<span>                     new <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'feat_ID'</span>, <span class="st">'x'</span>, <span class="st">'y'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">'Transcripts info available:\n '</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'"'</span>, <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">tx_dt</span><span class="op">)</span>, <span class="st">'"'</span><span class="op">)</span>, <span class="st">'\n'</span>,</span>
-<span>    <span class="st">'with'</span>, <span class="va">tx_dt</span><span class="op">[</span>,<span class="va">.N</span><span class="op">]</span>, <span class="st">'unfiltered detections\n'</span><span class="op">)</span></span>
+<p>Xenium runs will come with one or more IF morphology images. In this dataset, it is just the DAPI image. Additional images of the tissue generated after the Xenium run can be added by aligning new images to the rest of the Xenium information. These alignments are provided as affine matrices.</p>
+<p>Here we will load in the post-Xenium H&amp;E and IF images.</p>
+<p>The images used in this process are <code>ome.tif</code> images which Giotto is not fully compatible with, so we convert any images we will use to normal <code>tif</code> images using <code><a href="https://drieslab.github.io/GiottoClass/reference/ometif_to_tif.html" class="external-link">ometif_to_tif()</a></code>.</p>
+<p>This image format conversion is a step that is automatically done with the morphology images.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># image conversions</span></span>
+<span><span class="va">path_he</span> <span class="op">&lt;-</span> <span class="st">"path/to/...he_image.ome.tif"</span></span>
+<span><span class="va">path_if</span> <span class="op">&lt;-</span> <span class="st">"path/to/...if_image.ome.tif"</span></span>
 <span></span>
-<span><span class="co"># filter by qv (Phred score)</span></span>
-<span><span class="va">tx_dt_filtered</span> <span class="op">=</span> <span class="va">tx_dt</span><span class="op">[</span><span class="va">qv</span> <span class="op">&gt;=</span> <span class="fl">20</span><span class="op">]</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">'and'</span>, <span class="va">tx_dt_filtered</span><span class="op">[</span>,<span class="va">.N</span><span class="op">]</span>, <span class="st">'filtered detections\n\n'</span><span class="op">)</span></span>
+<span><span class="co"># conversion `output_dir` can be specified</span></span>
+<span><span class="co"># default is a new subdirectory called `tif_exports`</span></span>
+<span><span class="va">conv_path_he</span> <span class="op">&lt;-</span> <span class="fu">GiottoClass</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/ometif_to_tif.html" class="external-link">ometif_to_tif</a></span><span class="op">(</span><span class="va">path_he</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># separate detections by feature type</span></span>
-<span><span class="va">tx_dt_types</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span></span>
-<span>  <span class="va">feat_types_IDs</span>, <span class="kw">function</span><span class="op">(</span><span class="va">types</span><span class="op">)</span> <span class="va">tx_dt_filtered</span><span class="op">[</span><span class="va">feat_ID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">types</span><span class="op">]</span></span>
+<span><span class="co"># IF staining is a 3 page .ome.tif</span></span>
+<span><span class="va">conv_path_if</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="kw">function</span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu">GiottoClass</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/ometif_to_tif.html" class="external-link">ometif_to_tif</a></span><span class="op">(</span><span class="va">path_if</span>, page <span class="op">=</span> <span class="va">p</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># with the following channel names</span></span>
+<span><span class="co"># 1. CD20, 2. HER2, 3. DAPI</span></span>
+<span><span class="va">if_channels</span> <span class="op">&lt;-</span> <span class="fu">GiottoClass</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/ometif_metadata.html" class="external-link">ometif_metadata</a></span><span class="op">(</span><span class="va">path_if</span>, node <span class="op">=</span> <span class="st">"Channel"</span><span class="op">)</span><span class="op">$</span><span class="va">Name</span></span>
+<span></span>
+<span><span class="co"># use the `importXenium()` custom loading utility</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importXenium.html">importXenium</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"outs"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">img_he</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">$</span><span class="fu">load_aligned_image</span><span class="op">(</span></span>
+<span>    name <span class="op">=</span> <span class="st">"post_he"</span>,</span>
+<span>    path <span class="op">=</span> <span class="va">conv_path_he</span>, <span class="co"># "path/to/tif_exports/...he_image.tif"</span></span>
+<span>    imagealignment_path <span class="op">=</span> <span class="st">"path/to/...he_imagealignment.csv"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">img_if</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="kw">function</span><span class="op">(</span><span class="va">if_i</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">x</span><span class="op">$</span><span class="fu">load_aligned_image</span><span class="op">(</span></span>
+<span>        name <span class="op">=</span> <span class="va">if_channels</span><span class="op">[[</span><span class="va">if_i</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>        path <span class="op">=</span> <span class="va">conv_path_if</span><span class="op">[[</span><span class="va">if_i</span><span class="op">]</span><span class="op">]</span>, <span class="co"># "path/to/tif_exports/...if_image.tif"</span></span>
+<span>        imagealignment_path <span class="op">=</span> <span class="st">"path/to/...if_imagealignment.csv"</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">img_he</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images%2Fxenium_breast_cancer%2Fhe_prev.png" width="60%"></p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">img_if</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images%2Fxenium_breast_cancer%2Fher2_prev.png" width="60%"></p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># append to giotto object</span></span>
+<span><span class="va">xenium_gobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">xenium_gobj</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">img_he</span><span class="op">)</span>, <span class="va">img_if</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># example plot with HER2</span></span>
+<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">xenium_gobj</span>,</span>
+<span>    xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fl">2000</span><span class="op">)</span>,</span>
+<span>    ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3000</span>, <span class="op">-</span><span class="fl">2000</span><span class="op">)</span>,</span>
+<span>    show_image <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    image_name <span class="op">=</span> <span class="st">"HER2"</span>,</span>
+<span>    polygon_line_size <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>    polygon_color <span class="op">=</span> <span class="st">"#BB0000"</span>,</span>
+<span>    polygon_alpha <span class="op">=</span> <span class="fl">0.2</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="images%2Fxenium_breast_cancer%2Fher2_example.png" width="100%"></p>
+</div>
+</div>
+<div class="section level2" number="4">
+<h2 number="4" id="aggregate-data">
+<span class="header-section-number">4</span> Aggregate Data<a class="anchor" aria-label="anchor" href="#aggregate-data"></a>
+</h2>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Calculate Overlaps of `"rna"` Features with the `"cell"` Polygon Boundaries</span></span>
+<span><span class="va">xenium_gobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlapRaster.html" class="external-link">calculateOverlapRaster</a></span><span class="op">(</span><span class="va">xenium_gobj</span>,</span>
+<span>    spatial_info <span class="op">=</span> <span class="st">'cell'</span>,</span>
+<span>    feat_info <span class="op">=</span> <span class="st">'rna'</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">tx_dt_types</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">tx_dt_types</span><span class="op">)</span><span class="op">[[</span><span class="va">x</span><span class="op">]</span><span class="op">]</span>, <span class="st">'detections: '</span>, <span class="va">tx_dt_types</span><span class="op">[[</span><span class="va">x</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>,<span class="va">.N</span><span class="op">]</span>, <span class="st">'\n'</span><span class="op">)</span></span>
-<span><span class="op">}</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Transcripts info available:</span></span>
-<span><span class="co">#   "transcript_id" "cell_id" "overlaps_nucleus" "feat_ID" "x" "y" "z_location" "qv" </span></span>
-<span><span class="co">#  with 43664530 unfiltered detections</span></span>
-<span><span class="co">#  and 34813341 filtered detections</span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># Blank Codeword detections: 8805 </span></span>
-<span><span class="co"># Gene Expression detections: 34764833 </span></span>
-<span><span class="co"># Negative Control Codeword detections: 1855 </span></span>
-<span><span class="co"># Negative Control Probe detections: 37848 </span></span></code></pre></div>
-<p>Giotto loads these filtered subcellular detections in as a <code>giottoPoints</code> object and determines the correct columns by looking for columns named <code>'feat_ID',</code> <code>'x'</code>, and <code>'y'</code>.</p>
-<p>Here, we use the list of <code>data.table</code>s generated in the previous step to create a list of <code>giottoPoints</code> objects. When previewing these objects using <code><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot()</a></code>, the default behavior is to plot ALL points within the object. For objects that contain many feature points, it is highly recommended to specify a subset of features to plot using the <code>feats</code> param.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">gpoints_list</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span></span>
-<span>  <span class="va">tx_dt_types</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPoints.html" class="external-link">createGiottoPoints</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span><span class="op">)</span></span>
-<span><span class="op">)</span> <span class="co"># 208.499 sec elapsed</span></span>
+<span><span class="co"># Assign polygon overlaps information to expression matrix</span></span>
+<span><span class="va">xenium_gobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span><span class="va">xenium_gobj</span>,</span>
+<span>    poly_info <span class="op">=</span> <span class="st">'cell'</span>,</span>
+<span>    feat_info <span class="op">=</span> <span class="st">'rna'</span>,</span>
+<span>    name <span class="op">=</span> <span class="st">'raw'</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># preview QC probe detections</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gpoints_list</span><span class="op">$</span><span class="va">`Blank Codeword`</span>,</span>
-<span>     point_size <span class="op">=</span> <span class="fl">0.3</span>,</span>
-<span>     main <span class="op">=</span> <span class="st">'Blank Codeword'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gpoints_list</span><span class="op">$</span><span class="va">`Negative Control Codeword`</span>,</span>
-<span>     point_size <span class="op">=</span> <span class="fl">0.3</span>,</span>
-<span>     main <span class="op">=</span> <span class="st">'Negative Control Codeword'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gpoints_list</span><span class="op">$</span><span class="va">`Negative Control Probe`</span>,</span>
-<span>     point_size <span class="op">=</span> <span class="fl">0.3</span>,</span>
-<span>     main <span class="op">=</span> <span class="st">'Negative Control Probe'</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># preview two genes (slower)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gpoints_list</span><span class="op">$</span><span class="va">`Gene Expression`</span>,  <span class="co"># 77.843 sec elapsed</span></span>
-<span>     feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'KRT8'</span>, <span class="st">'MS4A1'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">tx_dt_types</span><span class="op">$</span><span class="va">`Gene Expression`</span><span class="op">[</span><span class="va">feat_ID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'KRT8'</span>, <span class="st">'MS4A1'</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">feat_ID</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># feat_ID</span></span>
-<span><span class="co">#   KRT8  MS4A1 </span></span>
-<span><span class="co"># 530190  20926 </span></span></code></pre></div>
-<p><img src="images%2Fxenium_breast_cancer%2Fgpoints_blnk.png"><img src="images%2Fxenium_breast_cancer%2Fgpoints_ngcode.png"><img src="images%2Fxenium_breast_cancer%2Fgpoints_ngprbe.png"><img src="images%2Fxenium_breast_cancer%2Fgpoints_expr.png"></p>
+<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/showGiottoExpression.html" class="external-link">showGiottoExpression</a></span><span class="op">(</span><span class="va">xenium_gobj</span><span class="op">)</span></span></code></pre></div>
+<pre><code>└──Spatial unit "cell"
+   └──Feature type "rna"
+      └──Expression data "raw" values:
+            An object of class exprObj : "raw"
+            spat_unit : "cell"
+            feat_type : "rna"
+            provenance: cell 
+            
+            contains:
+            313 x 167780 sparse Matrix of class "dgCMatrix"
+                                                   
+            ABCC11 . . . . . . . . . . . . . ......
+            ACTA2  . . . . . . . 1 . . . . 1 ......
+            ACTG2  . 2 . . . . 1 . . . . . 1 ......
+            
+             ........suppressing 167767 columns and 307 rows in show()
+                                                   
+            ZEB1   . . . . . . . . . 1 . . . ......
+            ZEB2   . . . . . 2 . . 2 1 1 . . ......
+            ZNF562 . . . . . . . . . . . . . ......
+            
+             First four colnames:
+             1 2 3 4 </code></pre>
+<p>This is now a fully functioning Xenium <code>giotto</code> object. From here, we can do the standard data processing pipeline to cluster.</p>
 </div>
-<div class="section level4" number="5.1.2">
-<h4 number="5.1.2" id="load-polygon-data">
-<span class="header-section-number">5.1.2</span> 5.1.2 Load polygon data<a class="anchor" aria-label="anchor" href="#load-polygon-data"></a>
-</h4>
-<p>Xenium output provides segmentation/cell boundary information in .csv.gz files. These are represented within Giotto as <code>giottoPolygon</code> objects and can also be directly plotted. This function also determines the correct columns to use by looking for columns named <code>'poly_ID'</code>, <code>'x'</code>, and <code>'y'</code>.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cellPoly_dt</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">cell_bound_path</span><span class="op">)</span></span>
-<span><span class="va">nucPoly_dt</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">nuc_bound_path</span><span class="op">)</span></span>
+<div class="section level2" number="5">
+<h2 number="5" id="data-processing">
+<span class="header-section-number">5</span> Data Processing<a class="anchor" aria-label="anchor" href="#data-processing"></a>
+</h2>
+<p>Now that an aggregated expression matrix is generated, the usual data filtering and processing can be applied We start by setting a count of 1 to be the minimum to consider a feature expressed. A feature must be detected in at least 3 cells to be included. Lastly, a cell must have a minimum of 5 features detected to be included.</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># process the data up to PCA calculation</span></span>
+<span><span class="va">xenium_gobj</span> <span class="op">&lt;-</span> <span class="va">xenium_gobj</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/filterGiotto.html">filterGiotto</a></span><span class="op">(</span>,</span>
+<span>        spat_unit <span class="op">=</span> <span class="st">'cell'</span>,</span>
+<span>        expression_threshold <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>        feat_det_in_min_cells <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>        min_det_feats_per_cell <span class="op">=</span> <span class="fl">5</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/normalizeGiotto.html">normalizeGiotto</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="../reference/addStatistics.html">addStatistics</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/runPCA.html">runPCA</a></span><span class="op">(</span>feats_to_use <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="co"># don't use HVFs since there are too few features*</span></span></code></pre></div>
+<p>**By default, <code><a href="../reference/runPCA.html">runPCA()</a></code> uses the subset of genes discovered to be highly variable and then assigned as such in the feature metadata. Instead, this time, using all genes is desireable, so <code>feats_to_use</code> will be set to <code>NULL</code>.*</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Visualize Screeplot and PCA</span></span>
+<span><span class="fu"><a href="../reference/screePlot.html">screePlot</a></span><span class="op">(</span><span class="va">xenium_gobj</span>, ncp <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images%2Fxenium_breast_cancer%2Fscree.png" width="100%"></p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span><span class="va">xenium_gobj</span>, point_size <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images%2Fxenium_breast_cancer%2Fpca.png" width="80%"></p>
+<div class="section level3" number="5.1">
+<h3 number="5.1" id="dimension-reduction">
+<span class="header-section-number">5.1</span> Dimension Reduction<a class="anchor" aria-label="anchor" href="#dimension-reduction"></a>
+</h3>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">xenium_gobj</span> <span class="op">=</span> <span class="fu"><a href="../reference/runtSNE.html">runtSNE</a></span><span class="op">(</span><span class="va">xenium_gobj</span>, dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">xenium_gobj</span> <span class="op">=</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span><span class="va">xenium_gobj</span>, dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setattr.html" class="external-link">setnames</a></span><span class="op">(</span><span class="va">cellPoly_dt</span>,</span>
-<span>                     old <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'cell_id'</span>, <span class="st">'vertex_x'</span>, <span class="st">'vertex_y'</span><span class="op">)</span>,</span>
-<span>                     new <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'poly_ID'</span>, <span class="st">'x'</span>, <span class="st">'y'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setattr.html" class="external-link">setnames</a></span><span class="op">(</span><span class="va">nucPoly_dt</span>,</span>
-<span>                     old <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'cell_id'</span>, <span class="st">'vertex_x'</span>, <span class="st">'vertex_y'</span><span class="op">)</span>,</span>
-<span>                     new <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'poly_ID'</span>, <span class="st">'x'</span>, <span class="st">'y'</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">gpoly_cells</span> <span class="op">=</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygonsFromDfr</a></span><span class="op">(</span>segmdfr <span class="op">=</span> <span class="va">cellPoly_dt</span>,</span>
-<span>                                          name <span class="op">=</span> <span class="st">'cell'</span>,</span>
-<span>                                          calc_centroids <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">gpoly_nucs</span> <span class="op">=</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygonsFromDfr</a></span><span class="op">(</span>segmdfr <span class="op">=</span> <span class="va">nucPoly_dt</span>,</span>
-<span>                                         name <span class="op">=</span> <span class="st">'nucleus'</span>,</span>
-<span>                                         calc_centroids <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><code>giottoPolygon</code> objects can be directly plotted with <code><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot()</a></code>, but the field of view here is so large that it would take a long time and the details would be lost. Here, we will only plot the polygon centroids for the cell nucleus polygons by accessing the calculated results within the <code>giottoPolygon</code>’s <code>spatVectorCentroids</code> slot.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">gpoly_nucs</span>, point_size <span class="op">=</span> <span class="fl">0.1</span>, type <span class="op">=</span> <span class="st">'centroid'</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fxenium_breast_cancer%2Fgpolys_centroids.png"></p>
-</div>
-<div class="section level4" number="5.1.3">
-<h4 number="5.1.3" id="create-giotto-object">
-<span class="header-section-number">5.1.3</span> 5.1.3 Create Giotto Object<a class="anchor" aria-label="anchor" href="#create-giotto-object"></a>
-</h4>
-<p>Now that both the feature data and the boundaries are loaded in, a subcellular Giotto object can be created.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">xenium_gobj</span> <span class="op">=</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObjectSubcellular.html" class="external-link">createGiottoObjectSubcellular</a></span><span class="op">(</span></span>
-<span>  gpoints <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rna <span class="op">=</span> <span class="va">gpoints_list</span><span class="op">$</span><span class="va">`Gene Expression`</span>,</span>
-<span>                 blank_code <span class="op">=</span> <span class="va">gpoints_list</span><span class="op">$</span><span class="va">`Blank Codeword`</span>,</span>
-<span>                 neg_code <span class="op">=</span> <span class="va">gpoints_list</span><span class="op">$</span><span class="va">`Negative Control Codeword`</span>,</span>
-<span>                 neg_probe <span class="op">=</span> <span class="va">gpoints_list</span><span class="op">$</span><span class="va">`Negative Control Probe`</span><span class="op">)</span>,</span>
-<span>  gpolygons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cell <span class="op">=</span> <span class="va">gpoly_cells</span>,</span>
-<span>                   nucleus <span class="op">=</span> <span class="va">gpoly_nucs</span><span class="op">)</span>,</span>
-<span>  instructions <span class="op">=</span> <span class="va">instrs</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
+<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotTSNE.html" class="external-link">plotTSNE</a></span><span class="op">(</span><span class="va">xenium_gobj</span>, point_size <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images%2Fxenium_breast_cancer%2Ftsne.png" width="80%"></p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span><span class="va">xenium_gobj</span>, point_size <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images%2Fxenium_breast_cancer%2Fumap.png" width="80%"></p>
 </div>
 <div class="section level3" number="5.2">
-<h3 number="5.2" id="sec-autoload">
-<span class="header-section-number">5.2</span> 5.2 Load dataset - Convenience Function<a class="anchor" aria-label="anchor" href="#sec-autoload"></a>
+<h3 number="5.2" id="clustering">
+<span class="header-section-number">5.2</span> Clustering<a class="anchor" aria-label="anchor" href="#clustering"></a>
 </h3>
-<p>The dataset can also be loaded through a convenience function.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">subcellular</span> <span class="op">=</span> <span class="fu"><a href="../reference/createGiottoXeniumObject.html">createGiottoXeniumObject</a></span><span class="op">(</span>xenium_dir <span class="op">=</span> <span class="va">xenium_folder</span>,</span>
-<span>                                       data_to_use <span class="op">=</span> <span class="st">'subcellular'</span>,</span>
-<span>                                       bounds_to_load <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'cell'</span>, <span class="st">'nucleus'</span><span class="op">)</span>,</span>
-<span>                                       qv_threshold <span class="op">=</span> <span class="fl">20</span>,</span>
-<span>                                       h5_expression <span class="op">=</span> <span class="cn">F</span>,</span>
-<span>                                       instructions <span class="op">=</span> <span class="va">instrs</span>,</span>
-<span>                                       cores <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="co"># set number of cores to use</span></span></code></pre></div>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># A structured Xenium directory will be used</span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># Checking directory contents...</span></span>
-<span><span class="co">#    &gt; analysis info found</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_analysis.tar.gz</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_analysis.zarr.zip</span></span>
-<span><span class="co">#    &gt; boundary info found</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cell_boundaries.csv.gz</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cell_boundaries.parquet</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_nucleus_boundaries.csv.gz</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_nucleus_boundaries.parquet</span></span>
-<span><span class="co">#    &gt; cell feature matrix found</span></span>
-<span><span class="co">#       └──cell_feature_matrix</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cell_feature_matrix.h5</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cell_feature_matrix.zarr.zip</span></span>
-<span><span class="co">#    &gt; cell metadata found</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cells.csv.gz</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cells.parquet</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cells.zarr.zip</span></span>
-<span><span class="co">#    &gt; image info found</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_he_image.tif</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_morphology_focus.ome.tif</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_morphology_mip.ome.tif</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_morphology.ome.tif</span></span>
-<span><span class="co">#    &gt; panel metadata found</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_panel.tsv</span></span>
-<span><span class="co">#    &gt; raw transcript info found</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_transcripts.csv.gz</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_transcripts.parquet</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_transcripts.zarr.zip</span></span>
-<span><span class="co">#    &gt; experiment info found</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_experiment.xenium</span></span>
-<span><span class="co"># Directory check done</span></span>
-<span><span class="co"># Loading feature metadata...</span></span>
-<span><span class="co"># Loading transcript level info...</span></span>
-<span><span class="co"># |--------------------------------------------------|</span></span>
-<span><span class="co"># |==================================================|</span></span>
-<span><span class="co"># Loading boundary info...</span></span>
-<span><span class="co"># Loading cell metadata...</span></span>
-<span><span class="co"># Building subcellular giotto object...</span></span>
-<span><span class="co"># &gt; points data...</span></span>
-<span><span class="co">#   Selecting col "feature_name" as feat_ID column</span></span>
-<span><span class="co">#   Selecting cols "x_location" and "y_location" as x and y respectively</span></span>
-<span><span class="co"># &gt; polygons data...</span></span>
-<span><span class="co">#   [cell] bounds...</span></span>
-<span><span class="co">#   Selecting col "cell_id" as poly_ID column</span></span>
-<span><span class="co">#   Selecting cols "vertex_x" and "vertex_y" as x and y respectively</span></span>
-<span><span class="co">#   [nucleus] bounds...</span></span>
-<span><span class="co">#   Selecting col "cell_id" as poly_ID column</span></span>
-<span><span class="co">#   Selecting cols "vertex_x" and "vertex_y" as x and y respectively</span></span>
-<span><span class="co"># 1. Start extracting polygon information </span></span>
-<span><span class="co"># 2. Finished extracting polygon information </span></span>
-<span><span class="co"># 3. Add centroid / spatial locations if available </span></span>
-<span><span class="co"># 3. Finish adding centroid / spatial locations </span></span>
-<span><span class="co"># 3. Start extracting spatial feature information </span></span>
-<span><span class="co"># 4. Finished extracting spatial feature information </span></span>
-<span><span class="co"># Calculating polygon centroids...</span></span>
-<span><span class="co"># Start centroid calculation for polygon information layer:  cell </span></span>
-<span><span class="co"># Start centroid calculation for polygon information layer:  nucleus </span></span></code></pre></div>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">aggregate</span> <span class="op">=</span> <span class="fu"><a href="../reference/createGiottoXeniumObject.html">createGiottoXeniumObject</a></span><span class="op">(</span>xenium_dir <span class="op">=</span> <span class="va">xenium_folder</span>,</span>
-<span>                                     data_to_use <span class="op">=</span> <span class="st">'aggregate'</span>,</span>
-<span>                                     h5_expression <span class="op">=</span> <span class="cn">F</span>,</span>
-<span>                                     instructions <span class="op">=</span> <span class="va">instrs</span>,</span>
-<span>                                     cores <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="co"># set number of cores to use</span></span></code></pre></div>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># A structured Xenium directory will be used</span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># Checking directory contents...</span></span>
-<span><span class="co">#    &gt; analysis info found</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_analysis.tar.gz</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_analysis.zarr.zip</span></span>
-<span><span class="co">#    &gt; boundary info found</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cell_boundaries.csv.gz</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cell_boundaries.parquet</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_nucleus_boundaries.csv.gz</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_nucleus_boundaries.parquet</span></span>
-<span><span class="co">#    &gt; cell feature matrix found</span></span>
-<span><span class="co">#       └──cell_feature_matrix</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cell_feature_matrix.h5</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cell_feature_matrix.zarr.zip</span></span>
-<span><span class="co">#    &gt; cell metadata found</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cells.csv.gz</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cells.parquet</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_cells.zarr.zip</span></span>
-<span><span class="co">#    &gt; image info found</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_he_image.tif</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_morphology_focus.ome.tif</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_morphology_mip.ome.tif</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_morphology.ome.tif</span></span>
-<span><span class="co">#    &gt; panel metadata found</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_panel.tsv</span></span>
-<span><span class="co">#    &gt; raw transcript info found</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_transcripts.csv.gz</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_transcripts.parquet</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_transcripts.zarr.zip</span></span>
-<span><span class="co">#    &gt; experiment info found</span></span>
-<span><span class="co">#       └──Xenium_FFPE_Human_Breast_Cancer_Rep1_experiment.xenium</span></span>
-<span><span class="co"># Directory check done</span></span>
-<span><span class="co"># Loading feature metadata...</span></span>
-<span><span class="co"># Loading cell metadata...</span></span>
-<span><span class="co"># Loading aggregated expression...</span></span>
-<span><span class="co"># Building aggregate giotto object...</span></span>
-<span><span class="co"># Consider to install these (optional) packages to run all possible</span></span>
-<span><span class="co"># Giotto commands for spatial analyses: trendsceek multinet RTriangle</span></span>
-<span><span class="co"># Giotto does not automatically install all these packages as they are</span></span>
-<span><span class="co"># not absolutely required and this reduces the number of dependencies</span></span>
-<span><span class="co"># List of 4</span></span>
-<span><span class="co">#  $ raw                      :Formal class 'dgTMatrix' [package "Matrix"] with 6 slots</span></span>
-<span><span class="co">#   .. ..@ i       : int [1:10663545] 1 2 29 30 36 37 39 42 44 47 ...</span></span>
-<span><span class="co">#   .. ..@ j       : int [1:10663545] 0 0 0 0 0 0 0 0 0 0 ...</span></span>
-<span><span class="co">#   .. ..@ Dim     : int [1:2] 313 167782</span></span>
-<span><span class="co">#   .. ..@ Dimnames:List of 2</span></span>
-<span><span class="co">#   .. .. ..$ : Named chr [1:313] "ABCC11" "ACTA2" "ACTG2" "ADAM9" ...</span></span>
-<span><span class="co">#   .. .. .. ..- attr(*, "names")= chr [1:313] "1" "2" "3" "4" ...</span></span>
-<span><span class="co">#   .. .. ..$ : chr [1:167782] "1" "2" "3" "4" ...</span></span>
-<span><span class="co">#   .. ..@ x       : num [1:10663545] 3 1 1 3 1 1 1 1 1 1 ...</span></span>
-<span><span class="co">#   .. ..@ factors : list()</span></span>
-<span><span class="co">#  $ Negative_Control_Probe   :Formal class 'dgTMatrix' [package "Matrix"] with 6 slots</span></span>
-<span><span class="co">#   .. ..@ i       : int [1:24312] 18 20 22 22 22 22 20 25 26 20 ...</span></span>
-<span><span class="co">#   .. ..@ j       : int [1:24312] 48 79 79 130 175 205 214 215 223 248 ...</span></span>
-<span><span class="co">#   .. ..@ Dim     : int [1:2] 28 167782</span></span>
-<span><span class="co">#   .. ..@ Dimnames:List of 2</span></span>
-<span><span class="co">#   .. .. ..$ : Named chr [1:28] "NegControlProbe_00042" "NegControlProbe_00041" "NegControlProbe_00039" "NegControlProbe_00035" ...</span></span>
-<span><span class="co">#   .. .. .. ..- attr(*, "names")= chr [1:28] "314" "315" "316" "317" ...</span></span>
-<span><span class="co">#   .. .. ..$ : chr [1:167782] "1" "2" "3" "4" ...</span></span>
-<span><span class="co">#   .. ..@ x       : num [1:24312] 1 1 1 1 1 1 1 1 1 1 ...</span></span>
-<span><span class="co">#   .. ..@ factors : list()</span></span>
-<span><span class="co">#  $ Negative_Control_Codeword:Formal class 'dgTMatrix' [package "Matrix"] with 6 slots</span></span>
-<span><span class="co">#   .. ..@ i       : int [1:1777] 33 14 3 31 3 8 24 10 22 27 ...</span></span>
-<span><span class="co">#   .. ..@ j       : int [1:1777] 177 373 381 583 605 673 733 850 924 1033 ...</span></span>
-<span><span class="co">#   .. ..@ Dim     : int [1:2] 41 167782</span></span>
-<span><span class="co">#   .. ..@ Dimnames:List of 2</span></span>
-<span><span class="co">#   .. .. ..$ : Named chr [1:41] "NegControlCodeword_0500" "NegControlCodeword_0501" "NegControlCodeword_0502" "NegControlCodeword_0503" ...</span></span>
-<span><span class="co">#   .. .. .. ..- attr(*, "names")= chr [1:41] "342" "343" "344" "345" ...</span></span>
-<span><span class="co">#   .. .. ..$ : chr [1:167782] "1" "2" "3" "4" ...</span></span>
-<span><span class="co">#   .. ..@ x       : num [1:1777] 1 1 1 1 1 1 1 1 1 1 ...</span></span>
-<span><span class="co">#   .. ..@ factors : list()</span></span>
-<span><span class="co">#  $ Blank_Codeword           :Formal class 'dgTMatrix' [package "Matrix"] with 6 slots</span></span>
-<span><span class="co">#   .. ..@ i       : int [1:8404] 114 76 33 7 34 8 119 91 6 116 ...</span></span>
-<span><span class="co">#   .. ..@ j       : int [1:8404] 83 111 114 138 183 245 312 322 338 354 ...</span></span>
-<span><span class="co">#   .. ..@ Dim     : int [1:2] 159 167782</span></span>
-<span><span class="co">#   .. ..@ Dimnames:List of 2</span></span>
-<span><span class="co">#   .. .. ..$ : Named chr [1:159] "BLANK_0006" "BLANK_0013" "BLANK_0037" "BLANK_0069" ...</span></span>
-<span><span class="co">#   .. .. .. ..- attr(*, "names")= chr [1:159] "383" "384" "385" "386" ...</span></span>
-<span><span class="co">#   .. .. ..$ : chr [1:167782] "1" "2" "3" "4" ...</span></span>
-<span><span class="co">#   .. ..@ x       : num [1:8404] 1 1 1 1 1 1 1 1 1 1 ...</span></span>
-<span><span class="co">#   .. ..@ factors : list()</span></span>
-<span><span class="co"># NULL</span></span>
-<span><span class="co"># list depth of 1 </span></span>
-<span><span class="co"># finished expression data</span></span>
-<span><span class="co"># List of 1</span></span>
-<span><span class="co">#  $ raw:Classes ‘data.table’ and 'data.frame': 167782 obs. of  3 variables:</span></span>
-<span><span class="co">#   ..$ x_centroid: num [1:167782] 378 382 320 259 371 ...</span></span>
-<span><span class="co">#   ..$ y_centroid: num [1:167782] 844 859 869 852 865 ...</span></span>
-<span><span class="co">#   ..$ cell_ID   : chr [1:167782] "1" "2" "3" "4" ...</span></span>
-<span><span class="co">#   ..- attr(*, ".internal.selfref")=&lt;externalptr&gt; </span></span>
-<span><span class="co"># NULL</span></span>
-<span><span class="co"># list depth of 1 </span></span>
-<span><span class="co"># There are non numeric or integer columns for the spatial location input at column position(s): 3</span></span>
-<span><span class="co">#  The first non-numeric column will be considered as a cell ID to test for consistency with the expression matrix</span></span>
-<span><span class="co">#  Other non numeric columns will be removed</span></span>
-<span><span class="co"># finished spatial location data</span></span>
-<span><span class="co"># finished cell metadata</span></span>
-<span><span class="co"># No spatial networks are provided</span></span>
-<span><span class="co"># No spatial enrichment results are provided</span></span>
-<span><span class="co"># No dimension reduction results are provided</span></span>
-<span><span class="co"># No nearest network results are provided</span></span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># create Shared Nearest Neighbors Network</span></span>
+<span><span class="va">xenium_gobj</span> <span class="op">&lt;-</span> <span class="va">xenium_gobj</span> <span class="op">|&gt;</span></span>
+<span>        <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, k <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>        <span class="fu"><a href="../reference/doLeidenCluster.html">doLeidenCluster</a></span><span class="op">(</span>resolution <span class="op">=</span> <span class="fl">0.25</span>, n_iterations <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># visualize UMAP cluster results</span></span>
+<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotTSNE.html" class="external-link">plotTSNE</a></span><span class="op">(</span><span class="va">xenium_gobj</span>,</span>
+<span>    cell_color <span class="op">=</span> <span class="st">'leiden_clus'</span>,</span>
+<span>    show_legend <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    point_size <span class="op">=</span> <span class="fl">0.01</span>,</span>
+<span>    point_shape <span class="op">=</span> <span class="st">'no_border'</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="images%2Fxenium_breast_cancer%2Fleiden_tsne.png" width="80%"></p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span><span class="va">xenium_gobj</span>,</span>
+<span>    cell_color <span class="op">=</span> <span class="st">'leiden_clus'</span>,</span>
+<span>    show_legend <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    point_size <span class="op">=</span> <span class="fl">0.01</span>,</span>
+<span>    point_shape <span class="op">=</span> <span class="st">'no_border'</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="images%2Fxenium_breast_cancer%2Fleiden_umap.png" width="80%"></p>
 </div>
 </div>
 <div class="section level2" number="6">
-<h2 number="6" id="visualize-giotto-object-and-cells">
-<span class="header-section-number">6</span> 6. Visualize Giotto object and cells<a class="anchor" aria-label="anchor" href="#visualize-giotto-object-and-cells"></a>
+<h2 number="6" id="visualize-umap-and-spatial-results">
+<span class="header-section-number">6</span> Visualize UMAP and Spatial Results<a class="anchor" aria-label="anchor" href="#visualize-umap-and-spatial-results"></a>
 </h2>
-<div class="section level3" number="6.1">
-<h3 number="6.1" id="spatial-info">
-<span class="header-section-number">6.1</span> 6.1 Spatial info<a class="anchor" aria-label="anchor" href="#spatial-info"></a>
-</h3>
-<p>Print the available spatial cell and nucleus boundary information (polygons) within the Giotto object <code>spatial_info</code> slot.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/showGiottoSpatialInfo.html" class="external-link">showGiottoSpatialInfo</a></span><span class="op">(</span><span class="va">xenium_gobj</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># For Spatial info:  cell </span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># An object of class "giottoPolygon"</span></span>
-<span><span class="co"># Slot "name":</span></span>
-<span><span class="co"># [1] "cell"</span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># Slot "spatVector":</span></span>
-<span><span class="co">#  class       : SpatVector </span></span>
-<span><span class="co">#  geometry    : polygons </span></span>
-<span><span class="co">#  dimensions  : 167782, 1  (geometries, attributes)</span></span>
-<span><span class="co">#  extent      : 0, 7525.9, 0, 5478.038  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">#  coord. ref. :  </span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># Slot "spatVectorCentroids":</span></span>
-<span><span class="co">#  class       : SpatVector </span></span>
-<span><span class="co">#  geometry    : points </span></span>
-<span><span class="co">#  dimensions  : 167782, 1  (geometries, attributes)</span></span>
-<span><span class="co">#  extent      : 2.189156, 7523.163, 1.406448, 5476.467  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">#  coord. ref. :  </span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># Slot "overlaps":</span></span>
-<span><span class="co"># NULL</span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># -----------------------------</span></span>
-<span><span class="co">#  </span></span>
-<span><span class="co"># For Spatial info:  nucleus </span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># An object of class "giottoPolygon"</span></span>
-<span><span class="co"># Slot "name":</span></span>
-<span><span class="co"># [1] "nucleus"</span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># Slot "spatVector":</span></span>
-<span><span class="co">#  class       : SpatVector </span></span>
-<span><span class="co">#  geometry    : polygons </span></span>
-<span><span class="co">#  dimensions  : 167782, 1  (geometries, attributes)</span></span>
-<span><span class="co">#  extent      : 1.4875, 7524.413, 0, 5478.038  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">#  coord. ref. :  </span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># Slot "spatVectorCentroids":</span></span>
-<span><span class="co">#  class       : SpatVector </span></span>
-<span><span class="co">#  geometry    : points </span></span>
-<span><span class="co">#  dimensions  : 167782, 1  (geometries, attributes)</span></span>
-<span><span class="co">#  extent      : 2.596845, 7523.503, 0.8111559, 5477.374  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">#  coord. ref. :  </span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># Slot "overlaps":</span></span>
-<span><span class="co"># NULL</span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># -----------------------------</span></span></code></pre></div>
-</div>
-<div class="section level3" number="6.2">
-<h3 number="6.2" id="spatial-locations">
-<span class="header-section-number">6.2</span> 6.2 Spatial locations<a class="anchor" aria-label="anchor" href="#spatial-locations"></a>
-</h3>
-<p>Print the available spatial locations within the Giotto object’s <code>spatial_locs</code> slot. These are generated from the centroids calculation for the polygons, and will be used for any generated aggregate information.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/showGiottoSpatLocs.html" class="external-link">showGiottoSpatLocs</a></span><span class="op">(</span><span class="va">xenium_gobj</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># ├──Spatial unit "cell"</span></span>
-<span><span class="co"># │  └──S4 spatLocsObj "raw" coordinates:   (167782 rows)</span></span>
-<span><span class="co"># │        An object of class spatLocsObj </span></span>
-<span><span class="co"># │        provenance: cell</span></span>
-<span><span class="co"># │            ------------------------</span></span>
-<span><span class="co"># │           cell_ID    sdimx    sdimy</span></span>
-<span><span class="co"># │        1:       1 377.6355 843.5235</span></span>
-<span><span class="co"># │        2:       2 382.0902 858.9148</span></span>
-<span><span class="co"># │        3:       3 319.8592 869.1546</span></span>
-<span><span class="co"># │        4:       4 259.2721 851.8312</span></span>
-<span><span class="co"># │        </span></span>
-<span><span class="co"># │        ranges:</span></span>
-<span><span class="co"># │                   sdimx       sdimy</span></span>
-<span><span class="co"># │        [1,]    2.189156    1.406448</span></span>
-<span><span class="co"># │        [2,] 7523.162860 5476.466538</span></span>
-<span><span class="co"># │        </span></span>
-<span><span class="co"># │        </span></span>
-<span><span class="co"># │     </span></span>
-<span><span class="co"># └──Spatial unit "nucleus"</span></span>
-<span><span class="co">#    └──S4 spatLocsObj "raw" coordinates:   (167782 rows)</span></span>
-<span><span class="co">#          An object of class spatLocsObj </span></span>
-<span><span class="co">#          provenance: nucleus</span></span>
-<span><span class="co">#              ------------------------</span></span>
-<span><span class="co">#             cell_ID    sdimx    sdimy</span></span>
-<span><span class="co">#          1:       1 377.8125 842.8358</span></span>
-<span><span class="co">#          2:       2 384.3298 858.9976</span></span>
-<span><span class="co">#          3:       3 321.9175 869.2366</span></span>
-<span><span class="co">#          4:       4 257.3259 851.5493</span></span>
-<span><span class="co">#          </span></span>
-<span><span class="co">#          ranges:</span></span>
-<span><span class="co">#                     sdimx        sdimy</span></span>
-<span><span class="co">#          [1,]    2.596845    0.8111559</span></span>
-<span><span class="co">#          [2,] 7523.503184 5477.3741650</span></span></code></pre></div>
-</div>
-<div class="section level3" number="6.3">
-<h3 number="6.3" id="plot-the-generated-centroids-information">
-<span class="header-section-number">6.3</span> 6.3 Plot the generated centroids information<a class="anchor" aria-label="anchor" href="#plot-the-generated-centroids-information"></a>
-</h3>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">xenium_gobj</span>,</span>
-<span>           spat_unit <span class="op">=</span> <span class="st">'cell'</span>,</span>
-<span>           point_shape <span class="op">=</span> <span class="st">'no_border'</span>,</span>
-<span>           point_size <span class="op">=</span> <span class="fl">0.5</span>,</span>
-<span>           point_alpha <span class="op">=</span> <span class="fl">0.4</span>,</span>
-<span>           save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>             base_width <span class="op">=</span> <span class="fl">7</span>,</span>
-<span>             base_height <span class="op">=</span> <span class="fl">7</span>,</span>
-<span>             save_name <span class="op">=</span> <span class="st">'1_spatplot'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fxenium_breast_cancer%2F1_spatplot.png"></p>
-</div>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># centroids plotting</span></span>
+<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">xenium_gobj</span>,</span>
+<span>    plot_method <span class="op">=</span> <span class="st">"scattermore"</span>,</span>
+<span>    cell_color <span class="op">=</span> <span class="st">'leiden_clus'</span>,</span>
+<span>    point_size <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>    point_shape <span class="op">=</span> <span class="st">'no_border'</span>,</span>
+<span>    background_color <span class="op">=</span> <span class="st">'black'</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="images%2Fxenium_breast_cancer%2Fspat_leiden.png" width="80%"></p>
 </div>
 <div class="section level2" number="7">
-<h2 number="7" id="generate-aggregated-expression-based-on-feature-and-boundary-polygon-information">
-<span class="header-section-number">7</span> 7. Generate aggregated expression based on feature and boundary (polygon) information<a class="anchor" aria-label="anchor" href="#generate-aggregated-expression-based-on-feature-and-boundary-polygon-information"></a>
+<h2 number="7" id="subcellular-visualization">
+<span class="header-section-number">7</span> Subcellular Visualization<a class="anchor" aria-label="anchor" href="#subcellular-visualization"></a>
 </h2>
-<div class="section level3" number="7.1">
-<h3 number="7.1" id="calculate-the-overlaps-of-the-rna-feature-data-within-the-cell-polygon-boundary-info-">
-<span class="header-section-number">7.1</span> 7.1 Calculate the overlaps of the <code>'rna'</code> feature data within the <code>'cell'</code> polygon boundary info.<a class="anchor" aria-label="anchor" href="#calculate-the-overlaps-of-the-rna-feature-data-within-the-cell-polygon-boundary-info-"></a>
-</h3>
-<p>This updates the <code>'cell'</code> <code>giottoPolygon</code> overlaps slot with features that are overlapping the <code>'cell'</code> polygons.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">xenium_gobj</span> <span class="op">=</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlapRaster.html" class="external-link">calculateOverlapRaster</a></span><span class="op">(</span><span class="va">xenium_gobj</span>,</span>
-<span>                                     spatial_info <span class="op">=</span> <span class="st">'cell'</span>,</span>
-<span>                                     feat_info <span class="op">=</span> <span class="st">'rna'</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/showGiottoSpatialInfo.html" class="external-link">showGiottoSpatialInfo</a></span><span class="op">(</span><span class="va">xenium_gobj</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># For Spatial info:  cell </span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># An object of class "giottoPolygon"</span></span>
-<span><span class="co"># Slot "name":</span></span>
-<span><span class="co"># [1] "cell"</span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># Slot "spatVector":</span></span>
-<span><span class="co">#  class       : SpatVector </span></span>
-<span><span class="co">#  geometry    : polygons </span></span>
-<span><span class="co">#  dimensions  : 167782, 1  (geometries, attributes)</span></span>
-<span><span class="co">#  extent      : 0, 7525.9, 0, 5478.038  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">#  coord. ref. :  </span></span>
-<span><span class="co">#  names       : poly_ID</span></span>
-<span><span class="co">#  type        :   &lt;chr&gt;</span></span>
-<span><span class="co">#  values      :       1</span></span>
-<span><span class="co">#                      2</span></span>
-<span><span class="co">#                      3</span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># Slot "spatVectorCentroids":</span></span>
-<span><span class="co">#  class       : SpatVector </span></span>
-<span><span class="co">#  geometry    : points </span></span>
-<span><span class="co">#  dimensions  : 167782, 1  (geometries, attributes)</span></span>
-<span><span class="co">#  extent      : 2.189156, 7523.163, 1.406448, 5476.467  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">#  coord. ref. :  </span></span>
-<span><span class="co">#  names       : poly_ID</span></span>
-<span><span class="co">#  type        :   &lt;chr&gt;</span></span>
-<span><span class="co">#  values      :       1</span></span>
-<span><span class="co">#                      2</span></span>
-<span><span class="co">#                      3</span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># Slot "overlaps":</span></span>
-<span><span class="co"># $rna</span></span>
-<span><span class="co">#  class       : SpatVector </span></span>
-<span><span class="co">#  geometry    : points </span></span>
-<span><span class="co">#  dimensions  : 43664530, 3  (geometries, attributes)</span></span>
-<span><span class="co">#  extent      : -1.874261, 7522.837, 4.415276, 5473.721  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">#  coord. ref. :  </span></span>
-<span><span class="co">#  names       : poly_ID    feat_ID feat_ID_uniq</span></span>
-<span><span class="co">#  type        :   &lt;chr&gt;      &lt;chr&gt;        &lt;int&gt;</span></span>
-<span><span class="co">#  values      :   18790 BLANK_0180            1</span></span>
-<span><span class="co">#                    370        LUM            2</span></span>
-<span><span class="co">#                  18183     CLECL1            3</span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># -----------------------------</span></span>
-<span><span class="co">#  </span></span>
-<span><span class="co"># For Spatial info:  nucleus </span></span>
-<span><span class="co">#         ... </span></span>
-<span><span class="co">#      truncated</span></span></code></pre></div>
-</div>
-<div class="section level3" number="7.2">
-<h3 number="7.2" id="assign-polygon-overlaps-information-to-expression-matrix">
-<span class="header-section-number">7.2</span> 7.2 Assign polygon overlaps information to expression matrix<a class="anchor" aria-label="anchor" href="#assign-polygon-overlaps-information-to-expression-matrix"></a>
-</h3>
-<p>In order to create an aggregated expression matrix, the <code>'rna'</code> features overlapped by the <code>'cell'</code> polygon boundaries are sent to be combined into a cell/feature matrix (named as <code>'raw'</code>) in the Giotto object’s <code>expression</code> slot.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">xenium_gobj</span> <span class="op">=</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span><span class="va">xenium_gobj</span>,</span>
-<span>                              poly_info <span class="op">=</span> <span class="st">'cell'</span>,</span>
-<span>                              feat_info <span class="op">=</span> <span class="st">'rna'</span>,</span>
-<span>                              name <span class="op">=</span> <span class="st">'raw'</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/showGiottoExpression.html" class="external-link">showGiottoExpression</a></span><span class="op">(</span><span class="va">xenium_gobj</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># └──Spatial unit "cell"</span></span>
-<span><span class="co">#    └──Feature type "rna"</span></span>
-<span><span class="co">#       └──Expression data "raw" values:</span></span>
-<span><span class="co">#             An object of class exprObj </span></span>
-<span><span class="co">#             for spatial unit: "cell" and feature type: "rna" </span></span>
-<span><span class="co">#               Provenance:  cell </span></span>
-<span><span class="co">#             </span></span>
-<span><span class="co">#             contains:</span></span>
-<span><span class="co">#             313 x 167782 sparse Matrix of class "dgCMatrix"</span></span>
-<span><span class="co">#                                                    </span></span>
-<span><span class="co">#             LUM   2 . 3 . 1 1  2 . . 2 . 5 . ......</span></span>
-<span><span class="co">#             TCIM  1 1 . 4 1 1 13 . . . . . . ......</span></span>
-<span><span class="co">#             RUNX1 . . . . . .  . . . . 1 . . ......</span></span>
-<span><span class="co">#             </span></span>
-<span><span class="co">#              ..............................</span></span>
-<span><span class="co">#              ........suppressing 167769 columns and 307 rows </span></span>
-<span><span class="co">#              ..............................</span></span>
-<span><span class="co">#                                                    </span></span>
-<span><span class="co">#             CD1C   1 . . . . . . . . . . . . ......</span></span>
-<span><span class="co">#             CYP1A1 . . . . . . . . . . . . . ......</span></span>
-<span><span class="co">#             CRHBP  . . . . . . . . . . . . . ......</span></span>
-<span><span class="co">#             </span></span>
-<span><span class="co">#              First four colnames:</span></span>
-<span><span class="co">#              1 2 3 4 </span></span></code></pre></div>
-</div>
-<div class="section level3" number="7.3">
-<h3 number="7.3" id="feature-metadata">
-<span class="header-section-number">7.3</span> 7.3 Feature metadata<a class="anchor" aria-label="anchor" href="#feature-metadata"></a>
-</h3>
-<p>Append features metadata from <code>panel.tsv</code> which includes information on what cell types the features are commonly markers for. There are 313 rows in this file. One for each of the gene expression probes, thus these metadata should be appended only to feat_type ‘rna’.</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">panel_meta</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">panel_meta_path</span><span class="op">)</span></span>
-<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setattr.html" class="external-link">setnames</a></span><span class="op">(</span><span class="va">panel_meta</span>, <span class="st">'Name'</span>, <span class="st">'feat_ID'</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Append this metadata</span></span>
-<span><span class="va">xenium_gobj</span> <span class="op">=</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addFeatMetadata.html" class="external-link">addFeatMetadata</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">xenium_gobj</span>,</span>
-<span>                              feat_type <span class="op">=</span> <span class="st">'rna'</span>,</span>
-<span>                              spat_unit <span class="op">=</span> <span class="st">'cell'</span>,</span>
-<span>                              new_metadata <span class="op">=</span> <span class="va">panel_meta</span>,</span>
-<span>                              by_column <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                              column_feat_ID <span class="op">=</span> <span class="st">'feat_ID'</span><span class="op">)</span></span>
-<span><span class="va">xenium_gobj</span> <span class="op">=</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addFeatMetadata.html" class="external-link">addFeatMetadata</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">xenium_gobj</span>,</span>
-<span>                              feat_type <span class="op">=</span> <span class="st">'rna'</span>,</span>
-<span>                              spat_unit <span class="op">=</span> <span class="st">'nucleus'</span>,</span>
-<span>                              new_metadata <span class="op">=</span> <span class="va">panel_meta</span>,</span>
-<span>                              by_column <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                              column_feat_ID <span class="op">=</span> <span class="st">'feat_ID'</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># to return a specific metadata as data.table </span></span>
-<span><span class="co"># (spat_unit = 'cell', feat_type = 'rna' are default)</span></span>
-<span><span class="co"># fDataDT(xenium_gobj)</span></span>
-<span></span>
-<span><span class="co"># Print a preview of all available features metadata</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/showGiottoFeatMetadata.html" class="external-link">showGiottoFeatMetadata</a></span><span class="op">(</span><span class="va">xenium_gobj</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># ├──Spatial unit "cell"</span></span>
-<span><span class="co"># │  ├──Feature type "rna"</span></span>
-<span><span class="co"># │  │     An object of class featMetaObj </span></span>
-<span><span class="co"># │  │     Provenance: cell </span></span>
-<span><span class="co"># │  │        feat_ID      Ensembl ID             Annotation</span></span>
-<span><span class="co"># │  │     1:     LUM ENSG00000139329            Fibroblasts</span></span>
-<span><span class="co"># │  │     2:    TCIM ENSG00000176907 Breast glandular cells</span></span>
-<span><span class="co"># │  │     3:   RUNX1 ENSG00000159216          Breast cancer</span></span>
-<span><span class="co"># │  │     4: RAPGEF3 ENSG00000079337             Adipocytes</span></span>
-<span><span class="co"># │  │  </span></span>
-<span><span class="co"># │  ├──Feature type "blank_code"</span></span>
-<span><span class="co"># │  │     An object of class featMetaObj </span></span>
-<span><span class="co"># │  │     Provenance: cell </span></span>
-<span><span class="co"># │  │           feat_ID</span></span>
-<span><span class="co"># │  │     1: BLANK_0424</span></span>
-<span><span class="co"># │  │     2: BLANK_0401</span></span>
-<span><span class="co"># │  │     3: BLANK_0447</span></span>
-<span><span class="co"># │  │     4: BLANK_0449</span></span>
-<span><span class="co"># │  │  </span></span>
-<span><span class="co"># │  ├──Feature type "neg_code"</span></span>
-<span><span class="co"># │  │     An object of class featMetaObj </span></span>
-<span><span class="co"># │  │     Provenance: cell </span></span>
-<span><span class="co"># │  │                        feat_ID</span></span>
-<span><span class="co"># │  │     1: NegControlCodeword_0503</span></span>
-<span><span class="co"># │  │     2: NegControlCodeword_0514</span></span>
-<span><span class="co"># │  │     3: NegControlCodeword_0535</span></span>
-<span><span class="co"># │  │     4: NegControlCodeword_0519</span></span>
-<span><span class="co"># │  │  </span></span>
-<span><span class="co"># │  └──Feature type "neg_probe"</span></span>
-<span><span class="co"># │        An object of class featMetaObj </span></span>
-<span><span class="co"># │        Provenance: cell </span></span>
-<span><span class="co"># │                         feat_ID</span></span>
-<span><span class="co"># │        1: NegControlProbe_00003</span></span>
-<span><span class="co"># │        2:       antisense_SCRIB</span></span>
-<span><span class="co"># │        3: NegControlProbe_00012</span></span>
-<span><span class="co"># │        4:        antisense_LGI3</span></span>
-<span><span class="co"># │     </span></span>
-<span><span class="co"># └──Spatial unit "nucleus"</span></span>
-<span><span class="co">#    ├──Feature type "rna"</span></span>
-<span><span class="co">#    │     An object of class featMetaObj </span></span>
-<span><span class="co">#    │     Provenance: nucleus </span></span>
-<span><span class="co">#    │        feat_ID      Ensembl ID             Annotation</span></span>
-<span><span class="co">#    │     1:     LUM ENSG00000139329            Fibroblasts</span></span>
-<span><span class="co">#    │     2:    TCIM ENSG00000176907 Breast glandular cells</span></span>
-<span><span class="co">#    │     3:   RUNX1 ENSG00000159216          Breast cancer</span></span>
-<span><span class="co">#    │     4: RAPGEF3 ENSG00000079337             Adipocytes</span></span>
-<span><span class="co">#    │  </span></span>
-<span><span class="co">#    ├──Feature type "blank_code"</span></span>
-<span><span class="co">#    │     An object of class featMetaObj </span></span>
-<span><span class="co">#    │     Provenance: nucleus </span></span>
-<span><span class="co">#    │           feat_ID</span></span>
-<span><span class="co">#    │     1: BLANK_0424</span></span>
-<span><span class="co">#    │     2: BLANK_0401</span></span>
-<span><span class="co">#    │     3: BLANK_0447</span></span>
-<span><span class="co">#    │     4: BLANK_0449</span></span>
-<span><span class="co">#    │  </span></span>
-<span><span class="co">#    ├──Feature type "neg_code"</span></span>
-<span><span class="co">#    │     An object of class featMetaObj </span></span>
-<span><span class="co">#    │     Provenance: nucleus </span></span>
-<span><span class="co">#    │                        feat_ID</span></span>
-<span><span class="co">#    │     1: NegControlCodeword_0503</span></span>
-<span><span class="co">#    │     2: NegControlCodeword_0514</span></span>
-<span><span class="co">#    │     3: NegControlCodeword_0535</span></span>
-<span><span class="co">#    │     4: NegControlCodeword_0519</span></span>
-<span><span class="co">#    │  </span></span>
-<span><span class="co">#    └──Feature type "neg_probe"</span></span>
-<span><span class="co">#          An object of class featMetaObj </span></span>
-<span><span class="co">#          Provenance: nucleus </span></span>
-<span><span class="co">#                           feat_ID</span></span>
-<span><span class="co">#          1: NegControlProbe_00003</span></span>
-<span><span class="co">#          2:       antisense_SCRIB</span></span>
-<span><span class="co">#          3: NegControlProbe_00012</span></span>
-<span><span class="co">#          4:        antisense_LGI3</span></span></code></pre></div>
-</div>
-<div class="section level3" number="7.4">
-<h3 number="7.4" id="data-filtering">
-<span class="header-section-number">7.4</span> 7.4 Data filtering<a class="anchor" aria-label="anchor" href="#data-filtering"></a>
-</h3>
-<p>Now that an aggregated expression matrix is generated the usual data filtering and processing can be applied We start by setting a count of 1 to be the minimum to consider a feature expressed. A feature must be detected in at least 3 cells to be included. Lastly, a cell must have a minimum of 5 features detected to be included.</p>
+<code class="sourceCode R"><span><span class="co"># plot with polygons</span></span>
+<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">xenium_gobj</span>,</span>
+<span>    polygon_feat_type <span class="op">=</span> <span class="st">'cell'</span>,</span>
+<span>    polygon_alpha <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    polygon_line_size <span class="op">=</span> <span class="fl">0.01</span>,</span>
+<span>    polygon_color <span class="op">=</span> <span class="st">'black'</span>,</span>
+<span>    polygon_fill <span class="op">=</span> <span class="st">'leiden_clus'</span>,</span>
+<span>    polygon_fill_as_factor <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="images%2Fxenium_breast_cancer%2Fpoly_leiden.png" width="80%"></p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">xenium_gobj</span> <span class="op">=</span> <span class="fu"><a href="../reference/filterGiotto.html">filterGiotto</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">xenium_gobj</span>,</span>
-<span>                           spat_unit <span class="op">=</span> <span class="st">'cell'</span>,</span>
-<span>                           poly_info <span class="op">=</span> <span class="st">'cell'</span>,</span>
-<span>                           expression_threshold <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>                           feat_det_in_min_cells <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>                           min_det_feats_per_cell <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># visualize with points in a spatial subset</span></span>
+<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">xenium_gobj</span>,</span>
+<span>    feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">'rna'</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>        <span class="st">"LUM"</span>, <span class="st">"CXCR4"</span>, <span class="st">"ITGAX"</span></span>
+<span>    <span class="op">)</span><span class="op">)</span>,</span>
+<span>    feats_color_code <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>        <span class="st">"LUM"</span> <span class="op">=</span> <span class="st">'cyan'</span>,</span>
+<span>        <span class="st">'CXCR4'</span> <span class="op">=</span> <span class="st">'magenta'</span>,</span>
+<span>        <span class="st">'ITGAX'</span> <span class="op">=</span> <span class="st">'yellow'</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    point_size <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>    xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fl">2000</span><span class="op">)</span>,</span>
+<span>    ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3000</span>, <span class="op">-</span><span class="fl">2000</span><span class="op">)</span>,</span>
+<span>    plot_last <span class="op">=</span> <span class="st">"polygons"</span>,</span>
+<span>    polygon_feat_type <span class="op">=</span> <span class="st">'cell'</span>,</span>
+<span>    polygon_alpha <span class="op">=</span> <span class="fl">0.3</span>,</span>
+<span>    polygon_line_size <span class="op">=</span> <span class="fl">0.01</span>,</span>
+<span>    polygon_color <span class="op">=</span> <span class="st">'black'</span>,</span>
+<span>    polygon_fill <span class="op">=</span> <span class="st">'leiden_clus'</span>,</span>
+<span>    polygon_fill_as_factor <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    show_image <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    image_name <span class="op">=</span> <span class="st">"dapi"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="images%2Fxenium_breast_cancer%2Fzoomin.png" width="100%"></p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#    truncated</span></span>
-<span><span class="co">#      ...</span></span>
-<span><span class="co"># Feature type:  rna </span></span>
-<span><span class="co"># Number of cells removed:  2945  out of  167782 </span></span>
-<span><span class="co"># Number of feats removed:  0  out of  313 </span></span></code></pre></div>
-</div>
-<div class="section level3" number="7.5">
-<h3 number="7.5" id="add-data-statistics">
-<span class="header-section-number">7.5</span> 7.5 Add data statistics<a class="anchor" aria-label="anchor" href="#add-data-statistics"></a>
-</h3>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">xenium_gobj</span> <span class="op">=</span> <span class="fu"><a href="../reference/addStatistics.html">addStatistics</a></span><span class="op">(</span><span class="va">xenium_gobj</span>, expression_values <span class="op">=</span> <span class="st">'raw'</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/showGiottoCellMetadata.html" class="external-link">showGiottoCellMetadata</a></span><span class="op">(</span><span class="va">xenium_gobj</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/showGiottoFeatMetadata.html" class="external-link">showGiottoFeatMetadata</a></span><span class="op">(</span><span class="va">xenium_gobj</span><span class="op">)</span></span></code></pre></div>
-<details><summary>cell metadata
-</summary><div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># ├──Spatial unit "cell"</span></span>
-<span><span class="co"># │  ├──Feature type "rna"</span></span>
-<span><span class="co"># │  │     An object of class cellMetaObj </span></span>
-<span><span class="co"># │  │     Provenance: cell </span></span>
-<span><span class="co"># │  │        cell_ID nr_feats perc_feats total_expr</span></span>
-<span><span class="co"># │  │     1:       1       62   19.80831        156</span></span>
-<span><span class="co"># │  │     2:       2       41   13.09904         63</span></span>
-<span><span class="co"># │  │     3:       3       38   12.14058         54</span></span>
-<span><span class="co"># │  │     4:       4       47   15.01597        114</span></span>
-<span><span class="co"># │  │  </span></span>
-<span><span class="co"># │  ├──Feature type "blank_code"</span></span>
-<span><span class="co"># │  │     An object of class cellMetaObj </span></span>
-<span><span class="co"># │  │     Provenance: cell </span></span>
-<span><span class="co"># │  │        cell_ID</span></span>
-<span><span class="co"># │  │     1:       1</span></span>
-<span><span class="co"># │  │     2:       2</span></span>
-<span><span class="co"># │  │     3:       3</span></span>
-<span><span class="co"># │  │     4:       4</span></span>
-<span><span class="co"># │  │  </span></span>
-<span><span class="co"># │  ├──Feature type "neg_code"</span></span>
-<span><span class="co"># │  │     An object of class cellMetaObj </span></span>
-<span><span class="co"># │  │     Provenance: cell </span></span>
-<span><span class="co"># │  │        cell_ID</span></span>
-<span><span class="co"># │  │     1:       1</span></span>
-<span><span class="co"># │  │     2:       2</span></span>
-<span><span class="co"># │  │     3:       3</span></span>
-<span><span class="co"># │  │     4:       4</span></span>
-<span><span class="co"># │  │  </span></span>
-<span><span class="co"># │  └──Feature type "neg_probe"</span></span>
-<span><span class="co"># │        An object of class cellMetaObj </span></span>
-<span><span class="co"># │        Provenance: cell </span></span>
-<span><span class="co"># │           cell_ID</span></span>
-<span><span class="co"># │        1:       1</span></span>
-<span><span class="co"># │        2:       2</span></span>
-<span><span class="co"># │        3:       3</span></span>
-<span><span class="co"># │        4:       4</span></span>
-<span><span class="co"># │     </span></span>
-<span><span class="co"># └──Spatial unit "nucleus"</span></span>
-<span><span class="co">#    ├──Feature type "rna"</span></span>
-<span><span class="co">#    │     An object of class cellMetaObj </span></span>
-<span><span class="co">#    │     Provenance: nucleus </span></span>
-<span><span class="co">#    │        cell_ID</span></span>
-<span><span class="co">#    │     1:       1</span></span>
-<span><span class="co">#    │     2:       2</span></span>
-<span><span class="co">#    │     3:       3</span></span>
-<span><span class="co">#    │     4:       4</span></span>
-<span><span class="co">#    │  </span></span>
-<span><span class="co">#    ├──Feature type "blank_code"</span></span>
-<span><span class="co">#    │     An object of class cellMetaObj </span></span>
-<span><span class="co">#    │     Provenance: nucleus </span></span>
-<span><span class="co">#    │        cell_ID</span></span>
-<span><span class="co">#    │     1:       1</span></span>
-<span><span class="co">#    │     2:       2</span></span>
-<span><span class="co">#    │     3:       3</span></span>
-<span><span class="co">#    │     4:       4</span></span>
-<span><span class="co">#    │  </span></span>
-<span><span class="co">#    ├──Feature type "neg_code"</span></span>
-<span><span class="co">#    │     An object of class cellMetaObj </span></span>
-<span><span class="co">#    │     Provenance: nucleus </span></span>
-<span><span class="co">#    │        cell_ID</span></span>
-<span><span class="co">#    │     1:       1</span></span>
-<span><span class="co">#    │     2:       2</span></span>
-<span><span class="co">#    │     3:       3</span></span>
-<span><span class="co">#    │     4:       4</span></span>
-<span><span class="co">#    │  </span></span>
-<span><span class="co">#    └──Feature type "neg_probe"</span></span>
-<span><span class="co">#          An object of class cellMetaObj </span></span>
-<span><span class="co">#          Provenance: nucleus </span></span>
-<span><span class="co">#             cell_ID</span></span>
-<span><span class="co">#          1:       1</span></span>
-<span><span class="co">#          2:       2</span></span>
-<span><span class="co">#          3:       3</span></span>
-<span><span class="co">#          4:       4</span></span></code></pre></div>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># ├──Spatial unit "cell"</span></span>
-<span><span class="co"># │  ├──Feature type "rna"</span></span>
-<span><span class="co"># │  │     An object of class featMetaObj </span></span>
-<span><span class="co"># │  │     Provenance: cell </span></span>
-<span><span class="co"># │  │        feat_ID      Ensembl ID             Annotation nr_cells perc_cells</span></span>
-<span><span class="co"># │  │     1:     LUM ENSG00000139329            Fibroblasts   101666  61.676687</span></span>
-<span><span class="co"># │  │     2:    TCIM ENSG00000176907 Breast glandular cells    84842  51.470240</span></span>
-<span><span class="co"># │  │     3:   RUNX1 ENSG00000159216          Breast cancer    94086  57.078205</span></span>
-<span><span class="co"># │  │     4: RAPGEF3 ENSG00000079337             Adipocytes    13286   8.060084</span></span>
-<span><span class="co"># │  │        total_expr mean_expr mean_expr_det</span></span>
-<span><span class="co"># │  │     1:     946217 5.7403192      9.307113</span></span>
-<span><span class="co"># │  │     2:     300377 1.8222668      3.540428</span></span>
-<span><span class="co"># │  │     3:     229633 1.3930914      2.440671</span></span>
-<span><span class="co"># │  │     4:      16645 0.1009785      1.252823</span></span>
-<span><span class="co"># │  │  </span></span>
-<span><span class="co"># │  ├──Feature type "blank_code"</span></span>
-<span><span class="co"># │  │     An object of class featMetaObj </span></span>
-<span><span class="co"># │  │     Provenance: cell </span></span>
-<span><span class="co"># │  │           feat_ID</span></span>
-<span><span class="co"># │  │     1: BLANK_0424</span></span>
-<span><span class="co"># │  │     2: BLANK_0401</span></span>
-<span><span class="co"># │  │     3: BLANK_0447</span></span>
-<span><span class="co"># │  │     4: BLANK_0449</span></span>
-<span><span class="co"># │  │  </span></span>
-<span><span class="co"># │  ├──Feature type "neg_code"</span></span>
-<span><span class="co"># │  │     An object of class featMetaObj </span></span>
-<span><span class="co"># │  │     Provenance: cell </span></span>
-<span><span class="co"># │  │                        feat_ID</span></span>
-<span><span class="co"># │  │     1: NegControlCodeword_0503</span></span>
-<span><span class="co"># │  │     2: NegControlCodeword_0514</span></span>
-<span><span class="co"># │  │     3: NegControlCodeword_0535</span></span>
-<span><span class="co"># │  │     4: NegControlCodeword_0519</span></span>
-<span><span class="co"># │  │  </span></span>
-<span><span class="co"># │  └──Feature type "neg_probe"</span></span>
-<span><span class="co"># │        An object of class featMetaObj </span></span>
-<span><span class="co"># │        Provenance: cell </span></span>
-<span><span class="co"># │                         feat_ID</span></span>
-<span><span class="co"># │        1: NegControlProbe_00003</span></span>
-<span><span class="co"># │        2:       antisense_SCRIB</span></span>
-<span><span class="co"># │        3: NegControlProbe_00012</span></span>
-<span><span class="co"># │        4:        antisense_LGI3</span></span>
-<span><span class="co"># │     </span></span>
-<span><span class="co"># └──Spatial unit "nucleus"</span></span>
-<span><span class="co">#    ├──Feature type "rna"</span></span>
-<span><span class="co">#    │     An object of class featMetaObj </span></span>
-<span><span class="co">#    │     Provenance: nucleus </span></span>
-<span><span class="co">#    │        feat_ID      Ensembl ID             Annotation</span></span>
-<span><span class="co">#    │     1:     LUM ENSG00000139329            Fibroblasts</span></span>
-<span><span class="co">#    │     2:    TCIM ENSG00000176907 Breast glandular cells</span></span>
-<span><span class="co">#    │     3:   RUNX1 ENSG00000159216          Breast cancer</span></span>
-<span><span class="co">#    │     4: RAPGEF3 ENSG00000079337             Adipocytes</span></span>
-<span><span class="co">#    │  </span></span>
-<span><span class="co">#    ├──Feature type "blank_code"</span></span>
-<span><span class="co">#    │     An object of class featMetaObj </span></span>
-<span><span class="co">#    │     Provenance: nucleus </span></span>
-<span><span class="co">#    │           feat_ID</span></span>
-<span><span class="co">#    │     1: BLANK_0424</span></span>
-<span><span class="co">#    │     2: BLANK_0401</span></span>
-<span><span class="co">#    │     3: BLANK_0447</span></span>
-<span><span class="co">#    │     4: BLANK_0449</span></span>
-<span><span class="co">#    │  </span></span>
-<span><span class="co">#    ├──Feature type "neg_code"</span></span>
-<span><span class="co">#    │     An object of class featMetaObj </span></span>
-<span><span class="co">#    │     Provenance: nucleus </span></span>
-<span><span class="co">#    │                        feat_ID</span></span>
-<span><span class="co">#    │     1: NegControlCodeword_0503</span></span>
-<span><span class="co">#    │     2: NegControlCodeword_0514</span></span>
-<span><span class="co">#    │     3: NegControlCodeword_0535</span></span>
-<span><span class="co">#    │     4: NegControlCodeword_0519</span></span>
-<span><span class="co">#    │  </span></span>
-<span><span class="co">#    └──Feature type "neg_probe"</span></span>
-<span><span class="co">#          An object of class featMetaObj </span></span>
-<span><span class="co">#          Provenance: nucleus </span></span>
-<span><span class="co">#                           feat_ID</span></span>
-<span><span class="co">#          1: NegControlProbe_00003</span></span>
-<span><span class="co">#          2:       antisense_SCRIB</span></span>
-<span><span class="co">#          3: NegControlProbe_00012</span></span>
-<span><span class="co">#          4:        antisense_LGI3</span></span></code></pre></div>
-</details>
-</div>
-<div class="section level3" number="7.6">
-<h3 number="7.6" id="normalize-expression">
-<span class="header-section-number">7.6</span> 7.6 Normalize expression<a class="anchor" aria-label="anchor" href="#normalize-expression"></a>
-</h3>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">xenium_gobj</span> <span class="op">=</span> <span class="fu"><a href="../reference/normalizeGiotto.html">normalizeGiotto</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">xenium_gobj</span>,</span>
-<span>                              spat_unit <span class="op">=</span> <span class="st">'cell'</span>,</span>
-<span>                              scalefactor <span class="op">=</span> <span class="fl">5000</span>,</span>
-<span>                              verbose <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3" number="7.7">
-<h3 number="7.7" id="calculate-highly-variable-features">
-<span class="header-section-number">7.7</span> 7.7 Calculate highly variable features<a class="anchor" aria-label="anchor" href="#calculate-highly-variable-features"></a>
-</h3>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">xenium_gobj</span> <span class="op">=</span> <span class="fu"><a href="../reference/calculateHVF.html">calculateHVF</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">xenium_gobj</span>,</span>
-<span>                           spat_unit <span class="op">=</span> <span class="st">'cell'</span>,</span>
-<span>                           save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>                             save_name <span class="op">=</span> <span class="st">'2_HVF'</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">xenium_gobj</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">hvf</span> <span class="op">==</span> <span class="st">'yes'</span><span class="op">)</span><span class="op">]</span>, <span class="st">'hvf found'</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># 22 hvf found</span></span></code></pre></div>
-<p><img src="images%2Fxenium_breast_cancer%2F2_HVF.png"></p>
-<p>Basing clustering on only 22 highly variable genes will not be helpful. Will be using all 313 genes for clustering.</p>
-</div>
-</div>
-<div class="section level2" number="8">
-<h2 number="8" id="dimension-reduction-and-clustering">
-<span class="header-section-number">8</span> 8. Dimension reduction and clustering<a class="anchor" aria-label="anchor" href="#dimension-reduction-and-clustering"></a>
-</h2>
-<div class="section level3" number="8.1">
-<h3 number="8.1" id="pca">
-<span class="header-section-number">8.1</span> 8.1 PCA<a class="anchor" aria-label="anchor" href="#pca"></a>
-</h3>
-<p>By default, <code><a href="../reference/runPCA.html">runPCA()</a></code> uses the subset of genes discovered to be highly variable and then assigned as such in the feature metadata. Instead, this time, using all genes is desireable, so <code>feats_to_use</code> will be set to <code>NULL</code>.</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">xenium_gobj</span> <span class="op">=</span> <span class="fu"><a href="../reference/runPCA.html">runPCA</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">xenium_gobj</span>,</span>
-<span>                     spat_unit <span class="op">=</span> <span class="st">'cell'</span>,</span>
-<span>                     expression_values <span class="op">=</span> <span class="st">'scaled'</span>,</span>
-<span>                     feats_to_use <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>                     scale_unit <span class="op">=</span> <span class="cn">F</span>,</span>
-<span>                     center <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Visualize Screeplot and PCA</span></span>
-<span><span class="fu"><a href="../reference/screePlot.html">screePlot</a></span><span class="op">(</span><span class="va">xenium_gobj</span>,</span>
-<span>          ncp <span class="op">=</span> <span class="fl">20</span>,</span>
-<span>          save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>            save_name <span class="op">=</span> <span class="st">'3a_screePlot'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/showGiottoDimRed.html" class="external-link">showGiottoDimRed</a></span><span class="op">(</span><span class="va">xenium_gobj</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span><span class="va">xenium_gobj</span>,</span>
-<span>        spat_unit <span class="op">=</span> <span class="st">'cell'</span>,</span>
-<span>        dim_reduction_name <span class="op">=</span> <span class="st">'pca'</span>,</span>
-<span>        dim1_to_use <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>        dim2_to_use <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Dim reduction on cells:</span></span>
-<span><span class="co">#  ------------------------- </span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># .</span></span>
-<span><span class="co"># └──Spatial unit "cell"</span></span>
-<span><span class="co">#    └──Feature type "rna"</span></span>
-<span><span class="co">#       └──Dim reduction type "pca"</span></span>
-<span><span class="co">#          └──S4 dimObj "pca" coordinates:   (165019 rows 21 cols)</span></span>
-<span><span class="co">#                      Dim.1     Dim.2</span></span>
-<span><span class="co">#                1 -2.459551 -0.418277</span></span>
-<span><span class="co">#                2 -2.002147 -3.239184</span></span>
-<span><span class="co">#                3 -1.588884 -2.195826</span></span></code></pre></div>
-<p><img src="images%2Fxenium_breast_cancer%2F3a_screePlot.png"><img src="images%2Fxenium_breast_cancer%2F3b_PCA.png"></p>
-</div>
-<div class="section level3" number="8.2">
-<h3 number="8.2" id="tsne-and-umap">
-<span class="header-section-number">8.2</span> 8.2 tSNE and UMAP<a class="anchor" aria-label="anchor" href="#tsne-and-umap"></a>
-</h3>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">xenium_gobj</span> <span class="op">=</span> <span class="fu"><a href="../reference/runtSNE.html">runtSNE</a></span><span class="op">(</span><span class="va">xenium_gobj</span>,</span>
-<span>                      dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,</span>
-<span>                      spat_unit <span class="op">=</span> <span class="st">'cell'</span><span class="op">)</span></span>
-<span><span class="va">xenium_gobj</span> <span class="op">=</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span><span class="va">xenium_gobj</span>,</span>
-<span>                      dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,</span>
-<span>                      spat_unit <span class="op">=</span> <span class="st">'cell'</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotTSNE.html" class="external-link">plotTSNE</a></span><span class="op">(</span><span class="va">xenium_gobj</span>,</span>
-<span>         point_size <span class="op">=</span> <span class="fl">0.01</span>,</span>
-<span>         save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>           save_name <span class="op">=</span> <span class="st">'4a_tSNE'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span><span class="va">xenium_gobj</span>,</span>
-<span>         point_size <span class="op">=</span> <span class="fl">0.01</span>,</span>
-<span>         save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>           save_name <span class="op">=</span> <span class="st">'4b_UMAP'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fxenium_breast_cancer%2F4a_tSNE.png"><img src="images%2Fxenium_breast_cancer%2F4b_UMAP.png"></p>
-</div>
-<div class="section level3" number="8.3">
-<h3 number="8.3" id="snn-and-leiden-clustering">
-<span class="header-section-number">8.3</span> 8.3 sNN and Leiden clustering<a class="anchor" aria-label="anchor" href="#snn-and-leiden-clustering"></a>
-</h3>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">xenium_gobj</span> <span class="op">=</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">xenium_gobj</span>,</span>
-<span>                                   dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,</span>
-<span>                                   k <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>                                   spat_unit <span class="op">=</span> <span class="st">'cell'</span><span class="op">)</span></span>
-<span><span class="va">xenium_gobj</span> <span class="op">=</span> <span class="fu"><a href="../reference/doLeidenCluster.html">doLeidenCluster</a></span><span class="op">(</span><span class="va">xenium_gobj</span>,</span>
-<span>                              resolution <span class="op">=</span> <span class="fl">0.25</span>,</span>
-<span>                              n_iterations <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>                              spat_unit <span class="op">=</span> <span class="st">'cell'</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># visualize UMAP cluster results</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">xenium_gobj</span>,</span>
-<span>         spat_unit <span class="op">=</span> <span class="st">'cell'</span>,</span>
-<span>         cell_color <span class="op">=</span> <span class="st">'leiden_clus'</span>,</span>
-<span>         show_legend <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>         point_size <span class="op">=</span> <span class="fl">0.01</span>,</span>
-<span>         point_shape <span class="op">=</span> <span class="st">'no_border'</span>,</span>
-<span>         save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">'5_umap_leiden'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fxenium_breast_cancer%2F5_umap_leiden.png"></p>
-</div>
-<div class="section level3" number="8.4">
-<h3 number="8.4" id="visualize-umap-and-spatial-results">
-<span class="header-section-number">8.4</span> 8.4 Visualize UMAP and spatial results<a class="anchor" aria-label="anchor" href="#visualize-umap-and-spatial-results"></a>
-</h3>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">xenium_gobj</span>,</span>
-<span>           spat_unit <span class="op">=</span> <span class="st">'cell'</span>,</span>
-<span>           cell_color <span class="op">=</span> <span class="st">'leiden_clus'</span>,</span>
-<span>           point_size <span class="op">=</span> <span class="fl">0.1</span>,</span>
-<span>           point_shape <span class="op">=</span> <span class="st">'no_border'</span>,</span>
-<span>           background_color <span class="op">=</span> <span class="st">'black'</span>,</span>
-<span>           show_legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>           save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>             save_name <span class="op">=</span> <span class="st">'6_spat_leiden'</span>,</span>
-<span>             base_width <span class="op">=</span> <span class="fl">15</span>,</span>
-<span>             base_height <span class="op">=</span> <span class="fl">15</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fxenium_breast_cancer%2F6_spat_leiden.png"></p>
-</div>
-</div>
-<div class="section level2" number="9">
-<h2 number="9" id="subcellular-visualization">
-<span class="header-section-number">9</span> 9. Subcellular visualization<a class="anchor" aria-label="anchor" href="#subcellular-visualization"></a>
-</h2>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">xenium_gobj</span>,</span>
-<span>                     show_image <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                     feats <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>                     point_size <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>                     show_polygon <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                     polygon_feat_type <span class="op">=</span> <span class="st">'cell'</span>,</span>
-<span>                     polygon_alpha <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>                     polygon_color <span class="op">=</span> <span class="st">'black'</span>,</span>
-<span>                     polygon_line_size <span class="op">=</span> <span class="fl">0.01</span>,</span>
-<span>                     polygon_fill <span class="op">=</span> <span class="st">'leiden_clus'</span>,</span>
-<span>                     polygon_fill_as_factor <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                     coord_fix_ratio <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                     save_para <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>                       save_name <span class="op">=</span> <span class="st">'7_polys'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fxenium_breast_cancer%2F7_polys.png"></p>
-<p>The dataset is too large to visualize with subcellular polygons and features clearly so a spatial subset is needed.</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">xenium_gobj_subset</span> <span class="op">=</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/subsetGiottoLocs.html" class="external-link">subsetGiottoLocs</a></span><span class="op">(</span><span class="va">xenium_gobj</span>,</span>
-<span>                                      x_max <span class="op">=</span> <span class="fl">4500</span>,</span>
-<span>                                      x_min <span class="op">=</span> <span class="fl">3500</span>,</span>
-<span>                                      y_max <span class="op">=</span> <span class="fl">5500</span>,</span>
-<span>                                      y_min <span class="op">=</span> <span class="fl">4500</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">xenium_gobj_subset</span>,</span>
-<span>                     show_image <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                     feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">'rna'</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>                       <span class="st">"LUM"</span>, <span class="st">"CXCR4"</span>, <span class="st">"ITGAX"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>                     feats_color_code <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>                       <span class="st">"LUM"</span> <span class="op">=</span> <span class="st">'green'</span>,</span>
-<span>                       <span class="st">'CXCR4'</span> <span class="op">=</span> <span class="st">'blue'</span>,</span>
-<span>                       <span class="st">'ITGAX'</span> <span class="op">=</span> <span class="st">'red'</span><span class="op">)</span>,</span>
-<span>                     point_size <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>                     show_polygon <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                     polygon_feat_type <span class="op">=</span> <span class="st">'cell'</span>,</span>
-<span>                     polygon_color <span class="op">=</span> <span class="st">'black'</span>,</span>
-<span>                     polygon_line_size <span class="op">=</span> <span class="fl">0.01</span>,</span>
-<span>                     polygon_fill <span class="op">=</span> <span class="st">'leiden_clus'</span>,</span>
-<span>                     polygon_fill_as_factor <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                     coord_fix_ratio <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                     save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>                       save_name <span class="op">=</span> <span class="st">'8_subset_in_situ'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fxenium_breast_cancer%2F8_subset_in_situ.png"></p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code>R version 4.4.0 (2024-04-24)
+Platform: x86_64-pc-linux-gnu
+Running under: AlmaLinux 8.10 (Cerulean Leopard)
+
+Matrix products: default
+BLAS/LAPACK: FlexiBLAS NETLIB;  LAPACK version 3.11.0
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C               LC_TIME=en_US.UTF-8       
+ [4] LC_COLLATE=en_US.UTF-8     LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                  LC_ADDRESS=C              
+[10] LC_TELEPHONE=C             LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+time zone: America/New_York
+tzcode source: system (glibc)
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] Giotto_4.1.5      GiottoClass_0.4.4
+
+loaded via a namespace (and not attached):
+  [1] RcppAnnoy_0.0.22            splines_4.4.0               ggplotify_0.1.2            
+  [4] tibble_3.2.1                R.oo_1.26.0                 polyclip_1.10-7            
+  [7] lifecycle_1.0.4             lattice_0.22-6              MASS_7.3-60.2              
+ [10] backports_1.5.0             magrittr_2.0.3              plotly_4.10.4              
+ [13] rmarkdown_2.28              yaml_2.3.10                 reticulate_1.38.0          
+ [16] cowplot_1.1.3               DBI_1.2.3                   RColorBrewer_1.1-3         
+ [19] pkgload_1.3.4               abind_1.4-5                 zlibbioc_1.50.0            
+ [22] Rtsne_0.17                  GenomicRanges_1.56.0        purrr_1.0.2                
+ [25] R.utils_2.12.3              ggraph_2.2.1                BiocGenerics_0.50.0        
+ [28] yulab.utils_0.1.7           tweenr_2.0.3                rappdirs_0.3.3             
+ [31] job_0.3.1                   GenomeInfoDbData_1.2.12     IRanges_2.38.0             
+ [34] S4Vectors_0.42.1            enrichplot_1.24.4           ggrepel_0.9.6              
+ [37] irlba_2.3.5.1               tidytree_0.4.6              terra_1.7-78               
+ [40] colorRamp2_0.1.0            codetools_0.2-20            DelayedArray_0.30.1        
+ [43] DOSE_3.30.0                 xml2_1.3.6                  ggforce_0.4.2              
+ [46] tidyselect_1.2.1            aplot_0.2.2                 UCSC.utils_1.0.0           
+ [49] farver_2.1.2                ScaledMatrix_1.12.0         viridis_0.6.5              
+ [52] matrixStats_1.4.1           stats4_4.4.0                jsonlite_1.8.8             
+ [55] tidygraph_1.3.1             progressr_0.14.0            systemfonts_1.1.0          
+ [58] dbscan_1.2-0                tictoc_1.2.1                tools_4.4.0                
+ [61] treeio_1.28.0               ragg_1.3.0                  Rcpp_1.0.13                
+ [64] glue_1.7.0                  gridExtra_2.3               SparseArray_1.4.8          
+ [67] xfun_0.47                   qvalue_2.36.0               MatrixGenerics_1.16.0      
+ [70] GenomeInfoDb_1.40.0         dplyr_1.1.4                 withr_3.0.1                
+ [73] fastmap_1.2.0               fansi_1.0.6                 digest_0.6.37              
+ [76] rsvd_1.0.5                  R6_2.5.1                    gridGraphics_0.5-1         
+ [79] textshaping_0.3.7           colorspace_2.1-1            scattermore_1.2            
+ [82] GO.db_3.19.1                gtools_3.9.5                RSQLite_2.3.6              
+ [85] R.methodsS3_1.8.2           utf8_1.2.4                  tidyr_1.3.1                
+ [88] generics_0.1.3              data.table_1.16.0           graphlayouts_1.2.0         
+ [91] httr_1.4.7                  htmlwidgets_1.6.4           S4Arrays_1.4.1             
+ [94] scatterpie_0.2.2            uwot_0.2.2                  pkgconfig_2.0.3            
+ [97] gtable_0.3.5                blob_1.2.4                  GiottoVisuals_0.2.8        
+[100] SingleCellExperiment_1.26.0 XVector_0.44.0              clusterProfiler_4.12.6     
+[103] shadowtext_0.1.3            htmltools_0.5.8.1           fgsea_1.30.0               
+[106] scales_1.3.0                Biobase_2.64.0              GiottoUtils_0.2.1          
+[109] png_0.1-8                   SpatialExperiment_1.14.0    ggfun_0.1.4                
+[112] knitr_1.48                  rstudioapi_0.16.0           reshape2_1.4.4             
+[115] rjson_0.2.21                checkmate_2.3.2             nlme_3.1-164               
+[118] cachem_1.1.0                stringr_1.5.1               parallel_4.4.0             
+[121] HDO.db_0.99.1               arrow_16.1.0                AnnotationDbi_1.66.0       
+[124] pillar_1.9.0                grid_4.4.0                  vctrs_0.6.5                
+[127] BiocSingular_1.20.0         beachmat_2.20.0             evaluate_0.24.0            
+[130] magick_2.8.4                cli_3.6.3                   compiler_4.4.0             
+[133] rlang_1.1.4                 crayon_1.5.2                labeling_0.4.3             
+[136] plyr_1.8.9                  fs_1.6.4                    stringi_1.8.4              
+[139] viridisLite_0.4.2           BiocParallel_1.38.0         assertthat_0.2.1           
+[142] munsell_0.5.1               Biostrings_2.72.0           lazyeval_0.2.2             
+[145] GOSemSim_2.30.0             Matrix_1.7-0                patchwork_1.2.0            
+[148] bit64_4.0.5                 ggplot2_3.5.1               KEGGREST_1.44.0            
+[151] SummarizedExperiment_1.34.0 igraph_2.0.3                memoise_2.0.1              
+[154] ggtree_3.12.0               fastmatch_1.1-4             bit_4.0.5                  
+[157] ape_5.8                     gson_0.1.0            </code></pre>
 </div>
   </div>
 
