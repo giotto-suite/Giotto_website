@@ -578,12 +578,12 @@ How to deal with these different types of detections is easily adjustable. With 
 
 Note that there are 4 `feat_types` declared in this set of defaults, but 3 items passed to `split_keyword`. Any transcripts not matched by items in `split_keyword`, get categorized as the first provided `feat_type` ("rna").
 
-<br>
+
 
 </details>
 
 
-
+<br>
 
 
 
@@ -853,7 +853,7 @@ knitr::include_graphics("images/xenium_breast_cancer/leiden_umap.png")
 
 
 
-# Visualize UMAP and Spatial Results
+## Visualize UMAP and Spatial Results
 
 
 ```{r, eval=FALSE}
@@ -872,7 +872,7 @@ knitr::include_graphics("images/xenium_breast_cancer/spat_leiden.png")
 ```
 
 
-# Subcellular Visualization
+## Subcellular Visualization
 
 
 ```{r, eval=FALSE}
@@ -923,6 +923,482 @@ knitr::include_graphics("images/xenium_breast_cancer/zoomin.png")
 ```
 
 
+## Visualize Known Markers
+
+```{r, eval=FALSE}
+dimFeatPlot2D(xenium_gobj,
+    feats = c(
+        "CD3E", "CD8A", "CD4", # T cell
+        "JCHAIN", # plasmablast
+        "MS4A1", # B
+        "DCN", "SFRP2", # CAF (mesenchymal)
+        "TAGLN", # CAF/PVL (mesenchymal)
+        "RAMP2", # endothelial
+        "PROX1", # LEC (lymphatic endothelial cell)
+        "TYROBP", # myeloid
+        "CPA3", "TPSAB1", # mast cell
+        "SPINT2", "MKI67", "KRT8", # epithelial/cancer
+        "SOX10", "TP63", # myoepithelial
+        "CD24", # B cell and cancer stemness
+        "PDCD1" # PD1
+    ), 
+    point_size = 0.2,
+    point_border_stroke = 0,
+    background_color = "black",
+    cow_n_col = 4,
+    show_legend = FALSE,
+    gradient_style = "sequential",
+    save_param = list(
+      "base_height" = 6
+    )
+)
+```
+
+```{r, echo=FALSE, out.width="100%"}
+knitr::include_graphics("images/xenium_breast_cancer/dimfeats.png")
+```
+
+These markers are not very specific to the UMAP clustering. Several genes were
+also not available in the panel.
+
+# Single Cell Assisted Cell Typing
+
+Xenium datasets have very sensitive target detection, but segmentation plays a
+large role in how clean the expression information is. This dataset did not come with
+bound staining segmentation and the `'cell'` segmentation is instead a simple
+expansion-based approach performed on top of the `'nucleus'` annotations. 
+As a result, many transcripts may be assigned to
+the wrong cell.
+
+Single cell datasets lack spatial context, however they tend to have clearer
+separation between clusters, making it easier to see which clusters correspond
+to which cell types.
+This dataset comes with paired single cell datasets at 
+[GSE243280](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE243280). 
+We can use the single cell data to cell type, then transfer those labels to the
+Xenium data.
+
+More specifically, we will be using the 5 prime dataset 
+[GSM7782696](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM7782696).
+
+## Single Cell Processing
+
+First we need to process the single cell dataset and cell type it.
+
+<details><summary>single cell data processing</summary>
+
+
+**Load Single Cell Data**
+
+```{r, eval=FALSE}
+expr_data_path <- "path/to/5p_count_filtered_feature_bc_matrix.h5"
+# create single cell giotto object
+sc <- createGiottoObject(
+    expression = get10Xmatrix_h5(expr_data_path)$`Gene Expression`, 
+    instructions = instrs
+)
+```
+
+**Pre-Process: Mitochondrial Filtering**
+```{r, eval=FALSE}
+fids <- featIDs(sc)
+mt_genes <- fids[grep("^MT-.*", fids)]
+sc <- addFeatsPerc(sc, expression_values = "raw", feats = mt_genes, vector_name = "mito")
+
+library(ggplot2)
+ggplot(spatValues(sc, feats = "mito"), aes(x = "cells", y = mito)) + geom_violin()
+```
+
+```{r, echo=FALSE, out.width="40%"}
+knitr::include_graphics("images/janesick_sc/1_mito.png")
+```
+
+
+```{r, eval=FALSE}
+meta <- pDataDT(sc)
+meta[, sum(mito > 50)] # 5006 # filter these out
+meta[, sum(mito < 50)] # 17963
+sc <- subset(sc, subset = mito < 50)
+ggplot(spatValues(sc, feats = "mito"), aes(x = "cells", y = mito)) + geom_violin()
+```
+
+```{r, echo=FALSE, out.width="40%"}
+knitr::include_graphics("images/janesick_sc/2_mito.png")
+```
+
+**Pre-Process: Remove Doublets**
+
+```{r, eval=FALSE}
+# doublets removal
+sc <- doScrubletDetect(sc, return_gobject = TRUE, seed = 0)
+ggplot(spatValues(sc, feats = "doublet_scores"), aes(x = "cells", y = doublet_scores)) + geom_violin()
+```
+
+```{r, echo=FALSE, out.width="40%"}
+knitr::include_graphics("images/janesick_sc/3_doublet.png")
+```
+
+```{r, eval=FALSE}
+sc <- subset(sc, subset = doublet == FALSE) # remove 130 cells
+```
+
+**Process Data**
+
+```{r, eval=FALSE}
+filterCombinations(sc, 
+    expression_thresholds = 1,
+    feat_det_in_min_cells = c(20, 100)
+)
+```
+
+```{r, echo=FALSE, out.width="50%"}
+knitr::include_graphics("images/janesick_sc/4_filter_combinations.png")
+```
+
+```{r, eval=FALSE}
+sc <- sc |>
+    filterGiotto(
+        expression_threshold = 1,
+        feat_det_in_min_cells = 20,
+        min_det_feats_per_cell = 200
+    ) |>
+    normalizeGiotto() |>
+    calculateHVF() |>
+    runPCA()
+    
+screePlot(sc, ncp = 50)
+```
+
+```{r, echo=FALSE, out.width="80%"}
+knitr::include_graphics("images/janesick_sc/5_scree.png")
+```
+
+
+```{r, eval=FALSE}
+sc <- runUMAP(sc, dimensions_to_use = seq(30))
+dimPlot2D(sc)
+```
+
+```{r, echo=FALSE, out.width="80%"}
+knitr::include_graphics("images/janesick_sc/6_umap.png")
+```
+
+
+
+
+
+**Clustering**
+
+```{r, eval=FALSE}
+sc <- sc |>
+    createNearestNetwork(dimensions_to_use = seq(30)) |>
+    doLeidenCluster(res = 1.5) # overclustering
+
+dimPlot2D(sc, 
+    cell_color = "leiden_clus", 
+    point_size = 0.6, 
+    point_border_stroke = 0
+)
+```
+
+```{r, echo=FALSE, out.width="80%"}
+knitr::include_graphics("images/janesick_sc/7_overclust.png")
+```
+
+```{r, eval=FALSE}
+# combine similar clusters
+ann <- as.character(seq(25)) |> 
+    setNames(seq(25))
+ann[c(2,3,4,5,7,8,9,10,11,12,13,14,15,16,19,24)] <- 1
+ann[c(1,6,17,18,20,21,22,23,25)] <- 2:10
+
+sc <- annotateGiotto(sc, 
+    annotation_vector = ann, 
+    cluster_column = "leiden_clus",
+    name = "major_clus"
+)
+
+dimPlot2D(sc, 
+    cell_color = "major_clus", 
+    point_size = 0.6, 
+    point_border_stroke = 0
+)
+```
+
+```{r, echo=FALSE, out.width="80%"}
+knitr::include_graphics("images/janesick_sc/8_mclus.png")
+```
+
+**Plot Known Markers** 
+
+```{r, eval=FALSE}
+dimFeatPlot2D(sc,
+    feats = c(
+        "CD3E", "CD8A", "CD4", # T cell
+        "JCHAIN", # plasmablast
+        "MS4A1", # B
+        "DCN", "SFRP2", # CAF (mesenchymal)
+        "TAGLN", # CAF/PVL (mesenchymal)
+        "RAMP2", # endothelial
+        "PROX1", # LEC (lymphatic endothelial cell)
+        "TYROBP", # myeloid
+        "CPA3", "TPSAB1", # mast cell
+        "SPINT2", "MKI67", "KRT8", # epithelial/cancer
+        "SOX10", "TP63", # myoepithelial
+        "CD24", # B cell and cancer stemness
+        "PDCD1" # PD1
+    ), 
+    point_size = 0.5,
+    point_border_stroke = 0,
+    background_color = "black",
+    cow_n_col = 4,
+    show_legend = FALSE,
+    cell_color_gradient = c("#555555", "red"),
+    save_param = list(
+      "base_height" = 12
+    )
+)
+```
+
+```{r, echo=FALSE, out.width="100%"}
+knitr::include_graphics("images/janesick_sc/9_dimfeats.png")
+```
+
+**Marker Detection: Scran**
+
+```{r, eval=FALSE}
+res_scran <- findMarkers_one_vs_all(sc, 
+    cluster_column = "major_clus", 
+    method = "scran"
+)
+topgenes_scran = res_scran[, head(.SD, 2), by = 'cluster']
+violinPlot(sc, feats = topgenes_scran$feats, cluster_column = "major_clus")
+```
+
+```{r, echo=FALSE, out.width="100%"}
+knitr::include_graphics("images/janesick_sc/10_scran.png")
+```
+
+**Marker Detection: Gini**
+
+```{r, eval=FALSE}
+res_gini <- findMarkers_one_vs_all(sc,
+    cluster_column = "major_clus", 
+    method = "gini"
+)
+topgenes_gini = res_gini[, head(.SD, 2), by = 'cluster']
+violinPlot(sc, feats = topgenes_gini$feats, cluster_column = "major_clus")
+```
+
+```{r, echo=FALSE, out.width="100%"}
+knitr::include_graphics("images/janesick_sc/11_gini.png")
+```
+
+**Annotate: Major Cell Types**
+
+```{r, eval=FALSE}
+ann2 <- c(
+    "cancer_epithelial",
+    "CD4T",
+    "CD8T",
+    "myeloid",
+    "endothelial",
+    "B",
+    "mesenchymal",
+    "plasmablast",
+    "myoepithelial",
+    "LEC"
+) |>
+    setNames(seq(10))
+
+sc <- annotateGiotto(sc, 
+    cluster_column = "major_clus",
+    annotation_vector = ann2,
+    name = "cell_types"
+)
+
+dimPlot2D(sc, cell_color = "cell_types")
+```
+
+```{r, echo=FALSE, out.width="100%"}
+knitr::include_graphics("images/janesick_sc/12_celltypes.png")
+```
+
+
+</details>
+
+<br>
+
+
+
+## Create Joined Object
+
+Next, a joined Xenium and single cell `giotto` object needs to be created to transfer
+the cell type labels.
+
+```{r, eval=FALSE}
+# match features
+ufids <- intersect(featIDs(xenium_gobj), featIDs(sc)) # 298 feats in common
+
+# strip gobjects down to remove incompatible elements in join
+sc_join <- giotto() |> 
+    setGiotto(sc[[c("expression", "spatial_locs"), "raw"]]) 
+xen_join <- giotto() |>
+    setGiotto(xenium_gobj[[c("expression", "spatial_locs"), "raw", spat_unit = "cell"]])
+
+j <- joinGiottoObjects(
+    list(sc_join[ufids], xen_join[ufids]), 
+    gobject_names = c("sc", "xen")
+)
+instructions(j) <- instrs
+```
+
+## Process Joined Object (No Integration)
+
+```{r, eval=FALSE}
+j <- filterGiotto(j,
+    expression_threshold = 1, 
+    feat_det_in_min_cells = 1, 
+    min_det_feats_per_cell = 10
+)
+# normalizations
+j <- normalizeGiotto(j) # pearson and quantile norms do not work well for this
+
+# PCA
+j <- runPCA(j, feats_to_use = NULL)
+
+plotPCA(j,
+    cell_color = "list_ID",
+    point_border_stroke = 0,
+    point_size = 0.3
+)
+```
+
+```{r, echo=FALSE, out.width="80%"}
+knitr::include_graphics("images/xenium_breast_cancer/join_pca.png")
+```
+
+```{r, eval=FALSE}
+screePlot(j, ncp = 50)
+```
+
+```{r, echo=FALSE, out.width="80%"}
+knitr::include_graphics("images/xenium_breast_cancer/join_scree.png")
+```
+
+```{r, eval=FALSE}
+ndims <- 10
+j <- runUMAP(j, dimensions_to_use = seq(ndims))
+
+plotUMAP(j, 
+    cell_color = "list_ID",
+    point_size = 0.3, 
+    point_border_stroke = 0, 
+    cell_color_code = c("red", "blue")
+)
+```
+
+```{r, echo=FALSE, out.width="80%"}
+knitr::include_graphics("images/xenium_breast_cancer/join_umap.png")
+```
+
+There are clear batch effects between the two types of data, so we can try Harmony integration.
+
+## Process Joined Object (With Harmony Integration)
+
+Run Harmony integration on the PCA space with the `"list_ID"` (dataset source) as the variable to remove to
+produce an aligned PCA space that better represents the biology of the datasets.
+
+```{r, eval=FALSE}
+j <- runGiottoHarmony(j,
+    vars_use = "list_ID",
+    dim_reduction_name = "pca",
+    dimensions_to_use = seq(ndims),
+    name = "harmony"
+)
+
+j <- runUMAP(j, 
+    dim_reduction_to_use = "harmony",
+    dim_reduction_name = "harmony",
+    name = "umap_harmony",
+    dimensions_to_use = seq(ndims)
+)
+
+cell_colors <- c(
+    "turquoise", "azure4", "pink", "tomato", 
+    "chartreuse3", "lightslateblue", "firebrick4", 
+    "blue", "magenta", "cornflowerblue"
+)
+
+plotUMAP(j, 
+    cell_color = "cell_types",
+    dim_reduction_name = "umap_harmony", 
+    cell_color_code = cell_colors,
+    point_size = 0.5, 
+    select_cells = spatIDs(j, subset = list_ID == "sc"),
+    point_border_stroke = 0, 
+    other_point_size = 0.3
+)
+```
+
+```{r, echo=FALSE, out.width="80%"}
+knitr::include_graphics("images/xenium_breast_cancer/join_celltypes.png")
+```
+
+The single-cell-based celltype annotations look like they map to the clustering
+of the integrated dataset. We can now transfer these annotations using `labelTransfer()`
+from just the  single cells (`source_cell_ids`) to the rest of the cells (xenium data cells)
+using kNN clustering.
+
+```{r, eval=FALSE}
+j <- labelTransfer(j, 
+    source_cell_ids = spatIDs(j, subset = list_ID == "sc"),
+    k = 10,
+    labels = "cell_types",
+    reduction_method = "harmony",
+    reduction_name = "harmony",
+    dimensions_to_use = seq(ndims)
+)
+
+plotUMAP(j, 
+    cell_color = "trnsfr_cell_types", 
+    dim_reduction_name = "umap_harmony", 
+    cell_color_code = cell_colors,
+    point_size = 0.3,
+    point_border_stroke = 0
+)
+```
+
+```{r, echo=FALSE, out.width="80%"}
+knitr::include_graphics("images/xenium_breast_cancer/join_transfer.png")
+```
+
+```{r, eval=FALSE}
+ann_meta <- pDataDT(j)
+ann_meta <- ann_meta[list_ID == "xen",]
+ann_meta[, cell_ID := gsub("^xen-", "", cell_ID)]
+ann_meta <- ann_meta[, .(cell_ID, trnsfr_cell_types, trnsfr_cell_types_prob)]
+
+xenium_gobj <- addCellMetadata(xenium_gobj, 
+    new_metadata = ann_meta, 
+    by_column = TRUE, 
+    column_cell_ID = "cell_ID"
+)
+
+spatInSituPlotPoints(xenium_gobj, 
+    polygon_fill = "trnsfr_cell_types", 
+    polygon_fill_as_factor = TRUE,
+    polygon_line_size = 0,
+    polygon_fill_code = cell_colors
+)
+```
+
+```{r, echo=FALSE, out.width="100%"}
+knitr::include_graphics("images/xenium_breast_cancer/xen_transfer.png")
+```
+
+
+
 ```{r, eval=FALSE}
 sessionInfo()
 ```
@@ -948,60 +1424,55 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] Giotto_4.1.5      GiottoClass_0.4.4
+[1] ggplot2_3.5.1     Giotto_4.1.5      GiottoClass_0.4.4
 
 loaded via a namespace (and not attached):
-  [1] RcppAnnoy_0.0.22            splines_4.4.0               ggplotify_0.1.2            
-  [4] tibble_3.2.1                R.oo_1.26.0                 polyclip_1.10-7            
-  [7] lifecycle_1.0.4             lattice_0.22-6              MASS_7.3-60.2              
- [10] backports_1.5.0             magrittr_2.0.3              plotly_4.10.4              
- [13] rmarkdown_2.28              yaml_2.3.10                 reticulate_1.38.0          
- [16] cowplot_1.1.3               DBI_1.2.3                   RColorBrewer_1.1-3         
- [19] pkgload_1.3.4               abind_1.4-5                 zlibbioc_1.50.0            
- [22] Rtsne_0.17                  GenomicRanges_1.56.0        purrr_1.0.2                
- [25] R.utils_2.12.3              ggraph_2.2.1                BiocGenerics_0.50.0        
- [28] yulab.utils_0.1.7           tweenr_2.0.3                rappdirs_0.3.3             
- [31] job_0.3.1                   GenomeInfoDbData_1.2.12     IRanges_2.38.0             
- [34] S4Vectors_0.42.1            enrichplot_1.24.4           ggrepel_0.9.6              
- [37] irlba_2.3.5.1               tidytree_0.4.6              terra_1.7-78               
- [40] colorRamp2_0.1.0            codetools_0.2-20            DelayedArray_0.30.1        
- [43] DOSE_3.30.0                 xml2_1.3.6                  ggforce_0.4.2              
- [46] tidyselect_1.2.1            aplot_0.2.2                 UCSC.utils_1.0.0           
- [49] farver_2.1.2                ScaledMatrix_1.12.0         viridis_0.6.5              
- [52] matrixStats_1.4.1           stats4_4.4.0                jsonlite_1.8.8             
- [55] tidygraph_1.3.1             progressr_0.14.0            systemfonts_1.1.0          
- [58] dbscan_1.2-0                tictoc_1.2.1                tools_4.4.0                
- [61] treeio_1.28.0               ragg_1.3.0                  Rcpp_1.0.13                
- [64] glue_1.7.0                  gridExtra_2.3               SparseArray_1.4.8          
- [67] xfun_0.47                   qvalue_2.36.0               MatrixGenerics_1.16.0      
- [70] GenomeInfoDb_1.40.0         dplyr_1.1.4                 withr_3.0.1                
- [73] fastmap_1.2.0               fansi_1.0.6                 digest_0.6.37              
- [76] rsvd_1.0.5                  R6_2.5.1                    gridGraphics_0.5-1         
- [79] textshaping_0.3.7           colorspace_2.1-1            scattermore_1.2            
- [82] GO.db_3.19.1                gtools_3.9.5                RSQLite_2.3.6              
- [85] R.methodsS3_1.8.2           utf8_1.2.4                  tidyr_1.3.1                
- [88] generics_0.1.3              data.table_1.16.0           graphlayouts_1.2.0         
- [91] httr_1.4.7                  htmlwidgets_1.6.4           S4Arrays_1.4.1             
- [94] scatterpie_0.2.2            uwot_0.2.2                  pkgconfig_2.0.3            
- [97] gtable_0.3.5                blob_1.2.4                  GiottoVisuals_0.2.8        
-[100] SingleCellExperiment_1.26.0 XVector_0.44.0              clusterProfiler_4.12.6     
-[103] shadowtext_0.1.3            htmltools_0.5.8.1           fgsea_1.30.0               
-[106] scales_1.3.0                Biobase_2.64.0              GiottoUtils_0.2.1          
-[109] png_0.1-8                   SpatialExperiment_1.14.0    ggfun_0.1.4                
-[112] knitr_1.48                  rstudioapi_0.16.0           reshape2_1.4.4             
-[115] rjson_0.2.21                checkmate_2.3.2             nlme_3.1-164               
-[118] cachem_1.1.0                stringr_1.5.1               parallel_4.4.0             
-[121] HDO.db_0.99.1               arrow_16.1.0                AnnotationDbi_1.66.0       
-[124] pillar_1.9.0                grid_4.4.0                  vctrs_0.6.5                
-[127] BiocSingular_1.20.0         beachmat_2.20.0             evaluate_0.24.0            
-[130] magick_2.8.4                cli_3.6.3                   compiler_4.4.0             
-[133] rlang_1.1.4                 crayon_1.5.2                labeling_0.4.3             
-[136] plyr_1.8.9                  fs_1.6.4                    stringi_1.8.4              
-[139] viridisLite_0.4.2           BiocParallel_1.38.0         assertthat_0.2.1           
-[142] munsell_0.5.1               Biostrings_2.72.0           lazyeval_0.2.2             
-[145] GOSemSim_2.30.0             Matrix_1.7-0                patchwork_1.2.0            
-[148] bit64_4.0.5                 ggplot2_3.5.1               KEGGREST_1.44.0            
-[151] SummarizedExperiment_1.34.0 igraph_2.0.3                memoise_2.0.1              
-[154] ggtree_3.12.0               fastmatch_1.1-4             bit_4.0.5                  
-[157] ape_5.8                     gson_0.1.0            
+  [1] RColorBrewer_1.1-3          rstudioapi_0.16.0           jsonlite_1.8.8             
+  [4] magrittr_2.0.3              magick_2.8.4                farver_2.1.2               
+  [7] rmarkdown_2.28              zlibbioc_1.50.0             ragg_1.3.0                 
+ [10] vctrs_0.6.5                 DelayedMatrixStats_1.26.0   GiottoUtils_0.2.1          
+ [13] terra_1.7-78                htmltools_0.5.8.1           S4Arrays_1.4.1             
+ [16] BiocNeighbors_1.22.0        tictoc_1.2.1                Rhdf5lib_1.26.0            
+ [19] SparseArray_1.4.8           rhdf5_2.48.0                parallelly_1.37.1          
+ [22] htmlwidgets_1.6.4           plotly_4.10.4               igraph_2.0.3               
+ [25] lifecycle_1.0.4             pkgconfig_2.0.3             rsvd_1.0.5                 
+ [28] Matrix_1.7-0                R6_2.5.1                    fastmap_1.2.0              
+ [31] GenomeInfoDbData_1.2.12     MatrixGenerics_1.16.0       future_1.33.2              
+ [34] digest_0.6.37               colorspace_2.1-1            S4Vectors_0.42.1           
+ [37] dqrng_0.4.1                 irlba_2.3.5.1               textshaping_0.3.7          
+ [40] GenomicRanges_1.56.0        beachmat_2.20.0             labeling_0.4.3             
+ [43] progressr_0.14.0            fansi_1.0.6                 httr_1.4.7                 
+ [46] abind_1.4-5                 compiler_4.4.0              bit64_4.0.5                
+ [49] withr_3.0.1                 backports_1.5.0             BiocParallel_1.38.0        
+ [52] DBI_1.2.3                   qs_0.26.3                   pak_0.7.2                  
+ [55] R.utils_2.12.3              duckdb_1.0.0-2              rappdirs_0.3.3             
+ [58] DelayedArray_0.30.1         bluster_1.14.0              rjson_0.2.21               
+ [61] gtools_3.9.5                GiottoVisuals_0.2.9         tools_4.4.0                
+ [64] future.apply_1.11.2         R.oo_1.26.0                 glue_1.7.0                 
+ [67] dbscan_1.2-0                rhdf5filters_1.16.0         grid_4.4.0                 
+ [70] job_0.3.1                   checkmate_2.3.2             cluster_2.1.6              
+ [73] generics_0.1.3              hdf5r_1.3.11                gtable_0.3.5               
+ [76] R.methodsS3_1.8.2           tidyr_1.3.1                 data.table_1.16.0          
+ [79] RApiSerialize_0.1.3         metapod_1.12.0              BiocSingular_1.20.0        
+ [82] ScaledMatrix_1.12.0         stringfish_0.16.0           utf8_1.2.4                 
+ [85] XVector_0.44.0              BiocGenerics_0.50.0         RcppAnnoy_0.0.22           
+ [88] ggrepel_0.9.6               pillar_1.9.0                limma_3.60.2               
+ [91] later_1.3.2                 dplyr_1.1.4                 lattice_0.22-6             
+ [94] FNN_1.1.4                   bit_4.0.5                   pool_1.0.3                 
+ [97] tidyselect_1.2.1            locfit_1.5-9.10             SingleCellExperiment_1.26.0
+[100] scuttle_1.14.0              knitr_1.48                  IRanges_2.38.0             
+[103] edgeR_4.2.0                 SummarizedExperiment_1.34.0 scattermore_1.2            
+[106] RhpcBLASctl_0.23-42         stats4_4.4.0                xfun_0.47                  
+[109] Biobase_2.64.0              statmod_1.5.0               matrixStats_1.4.1          
+[112] UCSC.utils_1.0.0            lazyeval_0.2.2              yaml_2.3.10                
+[115] evaluate_0.24.0             codetools_0.2-20            GiottoData_0.2.14          
+[118] tibble_3.2.1                colorRamp2_0.1.0            cli_3.6.3                  
+[121] uwot_0.2.2                  RcppParallel_5.1.7          arrow_16.1.0               
+[124] reticulate_1.38.0           systemfonts_1.1.0           munsell_0.5.1              
+[127] harmony_1.2.0               Rcpp_1.0.13                 GenomeInfoDb_1.40.0        
+[130] globals_0.16.3              png_0.1-8                   parallel_4.4.0             
+[133] assertthat_0.2.1            scran_1.32.0                sparseMatrixStats_1.16.0   
+[136] listenv_0.9.1               SpatialExperiment_1.14.0    viridisLite_0.4.2          
+[139] scales_1.3.0                purrr_1.0.2                 crayon_1.5.2               
+[142] rlang_1.1.4                 cowplot_1.1.3         
 ```
