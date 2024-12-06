@@ -416,13 +416,13 @@ GiottoData::getSpatialDataset(dataset = "scRNA_mouse_brain",
                               directory = data_path)
 
 sc_expression <- file.path(data_path, "brain_sc_expression_matrix.txt.gz")
-sc_metadata <- file.path(data_path, "brain_sc_metadata.csv")
+sc_metadata <- data.table::fread(file.path(data_path, "brain_sc_metadata.csv"))
 
 giotto_SC <- createGiottoObject(expression = sc_expression,
                                 instructions = instructions)
 
-giotto_SC <- addCellMetadata(giotto_SC, 
-                             new_metadata = data.table::fread(sc_metadata))
+giotto_SC <- addCellMetadata(giotto_SC,
+                             new_metadata = sc_metadata[, c("Class", "Description")])
 
 giotto_SC <- normalizeGiotto(giotto_SC)
 ```
