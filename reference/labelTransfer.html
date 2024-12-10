@@ -24,7 +24,7 @@ one of the sets to the other based on KNN similarity voting in that space."><!--
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.1.6</span>
       </span>
     </div>
 
@@ -473,16 +473,17 @@ one of the sets to the other based on KNN similarity voting in that space.</p>
 <span><span class="fu">labelTransfer</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  <span class="va">y</span>,</span>
-<span>  spat_unit <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  feat_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">labels</span>,</span>
 <span>  k <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"trnsfr_"</span>, <span class="va">labels</span><span class="op">)</span>,</span>
+<span>  integration_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"harmony"</span><span class="op">)</span>,</span>
 <span>  prob <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  reduction <span class="op">=</span> <span class="st">"cells"</span>,</span>
 <span>  reduction_method <span class="op">=</span> <span class="st">"pca"</span>,</span>
 <span>  reduction_name <span class="op">=</span> <span class="st">"pca"</span>,</span>
 <span>  dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,</span>
+<span>  spat_unit <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  feat_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  return_gobject <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
@@ -531,6 +532,12 @@ one of the sets to the other based on KNN similarity voting in that space.</p>
 <dd><p>metadata column in target to apply the full set of labels to</p></dd>
 
 
+<dt id="arg-integration-method">integration_method<a class="anchor" aria-label="anchor" href="#arg-integration-method"></a></dt>
+<dd><p>character. Integration method to use when
+transferring labels. Options are "none" (default) and "harmony". See section
+below for more info and params.</p></dd>
+
+
 <dt id="arg-prob">prob<a class="anchor" aria-label="anchor" href="#arg-prob"></a></dt>
 <dd><p>output knn probabilities together with label predictions</p></dd>
 
@@ -552,6 +559,16 @@ one of the sets to the other based on KNN similarity voting in that space.</p>
 (default = 1:10)</p></dd>
 
 
+<dt id="arg-spat-unit">spat_unit<a class="anchor" aria-label="anchor" href="#arg-spat-unit"></a></dt>
+<dd><p>spatial unit. A character vector of 2 can also be passed
+for x (1) and y (2). Setting defaults with <code><a href="https://drieslab.github.io/GiottoClass/reference/activeSpatUnit-generic.html" class="external-link">activeSpatUnit()</a></code> may be easier</p></dd>
+
+
+<dt id="arg-feat-type">feat_type<a class="anchor" aria-label="anchor" href="#arg-feat-type"></a></dt>
+<dd><p>feature type. A character vector of 2 can also be passed
+for x (1) and y (2). Setting defaults with <code><a href="https://drieslab.github.io/GiottoClass/reference/activeFeatType-generic.html" class="external-link">activeFeatType()</a></code> may be easier</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Arguments passed on to <code><a href="https://rdrr.io/pkg/FNN/man/knn.html" class="external-link">FNN::knn</a></code></p><dl><dt><code>algorithm</code></dt>
 <dd><p>nearest neighbor search algorithm.</p></dd>
@@ -571,7 +588,11 @@ IDs from <code>source_cell_ids</code> are always included as well.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>object <code>x</code> with new transferred labels added to metadata</p>
+    <p>object <code>x</code> with new transferred labels added to metadata. If
+running on <code>x</code> and <code>y</code> objects, <code>integration_method = "harmony"</code>,
+<code>plot_join_labels = TRUE</code>, and <code>return_plot = TRUE</code> is set, output will
+be instead a named list of <code>gobject</code> (updated <code>x</code>), and <code>label_source_plot</code>
+and <code>label_target_plot</code> <code>ggplot2</code> objects</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -591,6 +612,33 @@ labels to the remaining cells in the target Giotto object. It can also be
 used to transfer labels from one set of annotated data to another dataset
 based on expression similarity after joining and integrating.</p>
     </div>
+    <div id="integration-method">
+    <h2>integration_method</h2>
+    <p>When running <code>labelTranfer()</code> on two <code>giotto</code> objects, an integration
+pipeline can also be run to align the two datasets together before the
+transfer. <code>integration_method = "harmony"</code> will make a temporary joined
+object on shared features, filter to remove 0 values, run PCA, then harmony
+integration, before performing the label transfer from <code>y</code> to <code>x</code> on the
+integrated harmony embedding space. Additional params that can be used with
+this method are:<br></p><ul><li><p><code>source_cell_ids</code> - character. subset of <code>y</code> cells to use</p></li>
+<li><p><code>target_cell_ids</code> - character. subset of <code>x</code> cells to use</p></li>
+<li><p><code>expression_values</code> - character. expression values in <code>x</code> and <code>y</code> to use
+to generate combined space. Default = <code>"raw"</code></p></li>
+<li><p><code>use_hvf</code> - logical. whether to calculate highly variable features to use
+for PCA calculation. Default = <code>TRUE</code>, but setting <code>FALSE</code> is recommended if
+any of <code>x</code> or <code>y</code> has roughly 1000 features or fewer</p></li>
+<li><p><code>plot_join_labels</code> - logical. Whether to plot source labels and final
+labels in the joine object UMAP.</p></li>
+<li><p><code>normalize_params</code> - named list. Additional params to pass to
+<code><a href="normalizeGiotto.html">normalizeGiotto()</a></code> if desired.</p></li>
+<li><p><code>pca_params</code> - named list. Additional params to pass to <code><a href="runPCA.html">runPCA()</a></code> if
+desired.</p></li>
+<li><p><code>integration_params</code> - named list. Additional params to pass to
+<code><a href="runGiottoHarmony.html">runGiottoHarmony()</a></code> if desired.</p></li>
+<li><p><code>plot_params</code> - named list. Additional params to pass to <code><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP()</a></code> if
+desired. Only relevant when <code>plot_join_labels = TRUE</code></p></li>
+<li><p><code>verbose</code> - verbosity</p></li>
+</ul></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
