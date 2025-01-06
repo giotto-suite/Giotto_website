@@ -599,14 +599,23 @@
     
     
 <div class="section level2" number="1">
-<h2 number="1" id="explanation">
+<h2 id="explanation">
 <span class="header-section-number">1</span> Explanation<a class="anchor" aria-label="anchor" href="#explanation"></a>
 </h2>
-<p>This tutorial walks through saving spatial data in plots. <em>Please see the</em> <a href="./configuration_04122023.html">Configuration</a> <em>and</em> <a href="./getting_started_gobject.html">Giotto Object</a> <em>vignettes before walking through this tutorial.</em></p>
-<p>R/Posit and Giotto provide different ways to save spatial data. Here, a <strong>giottoObject</strong> will be created without using <strong>giottoInstructions</strong> so that the save parameters for plotting functions within Giotto as well as the default saving methods built into R/Posit may be emphasized here. Note that for plotting functions, all parameters available to the <em>save_param</em> argument may be found by running <strong>showSaveParameters()</strong>.</p>
+<p>This tutorial walks through saving spatial data in plots. <em>Please
+see the</em> <a href="./configuration_04122023.html">Configuration</a>
+<em>and</em> <a href="./getting_started_gobject.html">Giotto Object</a>
+<em>vignettes before walking through this tutorial.</em></p>
+<p>R/Posit and Giotto provide different ways to save spatial data. Here,
+a <strong>giottoObject</strong> will be created without using
+<strong>giottoInstructions</strong> so that the save parameters for
+plotting functions within Giotto as well as the default saving methods
+built into R/Posit may be emphasized here. Note that for plotting
+functions, all parameters available to the <em>save_param</em> argument
+may be found by running <strong>showSaveParameters()</strong>.</p>
 </div>
 <div class="section level2" number="2">
-<h2 number="2" id="start-giotto">
+<h2 id="start-giotto">
 <span class="header-section-number">2</span> Start Giotto<a class="anchor" aria-label="anchor" href="#start-giotto"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -632,10 +641,15 @@
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2" number="3">
-<h2 number="3" id="create-a-giotto-object">
-<span class="header-section-number">3</span> Create a Giotto object<a class="anchor" aria-label="anchor" href="#create-a-giotto-object"></a>
+<h2 id="create-a-giotto-object">
+<span class="header-section-number">3</span> Create a Giotto
+object<a class="anchor" aria-label="anchor" href="#create-a-giotto-object"></a>
 </h2>
-<p>Since the focus of this vignette is saving methods, the <strong>giottoObject</strong> will not be created with <strong>giottoInstructions</strong>. See <a href="./getting_started_gobject.html">Giotto Object</a> for further intuition on working with a <strong>giottoObject</strong> that has been provided instructions.</p>
+<p>Since the focus of this vignette is saving methods, the
+<strong>giottoObject</strong> will not be created with
+<strong>giottoInstructions</strong>. See <a href="./getting_started_gobject.html">Giotto Object</a> for further
+intuition on working with a <strong>giottoObject</strong> that has been
+provided instructions.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data_path</span> <span class="op">&lt;-</span> <span class="st">"/path/to/data/"</span></span>
 <span></span>
@@ -660,10 +674,13 @@
 <span>                             column_cell_ID <span class="op">=</span> <span class="st">"CellID"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="4">
-<h2 number="4" id="standard-r-save-methods">
-<span class="header-section-number">4</span> Standard R Save Methods<a class="anchor" aria-label="anchor" href="#standard-r-save-methods"></a>
+<h2 id="standard-r-save-methods">
+<span class="header-section-number">4</span> Standard R Save
+Methods<a class="anchor" aria-label="anchor" href="#standard-r-save-methods"></a>
 </h2>
-<p>Note that by default, plotting functions will return a plot object that may be saved or further manipulated. Manually save plot as a PDF in the current working directory:</p>
+<p>Note that by default, plotting functions will return a plot object
+that may be saved or further manipulated. Manually save plot as a PDF in
+the current working directory:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">save_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"/first_plot.pdf"</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
@@ -700,10 +717,15 @@
 <p><img src="images%2Fsaving_plots%2Fclusters_black.png"></p>
 </div>
 <div class="section level2" number="5">
-<h2 number="5" id="save-plot-directly-to-the-default-folder">
-<span class="header-section-number">5</span> Save Plot Directly to the Default Folder<a class="anchor" aria-label="anchor" href="#save-plot-directly-to-the-default-folder"></a>
+<h2 id="save-plot-directly-to-the-default-folder">
+<span class="header-section-number">5</span> Save Plot Directly to
+the Default Folder<a class="anchor" aria-label="anchor" href="#save-plot-directly-to-the-default-folder"></a>
 </h2>
-<p>The default save folder is the current working directory. This will be the case if instructions are not provided, or if a <em>save_dir</em> is not specified within <strong>giottoInstructions</strong>. See the <a href="http://giottosuite.com/reference/createGiottoInstructions.html" class="external-link">createGiottoInstructions documentation</a> and <a href="./getting_started_gobject.html">Giotto Object</a> for default arguments and more details.</p>
+<p>The default save folder is the current working directory. This will
+be the case if instructions are not provided, or if a <em>save_dir</em>
+is not specified within <strong>giottoInstructions</strong>. See the <a href="http://giottosuite.com/reference/createGiottoInstructions.html" class="external-link">createGiottoInstructions
+documentation</a> and <a href="./getting_started_gobject.html">Giotto
+Object</a> for default arguments and more details.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot</a></span><span class="op">(</span><span class="va">my_gobject</span>, </span>
 <span>         cell_color <span class="op">=</span> <span class="st">"ClusterName"</span>, </span>
@@ -711,12 +733,19 @@
 <p><img src="images%2Fsaving_plots%2Funnamed-chunk-4-1.png"></p>
 </div>
 <div class="section level2" number="6">
-<h2 number="6" id="save-plot-directly-but-overwrite-default-save-parameters">
-<span class="header-section-number">6</span> Save plot Directly, but Overwrite Default Save Parameters<a class="anchor" aria-label="anchor" href="#save-plot-directly-but-overwrite-default-save-parameters"></a>
+<h2 id="save-plot-directly-but-overwrite-default-save-parameters">
+<span class="header-section-number">6</span> Save plot Directly, but
+Overwrite Default Save Parameters<a class="anchor" aria-label="anchor" href="#save-plot-directly-but-overwrite-default-save-parameters"></a>
 </h2>
-<p>In this example, assume it is desired that the plot is: - Shown in the console - Not returned as an object from the plotting function call -Saved in a subdirectory of the current working directory as a .png file with a dpi of 200, height of 9 inches, and width of 9 inches. - Saved with the file name “my_name”</p>
-<p>See <a href="./getting_started_gobject.html">Giotto Object</a> for more details.</p>
-<p>Run the command <strong>showSaveParameters()</strong> to see all available parameters.</p>
+<p>In this example, assume it is desired that the plot is: - Shown in
+the console - Not returned as an object from the plotting function call
+-Saved in a subdirectory of the current working directory as a .png file
+with a dpi of 200, height of 9 inches, and width of 9 inches. - Saved
+with the file name “my_name”</p>
+<p>See <a href="./getting_started_gobject.html">Giotto Object</a> for
+more details.</p>
+<p>Run the command <strong>showSaveParameters()</strong> to see all
+available parameters.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Specify new subdirectory name</span></span>
 <span><span class="va">results_folder</span> <span class="op">&lt;-</span> <span class="st">"/path/to/results/"</span></span>
@@ -735,10 +764,11 @@
 <p><img src="images%2Fsaving_plots%2Funnamed-chunk-5-1.png"></p>
 </div>
 <div class="section level2" number="7">
-<h2 number="7" id="just-view-the-plot">
+<h2 id="just-view-the-plot">
 <span class="header-section-number">7</span> Just View the Plot<a class="anchor" aria-label="anchor" href="#just-view-the-plot"></a>
 </h2>
-<p>See <a href="./getting_started_gobject.html">Giotto Object</a> for more details.</p>
+<p>See <a href="./getting_started_gobject.html">Giotto Object</a> for
+more details.</p>
 <p>Set both <em>save_plot</em> and <em>return_plot</em> to FALSE.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot without saving</span></span>
@@ -750,10 +780,12 @@
 <p><img src="images%2Fsaving_plots%2Funnamed-chunk-6-1.png"></p>
 </div>
 <div class="section level2" number="8">
-<h2 number="8" id="just-save-the-plot-fastest-for-large-datasets">
-<span class="header-section-number">8</span> Just save the plot (FASTEST for large datasets!)<a class="anchor" aria-label="anchor" href="#just-save-the-plot-fastest-for-large-datasets"></a>
+<h2 id="just-save-the-plot-fastest-for-large-datasets">
+<span class="header-section-number">8</span> Just save the plot
+(FASTEST for large datasets!)<a class="anchor" aria-label="anchor" href="#just-save-the-plot-fastest-for-large-datasets"></a>
 </h2>
-<p>See <a href="./getting_started_gobject.html">Giotto Object</a> for more details.</p>
+<p>See <a href="./getting_started_gobject.html">Giotto Object</a> for
+more details.</p>
 <p>Set show_plot and return_plot to FALSE, set save_plot to TRUE.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot</a></span><span class="op">(</span><span class="va">my_gobject</span>, </span>
@@ -764,44 +796,44 @@
 <span>         save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"only_save"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="9">
-<h2 number="9" id="session-info">
+<h2 id="session-info">
 <span class="header-section-number">9</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a>R version <span class="dv">4</span>.<span class="fl">2.2</span> (<span class="dv">2022-10-31</span> ucrt)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true"></a>Platform<span class="op">:</span><span class="st"> </span>x86_<span class="dv">64</span><span class="op">-</span>w64<span class="op">-</span>mingw32<span class="op">/</span><span class="kw">x64</span> (<span class="dv">64</span><span class="op">-</span>bit)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true"></a>Running under<span class="op">:</span><span class="st"> </span>Windows <span class="dv">10</span> <span class="kw">x64</span> (build <span class="dv">22621</span>)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true"></a></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true"></a>Matrix products<span class="op">:</span><span class="st"> </span>default</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true"></a></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true"></a>locale<span class="op">:</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true"></a>[<span class="dv">1</span>] LC_COLLATE=English_United States.utf8 </span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true"></a>[<span class="dv">2</span>] LC_CTYPE=English_United States.utf8   </span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true"></a>[<span class="dv">3</span>] LC_MONETARY=English_United States.utf8</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true"></a>[<span class="dv">4</span>] LC_NUMERIC=C                          </span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true"></a>[<span class="dv">5</span>] LC_TIME=English_United States.utf8    </span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true"></a></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true"></a>attached base packages<span class="op">:</span></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true"></a>[<span class="dv">1</span>] stats     graphics  grDevices utils     datasets  methods   base     </span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true"></a></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true"></a>other attached packages<span class="op">:</span></span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true"></a>[<span class="dv">1</span>] ggplot2_<span class="dv">3</span>.<span class="fl">4.1</span>    GiottoData_<span class="dv">0</span>.<span class="fl">2.1</span> Giotto_<span class="dv">3</span>.<span class="fl">2.1</span>    </span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true"></a></span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true"></a>loaded via a <span class="kw">namespace</span> (and not attached)<span class="op">:</span></span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true"></a>[<span class="dv">1</span>] Rcpp_<span class="dv">1</span>.<span class="fl">0.10</span>        RColorBrewer_<span class="fl">1.1</span><span class="dv">-3</span> pillar_<span class="dv">1</span>.<span class="fl">9.0</span>       compiler_<span class="dv">4</span>.<span class="fl">2.2</span>    </span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true"></a>[<span class="dv">5</span>] tools_<span class="dv">4</span>.<span class="fl">2.2</span>        digest_<span class="dv">0</span>.<span class="fl">6.30</span>      jsonlite_<span class="dv">1</span>.<span class="fl">8.3</span>     evaluate_<span class="fl">0.20</span>     </span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true"></a>[<span class="dv">9</span>] lifecycle_<span class="dv">1</span>.<span class="fl">0.3</span>    tibble_<span class="dv">3</span>.<span class="fl">2.1</span>       gtable_<span class="dv">0</span>.<span class="fl">3.3</span>       lattice_<span class="fl">0.20</span><span class="dv">-45</span>   </span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true"></a>[<span class="dv">13</span>] png_<span class="fl">0.1</span><span class="dv">-7</span>          pkgconfig_<span class="dv">2</span>.<span class="fl">0.3</span>    rlang_<span class="dv">1</span>.<span class="fl">1.0</span>        Matrix_<span class="fl">1.5</span><span class="dv">-1</span>      </span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true"></a>[<span class="dv">17</span>] cli_<span class="dv">3</span>.<span class="fl">4.1</span>          rstudioapi_<span class="fl">0.14</span>    parallel_<span class="dv">4</span>.<span class="fl">2.2</span>     yaml_<span class="dv">2</span>.<span class="fl">3.7</span>        </span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true"></a>[<span class="dv">21</span>] xfun_<span class="fl">0.38</span>          fastmap_<span class="dv">1</span>.<span class="fl">1.0</span>      terra_<span class="fl">1.7</span><span class="dv">-18</span>       withr_<span class="dv">2</span>.<span class="fl">5.0</span>       </span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true"></a>[<span class="dv">25</span>] dplyr_<span class="dv">1</span>.<span class="fl">1.1</span>        knitr_<span class="fl">1.42</span>         systemfonts_<span class="dv">1</span>.<span class="fl">0.4</span>  rappdirs_<span class="dv">0</span>.<span class="fl">3.3</span>    </span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true"></a>[<span class="dv">29</span>] generics_<span class="dv">0</span>.<span class="fl">1.3</span>     vctrs_<span class="dv">0</span>.<span class="fl">6.1</span>        cowplot_<span class="dv">1</span>.<span class="fl">1.1</span>      grid_<span class="dv">4</span>.<span class="fl">2.2</span>        </span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true"></a>[<span class="dv">33</span>] tidyselect_<span class="dv">1</span>.<span class="fl">2.0</span>   reticulate_<span class="fl">1.26</span>    glue_<span class="dv">1</span>.<span class="fl">6.2</span>         data.table_<span class="dv">1</span>.<span class="fl">14.6</span> </span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true"></a>[<span class="dv">37</span>] R6_<span class="dv">2</span>.<span class="fl">5.1</span>           textshaping_<span class="dv">0</span>.<span class="fl">3.6</span>  fansi_<span class="dv">1</span>.<span class="fl">0.4</span>        rmarkdown_<span class="fl">2.21</span>    </span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true"></a>[<span class="dv">41</span>] farver_<span class="dv">2</span>.<span class="fl">1.1</span>       magrittr_<span class="dv">2</span>.<span class="fl">0.3</span>     scales_<span class="dv">1</span>.<span class="fl">2.1</span>       codetools_<span class="fl">0.2</span><span class="dv">-18</span>  </span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true"></a>[<span class="dv">45</span>] htmltools_<span class="dv">0</span>.<span class="fl">5.4</span>    colorspace_<span class="fl">2.1</span><span class="dv">-0</span>   ragg_<span class="dv">1</span>.<span class="fl">2.4</span>         labeling_<span class="dv">0</span>.<span class="fl">4.2</span>    </span>
-<span id="cb10-33"><a href="#cb10-33" aria-hidden="true"></a>[<span class="dv">49</span>] utf8_<span class="dv">1</span>.<span class="fl">2.3</span>         munsell_<span class="dv">0</span>.<span class="fl">5.0</span>     </span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>R version <span class="dv">4</span>.<span class="fl">2.2</span> (<span class="dv">2022-10-31</span> ucrt)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>Platform<span class="sc">:</span> x86_64<span class="sc">-</span>w64<span class="sc">-</span>mingw32<span class="sc">/</span><span class="fu">x64</span> (<span class="dv">64</span><span class="sc">-</span>bit)</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>Running under<span class="sc">:</span> Windows <span class="dv">10</span> <span class="fu">x64</span> (build <span class="dv">22621</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>Matrix products<span class="sc">:</span> default</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>locale<span class="sc">:</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>[<span class="dv">1</span>] LC_COLLATE<span class="ot">=</span>English_United States.utf8 </span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>[<span class="dv">2</span>] LC_CTYPE<span class="ot">=</span>English_United States.utf8   </span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>[<span class="dv">3</span>] LC_MONETARY<span class="ot">=</span>English_United States.utf8</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>[<span class="dv">4</span>] LC_NUMERIC<span class="ot">=</span>C                          </span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>[<span class="dv">5</span>] LC_TIME<span class="ot">=</span>English_United States.utf8    </span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>attached base packages<span class="sc">:</span></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>[<span class="dv">1</span>] stats     graphics  grDevices utils     datasets  methods   base     </span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a>other attached packages<span class="sc">:</span></span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a>[<span class="dv">1</span>] ggplot2_3.<span class="fl">4.1</span>    GiottoData_0.<span class="fl">2.1</span> Giotto_3.<span class="fl">2.1</span>    </span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a></span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a>loaded via a <span class="fu">namespace</span> (and not attached)<span class="sc">:</span></span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a>[<span class="dv">1</span>] Rcpp_1.<span class="fl">0.10</span>        RColorBrewer_1<span class="fl">.1</span><span class="dv">-3</span> pillar_1.<span class="fl">9.0</span>       compiler_4.<span class="fl">2.2</span>    </span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a>[<span class="dv">5</span>] tools_4.<span class="fl">2.2</span>        digest_0.<span class="fl">6.30</span>      jsonlite_1.<span class="fl">8.3</span>     evaluate_0<span class="fl">.20</span>     </span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a>[<span class="dv">9</span>] lifecycle_1.<span class="fl">0.3</span>    tibble_3.<span class="fl">2.1</span>       gtable_0.<span class="fl">3.3</span>       lattice_0<span class="fl">.20</span><span class="dv">-45</span>   </span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a>[<span class="dv">13</span>] png_0<span class="fl">.1</span><span class="dv">-7</span>          pkgconfig_2.<span class="fl">0.3</span>    rlang_1.<span class="fl">1.0</span>        Matrix_1<span class="fl">.5</span><span class="dv">-1</span>      </span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a>[<span class="dv">17</span>] cli_3.<span class="fl">4.1</span>          rstudioapi_0<span class="fl">.14</span>    parallel_4.<span class="fl">2.2</span>     yaml_2.<span class="fl">3.7</span>        </span>
+<span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a>[<span class="dv">21</span>] xfun_0<span class="fl">.38</span>          fastmap_1.<span class="fl">1.0</span>      terra_1<span class="fl">.7</span><span class="dv">-18</span>       withr_2.<span class="fl">5.0</span>       </span>
+<span id="cb10-27"><a href="#cb10-27" tabindex="-1"></a>[<span class="dv">25</span>] dplyr_1.<span class="fl">1.1</span>        knitr_1<span class="fl">.42</span>         systemfonts_1.<span class="fl">0.4</span>  rappdirs_0.<span class="fl">3.3</span>    </span>
+<span id="cb10-28"><a href="#cb10-28" tabindex="-1"></a>[<span class="dv">29</span>] generics_0.<span class="fl">1.3</span>     vctrs_0.<span class="fl">6.1</span>        cowplot_1.<span class="fl">1.1</span>      grid_4.<span class="fl">2.2</span>        </span>
+<span id="cb10-29"><a href="#cb10-29" tabindex="-1"></a>[<span class="dv">33</span>] tidyselect_1.<span class="fl">2.0</span>   reticulate_1<span class="fl">.26</span>    glue_1.<span class="fl">6.2</span>         data.table_1.<span class="fl">14.6</span> </span>
+<span id="cb10-30"><a href="#cb10-30" tabindex="-1"></a>[<span class="dv">37</span>] R6_2.<span class="fl">5.1</span>           textshaping_0.<span class="fl">3.6</span>  fansi_1.<span class="fl">0.4</span>        rmarkdown_2<span class="fl">.21</span>    </span>
+<span id="cb10-31"><a href="#cb10-31" tabindex="-1"></a>[<span class="dv">41</span>] farver_2.<span class="fl">1.1</span>       magrittr_2.<span class="fl">0.3</span>     scales_1.<span class="fl">2.1</span>       codetools_0<span class="fl">.2</span><span class="dv">-18</span>  </span>
+<span id="cb10-32"><a href="#cb10-32" tabindex="-1"></a>[<span class="dv">45</span>] htmltools_0.<span class="fl">5.4</span>    colorspace_2<span class="fl">.1</span><span class="dv">-0</span>   ragg_1.<span class="fl">2.4</span>         labeling_0.<span class="fl">4.2</span>    </span>
+<span id="cb10-33"><a href="#cb10-33" tabindex="-1"></a>[<span class="dv">49</span>] utf8_1.<span class="fl">2.3</span>         munsell_0.<span class="fl">5.0</span>     </span></code></pre></div>
 </div>
   </div>
 

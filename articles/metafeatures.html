@@ -598,10 +598,13 @@
 
     
     
-<p>Metafeatures are statistical summary features that can be calculated to show the combined expression of a set of genes. They can be handy for displaying a gene signature.</p>
+<p>Metafeatures are statistical summary features that can be calculated
+to show the combined expression of a set of genes. They can be handy for
+displaying a gene signature.</p>
 <div class="section level2" number="1">
-<h2 number="1" id="setup-and-load-an-example-dataset">
-<span class="header-section-number">1</span> Setup and load an example dataset<a class="anchor" aria-label="anchor" href="#setup-and-load-an-example-dataset"></a>
+<h2 id="setup-and-load-an-example-dataset">
+<span class="header-section-number">1</span> Setup and load an
+example dataset<a class="anchor" aria-label="anchor" href="#setup-and-load-an-example-dataset"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed</span></span>
@@ -624,22 +627,27 @@
 <span>                  <span class="st">"Cpne9"</span>, <span class="st">"Synopo2"</span>, <span class="st">"Pdp1"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="2">
-<h2 number="2" id="metafeature-creation">
-<span class="header-section-number">2</span> Metafeature creation<a class="anchor" aria-label="anchor" href="#metafeature-creation"></a>
+<h2 id="metafeature-creation">
+<span class="header-section-number">2</span> Metafeature
+creation<a class="anchor" aria-label="anchor" href="#metafeature-creation"></a>
 </h2>
-<p>Metafeatures can be created from <code>data.frame</code>-like objects. These tables must use the following colnames:</p>
+<p>Metafeatures can be created from <code>data.frame</code>-like
+objects. These tables must use the following colnames:</p>
 <ul>
 <li>
 <code>clus</code> - name of metafeature</li>
 <li>
 <code>feat</code> - features to assign to this metafeature</li>
 <li>
-<code>w</code> - (optional) weight to assign the feature before metafeature score calculation</li>
+<code>w</code> - (optional) weight to assign the feature before
+metafeature score calculation</li>
 </ul>
-<p><strong>The mean value of the provided features is the default statistic used when calculating the score.</strong></p>
+<p><strong>The mean value of the provided features is the default
+statistic used when calculating the score.</strong></p>
 <div class="section level3" number="2.1">
-<h3 number="2.1" id="creation-of-basic-metafeature">
-<span class="header-section-number">2.1</span> Creation of basic metafeature<a class="anchor" aria-label="anchor" href="#creation-of-basic-metafeature"></a>
+<h3 id="creation-of-basic-metafeature">
+<span class="header-section-number">2.1</span> Creation of basic
+metafeature<a class="anchor" aria-label="anchor" href="#creation-of-basic-metafeature"></a>
 </h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">clust_to_use1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -696,8 +704,9 @@ preview:
 <p><img src="images%2Fmetafeature%2F2_sig_b.png" width="70%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="2.2">
-<h3 number="2.2" id="creation-of-metafeature-with-weighted-input-features">
-<span class="header-section-number">2.2</span> Creation of metafeature with weighted input features<a class="anchor" aria-label="anchor" href="#creation-of-metafeature-with-weighted-input-features"></a>
+<h3 id="creation-of-metafeature-with-weighted-input-features">
+<span class="header-section-number">2.2</span> Creation of
+metafeature with weighted input features<a class="anchor" aria-label="anchor" href="#creation-of-metafeature-with-weighted-input-features"></a>
 </h3>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># annotation data.frame (weights)</span></span>
@@ -740,13 +749,16 @@ preview:
 <span>    return_plot <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fmetafeature%2F3_normal_vs_weighted.png" width="100%" style="display: block; margin: auto;"> Original (left) vs weighted metafeatures (right)</p>
+<p><img src="images%2Fmetafeature%2F3_normal_vs_weighted.png" width="100%" style="display: block; margin: auto;">
+Original (left) vs weighted metafeatures (right)</p>
 </div>
 <div class="section level3" number="2.3">
-<h3 number="2.3" id="alternative-stat-to-calculate">
-<span class="header-section-number">2.3</span> Alternative stat to calculate<a class="anchor" aria-label="anchor" href="#alternative-stat-to-calculate"></a>
+<h3 id="alternative-stat-to-calculate">
+<span class="header-section-number">2.3</span> Alternative stat to
+calculate<a class="anchor" aria-label="anchor" href="#alternative-stat-to-calculate"></a>
 </h3>
-<p>Defaults for stat calculation are: “mean”, “sum”, “max”, and “min”.</p>
+<p>Defaults for stat calculation are: “mean”, “sum”, “max”, and
+“min”.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Other statistic transforms can be calculated</span></span>
 <span><span class="co"># The default and what has been used so far is just finding the mean</span></span>
@@ -770,10 +782,16 @@ preview:
 <p><img src="images%2Fmetafeature%2F4_raw_sums.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="2.4">
-<h3 number="2.4" id="metafeature-with-custom-statistical-function">
-<span class="header-section-number">2.4</span> Metafeature with custom statistical function<a class="anchor" aria-label="anchor" href="#metafeature-with-custom-statistical-function"></a>
+<h3 id="metafeature-with-custom-statistical-function">
+<span class="header-section-number">2.4</span> Metafeature with
+custom statistical function<a class="anchor" aria-label="anchor" href="#metafeature-with-custom-statistical-function"></a>
 </h3>
-<p>These custom functions must be summary functions, as in, they must produce only a single numeric output from many. Here we make a <code>custom_stat</code> function that finds the mean of each of the features in the metafeature divided by the largest value of any of the features per cell. This is all done on top of a weighted raw expression values.</p>
+<p>These custom functions must be summary functions, as in, they must
+produce only a single numeric output from many. Here we make a
+<code>custom_stat</code> function that finds the mean of each of the
+features in the metafeature divided by the largest value of any of the
+features per cell. This is all done on top of a weighted raw expression
+values.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># setup custom stat function</span></span>
 <span><span class="va">custom_stat</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
@@ -804,10 +822,12 @@ preview:
 <p><img src="images%2Fmetafeature%2F5_raw_custom.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="2.5">
-<h3 number="2.5" id="metafeature-from-rescaled-inputs">
-<span class="header-section-number">2.5</span> Metafeature from rescaled inputs<a class="anchor" aria-label="anchor" href="#metafeature-from-rescaled-inputs"></a>
+<h3 id="metafeature-from-rescaled-inputs">
+<span class="header-section-number">2.5</span> Metafeature from
+rescaled inputs<a class="anchor" aria-label="anchor" href="#metafeature-from-rescaled-inputs"></a>
 </h3>
-<p>A rescale of the values to a specified numeric range can also be applied before the stat score calculation.</p>
+<p>A rescale of the values to a specified numeric range can also be
+applied before the stat score calculation.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createMetafeats.html" class="external-link">createMetafeats</a></span><span class="op">(</span></span>
 <span>    gobject <span class="op">=</span> <span class="va">g</span>,</span>
@@ -830,10 +850,14 @@ preview:
 <p><img src="images%2Fmetafeature%2F6_rescaled.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="2.6">
-<h3 number="2.6" id="simple-metafeature-creation-from-annotation-vector">
-<span class="header-section-number">2.6</span> Simple metafeature creation from annotation vector<a class="anchor" aria-label="anchor" href="#simple-metafeature-creation-from-annotation-vector"></a>
+<h3 id="simple-metafeature-creation-from-annotation-vector">
+<span class="header-section-number">2.6</span> Simple metafeature
+creation from annotation vector<a class="anchor" aria-label="anchor" href="#simple-metafeature-creation-from-annotation-vector"></a>
 </h3>
-<p>Metafeatures can also be defined with a simple named <code>numeric</code> or <code>character</code> vector. The names should be the features to use and the vector values define the metafeatures to assign those features to.</p>
+<p>Metafeatures can also be defined with a simple named
+<code>numeric</code> or <code>character</code> vector. The names should
+be the features to use and the vector values define the metafeatures to
+assign those features to.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># annotation vector (numeric)</span></span>
 <span><span class="va">clust_to_use3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span></span>

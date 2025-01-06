@@ -601,7 +601,11 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>SpatialData is a versatile data framework for processing spatial omics data in python. This tutorial demonstrates how to convert Giotto objects to and from SpatialData object using <code><a href="https://drieslab.github.io/GiottoClass/reference/giottoToSpatialData.html" class="external-link">giottoToSpatialData()</a></code> and <code><a href="https://drieslab.github.io/GiottoClass/reference/spatialdataToGiotto.html" class="external-link">spatialdataToGiotto()</a></code>.</p>
+<p>SpatialData is a versatile data framework for processing spatial
+omics data in python. This tutorial demonstrates how to convert Giotto
+objects to and from SpatialData object using
+<code><a href="https://drieslab.github.io/GiottoClass/reference/giottoToSpatialData.html" class="external-link">giottoToSpatialData()</a></code> and
+<code><a href="https://drieslab.github.io/GiottoClass/reference/spatialdataToGiotto.html" class="external-link">spatialdataToGiotto()</a></code>.</p>
 </div>
 <div class="section level2">
 <h2 id="set-up-giotto-environment">Set up Giotto Environment<a class="anchor" aria-label="anchor" href="#set-up-giotto-environment"></a>
@@ -637,7 +641,10 @@
 <div class="section level3">
 <h3 id="create-a-mini-giotto-object">Create a mini Giotto object<a class="anchor" aria-label="anchor" href="#create-a-mini-giotto-object"></a>
 </h3>
-<p>For the purpose of this demonstration, the pre-processed and analyzed 10X Visium Giotto mini object will be used. To test on different datasets, you can choose from ‘visium’, ‘vizgen’, ‘cosmx’, ‘spatialgenomics’, ‘seqfish’, or ‘starmap’.</p>
+<p>For the purpose of this demonstration, the pre-processed and analyzed
+10X Visium Giotto mini object will be used. To test on different
+datasets, you can choose from ‘visium’, ‘vizgen’, ‘cosmx’,
+‘spatialgenomics’, ‘seqfish’, or ‘starmap’.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Specify path for SpatialData object output directory</span></span>
 <span><span class="va">results_folder</span> <span class="op">&lt;-</span> <span class="st">"/path/to/results/"</span></span>
@@ -652,25 +659,39 @@
 <div class="section level3">
 <h3 id="giottotospatialdata">giottoToSpatialData()<a class="anchor" aria-label="anchor" href="#giottotospatialdata"></a>
 </h3>
-<p>When converting a Giotto object to a SpatialData object, please note that you must supply a known spot radius for your corresponding dataset for the creation of the ShapesModel in SpatialData. If spot radius is unknown, an arbitrary value is sufficient to convert the object and still be able to perform most of the analysis. The env_name must be the name of the env with python reticulate installed.</p>
+<p>When converting a Giotto object to a SpatialData object, please note
+that you must supply a known spot radius for your corresponding dataset
+for the creation of the ShapesModel in SpatialData. If spot radius is
+unknown, an arbitrary value is sufficient to convert the object and
+still be able to perform most of the analysis. The env_name must be the
+name of the env with python reticulate installed.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giottoToSpatialData.html" class="external-link">giottoToSpatialData</a></span><span class="op">(</span><span class="va">mini_gobject</span>,</span>
 <span>                    spot_radius <span class="op">=</span> <span class="fl">55</span>,</span>
 <span>                    python_path <span class="op">=</span> <span class="va">python_path</span>,</span>
 <span>                    save_directory <span class="op">=</span> <span class="va">results_folder</span><span class="op">)</span></span></code></pre></div>
-<p>To verify successful conversion, you can load the converted SpatialData object in Python like this:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="im">from</span> spatialdata <span class="im">import</span> SpatialData</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a>converted_spatialdata <span class="op">=</span> SpatialData.read(r.results_folder)</span></code></pre></div>
+<p>To verify successful conversion, you can load the converted
+SpatialData object in Python like this:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="im">from</span> spatialdata <span class="im">import</span> SpatialData</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>converted_spatialdata <span class="op">=</span> SpatialData.read(r.results_folder)</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="spatialdatatogiotto">spatialDataToGiotto()<a class="anchor" aria-label="anchor" href="#spatialdatatogiotto"></a>
 </h3>
-<p>If you have your own SpatialData object that you have been using on your analysis and would like to convert it to Giotto object, you must save the SpatialData object on disk like this:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="co"># Let's say your spatialdata object is called sdata:</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a>sdata.write(<span class="st">"save_folder"</span>)</span></code></pre></div>
-<p>After running this line in python, you should have a folder at the path “save_folder” which will have subfolders named ‘images’, ‘shapes’, and ‘tables’ for each component of the SpatialData object.</p>
-<p>Let’s say you already have the SpatialData object converted and saved on disk from <code><a href="https://drieslab.github.io/GiottoClass/reference/giottoToSpatialData.html" class="external-link">giottoToSpatialData()</a></code>. If you had nearest neighbor or spatial networks created or stored within your SpatialData, you can also include them in the conversion by either providing a .txt file or a list of the names of the keys for these networks.</p>
+<p>If you have your own SpatialData object that you have been using on
+your analysis and would like to convert it to Giotto object, you must
+save the SpatialData object on disk like this:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Let's say your spatialdata object is called sdata:</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>sdata.write(<span class="st">"save_folder"</span>)</span></code></pre></div>
+<p>After running this line in python, you should have a folder at the
+path “save_folder” which will have subfolders named ‘images’, ‘shapes’,
+and ‘tables’ for each component of the SpatialData object.</p>
+<p>Let’s say you already have the SpatialData object converted and saved
+on disk from <code><a href="https://drieslab.github.io/GiottoClass/reference/giottoToSpatialData.html" class="external-link">giottoToSpatialData()</a></code>. If you had nearest
+neighbor or spatial networks created or stored within your SpatialData,
+you can also include them in the conversion by either providing a .txt
+file or a list of the names of the keys for these networks.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">converted_gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/spatialdataToGiotto.html" class="external-link">spatialdataToGiotto</a></span><span class="op">(</span>spatialdata_path <span class="op">=</span> <span class="va">results_folder</span>,</span>
 <span>                                         n_key_added <span class="op">=</span> <span class="st">"cell_rna_nn_network_keys_added.txt"</span>,</span>

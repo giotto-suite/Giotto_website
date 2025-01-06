@@ -599,18 +599,25 @@
     
     
 <div class="section level2" number="1">
-<h2 number="1" id="introduction-to-bento">
-<span class="header-section-number">1</span> Introduction to Bento<a class="anchor" aria-label="anchor" href="#introduction-to-bento"></a>
+<h2 id="introduction-to-bento">
+<span class="header-section-number">1</span> Introduction to
+Bento<a class="anchor" aria-label="anchor" href="#introduction-to-bento"></a>
 </h2>
-<p><a href="https://bento-tools.readthedocs.io/en/latest/index.html" class="external-link">Bento</a> is a Python toolkit for performing subcellular analysis of spatial transcriptomics data.</p>
+<p><a href="https://bento-tools.readthedocs.io/en/latest/index.html" class="external-link">Bento</a>
+is a Python toolkit for performing subcellular analysis of spatial
+transcriptomics data.</p>
 </div>
 <div class="section level2" number="2">
-<h2 number="2" id="giotto-installation">
-<span class="header-section-number">2</span> Giotto installation<a class="anchor" aria-label="anchor" href="#giotto-installation"></a>
+<h2 id="giotto-installation">
+<span class="header-section-number">2</span> Giotto
+installation<a class="anchor" aria-label="anchor" href="#giotto-installation"></a>
 </h2>
-<p>You can install Giotto and dependent python envrionment using conda</p>
-<p><a href="https://giottosuite.readthedocs.io/en/latest/subsections/datasets/installation_using_conda_231212.html" class="external-link">Giotto Installation Using Conda</a> or in R.</p>
-<p><a href="https://drieslab.github.io/Giotto_website/articles/installation.html">Giotto Installation</a></p>
+<p>You can install Giotto and dependent python envrionment using
+conda</p>
+<p><a href="https://giottosuite.readthedocs.io/en/latest/subsections/datasets/installation_using_conda_231212.html" class="external-link">Giotto
+Installation Using Conda</a> or in R.</p>
+<p><a href="https://drieslab.github.io/Giotto_website/articles/installation.html">Giotto
+Installation</a></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://drieslab.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span>
 <span></span>
@@ -629,8 +636,9 @@
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2" number="3">
-<h2 number="3" id="set-up-giotto-environment">
-<span class="header-section-number">3</span> Set up Giotto environment<a class="anchor" aria-label="anchor" href="#set-up-giotto-environment"></a>
+<h2 id="set-up-giotto-environment">
+<span class="header-section-number">3</span> Set up Giotto
+environment<a class="anchor" aria-label="anchor" href="#set-up-giotto-environment"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 1. ** SET WORKING DIRECTORY WHERE PROJECT OUPUTS WILL SAVE TO **</span></span>
@@ -647,17 +655,27 @@
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="4">
-<h2 number="4" id="dataset-explanation">
-<span class="header-section-number">4</span> Dataset explanation<a class="anchor" aria-label="anchor" href="#dataset-explanation"></a>
+<h2 id="dataset-explanation">
+<span class="header-section-number">4</span> Dataset
+explanation<a class="anchor" aria-label="anchor" href="#dataset-explanation"></a>
 </h2>
-<p>This vignette covers Giotto object creation and simple exploratory analysis with 10x Genomics’ subcellular Xenium In Situ platform data using their <a href="https://www.10xgenomics.com/products/xenium-in-situ/preview-dataset-human-breast" class="external-link">Human Breast Cancer Dataset</a> provided with their recent <a href="https://www.biorxiv.org/content/10.1101/2022.10.06.510405v1" class="external-link">bioRxiv pre-print</a>. The data from the first tissue replicate will be worked with.</p>
+<p>This vignette covers Giotto object creation and simple exploratory
+analysis with 10x Genomics’ subcellular Xenium In Situ platform data
+using their <a href="https://www.10xgenomics.com/products/xenium-in-situ/preview-dataset-human-breast" class="external-link">Human
+Breast Cancer Dataset</a> provided with their recent <a href="https://www.biorxiv.org/content/10.1101/2022.10.06.510405v1" class="external-link">bioRxiv
+pre-print</a>. The data from the first tissue replicate will be worked
+with.</p>
 <p><img src="images%2Fbento%2Flarge_preview.png" width="608"></p>
 </div>
 <div class="section level2" number="5">
-<h2 number="5" id="project-data-paths">
+<h2 id="project-data-paths">
 <span class="header-section-number">5</span> Project data paths<a class="anchor" aria-label="anchor" href="#project-data-paths"></a>
 </h2>
-<p>Xenium’s exact output folder structure and which file/formats will be available in the final release are still subject to change. This tutorial will be updated for any differences at release. Note: The cell_feature_matrix.tar.gz must be unpacked into a sub directory within the Xenium working directory before starting</p>
+<p>Xenium’s exact output folder structure and which file/formats will be
+available in the final release are still subject to change. This
+tutorial will be updated for any differences at release. Note: The
+cell_feature_matrix.tar.gz must be unpacked into a sub directory within
+the Xenium working directory before starting</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ** SET PATH TO FOLDER CONTAINING XENIUM DATA **</span></span>
 <span><span class="va">xenium_folder</span> <span class="op">&lt;-</span> <span class="st">"path/to/Xenium/"</span></span>
@@ -679,19 +697,28 @@
 <span><span class="va">cell_meta_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">xenium_folder</span>, <span class="st">"outs/cells.csv.gz"</span><span class="op">)</span> <span class="co"># contains spatlocs</span></span></code></pre></div>
 </div>
 <div class="section level2" number="6">
-<h2 number="6" id="xenium-feature-types-exploration">
-<span class="header-section-number">6</span> Xenium feature types exploration<a class="anchor" aria-label="anchor" href="#xenium-feature-types-exploration"></a>
+<h2 id="xenium-feature-types-exploration">
+<span class="header-section-number">6</span> Xenium feature types
+exploration<a class="anchor" aria-label="anchor" href="#xenium-feature-types-exploration"></a>
 </h2>
-<p>features.tsv.gz within cell_feature_matrix.tar.gz provides information on the different feature types available within Xenium’s two types of expression outputs:</p>
+<p>features.tsv.gz within cell_feature_matrix.tar.gz provides
+information on the different feature types available within Xenium’s two
+types of expression outputs:</p>
 <ol style="list-style-type: decimal">
 <li>aggregated cell by feature matrix</li>
-<li>transcript detections in transcripts.csv.gz There are four types of probes used, each of which is represented in both exports</li>
+<li>transcript detections in transcripts.csv.gz There are four types of
+probes used, each of which is represented in both exports</li>
 </ol>
 <ul>
 <li>gene expression: Gene expression detection</li>
-<li>blank codeword: Unused codeword - there are no probes that will generate the codeword</li>
-<li>negative control codeword: Valid codewords that do not have any probes that should yield that code, so they can be used to assess the specificity of the decoding algorithm</li>
-<li>negative control probe: Probes that exist in the panel, but target ERCC or other non-biological sequences, which can be used to assess the specificity of the assay.</li>
+<li>blank codeword: Unused codeword - there are no probes that will
+generate the codeword</li>
+<li>negative control codeword: Valid codewords that do not have any
+probes that should yield that code, so they can be used to assess the
+specificity of the decoding algorithm</li>
+<li>negative control probe: Probes that exist in the panel, but target
+ERCC or other non-biological sequences, which can be used to assess the
+specificity of the assay.</li>
 </ul>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load features metadata</span></span>
@@ -707,7 +734,8 @@
 <span>    <span class="va">feat_types</span>, <span class="kw">function</span><span class="op">(</span><span class="va">type</span><span class="op">)</span> <span class="va">feature_dt</span><span class="op">[</span><span class="va">feat_type</span> <span class="op">==</span> <span class="va">type</span>, <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">feat_name</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">feat_types_IDs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">feat_types</span></span></code></pre></div>
-<p>This dataset has 313 probes that are dedicated for gene expression transcript detection.</p>
+<p>This dataset has 313 probes that are dedicated for gene expression
+transcript detection.</p>
 <ul>
 <li>gene expression IDs</li>
 <li>blank codeword IDs</li>
@@ -716,19 +744,25 @@
 </ul>
 </div>
 <div class="section level2" number="7">
-<h2 number="7" id="loading-xenium-data">
-<span class="header-section-number">7</span> Loading Xenium data<a class="anchor" aria-label="anchor" href="#loading-xenium-data"></a>
+<h2 id="loading-xenium-data">
+<span class="header-section-number">7</span> Loading Xenium
+data<a class="anchor" aria-label="anchor" href="#loading-xenium-data"></a>
 </h2>
 <div class="section level3" number="7.1">
-<h3 number="7.1" id="manual-method">
+<h3 id="manual-method">
 <span class="header-section-number">7.1</span> Manual Method<a class="anchor" aria-label="anchor" href="#manual-method"></a>
 </h3>
-<p>Giotto objects can be manually assembled feeding data and subobjects into a creation function.</p>
+<p>Giotto objects can be manually assembled feeding data and subobjects
+into a creation function.</p>
 <div class="section level4" number="7.1.1">
-<h4 number="7.1.1" id="load-transcript-level-data">
-<span class="header-section-number">7.1.1</span> Load transcript-level data<a class="anchor" aria-label="anchor" href="#load-transcript-level-data"></a>
+<h4 id="load-transcript-level-data">
+<span class="header-section-number">7.1.1</span> Load
+transcript-level data<a class="anchor" aria-label="anchor" href="#load-transcript-level-data"></a>
 </h4>
-<p>transcripts.csv.gz is a file containing x, y, z coordinates for individual transcript molecules detected during the Xenium run. It also contains a QC Phred score for which this tutorial will set a cutoff at 20, the same as what 10x uses.</p>
+<p>transcripts.csv.gz is a file containing x, y, z coordinates for
+individual transcript molecules detected during the Xenium run. It also
+contains a QC Phred score for which this tutorial will set a cutoff at
+20, the same as what 10x uses.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tx_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">tx_path</span><span class="op">)</span></span>
 <span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setattr.html" class="external-link">setnames</a></span><span class="op">(</span></span>
@@ -753,9 +787,15 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">tx_dt_types</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">tx_dt_types</span><span class="op">)</span><span class="op">[[</span><span class="va">x</span><span class="op">]</span><span class="op">]</span>, <span class="st">"detections: "</span>, <span class="va">tx_dt_types</span><span class="op">[[</span><span class="va">x</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>, <span class="va">.N</span><span class="op">]</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>Giotto loads these filtered subcellular detections in as a giottoPoints object and determines the correct columns by looking for columns named ‘feat_ID’, ‘x’, and ‘y’.</p>
-<p>Here, we use the list of data.tables generated in the previous step to create a list of giottoPoints objects.</p>
-<p>When previewing these objects using plot(), the default behavior is to plot ALL points within the object. For objects that contain many feature points, it is highly recommended to specify a subset of features to plot using the feats param.</p>
+<p>Giotto loads these filtered subcellular detections in as a
+giottoPoints object and determines the correct columns by looking for
+columns named ‘feat_ID’, ‘x’, and ‘y’.</p>
+<p>Here, we use the list of data.tables generated in the previous step
+to create a list of giottoPoints objects.</p>
+<p>When previewing these objects using plot(), the default behavior is
+to plot ALL points within the object. For objects that contain many
+feature points, it is highly recommended to specify a subset of features
+to plot using the feats param.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gpoints_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span></span>
 <span>    <span class="va">tx_dt_types</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPoints.html" class="external-link">createGiottoPoints</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span><span class="op">)</span></span>
@@ -783,10 +823,15 @@
 <p><img src="images%2Fbento%2Fgpoints_expr.png" width="982"></p>
 </div>
 <div class="section level4" number="7.1.2">
-<h4 number="7.1.2" id="load-polygon-data">
-<span class="header-section-number">7.1.2</span> Load polygon data<a class="anchor" aria-label="anchor" href="#load-polygon-data"></a>
+<h4 id="load-polygon-data">
+<span class="header-section-number">7.1.2</span> Load polygon
+data<a class="anchor" aria-label="anchor" href="#load-polygon-data"></a>
 </h4>
-<p>Xenium output provides segmentation/cell boundary information in .csv.gz files. These are represented within Giotto as giottoPolygon objects and can also be directly plotted. This function also determines the correct columns to use by looking for columns named ‘poly_ID’, ‘x’, and ‘y’.</p>
+<p>Xenium output provides segmentation/cell boundary information in
+.csv.gz files. These are represented within Giotto as giottoPolygon
+objects and can also be directly plotted. This function also determines
+the correct columns to use by looking for columns named ‘poly_ID’, ‘x’,
+and ‘y’.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cellPoly_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">cell_bound_path</span><span class="op">)</span></span>
 <span><span class="va">nucPoly_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">nuc_bound_path</span><span class="op">)</span></span>
@@ -810,16 +855,22 @@
 <span>    name <span class="op">=</span> <span class="st">"nucleus"</span>,</span>
 <span>    calc_centroids <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>giottoPolygon objects can be directly plotted with plot(), but the field of view here is so large that it would take a long time and the details would be lost. Here, we will only plot the polygon centroids for the cell nucleus polygons by accessing the calculated results within the giottoPolygon’s spatVectorCentroids slot.</p>
+<p>giottoPolygon objects can be directly plotted with plot(), but the
+field of view here is so large that it would take a long time and the
+details would be lost. Here, we will only plot the polygon centroids for
+the cell nucleus polygons by accessing the calculated results within the
+giottoPolygon’s spatVectorCentroids slot.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">gpoly_nucs</span>, point_size <span class="op">=</span> <span class="fl">0.1</span>, type <span class="op">=</span> <span class="st">"centroid"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fbento%2Fgpolys_centroids.png" width="713"></p>
 </div>
 <div class="section level4" number="7.1.3">
-<h4 number="7.1.3" id="create-giotto-object">
-<span class="header-section-number">7.1.3</span> Create Giotto Object<a class="anchor" aria-label="anchor" href="#create-giotto-object"></a>
+<h4 id="create-giotto-object">
+<span class="header-section-number">7.1.3</span> Create Giotto
+Object<a class="anchor" aria-label="anchor" href="#create-giotto-object"></a>
 </h4>
-<p>Now that both the feature data and the boundaries are loaded in, a subcellular Giotto object can be created.</p>
+<p>Now that both the feature data and the boundaries are loaded in, a
+subcellular Giotto object can be created.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">xenium_gobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObjectSubcellular.html" class="external-link">createGiottoObjectSubcellular</a></span><span class="op">(</span></span>
 <span>    gpoints <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -838,16 +889,19 @@
 </div>
 </div>
 <div class="section level2" number="8">
-<h2 number="8" id="perform-bento-analysis">
-<span class="header-section-number">8</span> Perform Bento Analysis<a class="anchor" aria-label="anchor" href="#perform-bento-analysis"></a>
+<h2 id="perform-bento-analysis">
+<span class="header-section-number">8</span> Perform Bento
+Analysis<a class="anchor" aria-label="anchor" href="#perform-bento-analysis"></a>
 </h2>
 <div class="section level3" number="8.1">
-<h3 number="8.1" id="create-bento-anndata-object">
-<span class="header-section-number">8.1</span> Create Bento AnnData Object<a class="anchor" aria-label="anchor" href="#create-bento-anndata-object"></a>
+<h3 id="create-bento-anndata-object">
+<span class="header-section-number">8.1</span> Create Bento AnnData
+Object<a class="anchor" aria-label="anchor" href="#create-bento-anndata-object"></a>
 </h3>
 <div class="section level4" number="8.1.1">
-<h4 number="8.1.1" id="subset-giotto-object-first">
-<span class="header-section-number">8.1.1</span> Subset Giotto Object First<a class="anchor" aria-label="anchor" href="#subset-giotto-object-first"></a>
+<h4 id="subset-giotto-object-first">
+<span class="header-section-number">8.1.1</span> Subset Giotto
+Object First<a class="anchor" aria-label="anchor" href="#subset-giotto-object-first"></a>
 </h4>
 <p>Large dataset may cause prolonged processing time for Bento.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -861,8 +915,9 @@
 <span>                                       <span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4" number="8.1.2">
-<h4 number="8.1.2" id="create-anndata-object">
-<span class="header-section-number">8.1.2</span> Create AnnData Object<a class="anchor" aria-label="anchor" href="#create-anndata-object"></a>
+<h4 id="create-anndata-object">
+<span class="header-section-number">8.1.2</span> Create AnnData
+Object<a class="anchor" aria-label="anchor" href="#create-anndata-object"></a>
 </h4>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bento_adata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createBentoAdata.html" class="external-link">createBentoAdata</a></span><span class="op">(</span><span class="va">subset_xenium_gobj</span>,</span>
@@ -871,12 +926,13 @@
 </div>
 </div>
 <div class="section level3" number="8.2">
-<h3 number="8.2" id="bento-analysis">
+<h3 id="bento-analysis">
 <span class="header-section-number">8.2</span> Bento Analysis<a class="anchor" aria-label="anchor" href="#bento-analysis"></a>
 </h3>
 <div class="section level4" number="8.2.1">
-<h4 number="8.2.1" id="load-python-modules">
-<span class="header-section-number">8.2.1</span> Load Python Modules<a class="anchor" aria-label="anchor" href="#load-python-modules"></a>
+<h4 id="load-python-modules">
+<span class="header-section-number">8.2.1</span> Load Python
+Modules<a class="anchor" aria-label="anchor" href="#load-python-modules"></a>
 </h4>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bento_analysis_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"python"</span>, <span class="st">"python_bento_analysis.py"</span>,</span>
@@ -886,8 +942,9 @@
 <span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/source_python.html" class="external-link">source_python</a></span><span class="op">(</span><span class="va">bento_analysis_path</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4" number="8.2.2">
-<h4 number="8.2.2" id="rna-forest-analysis">
-<span class="header-section-number">8.2.2</span> RNA Forest Analysis<a class="anchor" aria-label="anchor" href="#rna-forest-analysis"></a>
+<h4 id="rna-forest-analysis">
+<span class="header-section-number">8.2.2</span> RNA Forest
+Analysis<a class="anchor" aria-label="anchor" href="#rna-forest-analysis"></a>
 </h4>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">analysis_rna_forest</span><span class="op">(</span>adata <span class="op">=</span> <span class="va">bento_adata</span><span class="op">)</span></span>
@@ -900,8 +957,9 @@
 <p><img src="images%2Fbento%2FBento_rna_forest_radvis1.png" width="1220"></p>
 </div>
 <div class="section level4" number="8.2.3">
-<h4 number="8.2.3" id="colocalization-analysis">
-<span class="header-section-number">8.2.3</span> Colocalization Analysis<a class="anchor" aria-label="anchor" href="#colocalization-analysis"></a>
+<h4 id="colocalization-analysis">
+<span class="header-section-number">8.2.3</span> Colocalization
+Analysis<a class="anchor" aria-label="anchor" href="#colocalization-analysis"></a>
 </h4>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">analysis_colocalization</span><span class="op">(</span></span>
@@ -921,7 +979,7 @@
 </div>
 </div>
 <div class="section level2" number="9">
-<h2 number="9" id="session-info">
+<h2 id="session-info">
 <span class="header-section-number">9</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -968,8 +1026,9 @@
 <span><span class="co"># [61] R6_2.5.1           units_0.8-5        compiler_4.2.3</span></span></code></pre></div>
 </div>
 <div class="section level2" number="10">
-<h2 number="10" id="python-session-info">
-<span class="header-section-number">10</span> Python Session Info<a class="anchor" aria-label="anchor" href="#python-session-info"></a>
+<h2 id="python-session-info">
+<span class="header-section-number">10</span> Python Session
+Info<a class="anchor" aria-label="anchor" href="#python-session-info"></a>
 </h2>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">python_session_info</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>

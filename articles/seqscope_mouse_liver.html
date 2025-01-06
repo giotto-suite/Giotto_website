@@ -599,17 +599,24 @@
     
     
 <div class="section level2" number="1">
-<h2 number="1" id="dataset-explanation">
-<span class="header-section-number">1</span> Dataset explanation<a class="anchor" aria-label="anchor" href="#dataset-explanation"></a>
+<h2 id="dataset-explanation">
+<span class="header-section-number">1</span> Dataset
+explanation<a class="anchor" aria-label="anchor" href="#dataset-explanation"></a>
 </h2>
-<p><a href="https://pubmed.ncbi.nlm.nih.gov/34115981/" class="external-link">Seqscope</a> is a illumina sequencing based spatial sequencing platform developed by <a href="https://lee.lab.medicine.umich.edu/seq-scope" class="external-link">Jun Hee Lee Lab</a>. The basic strategy is to use illumina sequencing by synthesis to generate the spatial barcodes and use the barcodes to capture mRNAs in tissue.</p>
+<p><a href="https://pubmed.ncbi.nlm.nih.gov/34115981/" class="external-link">Seqscope</a> is a
+illumina sequencing based spatial sequencing platform developed by <a href="https://lee.lab.medicine.umich.edu/seq-scope" class="external-link">Jun Hee Lee Lab</a>.
+The basic strategy is to use illumina sequencing by synthesis to
+generate the spatial barcodes and use the barcodes to capture mRNAs in
+tissue.</p>
 <div class="section level3" number="1.1">
-<h3 number="1.1" id="example-raw-data-needed-for-seqscope">
-<span class="header-section-number">1.1</span> Example Raw Data needed for seqscope:<a class="anchor" aria-label="anchor" href="#example-raw-data-needed-for-seqscope"></a>
+<h3 id="example-raw-data-needed-for-seqscope">
+<span class="header-section-number">1.1</span> Example Raw Data
+needed for seqscope:<a class="anchor" aria-label="anchor" href="#example-raw-data-needed-for-seqscope"></a>
 </h3>
 <p>1st-seq data (single-ended, for generating spatial barcodes)</p>
 <ul>
-<li>SeqScope_1st.fastq.gz 2nd-seq data (pair-ended, for generating count matrix)</li>
+<li>SeqScope_1st.fastq.gz 2nd-seq data (pair-ended, for generating count
+matrix)</li>
 <li>SeqScope_2nd_R1.fastq.gz</li>
 <li>SeqScope_2nd_R2.fastq.gz</li>
 </ul>
@@ -619,21 +626,29 @@
 </ul>
 </div>
 <div class="section level3" number="1.2">
-<h3 number="1.2" id="preprocessing-to-generate-count-matrix">
-<span class="header-section-number">1.2</span> Preprocessing to generate count matrix<a class="anchor" aria-label="anchor" href="#preprocessing-to-generate-count-matrix"></a>
+<h3 id="preprocessing-to-generate-count-matrix">
+<span class="header-section-number">1.2</span> Preprocessing to
+generate count matrix<a class="anchor" aria-label="anchor" href="#preprocessing-to-generate-count-matrix"></a>
 </h3>
-<p>Seqscope has its own pipeline to generate the count matrix(Gene barcode). Please refer to their <a href="https://github.com/leeju-umich/Cho_Xi_Seqscope" class="external-link">github page</a> or use customized methods to proceed.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="co"># Note you need to install seqtk, STARsolo and clone their github page first. All bash scripts are stored in script directory of their github.</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a><span class="co">## First generate the whitelist of spatial barcodes:</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a>bash extractCoord.sh [SeqScope_1st.fastq.gz] [SeqScope_2nd_R1.fastq.gz] [HDMI_length]</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a><span class="co">## Second, generating the count matrix via STAR.Solo:</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a>bash align.sh [SeqScope_2nd_R1.fastq.gz] [abc_SeqScope_2nd_R2.fastq.gz] [HDMI_length] [whitelists.txt] [outprefix] [starpath] [seqtkpath] [geneIndex]</span></code></pre></div>
-<p>You should now have the count matrix for Giotto Object. Note the Spatial Barcodes are typically at 0.6 um resolution. One way to analyze is to use the getSimpleGrid.R or getSlidingGrid.R provided by Lee Lab to bin the counts and simply follow the Giotto analysis steps of <a href="https://drieslab.github.io/Giotto_website/articles/visium_mouse_brain.html">Visium</a> and <a href="https://drieslab.github.io/Giotto_website/articles/visium_prostate_integration.html">Integration of Visium</a></p>
+<p>Seqscope has its own pipeline to generate the count matrix(Gene
+barcode). Please refer to their <a href="https://github.com/leeju-umich/Cho_Xi_Seqscope" class="external-link">github page</a> or
+use customized methods to proceed.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Note you need to install seqtk, STARsolo and clone their github page first. All bash scripts are stored in script directory of their github.</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="do">## First generate the whitelist of spatial barcodes:</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>bash extractCoord.sh [SeqScope_1st.fastq.gz] [SeqScope_2nd_R1.fastq.gz] [HDMI_length]</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="do">## Second, generating the count matrix via STAR.Solo:</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>bash align.sh [SeqScope_2nd_R1.fastq.gz] [abc_SeqScope_2nd_R2.fastq.gz] [HDMI_length] [whitelists.txt] [outprefix] [starpath] [seqtkpath] [geneIndex]</span></code></pre></div>
+<p>You should now have the count matrix for Giotto Object. Note the
+Spatial Barcodes are typically at 0.6 um resolution. One way to analyze
+is to use the getSimpleGrid.R or getSlidingGrid.R provided by Lee Lab to
+bin the counts and simply follow the Giotto analysis steps of <a href="https://drieslab.github.io/Giotto_website/articles/visium_mouse_brain.html">Visium</a>
+and <a href="https://drieslab.github.io/Giotto_website/articles/visium_prostate_integration.html">Integration
+of Visium</a></p>
 </div>
 </div>
 <div class="section level2" number="2">
-<h2 number="2" id="start-giotto">
+<h2 id="start-giotto">
 <span class="header-section-number">2</span> Start Giotto<a class="anchor" aria-label="anchor" href="#start-giotto"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -650,8 +665,9 @@
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2" number="3">
-<h2 number="3" id="set-up-giotto-environment">
-<span class="header-section-number">3</span> Set up Giotto Environment<a class="anchor" aria-label="anchor" href="#set-up-giotto-environment"></a>
+<h2 id="set-up-giotto-environment">
+<span class="header-section-number">3</span> Set up Giotto
+Environment<a class="anchor" aria-label="anchor" href="#set-up-giotto-environment"></a>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://drieslab.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span>
@@ -676,12 +692,20 @@
 <span>                                         return_plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="4">
-<h2 number="4" id="create-giotto-subcellular-object">
-<span class="header-section-number">4</span> Create Giotto Subcellular Object<a class="anchor" aria-label="anchor" href="#create-giotto-subcellular-object"></a>
+<h2 id="create-giotto-subcellular-object">
+<span class="header-section-number">4</span> Create Giotto
+Subcellular Object<a class="anchor" aria-label="anchor" href="#create-giotto-subcellular-object"></a>
 </h2>
-<p>In order to do single cell and subcellular analysis with Giotto, we suggest using the GiottoSubcellular Object. Giotto Subcellular objects take cell polygons and a Giotto Point file (a data.table contains Gene Name, Expression, x, y, etc). Therefore, first we need to do some transformation of the count matrix.</p>
+<p>In order to do single cell and subcellular analysis with Giotto, we
+suggest using the GiottoSubcellular Object. Giotto Subcellular objects
+take cell polygons and a Giotto Point file (a data.table contains Gene
+Name, Expression, x, y, etc). Therefore, first we need to do some
+transformation of the count matrix.</p>
 <p><strong>Giotto Point file formatting</strong></p>
-<p>Unlike normal cell by gene matrix, a Giotto Point file is usually a data.table contains Gene Name, Expression, x, y, where each row represent a subcellular point. For Seqscope data, one HDMI typically have more than one subcellular point.</p>
+<p>Unlike normal cell by gene matrix, a Giotto Point file is usually a
+data.table contains Gene Name, Expression, x, y, where each row
+represent a subcellular point. For Seqscope data, one HDMI typically
+have more than one subcellular point.</p>
 <p>Example Giotto Point file for <strong>Seqscope</strong></p>
 <table class="table">
 <thead><tr class="header">
@@ -723,8 +747,9 @@
 </tbody>
 </table>
 <div class="section level3" number="4.1">
-<h3 number="4.1" id="process-giotto-point-file-per-tile">
-<span class="header-section-number">4.1</span> Process Giotto Point file per tile<a class="anchor" aria-label="anchor" href="#process-giotto-point-file-per-tile"></a>
+<h3 id="process-giotto-point-file-per-tile">
+<span class="header-section-number">4.1</span> Process Giotto Point
+file per tile<a class="anchor" aria-label="anchor" href="#process-giotto-point-file-per-tile"></a>
 </h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">##expression matrix</span></span>
@@ -759,10 +784,13 @@
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gpoints</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hdmi"</span>, <span class="st">"x"</span>, <span class="st">"y"</span>, <span class="st">"gene"</span>, <span class="st">"counts"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3" number="4.2">
-<h3 number="4.2" id="prepare-the-polygon-mask-file">
-<span class="header-section-number">4.2</span> Prepare the polygon mask file<a class="anchor" aria-label="anchor" href="#prepare-the-polygon-mask-file"></a>
+<h3 id="prepare-the-polygon-mask-file">
+<span class="header-section-number">4.2</span> Prepare the polygon
+mask file<a class="anchor" aria-label="anchor" href="#prepare-the-polygon-mask-file"></a>
 </h3>
-<p>Giotto can read in a variety of different mask files provided by common segmentation tools. But first we need to check if we need to filp the x and y axis.</p>
+<p>Giotto can read in a variety of different mask files provided by
+common segmentation tools. But first we need to check if we need to filp
+the x and y axis.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># check total counts per hdmi</span></span>
 <span><span class="va">gpoints_aggr</span> <span class="op">&lt;-</span> <span class="va">gpoints</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">counts</span><span class="op">)</span>, by <span class="op">=</span> <span class="fu">.</span><span class="op">(</span><span class="va">hdmi</span>, <span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">]</span></span>
@@ -784,7 +812,9 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">final_polygons</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fseqscope_mouse_liver%2Fpolygon.png"></p>
 <p><strong>Polygon mask file manual formatting</strong></p>
-<p>However, sometimes Giotto does not read in the provided mask file and we will need a manual processing for the mask file and we will do that using terra and createGiottoPolygonsFromDfr.</p>
+<p>However, sometimes Giotto does not read in the provided mask file and
+we will need a manual processing for the mask file and we will do that
+using terra and createGiottoPolygonsFromDfr.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">raster</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">segmentation_mask</span><span class="op">)</span></span>
 <span><span class="va">terra_polygon</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/as.polygons.html" class="external-link">as.polygons</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">raster</span>, value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -818,10 +848,12 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">final_polygons</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3" number="4.3">
-<h3 number="4.3" id="create-giotto-object">
-<span class="header-section-number">4.3</span> Create Giotto Object<a class="anchor" aria-label="anchor" href="#create-giotto-object"></a>
+<h3 id="create-giotto-object">
+<span class="header-section-number">4.3</span> Create Giotto
+Object<a class="anchor" aria-label="anchor" href="#create-giotto-object"></a>
 </h3>
-<p>Add a random jitter to the HDMI location to make a pseudo-in situ transcript file.</p>
+<p>Add a random jitter to the HDMI location to make a pseudo-in situ
+transcript file.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># add giotto points class</span></span>
 <span><span class="va">gpoints_subset</span> <span class="op">&lt;-</span> <span class="va">gpoints</span><span class="op">[</span><span class="va">hdmi</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">gpoints_aggr</span><span class="op">[</span><span class="va">total_counts</span> <span class="op">&gt;</span> <span class="fl">5</span><span class="op">]</span><span class="op">$</span><span class="va">hdmi</span><span class="op">]</span></span>
@@ -867,8 +899,9 @@
 </div>
 </div>
 <div class="section level2" number="5">
-<h2 number="5" id="process-giotto-and-quality-control">
-<span class="header-section-number">5</span> Process Giotto and Quality Control<a class="anchor" aria-label="anchor" href="#process-giotto-and-quality-control"></a>
+<h2 id="process-giotto-and-quality-control">
+<span class="header-section-number">5</span> Process Giotto and
+Quality Control<a class="anchor" aria-label="anchor" href="#process-giotto-and-quality-control"></a>
 </h2>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># filter</span></span>
@@ -905,8 +938,9 @@
 <p><img src="images%2Fseqscope_mouse_liver%2Ffeature_distribution.png"></p>
 </div>
 <div class="section level2" number="6">
-<h2 number="6" id="dimension-reduction">
-<span class="header-section-number">6</span> Dimension Reduction<a class="anchor" aria-label="anchor" href="#dimension-reduction"></a>
+<h2 id="dimension-reduction">
+<span class="header-section-number">6</span> Dimension
+Reduction<a class="anchor" aria-label="anchor" href="#dimension-reduction"></a>
 </h2>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># cluster cells</span></span>
@@ -921,7 +955,7 @@
 <span><span class="va">seqscope</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span><span class="va">seqscope</span>, dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="7">
-<h2 number="7" id="cluster">
+<h2 id="cluster">
 <span class="header-section-number">7</span> Cluster<a class="anchor" aria-label="anchor" href="#cluster"></a>
 </h2>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -949,7 +983,7 @@
 <p><img src="images%2Fseqscope_mouse_liver%2Fleiden_spat.png"></p>
 </div>
 <div class="section level2" number="8">
-<h2 number="8" id="find-spatial-genes">
+<h2 id="find-spatial-genes">
 <span class="header-section-number">8</span> Find spatial genes<a class="anchor" aria-label="anchor" href="#find-spatial-genes"></a>
 </h2>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -973,7 +1007,7 @@
 <p><img src="images%2Fseqscope_mouse_liver%2Fspatgenes.png"></p>
 </div>
 <div class="section level2" number="9">
-<h2 number="9" id="session-info">
+<h2 id="session-info">
 <span class="header-section-number">9</span> Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">

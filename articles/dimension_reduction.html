@@ -598,10 +598,15 @@
 
     
     
-<p>Dimension reduction methods are ways of taking high-dimensional biological data and simplifying them into lower dimensional embeddings while preserving the important information. This is useful both for downstream analysis and visualization. Giotto includes implementations of several of these methods.</p>
+<p>Dimension reduction methods are ways of taking high-dimensional
+biological data and simplifying them into lower dimensional embeddings
+while preserving the important information. This is useful both for
+downstream analysis and visualization. Giotto includes implementations
+of several of these methods.</p>
 <div class="section level2" number="1">
-<h2 number="1" id="setup-and-load-example-dataset">
-<span class="header-section-number">1</span> Setup and load example dataset<a class="anchor" aria-label="anchor" href="#setup-and-load-example-dataset"></a>
+<h2 id="setup-and-load-example-dataset">
+<span class="header-section-number">1</span> Setup and load example
+dataset<a class="anchor" aria-label="anchor" href="#setup-and-load-example-dataset"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed</span></span>
@@ -628,14 +633,20 @@
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu">GiottoData</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoData/reference/loadGiottoMini.html" class="external-link">loadGiottoMini</a></span><span class="op">(</span><span class="st">"visium"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="2">
-<h2 number="2" id="feature-extraction-primary-dimensionality-reduction">
-<span class="header-section-number">2</span> Feature Extraction / Primary Dimensionality Reduction<a class="anchor" aria-label="anchor" href="#feature-extraction-primary-dimensionality-reduction"></a>
+<h2 id="feature-extraction-primary-dimensionality-reduction">
+<span class="header-section-number">2</span> Feature Extraction /
+Primary Dimensionality Reduction<a class="anchor" aria-label="anchor" href="#feature-extraction-primary-dimensionality-reduction"></a>
 </h2>
-<p>These methods are typically used early in the analysis pipeline after filtering, normalization, and variable feature detection in order to:</p>
+<p>These methods are typically used early in the analysis pipeline after
+filtering, normalization, and variable feature detection in order
+to:</p>
 <ul>
-<li>Extract meaningful lower-dimensional embeddings from high-dimensional data</li>
-<li>Reduce noise and capture the most important features or patterns in the data</li>
-<li>Provide a basis for further analysis, including clustering or differential expression analysis</li>
+<li>Extract meaningful lower-dimensional embeddings from
+high-dimensional data</li>
+<li>Reduce noise and capture the most important features or patterns in
+the data</li>
+<li>Provide a basis for further analysis, including clustering or
+differential expression analysis</li>
 </ul>
 <p><strong>Key characteristics:</strong></p>
 <ul>
@@ -644,21 +655,42 @@
 <li>Output can be used directly for downstream analyses</li>
 </ul>
 <p><strong>Features to use</strong></p>
-<p>Which features to include when calculating these dimension reductions has a large effect on the information extracted. Only using <a href="hvf.html">highly variable features</a> will focus on variation from features with the largest expression variation, maximizing expression-based separation of clusters. <a href="spatial_genes.html">Spatially variable features</a> will focus on features with spatially organized expression, resulting in clusters that better map to spatial organization. However, when there are not many features (only hundreds of features), it is a better idea to include all features than to use a subset.</p>
+<p>Which features to include when calculating these dimension reductions
+has a large effect on the information extracted. Only using <a href="hvf.html">highly variable features</a> will focus on variation
+from features with the largest expression variation, maximizing
+expression-based separation of clusters. <a href="spatial_genes.html">Spatially variable features</a> will focus on
+features with spatially organized expression, resulting in clusters that
+better map to spatial organization. However, when there are not many
+features (only hundreds of features), it is a better idea to include all
+features than to use a subset.</p>
 <p><strong>Centering and Scaling</strong></p>
-<p>These dimension reductions should generally be centered and scaled for the downstream steps, but it is important not to accidentally perform centering and scaling multiple times. Whether it is necessary depends on how the expression information was normalized prior to this step. For Giotto’s provided normalization methods from <code><a href="../reference/normalizeGiotto.html">normalizeGiotto()</a></code>:</p>
+<p>These dimension reductions should generally be centered and scaled
+for the downstream steps, but it is important not to accidentally
+perform centering and scaling multiple times. Whether it is necessary
+depends on how the expression information was normalized prior to this
+step. For Giotto’s provided normalization methods from
+<code><a href="../reference/normalizeGiotto.html">normalizeGiotto()</a></code>:</p>
 <ul>
-<li>giotto <code>'standard'</code> normalization – needs center and scale (default behavior)</li>
+<li>giotto <code>'standard'</code> normalization – needs center and
+scale (default behavior)</li>
 <li>
-<code>'pearson'</code> (can be considered already centered and scaled) – do not center and scale again</li>
+<code>'pearson'</code> (can be considered already centered and
+scaled) – do not center and scale again</li>
 <li>
-<code>'quantile'</code> (can be considered already centered and scaled) – do not center and scale again</li>
+<code>'quantile'</code> (can be considered already centered and
+scaled) – do not center and scale again</li>
 </ul>
 <div class="section level3" number="2.1">
-<h3 number="2.1" id="principal-component-analysis-pca">
-<span class="header-section-number">2.1</span> Principal Component Analysis (PCA)<a class="anchor" aria-label="anchor" href="#principal-component-analysis-pca"></a>
+<h3 id="principal-component-analysis-pca">
+<span class="header-section-number">2.1</span> Principal Component
+Analysis (PCA)<a class="anchor" aria-label="anchor" href="#principal-component-analysis-pca"></a>
 </h3>
-<p>A linear dimensionality reduction technique that identifies the directions of maximum variance in high-dimensional data and projects it onto a lower-dimensional subspace. Giotto provides several implementations, but the default is with irlba through BiocSingular. Instead of calculating all PCs, Giotto only calculates the first 100 by default.</p>
+<p>A linear dimensionality reduction technique that identifies the
+directions of maximum variance in high-dimensional data and projects it
+onto a lower-dimensional subspace. Giotto provides several
+implementations, but the default is with irlba through BiocSingular.
+Instead of calculating all PCs, Giotto only calculates the first 100 by
+default.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># - runPCA() uses 'hvf' (highly variable feats) by default if available</span></span>
 <span><span class="co">#   but we pass NULL to `feats_to_use` to use all of them for this mini dataset</span></span>
@@ -668,21 +700,32 @@
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/dimPlot.html" class="external-link">dimPlot2D</a></span><span class="op">(</span><span class="va">g</span>, dim_reduction_to_use <span class="op">=</span> <span class="st">"pca"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fdimension_reduction%2F1_pca.png" width="60%" style="display: block; margin: auto;"></p>
 <div class="section level4" number="2.1.1">
-<h4 number="2.1.1" id="scree-plot">
+<h4 id="scree-plot">
 <span class="header-section-number">2.1.1</span> Scree Plot<a class="anchor" aria-label="anchor" href="#scree-plot"></a>
 </h4>
-<p>A PCA is a rotation of the data into an orientation where the first PCs contain the most variance. Limiting the number of PCs used in downstream steps can be a good idea to focus on the PCs with useful information and minimize the effect of less significant PCs that describe noise more than biological variation. A screeplot can be used in order to gauge up to which PCs contain useful information.</p>
+<p>A PCA is a rotation of the data into an orientation where the first
+PCs contain the most variance. Limiting the number of PCs used in
+downstream steps can be a good idea to focus on the PCs with useful
+information and minimize the effect of less significant PCs that
+describe noise more than biological variation. A screeplot can be used
+in order to gauge up to which PCs contain useful information.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># will plot the `pca` by default</span></span>
 <span><span class="fu"><a href="../reference/screePlot.html">screePlot</a></span><span class="op">(</span><span class="va">g</span>, ncp <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fdimension_reduction%2F2_scree.png" width="80%" style="display: block; margin: auto;"></p>
-<p>The scree plot lets us estimate that the first 20 PCs are a good cutoff. Following applications of this PCA such as umap or clustering should use only the first 20 PCs.</p>
+<p>The scree plot lets us estimate that the first 20 PCs are a good
+cutoff. Following applications of this PCA such as umap or clustering
+should use only the first 20 PCs.</p>
 </div>
 <div class="section level4" number="2.1.2">
-<h4 number="2.1.2" id="jackstraw-plot">
+<h4 id="jackstraw-plot">
 <span class="header-section-number">2.1.2</span> Jackstraw Plot<a class="anchor" aria-label="anchor" href="#jackstraw-plot"></a>
 </h4>
-<p>Another way of determining number of significant PCs is through permuting the input expression matrix across the features so that the set of expression values for a feature does not change, but which cells they are assigned to is randomized. Then, comparing the variation explained by the actual vs permuted values.</p>
+<p>Another way of determining number of significant PCs is through
+permuting the input expression matrix across the features so that the
+set of expression values for a feature does not change, but which cells
+they are assigned to is randomized. Then, comparing the variation
+explained by the actual vs permuted values.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># will plot the `pca` by default</span></span>
 <span><span class="fu"><a href="../reference/jackstrawPlot.html">jackstrawPlot</a></span><span class="op">(</span><span class="va">g</span>, feats_to_use <span class="op">=</span> <span class="cn">NULL</span>, ncp <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
@@ -690,10 +733,20 @@
 </div>
 </div>
 <div class="section level3" number="2.2">
-<h3 number="2.2" id="non-negative-matrix-factorization-nmf">
-<span class="header-section-number">2.2</span> Non-negative Matrix Factorization (NMF)<a class="anchor" aria-label="anchor" href="#non-negative-matrix-factorization-nmf"></a>
+<h3 id="non-negative-matrix-factorization-nmf">
+<span class="header-section-number">2.2</span> Non-negative Matrix
+Factorization (NMF)<a class="anchor" aria-label="anchor" href="#non-negative-matrix-factorization-nmf"></a>
 </h3>
-<p>A technique that decomposes non-negative data into two non-negative matrices. In biology, it’s useful for analyzing gene expression, metagenomics, and protein-ligand interactions. NMF can reveal underlying patterns and molecular signatures in complex biological datasets. While it is fine to calculate as many PCs as desired for PCA, the k (rank) value for NMF requires more fine tuning since the k value essentially define how many metafeatures to split the expression information into. Too few, and there is not enough extracted information. Too many, and single signatures will be split and diluted. Giotto implements NMF through RcppML.</p>
+<p>A technique that decomposes non-negative data into two non-negative
+matrices. In biology, it’s useful for analyzing gene expression,
+metagenomics, and protein-ligand interactions. NMF can reveal underlying
+patterns and molecular signatures in complex biological datasets. While
+it is fine to calculate as many PCs as desired for PCA, the k (rank)
+value for NMF requires more fine tuning since the k value essentially
+define how many metafeatures to split the expression information into.
+Too few, and there is not enough extracted information. Too many, and
+single signatures will be split and diluted. Giotto implements NMF
+through RcppML.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runNMF.html">runNMF</a></span><span class="op">(</span><span class="va">g</span>, k <span class="op">=</span> <span class="fl">20</span>, feats_to_use <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/dimPlot.html" class="external-link">dimPlot2D</a></span><span class="op">(</span><span class="va">g</span>, dim_reduction_to_use <span class="op">=</span> <span class="st">"nmf"</span><span class="op">)</span></span></code></pre></div>
@@ -701,26 +754,34 @@
 </div>
 </div>
 <div class="section level2" number="3">
-<h2 number="3" id="visualization-further-dimensionality-reduction">
-<span class="header-section-number">3</span> Visualization / Further Dimensionality Reduction<a class="anchor" aria-label="anchor" href="#visualization-further-dimensionality-reduction"></a>
+<h2 id="visualization-further-dimensionality-reduction">
+<span class="header-section-number">3</span> Visualization / Further
+Dimensionality Reduction<a class="anchor" aria-label="anchor" href="#visualization-further-dimensionality-reduction"></a>
 </h2>
-<p>These methods are usually applied later in the analysis, often on the output of PCA or NMF, to:</p>
+<p>These methods are usually applied later in the analysis, often on the
+output of PCA or NMF, to:</p>
 <ul>
-<li>Further reduce dimensions, typically to 2 or 3 for visualization purposes</li>
+<li>Further reduce dimensions, typically to 2 or 3 for visualization
+purposes</li>
 <li>Reveal local structures and relationships in the data</li>
-<li>Provide intuitive visualizations for exploration and presentation</li>
+<li>Provide intuitive visualizations for exploration and
+presentation</li>
 </ul>
 <p><strong>Key characteristics:</strong></p>
 <ul>
 <li>Reduce to very low dimensions (usually 2D or 3D)</li>
-<li>Focus on preserving local structure, potentially at the expense of global structure</li>
-<li>Primarily used for visualization, not typically for downstream quantitative analyses</li>
+<li>Focus on preserving local structure, potentially at the expense of
+global structure</li>
+<li>Primarily used for visualization, not typically for downstream
+quantitative analyses</li>
 </ul>
 <div class="section level3" number="3.1">
-<h3 number="3.1" id="uniform-manifold-approximation-and-projection-umap">
-<span class="header-section-number">3.1</span> Uniform Manifold Approximation and Projection (UMAP)<a class="anchor" aria-label="anchor" href="#uniform-manifold-approximation-and-projection-umap"></a>
+<h3 id="uniform-manifold-approximation-and-projection-umap">
+<span class="header-section-number">3.1</span> Uniform Manifold
+Approximation and Projection (UMAP)<a class="anchor" aria-label="anchor" href="#uniform-manifold-approximation-and-projection-umap"></a>
 </h3>
-<p>A non-linear dimensionality reduction method that preserves both local and global structure of the data.</p>
+<p>A non-linear dimensionality reduction method that preserves both
+local and global structure of the data.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span><span class="va">g</span>, <span class="co"># uses any calculated 'pca' by default, default name is "umap"</span></span>
 <span>    dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">20</span> <span class="co"># determined from screePlot</span></span>
@@ -740,10 +801,15 @@
 <p><img src="images%2Fdimension_reduction%2F6_nmf_umap.png" width="60%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="3.2">
-<h3 number="3.2" id="t-distributed-stochastic-neighbor-embedding-t-sne">
-<span class="header-section-number">3.2</span> t-distributed Stochastic Neighbor Embedding (t-SNE)<a class="anchor" aria-label="anchor" href="#t-distributed-stochastic-neighbor-embedding-t-sne"></a>
+<h3 id="t-distributed-stochastic-neighbor-embedding-t-sne">
+<span class="header-section-number">3.2</span> t-distributed
+Stochastic Neighbor Embedding (t-SNE)<a class="anchor" aria-label="anchor" href="#t-distributed-stochastic-neighbor-embedding-t-sne"></a>
 </h3>
-<p>A non-linear dimensionality reduction technique that emphasizes preserving local structure. It’s widely used in single-cell analysis, particularly for visualizing clusters of cell types. t-SNE is good at revealing local patterns in data but may not preserve global structure as well as UMAP.</p>
+<p>A non-linear dimensionality reduction technique that emphasizes
+preserving local structure. It’s widely used in single-cell analysis,
+particularly for visualizing clusters of cell types. t-SNE is good at
+revealing local patterns in data but may not preserve global structure
+as well as UMAP.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runtSNE.html">runtSNE</a></span><span class="op">(</span><span class="va">g</span>, dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span> <span class="co"># uses any calculated 'pca' by default</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/dimPlot.html" class="external-link">dimPlot2D</a></span><span class="op">(</span><span class="va">g</span>, dim_reduction_to_use <span class="op">=</span> <span class="st">"tsne"</span>, cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span><span class="op">)</span></span></code></pre></div>
@@ -751,38 +817,51 @@
 </div>
 </div>
 <div class="section level2" number="4">
-<h2 number="4" id="typical-workflow">
+<h2 id="typical-workflow">
 <span class="header-section-number">4</span> Typical Workflow<a class="anchor" aria-label="anchor" href="#typical-workflow"></a>
 </h2>
 <ol style="list-style-type: decimal">
 <li>Start with high-dimensional data (e.g., gene expression data)</li>
-<li>Apply PCA or NMF to reduce to a manageable number of dimensions (e.g., 50-100)</li>
-<li>Use this reduced representation for various analyses (clustering, trajectory inference, etc.)</li>
-<li>Apply UMAP or t-SNE to the PCA/NMF output for visualization and exploration</li>
+<li>Apply PCA or NMF to reduce to a manageable number of dimensions
+(e.g., 50-100)</li>
+<li>Use this reduced representation for various analyses (clustering,
+trajectory inference, etc.)</li>
+<li>Apply UMAP or t-SNE to the PCA/NMF output for visualization and
+exploration</li>
 </ol>
-<p>This workflow combines the strengths of both categories: using PCA/NMF to capture the essential features of the data, and then UMAP/t-SNE to create informative visualizations.</p>
+<p>This workflow combines the strengths of both categories: using
+PCA/NMF to capture the essential features of the data, and then
+UMAP/t-SNE to create informative visualizations.</p>
 </div>
 <div class="section level2" number="5">
-<h2 number="5" id="scalability-concerns">
-<span class="header-section-number">5</span> Scalability Concerns<a class="anchor" aria-label="anchor" href="#scalability-concerns"></a>
+<h2 id="scalability-concerns">
+<span class="header-section-number">5</span> Scalability
+Concerns<a class="anchor" aria-label="anchor" href="#scalability-concerns"></a>
 </h2>
-<p>For large datasets, many of these functions also have projection-based approaches where a sampled subset is calculated, and the the remaining data is projected into the same embedding space. This can greatly shorten the processing time for large datasets for only a small tradeoff in accuracy. Currently existing are:</p>
+<p>For large datasets, many of these functions also have
+projection-based approaches where a sampled subset is calculated, and
+the the remaining data is projected into the same embedding space. This
+can greatly shorten the processing time for large datasets for only a
+small tradeoff in accuracy. Currently existing are:</p>
 <ul>
 <li><code><a href="../reference/runPCAprojection.html">runPCAprojection()</a></code></li>
 <li><code><a href="../reference/runUMAPprojection.html">runUMAPprojection()</a></code></li>
 </ul>
 </div>
 <div class="section level2" number="6">
-<h2 number="6" id="api-function">
+<h2 id="api-function">
 <span class="header-section-number">6</span> API function<a class="anchor" aria-label="anchor" href="#api-function"></a>
 </h2>
-<p>A convenient single function for access to the above functions is <code><a href="../reference/reduceDims.html">reduceDims()</a></code>. This makes it easy to create workflow functions or parallelized implementations to perform several dimension reductions with programmatically defined settings.</p>
+<p>A convenient single function for access to the above functions is
+<code><a href="../reference/reduceDims.html">reduceDims()</a></code>. This makes it easy to create workflow
+functions or parallelized implementations to perform several dimension
+reductions with programmatically defined settings.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># example of a pca run with projection approach through reduceDims()</span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reduceDims.html">reduceDims</a></span><span class="op">(</span><span class="va">g</span>, method <span class="op">=</span> <span class="st">"pca"</span>, feats_to_use <span class="op">=</span> <span class="cn">NULL</span>, projection <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="7">
-<h2 number="7" id="session-info">
+<h2 id="session-info">
 <span class="header-section-number">7</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">

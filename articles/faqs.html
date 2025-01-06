@@ -599,22 +599,26 @@
     
     
 <div class="section level2" number="1">
-<h2 number="1" id="installation">
+<h2 id="installation">
 <span class="header-section-number">1</span> Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <ul>
-<li><p><a href="https://drieslab.github.io/Giotto/articles/installation.html" class="external-link">How do I install an R package for the first time?</a></p></li>
-<li><p><a href="https://drieslab.github.io/Giotto/articles/configuration.html" class="external-link">Can I install Python components manually?</a></p></li>
+<li><p><a href="https://drieslab.github.io/Giotto/articles/installation.html" class="external-link">How
+do I install an R package for the first time?</a></p></li>
+<li><p><a href="https://drieslab.github.io/Giotto/articles/configuration.html" class="external-link">Can
+I install Python components manually?</a></p></li>
 </ul>
 </div>
 <div class="section level2" number="2">
-<h2 number="2" id="data-availability">
+<h2 id="data-availability">
 <span class="header-section-number">2</span> Data Availability<a class="anchor" aria-label="anchor" href="#data-availability"></a>
 </h2>
 <ul>
 <li>Where can I find seqFISH+ and other ready-to-use datasets?</li>
 </ul>
-<p>Checkout our <a href="https://github.com/drieslab/GiottoData" class="external-link">GiottoData</a> extension package to find already preprocessed datasets and Giotto mini Objects.</p>
+<p>Checkout our <a href="https://github.com/drieslab/GiottoData" class="external-link">GiottoData</a> extension
+package to find already preprocessed datasets and Giotto mini
+Objects.</p>
 <ul>
 <li>Where else can I find more spatial datasets?</li>
 </ul>
@@ -622,7 +626,8 @@
 <ul>
 <li><p><a href="https://aquila.cheunglab.org/view" class="external-link">Aquila</a></p></li>
 <li><p>Tencent's <a href="https://gene.ai.tencent.com/SpatialOmics/" class="external-link">SODB</a></p></li>
-<li><p><a href="https://pysodb.readthedocs.io/en/latest/" class="external-link">PySODB</a>, a python interface for the SODB</p></li>
+<li><p><a href="https://pysodb.readthedocs.io/en/latest/" class="external-link">PySODB</a>, a
+python interface for the SODB</p></li>
 <li><p>How can I automatically download tutorial datasets?</p></li>
 </ul>
 <p>Use <code><a href="https://drieslab.github.io/GiottoData/reference/getSpatialDataset.html" class="external-link">getSpatialDataset()</a></code> from GiottoData:</p>
@@ -663,24 +668,32 @@
 <span>                  extra <span class="op">=</span> <span class="st">'--no-check-certificate'</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="3">
-<h2 number="3" id="matrix-error">
+<h2 id="matrix-error">
 <span class="header-section-number">3</span> Matrix error<a class="anchor" aria-label="anchor" href="#matrix-error"></a>
 </h2>
 <ul>
-<li>Why am I getting the error <code>function 'as_cholmod_sparse' not provided by package 'Matrix'</code>?</li>
+<li>Why am I getting the error
+<code>function 'as_cholmod_sparse' not provided by package 'Matrix'</code>?</li>
 </ul>
-<p>Matrix underwent a breaking change after versoin 1.6-2. Reinstalling <em>irlba</em> from source will fix this. See this <a href="https://github.com/bwlewis/irlba/issues/70" class="external-link">issue</a> for more info.</p>
+<p>Matrix underwent a breaking change after versoin 1.6-2. Reinstalling
+<em>irlba</em> from source will fix this. See this <a href="https://github.com/bwlewis/irlba/issues/70" class="external-link">issue</a> for more
+info.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"irlba"</span>, type <span class="op">=</span> <span class="st">"source"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="4">
-<h2 number="4" id="arrow-and-zstd">
+<h2 id="arrow-and-zstd">
 <span class="header-section-number">4</span> Arrow and ZSTD<a class="anchor" aria-label="anchor" href="#arrow-and-zstd"></a>
 </h2>
 <ul>
-<li>Why am I getting an error about arrow and ZSTD support when loading Xenium or VisiumHD data?</li>
+<li>Why am I getting an error about arrow and ZSTD support when loading
+Xenium or VisiumHD data?</li>
 </ul>
-<p><em>arrow</em> is a suggested package Giotto uses to open <code>parquet</code> files. The parquet files that 10X provides use ZSTD compression which the default <em>arrow</em> installation may not provide. The following code will check for whether arrow is installed with ZSTD support, and reinstall if it is not present.</p>
+<p><em>arrow</em> is a suggested package Giotto uses to open
+<code>parquet</code> files. The parquet files that 10X provides use ZSTD
+compression which the default <em>arrow</em> installation may not
+provide. The following code will check for whether arrow is installed
+with ZSTD support, and reinstall if it is not present.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">has_arrow</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"arrow"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">zstd</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>

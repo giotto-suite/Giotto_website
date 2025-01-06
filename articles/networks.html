@@ -588,7 +588,8 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Spatial and Feature-Based Network Construction</h1>
+      <h1 data-toc-skip>Spatial and Feature-Based Network
+Construction</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/drieslab/Giotto/blob/suite/vignettes/networks.Rmd" class="external-link"><code>vignettes/networks.Rmd</code></a></small>
@@ -598,10 +599,14 @@
 
     
     
-<p>Networks between points can be generated based on coordinates in both spatial and feature embeddings. These allow calculations of how physically similar or phenotypically similar different observations are.</p>
+<p>Networks between points can be generated based on coordinates in both
+spatial and feature embeddings. These allow calculations of how
+physically similar or phenotypically similar different observations
+are.</p>
 <div class="section level2" number="1">
-<h2 number="1" id="setup-and-load-example-dataset">
-<span class="header-section-number">1</span> Setup and load example dataset<a class="anchor" aria-label="anchor" href="#setup-and-load-example-dataset"></a>
+<h2 id="setup-and-load-example-dataset">
+<span class="header-section-number">1</span> Setup and load example
+dataset<a class="anchor" aria-label="anchor" href="#setup-and-load-example-dataset"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed</span></span>
@@ -623,7 +628,8 @@
 <span>  <span class="co"># The following command need only be run once to install the Giotto environment</span></span>
 <span>  <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>This example uses the ‘vizgen’ (MERSCOPE) and ‘starmap’ mini datasets for 2D and 3D spatial information respectively.</p>
+<p>This example uses the ‘vizgen’ (MERSCOPE) and ‘starmap’ mini datasets
+for 2D and 3D spatial information respectively.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load the object</span></span>
 <span><span class="va">mer</span> <span class="op">&lt;-</span> <span class="fu">GiottoData</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoData/reference/loadGiottoMini.html" class="external-link">loadGiottoMini</a></span><span class="op">(</span><span class="st">"vizgen"</span><span class="op">)</span></span>
@@ -631,22 +637,36 @@
 <span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu">GiottoData</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoData/reference/loadGiottoMini.html" class="external-link">loadGiottoMini</a></span><span class="op">(</span><span class="st">"starmap"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="2">
-<h2 number="2" id="spatial-networks">
+<h2 id="spatial-networks">
 <span class="header-section-number">2</span> Spatial Networks<a class="anchor" aria-label="anchor" href="#spatial-networks"></a>
 </h2>
-<p>Spatial networks are generated based on spatial locations (cell or spot centroids). They are needed for analyses such as spatial pattern detection through <code><a href="../reference/binSpect.html">binSpect()</a></code>, or cell cell communication through <code><a href="../reference/spatCellCellcom.html">spatCellCellcom()</a></code>, and enrichment through <code><a href="../reference/cellProximityEnrichment.html">cellProximityEnrichment()</a></code>.</p>
-<p>Giotto allows generation of Delaunay and k-nearest neighbors (KNN) networks for spatial networks.</p>
+<p>Spatial networks are generated based on spatial locations (cell or
+spot centroids). They are needed for analyses such as spatial pattern
+detection through <code><a href="../reference/binSpect.html">binSpect()</a></code>, or cell cell communication
+through <code><a href="../reference/spatCellCellcom.html">spatCellCellcom()</a></code>, and enrichment through
+<code><a href="../reference/cellProximityEnrichment.html">cellProximityEnrichment()</a></code>.</p>
+<p>Giotto allows generation of Delaunay and k-nearest neighbors (KNN)
+networks for spatial networks.</p>
 <div class="section level3" number="2.1">
-<h3 number="2.1" id="delaunay-networks">
-<span class="header-section-number">2.1</span> Delaunay Networks<a class="anchor" aria-label="anchor" href="#delaunay-networks"></a>
+<h3 id="delaunay-networks">
+<span class="header-section-number">2.1</span> Delaunay
+Networks<a class="anchor" aria-label="anchor" href="#delaunay-networks"></a>
 </h3>
 <p><strong>Key points</strong></p>
 <ul>
-<li>Construction: Created by connecting points in a plane such that no point is inside the circumcircle of any triangle formed by three points.</li>
-<li>Properties: Maximizes the minimum angle of all triangles, avoiding sliver triangles.</li>
-<li>Advantages: Provides efficient nearest neighbor search and natural neighbor interpolation.</li>
+<li>Construction: Created by connecting points in a plane such that no
+point is inside the circumcircle of any triangle formed by three
+points.</li>
+<li>Properties: Maximizes the minimum angle of all triangles, avoiding
+sliver triangles.</li>
+<li>Advantages: Provides efficient nearest neighbor search and natural
+neighbor interpolation.</li>
 </ul>
-<p>A distance cutoff can be applied through the <code>maximum_distance</code> arg where Delaunay neighbors past a certain spatial distance apart are not considered. The default is to use the “upper whisker” value of the distance vector between neighbors; see the <code><a href="https://rdrr.io/r/graphics/boxplot.html" class="external-link">graphics::boxplot()</a></code> documentation.</p>
+<p>A distance cutoff can be applied through the
+<code>maximum_distance</code> arg where Delaunay neighbors past a
+certain spatial distance apart are not considered. The default is to use
+the “upper whisker” value of the distance vector between neighbors; see
+the <code><a href="https://rdrr.io/r/graphics/boxplot.html" class="external-link">graphics::boxplot()</a></code> documentation.</p>
 <p><strong>Implementations</strong></p>
 <p>Giotto provides Delaunay implementations through:</p>
 <ul>
@@ -658,7 +678,7 @@
 <em>geometry</em> (2D or 3D)</li>
 </ul>
 <div class="section level4" number="2.1.1">
-<h4 number="2.1.1" id="d-delaunay">
+<h4 id="d-delaunay">
 <span class="header-section-number">2.1.1</span> 2D Delaunay<a class="anchor" aria-label="anchor" href="#d-delaunay"></a>
 </h4>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -671,7 +691,7 @@
 <p><img src="images%2Fnetworks%2F1_delaunay_2D.png" width="60%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4" number="2.1.2">
-<h4 number="2.1.2" id="d-delaunay-1">
+<h4 id="d-delaunay-1">
 <span class="header-section-number">2.1.2</span> 3D Delaunay<a class="anchor" aria-label="anchor" href="#d-delaunay-1"></a>
 </h4>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -689,15 +709,22 @@
 </div>
 </div>
 <div class="section level3" number="2.2">
-<h3 number="2.2" id="spatial-k-nearest-neighbors-networks-knn">
-<span class="header-section-number">2.2</span> Spatial k-Nearest Neighbors networks (kNN)<a class="anchor" aria-label="anchor" href="#spatial-k-nearest-neighbors-networks-knn"></a>
+<h3 id="spatial-k-nearest-neighbors-networks-knn">
+<span class="header-section-number">2.2</span> Spatial k-Nearest
+Neighbors networks (kNN)<a class="anchor" aria-label="anchor" href="#spatial-k-nearest-neighbors-networks-knn"></a>
 </h3>
-<p>Generate a spatial network where each point has k neighbors. A <code>maximum_distance</code> cutoff can also be applied here, but is not done by default. Giotto implements KNN network generation through <em>dbscan</em>.</p>
+<p>Generate a spatial network where each point has k neighbors. A
+<code>maximum_distance</code> cutoff can also be applied here, but is
+not done by default. Giotto implements KNN network generation through
+<em>dbscan</em>.</p>
 <p><strong>Key points</strong></p>
 <ul>
-<li>Construction: For each point in the dataset, find the k closest points based on a distance metric (often Euclidean distance).</li>
-<li>Properties: May not preserve geometric properties as well as Delaunay triangulation.</li>
-<li>Advantages: KNN is simpler to compute and some spatial statistics operate best with a fixed number of connections per node.</li>
+<li>Construction: For each point in the dataset, find the k closest
+points based on a distance metric (often Euclidean distance).</li>
+<li>Properties: May not preserve geometric properties as well as
+Delaunay triangulation.</li>
+<li>Advantages: KNN is simpler to compute and some spatial statistics
+operate best with a fixed number of connections per node.</li>
 </ul>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mer</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createSpatialKNNnetwork.html" class="external-link">createSpatialKNNnetwork</a></span><span class="op">(</span><span class="va">mer</span>, k <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
@@ -711,8 +738,9 @@
 </div>
 </div>
 <div class="section level2" number="3">
-<h2 number="3" id="spatial-feature-networks">
-<span class="header-section-number">3</span> Spatial Feature Networks<a class="anchor" aria-label="anchor" href="#spatial-feature-networks"></a>
+<h2 id="spatial-feature-networks">
+<span class="header-section-number">3</span> Spatial Feature
+Networks<a class="anchor" aria-label="anchor" href="#spatial-feature-networks"></a>
 </h2>
 <p>KNN spatial networks can be created from the feature detections.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -721,20 +749,35 @@
 <span><span class="va">mer</span><span class="op">[[</span><span class="st">"feat_info"</span>, <span class="st">"rna"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 </div>
 <div class="section level2" number="4">
-<h2 number="4" id="nearest-neighbor-networks">
-<span class="header-section-number">4</span> Nearest Neighbor Networks<a class="anchor" aria-label="anchor" href="#nearest-neighbor-networks"></a>
+<h2 id="nearest-neighbor-networks">
+<span class="header-section-number">4</span> Nearest Neighbor
+Networks<a class="anchor" aria-label="anchor" href="#nearest-neighbor-networks"></a>
 </h2>
-<p>Nearest neighbor networks are used in Giotto to aid in clustering of high-dimensional feature embeddings. Leiden and Louvain clustering are both examples of network community-based clustering approaches. These networks are usually built on top of primary dimension reduction embeddings such as PCA and NMF that help extract and highlight important signatures from the expression information.</p>
+<p>Nearest neighbor networks are used in Giotto to aid in clustering of
+high-dimensional feature embeddings. Leiden and Louvain clustering are
+both examples of network community-based clustering approaches. These
+networks are usually built on top of primary dimension reduction
+embeddings such as PCA and NMF that help extract and highlight important
+signatures from the expression information.</p>
 <div class="section level3" number="4.1">
-<h3 number="4.1" id="shared-nearest-neighbor-networks-snn">
-<span class="header-section-number">4.1</span> Shared Nearest Neighbor Networks (sNN)<a class="anchor" aria-label="anchor" href="#shared-nearest-neighbor-networks-snn"></a>
+<h3 id="shared-nearest-neighbor-networks-snn">
+<span class="header-section-number">4.1</span> Shared Nearest
+Neighbor Networks (sNN)<a class="anchor" aria-label="anchor" href="#shared-nearest-neighbor-networks-snn"></a>
 </h3>
-<p>sNN networks are the default NN network generated in Giotto. They are preferred for clustering in high-dimensional spaces since they adapt to local density variations, something crucial for identifying clusters of different densities or sizes.</p>
+<p>sNN networks are the default NN network generated in Giotto. They are
+preferred for clustering in high-dimensional spaces since they adapt to
+local density variations, something crucial for identifying clusters of
+different densities or sizes.</p>
 <p><strong>Key points</strong></p>
 <ul>
-<li>Construction: First, compute the k nearest neighbors for each point (like in kNN). For each pair of points, calculate the number of shared neighbors among their k nearest neighbors. Create an edge between two points if their number of shared neighbors exceeds a threshold.</li>
-<li>Properties: Can be treated as an undirected graph. The number of connections per node can vary.</li>
-<li>Advantages: More robust to variations in local density. Can capture complex cluster shapes and hierarchical structures.</li>
+<li>Construction: First, compute the k nearest neighbors for each point
+(like in kNN). For each pair of points, calculate the number of shared
+neighbors among their k nearest neighbors. Create an edge between two
+points if their number of shared neighbors exceeds a threshold.</li>
+<li>Properties: Can be treated as an undirected graph. The number of
+connections per node can vary.</li>
+<li>Advantages: More robust to variations in local density. Can capture
+complex cluster shapes and hierarchical structures.</li>
 </ul>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mer</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">mer</span>, type <span class="op">=</span> <span class="st">"sNN"</span><span class="op">)</span> <span class="co"># builds sNN on top of PCA space by default</span></span>
@@ -742,13 +785,16 @@
 <p><img src="images%2Fnetworks%2F4_sNN_dim.png" width="60%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="4.2">
-<h3 number="4.2" id="k-nearest-neighbors-networks-knn">
-<span class="header-section-number">4.2</span> k-Nearest Neighbors Networks (kNN)<a class="anchor" aria-label="anchor" href="#k-nearest-neighbors-networks-knn"></a>
+<h3 id="k-nearest-neighbors-networks-knn">
+<span class="header-section-number">4.2</span> k-Nearest Neighbors
+Networks (kNN)<a class="anchor" aria-label="anchor" href="#k-nearest-neighbors-networks-knn"></a>
 </h3>
 <p><strong>Key points</strong></p>
 <ul>
-<li>Construction: For each point in the embedding space, find the k closest points based on a distance metric</li>
-<li>Properties: Results in a directed graph, as the “nearest neighbor” relationship isn’t always symmetric.</li>
+<li>Construction: For each point in the embedding space, find the k
+closest points based on a distance metric</li>
+<li>Properties: Results in a directed graph, as the “nearest neighbor”
+relationship isn’t always symmetric.</li>
 </ul>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mer</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">mer</span>, type <span class="op">=</span> <span class="st">"kNN"</span><span class="op">)</span> <span class="co"># builds kNN on top of PCA space by default</span></span>
@@ -757,10 +803,15 @@
 </div>
 </div>
 <div class="section level2" number="5">
-<h2 number="5" id="api-function">
+<h2 id="api-function">
 <span class="header-section-number">5</span> API function<a class="anchor" aria-label="anchor" href="#api-function"></a>
 </h2>
-<p><code><a href="https://drieslab.github.io/GiottoClass/reference/createNetwork.html" class="external-link">createNetwork()</a></code> exported from <em>GiottoClass</em> allows creation of any of the above network types, starting from a <code>matrix</code> of nodes. These nodes can be n-dimensional expression information, dimension reduction, or spatial coordinates. The output is either <code>igraph</code> if <code>as.igraph = TRUE</code> and <code>data.table</code> otherwise.</p>
+<p><code><a href="https://drieslab.github.io/GiottoClass/reference/createNetwork.html" class="external-link">createNetwork()</a></code> exported from <em>GiottoClass</em>
+allows creation of any of the above network types, starting from a
+<code>matrix</code> of nodes. These nodes can be n-dimensional
+expression information, dimension reduction, or spatial coordinates. The
+output is either <code>igraph</code> if <code>as.igraph = TRUE</code>
+and <code>data.table</code> otherwise.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">topo</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">volcano</span><span class="op">)</span>,</span>
 <span>                    y <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">volcano</span><span class="op">)</span><span class="op">)</span></span>
@@ -819,7 +870,7 @@
 42456:  5307  5131  0.125 2.828427</code></pre>
 </div>
 <div class="section level2" number="6">
-<h2 number="6" id="session-info">
+<h2 id="session-info">
 <span class="header-section-number">6</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">

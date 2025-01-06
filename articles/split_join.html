@@ -598,17 +598,25 @@
 
     
     
-<p><code><a href="https://drieslab.github.io/GiottoClass/reference/splitGiotto.html" class="external-link">splitGiotto()</a></code> and <code><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects()</a></code> are how Giotto works with multiple samples.</p>
+<p><code><a href="https://drieslab.github.io/GiottoClass/reference/splitGiotto.html" class="external-link">splitGiotto()</a></code> and <code><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects()</a></code> are
+how Giotto works with multiple samples.</p>
 <ul>
 <li>
-<code><a href="https://drieslab.github.io/GiottoClass/reference/splitGiotto.html" class="external-link">splitGiotto()</a></code> - separate a single <code>giotto</code> object into a list of several based on a cell metadata column</li>
+<code><a href="https://drieslab.github.io/GiottoClass/reference/splitGiotto.html" class="external-link">splitGiotto()</a></code> - separate a single <code>giotto</code>
+object into a list of several based on a cell metadata column</li>
 <li>
-<code><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects()</a></code> - combine a list of multiple <code>giotto</code> objects into a single <code>giotto</code> object.</li>
+<code><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects()</a></code> - combine a list of multiple
+<code>giotto</code> objects into a single <code>giotto</code>
+object.</li>
 </ul>
-<p>An example set of FOVs from the lung 12 sample of the CosMx SMI NSCLC FFPE <a href="https://nanostring.com/products/cosmx-spatial-molecular-imager/ffpe-dataset/nsclc-ffpe-dataset/" class="external-link">dataset</a> and a mini dataset from a 10X visium mouse brain dataset will be used for this tutorial.</p>
+<p>An example set of FOVs from the lung 12 sample of the CosMx SMI NSCLC
+FFPE <a href="https://nanostring.com/products/cosmx-spatial-molecular-imager/ffpe-dataset/nsclc-ffpe-dataset/" class="external-link">dataset</a>
+and a mini dataset from a 10X visium mouse brain dataset will be used
+for this tutorial.</p>
 <div class="section level2" number="1">
-<h2 number="1" id="check-giotto-installation">
-<span class="header-section-number">1</span> Check Giotto installation<a class="anchor" aria-label="anchor" href="#check-giotto-installation"></a>
+<h2 id="check-giotto-installation">
+<span class="header-section-number">1</span> Check Giotto
+installation<a class="anchor" aria-label="anchor" href="#check-giotto-installation"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed.</span></span>
@@ -631,17 +639,25 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://drieslab.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="2">
-<h2 number="2" id="load-in-data">
+<h2 id="load-in-data">
 <span class="header-section-number">2</span> Load in Data<a class="anchor" aria-label="anchor" href="#load-in-data"></a>
 </h2>
-<p>For the first sets of examples we load a mini visium object from <em>GiottoData</em> in as <code>g</code> .</p>
+<p>For the first sets of examples we load a mini visium object from
+<em>GiottoData</em> in as <code>g</code> .</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu">GiottoData</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoData/reference/loadGiottoMini.html" class="external-link">loadGiottoMini</a></span><span class="op">(</span><span class="st">"visium"</span><span class="op">)</span></span></code></pre></div>
-<p>Next, two Nanostring CosMx FOVs will be loaded in from <em>GiottoData</em> example files as <code>giotto</code> objects called <code>a</code> and <code>b</code>.</p>
-<p><strong>This is from an edited mini dataset, and some parts of loading and object creation should not be taken as guidance so the steps will be hidden by default.</strong></p>
-<p>For information on how to load in a standard CosMx dataset, see the Nanostring CosMx section under the Examples tab, or the <a href="object_creation.html">giotto object creation tutorial</a> for general instructions.</p>
-<details><p><summary>Load in <code>a</code> and <code>b</code> <code>giotto</code> objects</summary></p>
-<p><strong>Dataset Paths</strong></p>
+<p>Next, two Nanostring CosMx FOVs will be loaded in from
+<em>GiottoData</em> example files as <code>giotto</code> objects called
+<code>a</code> and <code>b</code>.</p>
+<p><strong>This is from an edited mini dataset, and some parts of
+loading and object creation should not be taken as guidance so the steps
+will be hidden by default.</strong></p>
+<p>For information on how to load in a standard CosMx dataset, see the
+Nanostring CosMx section under the Examples tab, or the <a href="object_creation.html">giotto object creation tutorial</a> for
+general instructions.</p>
+<details><summary>
+Load in <code>a</code> and <code>b</code> <code>giotto</code> objects
+</summary><p><strong>Dataset Paths</strong></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gdata_cosmx_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span>package <span class="op">=</span> <span class="st">"GiottoData"</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"Mini_datasets"</span>, <span class="st">"CosMx"</span>, <span class="st">"Raw"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">tx_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">gdata_cosmx_dir</span>, <span class="st">"Lung12_tx_file.csv"</span><span class="op">)</span></span>
@@ -703,16 +719,31 @@
 <details></details></details>
 </div>
 <div class="section level2" number="3">
-<h2 number="3" id="join-giotto-objects">
-<span class="header-section-number">3</span> Join Giotto Objects<a class="anchor" aria-label="anchor" href="#join-giotto-objects"></a>
+<h2 id="join-giotto-objects">
+<span class="header-section-number">3</span> Join Giotto
+Objects<a class="anchor" aria-label="anchor" href="#join-giotto-objects"></a>
 </h2>
-<p>Multiple <code>giotto</code> objects can be combined into a single one through <code><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects()</a></code>. This requires both the list of <code>giotto</code> objects and a list of names to assign those objects in the joined object. The operation updates the cell IDs used throughout the object so that they are disambiguated from possibly similar cell IDs in other objects. A new column (called “list_ID” by default) is also added to the cell metadata to help differentiate between samples.</p>
-<p>Since Giotto primarily handles spatial data, the object joining operations also allow customization of how the spatial joining is performed.</p>
+<p>Multiple <code>giotto</code> objects can be combined into a single
+one through <code><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects()</a></code>. This requires both the
+list of <code>giotto</code> objects and a list of names to assign those
+objects in the joined object. The operation updates the cell IDs used
+throughout the object so that they are disambiguated from possibly
+similar cell IDs in other objects. A new column (called “list_ID” by
+default) is also added to the cell metadata to help differentiate
+between samples.</p>
+<p>Since Giotto primarily handles spatial data, the object joining
+operations also allow customization of how the spatial joining is
+performed.</p>
 <div class="section level3" number="3.1">
-<h3 number="3.1" id="join-with-shift-default">
-<span class="header-section-number">3.1</span> Join with shift (default)<a class="anchor" aria-label="anchor" href="#join-with-shift-default"></a>
+<h3 id="join-with-shift-default">
+<span class="header-section-number">3.1</span> Join with shift
+(default)<a class="anchor" aria-label="anchor" href="#join-with-shift-default"></a>
 </h3>
-<p>The default join method is to apply a spatial x padding of 1000, so that spatial data does not accidentally overlap each other and become hard to tell apart between samples. <code>dry_run = TRUE</code> can be set in order to get a preview of how the datasets will be spatially positioned relative to each other in 2D join operations.</p>
+<p>The default join method is to apply a spatial x padding of 1000, so
+that spatial data does not accidentally overlap each other and become
+hard to tell apart between samples. <code>dry_run = TRUE</code> can be
+set in order to get a preview of how the datasets will be spatially
+positioned relative to each other in 2D join operations.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">g</span><span class="op">)</span>,</span>
@@ -720,7 +751,8 @@
 <span>    dry_run <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fsplit_join%2F3_join_dry.png" width="60%" style="display: block; margin: auto auto auto 0;"></p>
-<p>Alternative positionings can be set by supplying vectors of numerical values to <code>x_shift</code> and <code>y_shift</code> params.</p>
+<p>Alternative positionings can be set by supplying vectors of numerical
+values to <code>x_shift</code> and <code>y_shift</code> params.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">g</span><span class="op">)</span>,</span>
@@ -746,11 +778,16 @@
 <p><img src="images%2Fsplit_join%2F5_join_shift.png" width="60%" style="display: block; margin: auto auto auto 0;"></p>
 </div>
 <div class="section level3" number="3.2">
-<h3 number="3.2" id="join-with-z-stack">
-<span class="header-section-number">3.2</span> Join with Z-stack<a class="anchor" aria-label="anchor" href="#join-with-z-stack"></a>
+<h3 id="join-with-z-stack">
+<span class="header-section-number">3.2</span> Join with
+Z-stack<a class="anchor" aria-label="anchor" href="#join-with-z-stack"></a>
 </h3>
-<p>Spatial datasets are often generated in slices. If multiple datasets were generated from sequential slices of the same or very similar tissue, after spatial alignment/registration, it can be helpful to stack them on the Z axis to generate a 3D volume to analyze.</p>
-<p>This stacking can be performed during the object joining operation. Here we show an example of this with the example visium</p>
+<p>Spatial datasets are often generated in slices. If multiple datasets
+were generated from sequential slices of the same or very similar
+tissue, after spatial alignment/registration, it can be helpful to stack
+them on the Z axis to generate a 3D volume to analyze.</p>
+<p>This stacking can be performed during the object joining operation.
+Here we show an example of this with the example visium</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">j_stack</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">g</span>, <span class="va">g</span>, <span class="va">g</span>, <span class="va">g</span><span class="op">)</span>,</span>
@@ -768,13 +805,19 @@
 <span>    axis_scale <span class="op">=</span> <span class="st">"real"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fsplit_join%2F6_join_stack.png" width="60%" style="display: block; margin: auto auto auto 0;"></p>
-<p>The above uses 100 as the stepwise distance between all stacks, but z positioning can be customized by providing a specific numerical z value for each slice to add.</p>
+<p>The above uses 100 as the stepwise distance between all stacks, but z
+positioning can be customized by providing a specific numerical z value
+for each slice to add.</p>
 </div>
 <div class="section level3" number="3.3">
-<h3 number="3.3" id="join-with-no-change">
-<span class="header-section-number">3.3</span> Join with no change<a class="anchor" aria-label="anchor" href="#join-with-no-change"></a>
+<h3 id="join-with-no-change">
+<span class="header-section-number">3.3</span> Join with no
+change<a class="anchor" aria-label="anchor" href="#join-with-no-change"></a>
 </h3>
-<p>The CosMx mini dataset loaded in previously as <code>a</code> and <code>b</code> are already spatially located in the correct locations relative to each other. For these cases, we can join the objects with <code>join_method = "no_change"</code></p>
+<p>The CosMx mini dataset loaded in previously as <code>a</code> and
+<code>b</code> are already spatially located in the correct locations
+relative to each other. For these cases, we can join the objects with
+<code>join_method = "no_change"</code></p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">join_nc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">)</span>,</span>
@@ -800,11 +843,17 @@
 </div>
 </div>
 <div class="section level2" number="4">
-<h2 number="4" id="split-giotto-object">
-<span class="header-section-number">4</span> Split Giotto Object<a class="anchor" aria-label="anchor" href="#split-giotto-object"></a>
+<h2 id="split-giotto-object">
+<span class="header-section-number">4</span> Split Giotto
+Object<a class="anchor" aria-label="anchor" href="#split-giotto-object"></a>
 </h2>
-<p>The reverse can also be done. A split operation will split a single <code>giotto</code> object into a list of several based on a cell metadata column defined by the <code>by</code> param. This can be helpful for splitting apart samples again or examining all subsets of a categorical variable within a dataset such as cell type.</p>
-<p>Do note however, that this will not reverse the naming changes applied to the cell IDs.</p>
+<p>The reverse can also be done. A split operation will split a single
+<code>giotto</code> object into a list of several based on a cell
+metadata column defined by the <code>by</code> param. This can be
+helpful for splitting apart samples again or examining all subsets of a
+categorical variable within a dataset such as cell type.</p>
+<p>Do note however, that this will not reverse the naming changes
+applied to the cell IDs.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">glist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/splitGiotto.html" class="external-link">splitGiotto</a></span><span class="op">(</span><span class="va">join_nc</span>, by <span class="op">=</span> <span class="st">"list_ID"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/force.html" class="external-link">force</a></span><span class="op">(</span><span class="va">glist</span><span class="op">)</span></span></code></pre></div>
@@ -847,7 +896,7 @@ images      : fov_1-image fov_2-image
 Use objHistory() to see steps and params used</code></pre>
 </div>
 <div class="section level2" number="5">
-<h2 number="5" id="session-info">
+<h2 id="session-info">
 <span class="header-section-number">5</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">

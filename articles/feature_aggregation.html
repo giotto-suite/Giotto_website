@@ -598,16 +598,34 @@
 
     
     
-<p><strong>Note:</strong> <em>Feature aggregation is mainly used with subcellular datasets</em></p>
-<p><strong>See also:</strong> <a href="./object_creation.html">Giotto object creation</a> for a more complete introduction to <strong>raw spatial features</strong> and <strong>spatial units</strong>.</p>
-<p>Many analysis methods work best with spatial features that have been aggregated based on some kind of functional context e.g. a cell, niche, or domain into an expression matrix format. Giotto provides tools to do this aggregation with sets of spatial unit annotations (represented as <code>giottoPolygon</code>) overlapped against point features (<code>giottoPoints</code>) and raster intensity-based features (<code>giottoLargeImage</code>):</p>
+<p><strong>Note:</strong> <em>Feature aggregation is mainly used with
+subcellular datasets</em></p>
+<p><strong>See also:</strong> <a href="./object_creation.html">Giotto
+object creation</a> for a more complete introduction to <strong>raw
+spatial features</strong> and <strong>spatial units</strong>.</p>
+<p>Many analysis methods work best with spatial features that have been
+aggregated based on some kind of functional context e.g. a cell, niche,
+or domain into an expression matrix format. Giotto provides tools to do
+this aggregation with sets of spatial unit annotations (represented as
+<code>giottoPolygon</code>) overlapped against point features
+(<code>giottoPoints</code>) and raster intensity-based features
+(<code>giottoLargeImage</code>):</p>
 <ul>
 <li>
-<a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap</a> Is used in order to find spatial overlaps between individual polygon IDs and raw feature detections or image values and return it as a table.</li>
+<a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap</a>
+Is used in order to find spatial overlaps between individual polygon IDs
+and raw feature detections or image values and return it as a
+table.</li>
 <li>
-<a href="https://drieslab.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a> Is used to take the table of relations calculated in <code><a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap()</a></code> and turn that into an expression matrix.</li>
+<a href="https://drieslab.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a>
+Is used to take the table of relations calculated in
+<code><a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap()</a></code> and turn that into an expression
+matrix.</li>
 </ul>
-<p>These are generic functions and they can either be performed directly on the Giotto subobjects (see function documentation examples above for more info) or from the overarching <code>giotto</code> analysis object.</p>
+<p>These are generic functions and they can either be performed directly
+on the Giotto subobjects (see function documentation examples above for
+more info) or from the overarching <code>giotto</code> analysis
+object.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed.</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -623,7 +641,10 @@
 <div class="section level2">
 <h2 id="feature-point-aggregation">Feature point aggregation<a class="anchor" aria-label="anchor" href="#feature-point-aggregation"></a>
 </h2>
-<p>Giotto performs feature point aggregation by converting polygonal annotations to raster masks and then extracting the overlapped points data. This is a slight approximation, but is a large speed improvement.</p>
+<p>Giotto performs feature point aggregation by converting polygonal
+annotations to raster masks and then extracting the overlapped points
+data. This is a slight approximation, but is a large speed
+improvement.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu">GiottoData</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoData/reference/loadGiottoMini.html" class="external-link">loadGiottoMini</a></span><span class="op">(</span><span class="st">"vizgen"</span><span class="op">)</span></span>
 <span></span>
@@ -638,10 +659,17 @@
 <span>    feat_info <span class="op">=</span> <span class="st">"rna"</span>, </span>
 <span>    name <span class="op">=</span> <span class="st">"raw"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<details><p><summary>Comparison of Giotto vs default outputs</summary></p>
-<p><br></p>
-<p>Due to the approximation and possible differences by which points overlaps are called depending on the software, it is possible for there to be small differences between the values calculated from Giotto Suite vs those provided as part of the standard outputs.</p>
-<p>Here we provide an example comparison between Giotto Suite overlaps vs original Nanostring CosMx expression matrix outputs from their <a href="https://nanostring.com/resources/smi-ffpe-dataset-lung12-data/" class="external-link">legacy FFPE non-small-cell lung cancer dataset</a>. This example is using FOV2 from the Lung12 dataset.</p>
+<details><summary>
+Comparison of Giotto vs default outputs
+</summary><p><br></p>
+<p>Due to the approximation and possible differences by which points
+overlaps are called depending on the software, it is possible for there
+to be small differences between the values calculated from Giotto Suite
+vs those provided as part of the standard outputs.</p>
+<p>Here we provide an example comparison between Giotto Suite overlaps
+vs original Nanostring CosMx expression matrix outputs from their <a href="https://nanostring.com/resources/smi-ffpe-dataset-lung12-data/" class="external-link">legacy
+FFPE non-small-cell lung cancer dataset</a>. This example is using FOV2
+from the Lung12 dataset.</p>
 <p><strong>import data</strong></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ** SET PATH TO FOLDER CONTAINING COSMX DATA **</span></span>
@@ -682,7 +710,8 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">polys</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"c_1_2_1796"</span>, <span class="st">"c_1_2_244"</span><span class="op">)</span><span class="op">]</span>, col <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">polys</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, border <span class="op">=</span> <span class="st">"red"</span>, lwd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Ffeature_aggregation%2F2_missing_cells.png" width="30%" style="display: block; margin: auto;"></p>
-<p>These polygons are entirely overlapped by other polygons and thus ignored</p>
+<p>These polygons are entirely overlapped by other polygons and thus
+ignored</p>
 <p><strong>prep data for comparison</strong></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Align matrix ordering</span></span>
@@ -738,7 +767,10 @@
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">pl</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Ffeature_aggregation%2F4_diff_hist.png" width="60%" style="display: block; margin: auto;"></p>
-<p>Overall of the shared entries that were called by both methods (common i and j indices), there appears to be no major bias in terms of counts/values assigned. Moreover, the vast majority of these shared entries have the same values (difference of 0).</p>
+<p>Overall of the shared entries that were called by both methods
+(common i and j indices), there appears to be no major bias in terms of
+counts/values assigned. Moreover, the vast majority of these shared
+entries have the same values (difference of 0).</p>
 <hr></details>
 </div>
 <div class="section level2">

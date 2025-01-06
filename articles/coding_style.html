@@ -598,13 +598,20 @@
 
     
     
-<p>Following a particular programming style will help programmers read and understand source code conforming to the style, and help to avoid introducing errors. Here we present a small list of guidelines on what is considered a good practice when writing R code in Giotto package. Most of them are adapted from Bioconductor - coding style or Google’s R Style Guide. These guidelines are preferences and strongly encouraged!</p>
+<p>Following a particular programming style will help programmers read
+and understand source code conforming to the style, and help to avoid
+introducing errors. Here we present a small list of guidelines on what
+is considered a good practice when writing R code in Giotto package.
+Most of them are adapted from Bioconductor - coding style or Google’s R
+Style Guide. These guidelines are preferences and strongly
+encouraged!</p>
 <div class="section level2" number="1">
-<h2 number="1" id="overall-style">
+<h2 id="overall-style">
 <span class="header-section-number">1</span> Overall Style<a class="anchor" aria-label="anchor" href="#overall-style"></a>
 </h2>
 <ul>
-<li>We follow the BioConductor styling. You can set this up easily by installing <em>biocthis</em> and <em>styler.</em>
+<li>We follow the BioConductor styling. You can set this up easily by
+installing <em>biocthis</em> and <em>styler.</em>
 </li>
 </ul>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -620,38 +627,61 @@
 <span><span class="co"># generally only run by core devs</span></span>
 <span><span class="fu">styler</span><span class="fu">::</span><span class="fu">style_pkg</span><span class="op">(</span>transformers <span class="op">=</span> <span class="va">b_style</span><span class="op">)</span></span></code></pre></div>
 <ul>
-<li>setting your default indent size to be 4 spaces instead of 2 is also recommended.</li>
+<li>setting your default indent size to be 4 spaces instead of 2 is also
+recommended.</li>
 </ul>
 <!-- -->
 </div>
 <div class="section level2" number="2">
-<h2 number="2" id="function-types-in-giotto-suite">
-<span class="header-section-number">2</span> Function Types in Giotto Suite<a class="anchor" aria-label="anchor" href="#function-types-in-giotto-suite"></a>
+<h2 id="function-types-in-giotto-suite">
+<span class="header-section-number">2</span> Function Types in
+Giotto Suite<a class="anchor" aria-label="anchor" href="#function-types-in-giotto-suite"></a>
 </h2>
 <ul>
-<li><p><strong>exported</strong> - Core functionality for users to directly use. These should have clear names and documentation</p></li>
-<li><p><strong>exported utility</strong> - Secondary functionalities that are helpful to also have available, but are not directly related to data processing, analysis, and visualization. Examples are <code>dt_to_matrix()</code> or <code>wrap_msg()</code>. Another reason for this type of function is because Giotto is modular and some functions that are not expected to be commonly used by end users also need to be exported so that they are available across the Giotto ecosystem.</p></li>
-<li><p><strong>internal</strong> - Functions that are never intended to be used outside of a module package. These are functions only relevant to the internals of one package, for example <code>.detect_in_dir()</code> from <em>Giotto’s</em> internals which is pretty nondescript and mainly there to help with code organization.</p></li>
+<li><p><strong>exported</strong> - Core functionality for users to
+directly use. These should have clear names and documentation</p></li>
+<li><p><strong>exported utility</strong> - Secondary functionalities
+that are helpful to also have available, but are not directly related to
+data processing, analysis, and visualization. Examples are
+<code>dt_to_matrix()</code> or <code>wrap_msg()</code>. Another reason
+for this type of function is because Giotto is modular and some
+functions that are not expected to be commonly used by end users also
+need to be exported so that they are available across the Giotto
+ecosystem.</p></li>
+<li><p><strong>internal</strong> - Functions that are never intended to
+be used outside of a module package. These are functions only relevant
+to the internals of one package, for example
+<code>.detect_in_dir()</code> from <em>Giotto’s</em> internals which is
+pretty nondescript and mainly there to help with code
+organization.</p></li>
 </ul>
 </div>
 <div class="section level2" number="3">
-<h2 number="3" id="function-naming">
+<h2 id="function-naming">
 <span class="header-section-number">3</span> Function Naming<a class="anchor" aria-label="anchor" href="#function-naming"></a>
 </h2>
 <ul>
-<li><p>Use <code>camelCase</code> for <strong>exported</strong> functions. ex: <code>functionName()</code></p></li>
-<li><p>Use <code>snake_case</code> for <strong>exported utiliity</strong> functions. ex: <code>function_name()</code></p></li>
-<li><p>Use <code>.</code> prefix AND <code>snake_case</code> for <strong>internal</strong> functions. ex: <code>.function_name()</code></p></li>
-<li><p>Use <code>snake_case</code> for parameter/argument names.</p></li>
-<li><p>Never use <code>.</code> as a separator in function naming. (in the S3 class system, <code>fun(x)</code> where <code>x</code> is class foo will dispatch to <code>fun.foo()</code>)</p></li>
+<li><p>Use <code>camelCase</code> for <strong>exported</strong>
+functions. ex: <code>functionName()</code></p></li>
+<li><p>Use <code>snake_case</code> for <strong>exported
+utiliity</strong> functions. ex: <code>function_name()</code></p></li>
+<li><p>Use <code>.</code> prefix AND <code>snake_case</code> for
+<strong>internal</strong> functions. ex:
+<code>.function_name()</code></p></li>
+<li><p>Use <code>snake_case</code> for parameter/argument
+names.</p></li>
+<li><p>Never use <code>.</code> as a separator in function naming. (in
+the S3 class system, <code>fun(x)</code> where <code>x</code> is class
+foo will dispatch to <code>fun.foo()</code>)</p></li>
 </ul>
 </div>
 <div class="section level2" number="4">
-<h2 number="4" id="use-of-symbols">
+<h2 id="use-of-symbols">
 <span class="header-section-number">4</span> Use of Symbols<a class="anchor" aria-label="anchor" href="#use-of-symbols"></a>
 </h2>
 <ul>
-<li>Do not use any non-UTF-8 characters unless provided as the escape code.
+<li>Do not use any non-UTF-8 characters unless provided as the escape
+code.
 <ul>
 <li>For example: use <code>\u00F6</code> for <code>ö</code>.</li>
 </ul>

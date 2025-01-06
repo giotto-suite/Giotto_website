@@ -598,19 +598,40 @@
 
     
     
-<p><em>Giotto</em> version <code>2.0.0.998</code>. Please check the version you are using to get the same results.</p>
+<p><em>Giotto</em> version <code>2.0.0.998</code>. Please check the
+version you are using to get the same results.</p>
 <div class="section level2" number="1">
-<h2 number="1" id="dataset-explanation">
-<span class="header-section-number">1</span> Dataset explanation<a class="anchor" aria-label="anchor" href="#dataset-explanation"></a>
+<h2 id="dataset-explanation">
+<span class="header-section-number">1</span> Dataset
+explanation<a class="anchor" aria-label="anchor" href="#dataset-explanation"></a>
 </h2>
-<p>This vignette covers Giotto object creation and simple exploratory analysis with the subcellular <a href="https://vizgen.com/applications/neuroscience-showcase/" class="external-link">MERFISH Mouse Brain Receptor Map dataset</a> provided by Vizgen with their MERSCOPE platform.</p>
-<p>Transcripts are captured at the single-molecule level with subcellular spatial resolution (≤100nm). This dataset includes information from 9 full coronal mouse brain slices (3 positions with 3 biological replicates) that were profiled for 483 genes. This vignette works with slice 1, replicate 1.</p>
+<p>This vignette covers Giotto object creation and simple exploratory
+analysis with the subcellular <a href="https://vizgen.com/applications/neuroscience-showcase/" class="external-link">MERFISH
+Mouse Brain Receptor Map dataset</a> provided by Vizgen with their
+MERSCOPE platform.</p>
+<p>Transcripts are captured at the single-molecule level with
+subcellular spatial resolution (≤100nm). This dataset includes
+information from 9 full coronal mouse brain slices (3 positions with 3
+biological replicates) that were profiled for 483 genes. This vignette
+works with slice 1, replicate 1.</p>
 <p><strong>Provided Outputs:</strong></p>
 <ul>
-<li>List of all <strong>detected transcripts</strong> and their spatial locations in three dimensions (CSV)</li>
+<li>List of all <strong>detected transcripts</strong> and their spatial
+locations in three dimensions (CSV)</li>
 </ul>
 <p>Show first 4 rows</p>
 <table class="table">
+<colgroup>
+<col width="4%">
+<col width="15%">
+<col width="12%">
+<col width="12%">
+<col width="12%">
+<col width="12%">
+<col width="14%">
+<col width="5%">
+<col width="9%">
+</colgroup>
 <thead><tr class="header">
 <th align="right">V1</th>
 <th align="right">barcode_id</th>
@@ -671,7 +692,8 @@
 </table>
 <ul>
 <li><p>Output from the cell segmentation analysis:</p></li>
-<li><p><strong>transcripts</strong> (cols) per <strong>cell</strong> (rows) aggregated count matrix (CSV)</p></li>
+<li><p><strong>transcripts</strong> (cols) per <strong>cell</strong>
+(rows) aggregated count matrix (CSV)</p></li>
 </ul>
 <p>Show first 4 rows and columns</p>
 <table class="table">
@@ -713,7 +735,18 @@
 <strong>cell metadata</strong> (CSV)</li>
 </ul>
 <p>Show first 4 rows</p>
-<table class="table">
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="16%">
+<col width="4%">
+<col width="12%">
+<col width="11%">
+<col width="11%">
+<col width="11%">
+<col width="11%">
+<col width="11%">
+<col width="11%">
+</colgroup>
 <thead><tr class="header">
 <th align="right">V1</th>
 <th align="right">fov</th>
@@ -774,30 +807,31 @@
 </table>
 <ul>
 <li><p><strong>cell boundaries</strong> (HDF5)</p></li>
-<li><p>The <strong>DAPI</strong> and <strong>Poly T mosaic images</strong> (TIFF)</p></li>
+<li><p>The <strong>DAPI</strong> and <strong>Poly T mosaic
+images</strong> (TIFF)</p></li>
 </ul>
 <p><code>Vizgen Data Release V1.0. May 2021</code></p>
 </div>
 <div class="section level2" number="2">
-<h2 number="2" id="set-up-giotto">
+<h2 id="set-up-giotto">
 <span class="header-section-number">2</span> Set up Giotto<a class="anchor" aria-label="anchor" href="#set-up-giotto"></a>
 </h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="co"># Ensure Giotto Suite is installed.</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="cf">if</span>(<span class="op">!</span><span class="st">"Giotto"</span> <span class="op">%in%</span><span class="st"> </span><span class="kw">installed.packages</span>()) {</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a>  pak<span class="op">::</span><span class="kw">pkg_install</span>(<span class="st">"drieslab/Giotto"</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a>}</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a><span class="co"># Ensure GiottoData, a small, helper module for tutorials, is installed.</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a><span class="cf">if</span>(<span class="op">!</span><span class="st">"GiottoData"</span> <span class="op">%in%</span><span class="st"> </span><span class="kw">installed.packages</span>()) {</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true"></a>  pak<span class="op">::</span><span class="kw">pkg_install</span>((<span class="st">"drieslab/GiottoData"</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true"></a><span class="er">}</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true"></a><span class="co"># Ensure the Python environment for Giotto has been installed.</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true"></a>genv_exists &lt;-<span class="st"> </span>Giotto<span class="op">::</span><span class="kw">checkGiottoEnvironment</span>()</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true"></a><span class="cf">if</span>(<span class="op">!</span>genv_exists){</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true"></a>  <span class="co"># The following command need only be run once to install the Giotto environment.</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true"></a>  Giotto<span class="op">::</span><span class="kw">installGiottoEnvironment</span>()</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Ensure Giotto Suite is installed.</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="st">"Giotto"</span> <span class="sc">%in%</span> <span class="fu">installed.packages</span>()) {</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  pak<span class="sc">::</span><span class="fu">pkg_install</span>(<span class="st">"drieslab/Giotto"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>}</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co"># Ensure GiottoData, a small, helper module for tutorials, is installed.</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="st">"GiottoData"</span> <span class="sc">%in%</span> <span class="fu">installed.packages</span>()) {</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>  pak<span class="sc">::</span><span class="fu">pkg_install</span>((<span class="st">"drieslab/GiottoData"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="er">}</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co"># Ensure the Python environment for Giotto has been installed.</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>genv_exists <span class="ot">&lt;-</span> Giotto<span class="sc">::</span><span class="fu">checkGiottoEnvironment</span>()</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span>genv_exists){</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>  <span class="co"># The following command need only be run once to install the Giotto environment.</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>  Giotto<span class="sc">::</span><span class="fu">installGiottoEnvironment</span>()</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>}</span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://drieslab.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://drieslab.github.io/GiottoData/" class="external-link">GiottoData</a></span><span class="op">)</span></span>
@@ -811,8 +845,9 @@
 <span><span class="va">python_path</span> <span class="op">&lt;-</span> <span class="cn">NULL</span> <span class="co"># alternatively, "/local/python/path/python" if desired.</span></span></code></pre></div>
 </div>
 <div class="section level2" number="3">
-<h2 number="3" id="giotto-global-instructions-and-preparations">
-<span class="header-section-number">3</span> Giotto global instructions and preparations<a class="anchor" aria-label="anchor" href="#giotto-global-instructions-and-preparations"></a>
+<h2 id="giotto-global-instructions-and-preparations">
+<span class="header-section-number">3</span> Giotto global
+instructions and preparations<a class="anchor" aria-label="anchor" href="#giotto-global-instructions-and-preparations"></a>
 </h2>
 <p>Define plot saving behavior and project data paths</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -838,13 +873,29 @@
 <span><span class="va">img_path</span> <span class="op">&lt;-</span> <span class="st">"path/to/mosaic_DAPI_z0.tif"</span></span></code></pre></div>
 </div>
 <div class="section level2" number="4">
-<h2 number="4" id="create-giotto-object-from-aggregated-data">
-<span class="header-section-number">4</span> Create Giotto object from aggregated data<a class="anchor" aria-label="anchor" href="#create-giotto-object-from-aggregated-data"></a>
+<h2 id="create-giotto-object-from-aggregated-data">
+<span class="header-section-number">4</span> Create Giotto object
+from aggregated data<a class="anchor" aria-label="anchor" href="#create-giotto-object-from-aggregated-data"></a>
 </h2>
-<p>Vizgen provides a cell by transcript output matrix (<code>cell_by_gene.csv</code>) with the subcellular spatial transcript information already aggregated by the provided polygon cell annotations into a count matrix.</p>
-<p>Along with the count matrix, metadata information about the field of view (FOV), spatial location, and volume of the cell (annotation polygons) is also provided through the <code>cell_metadata.csv</code>.</p>
-<p><strong>Pre-aggregated</strong> information can be loaded into Giotto with the usual generic <code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObject.html" class="external-link">createGiottoObject()</a></code> function. For starting from the raw subcellular information, skip to Section 10. To create the Giotto object, the <code>cell_by_gene</code> expression matrix and the <code>cell_metadata</code> information are first read into R. Since Giotto accepts the expression information with features (in this case genes/transcript counts) as rows and cells as columns, the expression matrix must first be transposed to create the object.</p>
-<p>Additionally for this dataset, y values should be inverted when loaded to match the included images. For more information consult ths standard workflow at getting_started_images section.</p>
+<p>Vizgen provides a cell by transcript output matrix
+(<code>cell_by_gene.csv</code>) with the subcellular spatial transcript
+information already aggregated by the provided polygon cell annotations
+into a count matrix.</p>
+<p>Along with the count matrix, metadata information about the field of
+view (FOV), spatial location, and volume of the cell (annotation
+polygons) is also provided through the
+<code>cell_metadata.csv</code>.</p>
+<p><strong>Pre-aggregated</strong> information can be loaded into Giotto
+with the usual generic <code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObject.html" class="external-link">createGiottoObject()</a></code> function. For
+starting from the raw subcellular information, skip to Section 10. To
+create the Giotto object, the <code>cell_by_gene</code> expression
+matrix and the <code>cell_metadata</code> information are first read
+into R. Since Giotto accepts the expression information with features
+(in this case genes/transcript counts) as rows and cells as columns, the
+expression matrix must first be transposed to create the object.</p>
+<p>Additionally for this dataset, y values should be inverted when
+loaded to match the included images. For more information consult ths
+standard workflow at getting_started_images section.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># read expression matrix and metadata</span></span>
 <span><span class="va">expr_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/readExprMatrix.html" class="external-link">readExprMatrix</a></span><span class="op">(</span><span class="va">expr_path</span><span class="op">)</span></span>
@@ -859,8 +910,9 @@
 <span><span class="va">vizgen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addCellMetadata.html" class="external-link">addCellMetadata</a></span><span class="op">(</span><span class="va">vizgen</span>,</span>
 <span>                          new_metadata <span class="op">=</span> <span class="va">meta_dt</span><span class="op">[</span>,<span class="fu">.</span><span class="op">(</span><span class="va">fov</span>, <span class="va">volume</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3" number="4.1">
-<h3 number="4.1" id="visualize-cells-in-space-">
-<span class="header-section-number">4.1</span> Visualize cells in space.<a class="anchor" aria-label="anchor" href="#visualize-cells-in-space-"></a>
+<h3 id="visualize-cells-in-space-">
+<span class="header-section-number">4.1</span> Visualize cells in
+space.<a class="anchor" aria-label="anchor" href="#visualize-cells-in-space-"></a>
 </h3>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">vizgen</span>,</span>
@@ -868,8 +920,9 @@
 <p><img src="images%2Fvizgen_mouse_brain%2F0-overview_spatplot.png"></p>
 </div>
 <div class="section level3" number="4.2">
-<h3 number="4.2" id="visualize-cells-by-fov-">
-<span class="header-section-number">4.2</span> Visualize cells by FOV.<a class="anchor" aria-label="anchor" href="#visualize-cells-by-fov-"></a>
+<h3 id="visualize-cells-by-fov-">
+<span class="header-section-number">4.2</span> Visualize cells by
+FOV.<a class="anchor" aria-label="anchor" href="#visualize-cells-by-fov-"></a>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># FOVs as a factor</span></span>
@@ -888,10 +941,15 @@
 </div>
 </div>
 <div class="section level2" number="5">
-<h2 number="5" id="attaching-images">
+<h2 id="attaching-images">
 <span class="header-section-number">5</span> Attaching images<a class="anchor" aria-label="anchor" href="#attaching-images"></a>
 </h2>
-<p>Images for confocal planes z0 to z6 are provided for both <strong>DAPI</strong> (cell nucleus staining) and <strong>polyT</strong> for all datasets. A <code>micron_to_mosaic_pixel_transform.csv</code> is included within the <code>images</code> folder that provides scaling factors to map the image to the spatial coordinates. For this dataset:</p>
+<p>Images for confocal planes z0 to z6 are provided for both
+<strong>DAPI</strong> (cell nucleus staining) and <strong>polyT</strong>
+for all datasets. A <code>micron_to_mosaic_pixel_transform.csv</code> is
+included within the <code>images</code> folder that provides scaling
+factors to map the image to the spatial coordinates. For this
+dataset:</p>
 <p>micron_to_mosaic_pixel_transform.csv</p>
 <table class="table">
 <thead><tr class="header">
@@ -917,7 +975,9 @@
 </tr>
 </tbody>
 </table>
-<p>Here we will attach the z0 dapi image to the Giotto object. <strong>Note:</strong> It is recommended for the image files to be local. Placing the images on the cloud or network may be very slow.</p>
+<p>Here we will attach the z0 dapi image to the Giotto object.
+<strong>Note:</strong> It is recommended for the image files to be
+local. Placing the images on the cloud or network may be very slow.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load in image as a giottoLargeImage object that maps spatial coordinates 1:1 with pixel coordinates</span></span>
 <span><span class="va">dapi0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoLargeImage.html" class="external-link">createGiottoLargeImage</a></span><span class="op">(</span>raster_object <span class="op">=</span> <span class="va">img_path</span>,</span>
@@ -926,7 +986,9 @@
 <span><span class="co"># Preview image</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dapi0</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fvizgen_mouse_brain%2F2-dapi0_preview.png"></p>
-<p>Attaching the <code>giottoLargeImage</code> to our Giotto object (provided as a list of 1) and then updating it to map the image to the spatial coordinates which are in microns.</p>
+<p>Attaching the <code>giottoLargeImage</code> to our Giotto object
+(provided as a list of 1) and then updating it to map the image to the
+spatial coordinates which are in microns.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Adds the giottoLargeImage object to giotto object while also shifting values into the negatives</span></span>
 <span><span class="va">vizgen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addGiottoImage.html" class="external-link">addGiottoImage</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">vizgen</span>,</span>
@@ -950,8 +1012,9 @@
 <span>                                 scale_y <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="va">y_scale</span>,</span>
 <span>                                 order <span class="op">=</span> <span class="st">"first_adj"</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3" number="5.1">
-<h3 number="5.1" id="check-image-alignment">
-<span class="header-section-number">5.1</span> Check image alignment<a class="anchor" aria-label="anchor" href="#check-image-alignment"></a>
+<h3 id="check-image-alignment">
+<span class="header-section-number">5.1</span> Check image
+alignment<a class="anchor" aria-label="anchor" href="#check-image-alignment"></a>
 </h3>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">vizgen</span>,</span>
@@ -961,8 +1024,9 @@
 <p><img src="images%2Fvizgen_mouse_brain%2F3-img_overlay.png"></p>
 </div>
 <div class="section level3" number="5.2">
-<h3 number="5.2" id="zooming-in-by-subsetting-the-dataset">
-<span class="header-section-number">5.2</span> Zooming in by subsetting the dataset<a class="anchor" aria-label="anchor" href="#zooming-in-by-subsetting-the-dataset"></a>
+<h3 id="zooming-in-by-subsetting-the-dataset">
+<span class="header-section-number">5.2</span> Zooming in by
+subsetting the dataset<a class="anchor" aria-label="anchor" href="#zooming-in-by-subsetting-the-dataset"></a>
 </h3>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">zoom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/subsetGiottoLocs.html" class="external-link">subsetGiottoLocs</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">vizgen</span>,</span>
@@ -979,7 +1043,7 @@
 </div>
 </div>
 <div class="section level2" number="6">
-<h2 number="6" id="data-processing">
+<h2 id="data-processing">
 <span class="header-section-number">6</span> Data processing<a class="anchor" aria-label="anchor" href="#data-processing"></a>
 </h2>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -995,8 +1059,9 @@
 <span><span class="co"># add gene and cell statistics</span></span>
 <span><span class="va">vizgen</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addStatistics.html">addStatistics</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">vizgen</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3" number="6.1">
-<h3 number="6.1" id="visualize-the-number-of-features-per-cell-">
-<span class="header-section-number">6.1</span> Visualize the number of features per cell.<a class="anchor" aria-label="anchor" href="#visualize-the-number-of-features-per-cell-"></a>
+<h3 id="visualize-the-number-of-features-per-cell-">
+<span class="header-section-number">6.1</span> Visualize the number
+of features per cell.<a class="anchor" aria-label="anchor" href="#visualize-the-number-of-features-per-cell-"></a>
 </h3>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">vizgen</span>,</span>
@@ -1011,10 +1076,12 @@
 </div>
 </div>
 <div class="section level2" number="7">
-<h2 number="7" id="dimension-reduction">
-<span class="header-section-number">7</span> Dimension reduction<a class="anchor" aria-label="anchor" href="#dimension-reduction"></a>
+<h2 id="dimension-reduction">
+<span class="header-section-number">7</span> Dimension
+reduction<a class="anchor" aria-label="anchor" href="#dimension-reduction"></a>
 </h2>
-<p>Skipping highly variable feature (HVF) detection. PCA will be calculated based on all available genes.</p>
+<p>Skipping highly variable feature (HVF) detection. PCA will be
+calculated based on all available genes.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">vizgen</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPCA.html">runPCA</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">vizgen</span>,</span>
 <span>                 center <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -1037,7 +1104,7 @@
 <p><img src="images%2Fvizgen_mouse_brain%2F8-UMAP.png"></p>
 </div>
 <div class="section level2" number="8">
-<h2 number="8" id="leiden-clustering">
+<h2 id="leiden-clustering">
 <span class="header-section-number">8</span> Leiden Clustering<a class="anchor" aria-label="anchor" href="#leiden-clustering"></a>
 </h2>
 <p>Calculate nearest neighbor network and perform Leiden clustering.</p>
@@ -1053,19 +1120,20 @@
 <p>Cell Metadata Preview</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">vizgen</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true"></a>cell_ID  fov    volume leiden_clus</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true"></a><span class="dv">1</span><span class="op">:</span><span class="st"> </span><span class="dv">110883424764611924400221639916314253469</span>    <span class="dv">0</span>  <span class="fl">432.1414</span>           <span class="dv">9</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true"></a><span class="dv">2</span><span class="op">:</span><span class="st"> </span><span class="dv">135188247894899244046039873973964001182</span>    <span class="dv">0</span> <span class="fl">1351.8026</span>           <span class="dv">9</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true"></a><span class="dv">3</span><span class="op">:</span><span class="st"> </span><span class="dv">164766962839370328502017156371562646881</span>    <span class="dv">0</span> <span class="fl">1080.6533</span>           <span class="dv">9</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true"></a><span class="dv">4</span><span class="op">:</span><span class="st"> </span><span class="dv">165747897693809971960756442245389760838</span>    <span class="dv">0</span> <span class="fl">1652.0007</span>           <span class="dv">9</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true"></a><span class="dv">5</span><span class="op">:</span><span class="st"> </span><span class="dv">260943245639750847364278545493286724628</span>    <span class="dv">0</span> <span class="fl">1343.3786</span>           <span class="dv">9</span></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true"></a><span class="op">---</span><span class="st">                                                                   </span></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true"></a><span class="st">  </span><span class="dv">78258</span><span class="op">:</span><span class="st"> </span><span class="dv">165273009496786595275688065919008183969</span> <span class="dv">1225</span> <span class="fl">1159.6232</span>           <span class="dv">9</span></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true"></a><span class="dv">78259</span><span class="op">:</span><span class="st"> </span><span class="dv">250474226357477911702383283537224741401</span> <span class="dv">1225</span> <span class="fl">1058.0623</span>           <span class="dv">9</span></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true"></a><span class="dv">78260</span><span class="op">:</span><span class="st">  </span><span class="dv">66106840181174834341279408890707577820</span> <span class="dv">1225</span> <span class="fl">1155.3068</span>           <span class="dv">9</span></span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true"></a><span class="dv">78261</span><span class="op">:</span><span class="st">  </span><span class="dv">66165211106933093510165165316573672348</span> <span class="dv">1225</span>  <span class="fl">394.8081</span>           <span class="dv">9</span></span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true"></a><span class="dv">78262</span><span class="op">:</span><span class="st">  </span><span class="dv">71051447268015582817266088343399517927</span> <span class="dv">1225</span>  <span class="fl">798.6088</span>           <span class="dv">9</span></span></code></pre></div>
-<p>Visualize the Leiden clustering results (“leiden_clus”) mapped onto the UMAP dimension reduction.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>cell_ID  fov    volume leiden_clus</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span> <span class="dv">110883424764611924400221639916314253469</span>    <span class="dv">0</span>  <span class="fl">432.1414</span>           <span class="dv">9</span></span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="dv">2</span><span class="sc">:</span> <span class="dv">135188247894899244046039873973964001182</span>    <span class="dv">0</span> <span class="fl">1351.8026</span>           <span class="dv">9</span></span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a><span class="dv">3</span><span class="sc">:</span> <span class="dv">164766962839370328502017156371562646881</span>    <span class="dv">0</span> <span class="fl">1080.6533</span>           <span class="dv">9</span></span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a><span class="dv">4</span><span class="sc">:</span> <span class="dv">165747897693809971960756442245389760838</span>    <span class="dv">0</span> <span class="fl">1652.0007</span>           <span class="dv">9</span></span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a><span class="dv">5</span><span class="sc">:</span> <span class="dv">260943245639750847364278545493286724628</span>    <span class="dv">0</span> <span class="fl">1343.3786</span>           <span class="dv">9</span></span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a><span class="sc">---</span>                                                                   </span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a>  <span class="dv">78258</span><span class="sc">:</span> <span class="dv">165273009496786595275688065919008183969</span> <span class="dv">1225</span> <span class="fl">1159.6232</span>           <span class="dv">9</span></span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a><span class="dv">78259</span><span class="sc">:</span> <span class="dv">250474226357477911702383283537224741401</span> <span class="dv">1225</span> <span class="fl">1058.0623</span>           <span class="dv">9</span></span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a><span class="dv">78260</span><span class="sc">:</span>  <span class="dv">66106840181174834341279408890707577820</span> <span class="dv">1225</span> <span class="fl">1155.3068</span>           <span class="dv">9</span></span>
+<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a><span class="dv">78261</span><span class="sc">:</span>  <span class="dv">66165211106933093510165165316573672348</span> <span class="dv">1225</span>  <span class="fl">394.8081</span>           <span class="dv">9</span></span>
+<span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a><span class="dv">78262</span><span class="sc">:</span>  <span class="dv">71051447268015582817266088343399517927</span> <span class="dv">1225</span>  <span class="fl">798.6088</span>           <span class="dv">9</span></span></code></pre></div>
+<p>Visualize the Leiden clustering results (“leiden_clus”) mapped onto
+the UMAP dimension reduction.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span><span class="va">vizgen</span>,</span>
 <span>         cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
@@ -1080,10 +1148,13 @@
 <p><img src="images%2Fvizgen_mouse_brain%2F10-spatPlot2D.png"></p>
 </div>
 <div class="section level2" number="9">
-<h2 number="9" id="spatial-expression-patterns">
-<span class="header-section-number">9</span> Spatial expression patterns<a class="anchor" aria-label="anchor" href="#spatial-expression-patterns"></a>
+<h2 id="spatial-expression-patterns">
+<span class="header-section-number">9</span> Spatial expression
+patterns<a class="anchor" aria-label="anchor" href="#spatial-expression-patterns"></a>
 </h2>
-<p>Spatially interesting gene expression can be detected by first generating a spatial network then performing Binary Spatial Extraction of genes.</p>
+<p>Spatially interesting gene expression can be detected by first
+generating a spatial network then performing Binary Spatial Extraction
+of genes.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create spatial network based on physical distance of cell centroids</span></span>
 <span><span class="va">vizgen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">vizgen</span>,</span>
@@ -1095,11 +1166,11 @@
 <p>Preview km_spatialfeats</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">km_spatialfeats</span><span class="op">$</span><span class="va">feats</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">30</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true"></a>[<span class="dv">1</span>] <span class="st">"Slc47a1"</span>   <span class="st">"Chat"</span>      <span class="st">"Th"</span>        <span class="st">"Insrr"</span>     <span class="st">"Slc17a7"</span>   <span class="st">"Pln"</span>      </span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true"></a>[<span class="dv">7</span>] <span class="st">"Lmod1"</span>     <span class="st">"Blank-119"</span> <span class="st">"Hcar1"</span>     <span class="st">"Glp1r"</span>     <span class="st">"Ptgdr"</span>     <span class="st">"Avpr2"</span>    </span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true"></a>[<span class="dv">13</span>] <span class="st">"Gpr20"</span>     <span class="st">"Myh11"</span>     <span class="st">"Glp2r"</span>     <span class="st">"Npy2r"</span>     <span class="st">"Gpr182"</span>    <span class="st">"Chrm1"</span>    </span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true"></a>[<span class="dv">19</span>] <span class="st">"Adgrd1"</span>    <span class="st">"Mrgprf"</span>    <span class="st">"Trhr"</span>      <span class="st">"Gfap"</span>      <span class="st">"Slc17a8"</span>   <span class="st">"Nmbr"</span>     </span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true"></a>[<span class="dv">25</span>] <span class="st">"Pth2r"</span>     <span class="st">"Rxfp1"</span>     <span class="st">"Musk"</span>      <span class="st">"F2rl1"</span>     <span class="st">"Dgkk"</span>      <span class="st">"Chrm5"</span>    </span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">"Slc47a1"</span>   <span class="st">"Chat"</span>      <span class="st">"Th"</span>        <span class="st">"Insrr"</span>     <span class="st">"Slc17a7"</span>   <span class="st">"Pln"</span>      </span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>[<span class="dv">7</span>] <span class="st">"Lmod1"</span>     <span class="st">"Blank-119"</span> <span class="st">"Hcar1"</span>     <span class="st">"Glp1r"</span>     <span class="st">"Ptgdr"</span>     <span class="st">"Avpr2"</span>    </span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a>[<span class="dv">13</span>] <span class="st">"Gpr20"</span>     <span class="st">"Myh11"</span>     <span class="st">"Glp2r"</span>     <span class="st">"Npy2r"</span>     <span class="st">"Gpr182"</span>    <span class="st">"Chrm1"</span>    </span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a>[<span class="dv">19</span>] <span class="st">"Adgrd1"</span>    <span class="st">"Mrgprf"</span>    <span class="st">"Trhr"</span>      <span class="st">"Gfap"</span>      <span class="st">"Slc17a8"</span>   <span class="st">"Nmbr"</span>     </span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a>[<span class="dv">25</span>] <span class="st">"Pth2r"</span>     <span class="st">"Rxfp1"</span>     <span class="st">"Musk"</span>      <span class="st">"F2rl1"</span>     <span class="st">"Dgkk"</span>      <span class="st">"Chrm5"</span>    </span></code></pre></div>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># visualize spatial expression of select genes obtained from binSpect</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatFeatPlot2D.html" class="external-link">spatFeatPlot2D</a></span><span class="op">(</span><span class="va">vizgen</span>,</span>
@@ -1114,16 +1185,21 @@
 <p><img src="images%2Fvizgen_mouse_brain%2F11-spatFeatPlot2D.png"></p>
 </div>
 <div class="section level2" number="10">
-<h2 number="10" id="sec-subcellular">
-<span class="header-section-number">10</span> Working with subcellular information<a class="anchor" aria-label="anchor" href="#sec-subcellular"></a>
+<h2 id="sec-subcellular">
+<span class="header-section-number">10</span> Working with
+subcellular information<a class="anchor" aria-label="anchor" href="#sec-subcellular"></a>
 </h2>
 <p><em>These steps may require a strong computer.</em></p>
-<p>Vizgen provides the raw information used to generate the aggregated data through the detected_transcripts.csv and cell_boundaries hdf5 files. Giotto can also work directly with this information.</p>
+<p>Vizgen provides the raw information used to generate the aggregated
+data through the detected_transcripts.csv and cell_boundaries hdf5
+files. Giotto can also work directly with this information.</p>
 <div class="section level3" number="10.1">
-<h3 number="10.1" id="optional-define-region-of-interest-and-find-fovs-needed">
-<span class="header-section-number">10.1</span> (Optional) Define region of interest and find FOVs needed<a class="anchor" aria-label="anchor" href="#optional-define-region-of-interest-and-find-fovs-needed"></a>
+<h3 id="optional-define-region-of-interest-and-find-fovs-needed">
+<span class="header-section-number">10.1</span> (Optional) Define
+region of interest and find FOVs needed<a class="anchor" aria-label="anchor" href="#optional-define-region-of-interest-and-find-fovs-needed"></a>
 </h3>
-<p>Loading information by only grabbing the needed FOVs can cut down on computational requirements.</p>
+<p>Loading information by only grabbing the needed FOVs can cut down on
+computational requirements.</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">subsetFOVs</span> <span class="op">&lt;-</span> <span class="va">meta_dt</span><span class="op">[</span><span class="va">center_x</span> <span class="op">&gt;</span> <span class="fl">2000</span> <span class="op">&amp;</span> <span class="va">center_x</span> <span class="op">&lt;</span> <span class="fl">3100</span> <span class="op">&amp;</span></span>
 <span>                        <span class="va">center_y</span> <span class="op">&gt;</span> <span class="fl">2500</span> <span class="op">&amp;</span> <span class="va">center_y</span> <span class="op">&lt;</span> <span class="fl">3500</span><span class="op">]</span><span class="op">$</span><span class="va">fov</span></span>
@@ -1132,15 +1208,19 @@
 <p>FOVs needed</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">subsetFOVs</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true"></a>[<span class="dv">1</span>] <span class="dv">220</span> <span class="dv">221</span> <span class="dv">222</span> <span class="dv">223</span> <span class="dv">224</span> <span class="dv">225</span> <span class="dv">245</span> <span class="dv">246</span> <span class="dv">247</span> <span class="dv">248</span> <span class="dv">249</span> <span class="dv">250</span> <span class="dv">275</span> <span class="dv">276</span> <span class="dv">277</span> <span class="dv">278</span> <span class="dv">279</span> <span class="dv">280</span> <span class="dv">302</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true"></a>[<span class="dv">20</span>] <span class="dv">303</span> <span class="dv">304</span> <span class="dv">305</span> <span class="dv">306</span> <span class="dv">307</span> <span class="dv">330</span> <span class="dv">331</span> <span class="dv">332</span> <span class="dv">333</span> <span class="dv">334</span> <span class="dv">335</span> <span class="dv">358</span> <span class="dv">359</span> <span class="dv">360</span> <span class="dv">361</span> <span class="dv">362</span> <span class="dv">363</span></span></code></pre></div>
-<p><strong>Note:</strong> The following steps will be assuming that this step was run.</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a>[<span class="dv">1</span>] <span class="dv">220</span> <span class="dv">221</span> <span class="dv">222</span> <span class="dv">223</span> <span class="dv">224</span> <span class="dv">225</span> <span class="dv">245</span> <span class="dv">246</span> <span class="dv">247</span> <span class="dv">248</span> <span class="dv">249</span> <span class="dv">250</span> <span class="dv">275</span> <span class="dv">276</span> <span class="dv">277</span> <span class="dv">278</span> <span class="dv">279</span> <span class="dv">280</span> <span class="dv">302</span></span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a>[<span class="dv">20</span>] <span class="dv">303</span> <span class="dv">304</span> <span class="dv">305</span> <span class="dv">306</span> <span class="dv">307</span> <span class="dv">330</span> <span class="dv">331</span> <span class="dv">332</span> <span class="dv">333</span> <span class="dv">334</span> <span class="dv">335</span> <span class="dv">358</span> <span class="dv">359</span> <span class="dv">360</span> <span class="dv">361</span> <span class="dv">362</span> <span class="dv">363</span></span></code></pre></div>
+<p><strong>Note:</strong> The following steps will be assuming that this
+step was run.</p>
 </div>
 <div class="section level3" number="10.2">
-<h3 number="10.2" id="creating-a-giottopolygon-object">
-<span class="header-section-number">10.2</span> Creating a giottoPolygon object<a class="anchor" aria-label="anchor" href="#creating-a-giottopolygon-object"></a>
+<h3 id="creating-a-giottopolygon-object">
+<span class="header-section-number">10.2</span> Creating a
+giottoPolygon object<a class="anchor" aria-label="anchor" href="#creating-a-giottopolygon-object"></a>
 </h3>
-<p>Cell boundary annotations are represented in Giotto as <code>giottoPolygon</code> objects which can be previewed by directly plotting them.</p>
+<p>Cell boundary annotations are represented in Giotto as
+<code>giottoPolygon</code> objects which can be previewed by directly
+plotting them.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># read polygons and add them to Giotto</span></span>
 <span><span class="co"># fovs param is optional</span></span>
@@ -1156,10 +1236,12 @@
 <p><img src="images%2Fvizgen_mouse_brain%2F13-poly.png"></p>
 </div>
 <div class="section level3" number="10.3">
-<h3 number="10.3" id="creating-a-giottopoints-object">
-<span class="header-section-number">10.3</span> Creating a giottoPoints object<a class="anchor" aria-label="anchor" href="#creating-a-giottopoints-object"></a>
+<h3 id="creating-a-giottopoints-object">
+<span class="header-section-number">10.3</span> Creating a
+giottoPoints object<a class="anchor" aria-label="anchor" href="#creating-a-giottopoints-object"></a>
 </h3>
-<p>Giotto represents single-molecule transcript level spatial data as <code>giottoPoints</code> objects.</p>
+<p>Giotto represents single-molecule transcript level spatial data as
+<code>giottoPoints</code> objects.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tx_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">tx_path</span><span class="op">)</span></span>
 <span></span>
@@ -1179,8 +1261,9 @@
 <p><img src="images%2Fvizgen_mouse_brain%2F14-point.png"></p>
 </div>
 <div class="section level3" number="10.4">
-<h3 number="10.4" id="creating-a-subcellular-giotto-object">
-<span class="header-section-number">10.4</span> Creating a subcellular Giotto object<a class="anchor" aria-label="anchor" href="#creating-a-subcellular-giotto-object"></a>
+<h3 id="creating-a-subcellular-giotto-object">
+<span class="header-section-number">10.4</span> Creating a
+subcellular Giotto object<a class="anchor" aria-label="anchor" href="#creating-a-subcellular-giotto-object"></a>
 </h3>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create new giotto instructions to set different save directory if desired</span></span>
@@ -1216,8 +1299,10 @@
 <span>                                             scale_x <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="va">x_scale</span>, </span>
 <span>                                             scale_y <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="va">y_scale</span>, </span>
 <span>                                             order <span class="op">=</span> <span class="st">"first_adj"</span><span class="op">)</span></span></code></pre></div>
-<p>Alternatively to append subcellular data to existing giotto object.</p>
-<p>The subcellular information can also be attached to giotto objects built with the pre-aggregated information.</p>
+<p>Alternatively to append subcellular data to existing giotto
+object.</p>
+<p>The subcellular information can also be attached to giotto objects
+built with the pre-aggregated information.</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Subset dataset to work with smaller area</span></span>
 <span><span class="va">vizgen_subset</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/subsetGiottoLocs.html" class="external-link">subsetGiottoLocs</a></span><span class="op">(</span><span class="va">vizgen</span>,</span>

@@ -599,14 +599,22 @@
     
     
 <div class="section level2" number="1">
-<h2 number="1" id="spatial-object-manipulation">
-<span class="header-section-number">1</span> Spatial Object Manipulation<a class="anchor" aria-label="anchor" href="#spatial-object-manipulation"></a>
+<h2 id="spatial-object-manipulation">
+<span class="header-section-number">1</span> Spatial Object
+Manipulation<a class="anchor" aria-label="anchor" href="#spatial-object-manipulation"></a>
 </h2>
-<p>Spatial-omics data is defined both by the biological information that it contains and the way that it maps to space. When assembling and analyzing a spatial dataset, it may be necessary to spatially manipulate the data so that they are all in a common coordinate reference frame where all data is in at the same scaling and rotation, and properly overlaid.</p>
-<p><em>Giotto</em> extends a set of generics from <em>terra</em> in order to make it simple to figure out where data is in space and to move it where you need it.</p>
+<p>Spatial-omics data is defined both by the biological information that
+it contains and the way that it maps to space. When assembling and
+analyzing a spatial dataset, it may be necessary to spatially manipulate
+the data so that they are all in a common coordinate reference frame
+where all data is in at the same scaling and rotation, and properly
+overlaid.</p>
+<p><em>Giotto</em> extends a set of generics from <em>terra</em> in
+order to make it simple to figure out where data is in space and to move
+it where you need it.</p>
 </div>
 <div class="section level2" number="2">
-<h2 number="2" id="start-giotto">
+<h2 id="start-giotto">
 <span class="header-section-number">2</span> Start Giotto<a class="anchor" aria-label="anchor" href="#start-giotto"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -628,10 +636,16 @@
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2" number="3">
-<h2 number="3" id="load-mini-giotto-object-example">
-<span class="header-section-number">3</span> Load mini giotto object example<a class="anchor" aria-label="anchor" href="#load-mini-giotto-object-example"></a>
+<h2 id="load-mini-giotto-object-example">
+<span class="header-section-number">3</span> Load mini giotto object
+example<a class="anchor" aria-label="anchor" href="#load-mini-giotto-object-example"></a>
 </h2>
-<p>First we will load in the a mini dataset put together from Vizgen’s Mouse Brain Receptor Map data release. This mini giotto object has been pre-analyzed and comes with many analyses and data objects attached. Most of these analyses have been performed on the “aggregate” spatial unit so we will set it as the active spatial unit in order to default to it.</p>
+<p>First we will load in the a mini dataset put together from Vizgen’s
+Mouse Brain Receptor Map data release. This mini giotto object has been
+pre-analyzed and comes with many analyses and data objects attached.
+Most of these analyses have been performed on the “aggregate” spatial
+unit so we will set it as the active spatial unit in order to default to
+it.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://drieslab.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span>
 <span></span>
@@ -639,10 +653,13 @@
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/activeSpatUnit-generic.html" class="external-link">activeSpatUnit</a></span><span class="op">(</span><span class="va">viz</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"aggregate"</span></span></code></pre></div>
 </div>
 <div class="section level2" number="4">
-<h2 number="4" id="extract-spatial-info">
-<span class="header-section-number">4</span> Extract spatial info<a class="anchor" aria-label="anchor" href="#extract-spatial-info"></a>
+<h2 id="extract-spatial-info">
+<span class="header-section-number">4</span> Extract spatial
+info<a class="anchor" aria-label="anchor" href="#extract-spatial-info"></a>
 </h2>
-<p>Then we will extract the spatial subobjects that we will use. These will be all subobjects in Giotto that contain coordinates data or directly map their data to space.</p>
+<p>Then we will extract the spatial subobjects that we will use. These
+will be all subobjects in Giotto that contain coordinates data or
+directly map their data to space.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">image</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/getGiottoImage.html" class="external-link">getGiottoImage</a></span><span class="op">(</span><span class="va">viz</span>, </span>
 <span>                        image_type <span class="op">=</span> <span class="st">"largeImage"</span>, </span>
@@ -660,10 +677,17 @@
 <span>                        return_giottoPolygon <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="5">
-<h2 number="5" id="defining-bounds-and-extent">
-<span class="header-section-number">5</span> Defining bounds and extent<a class="anchor" aria-label="anchor" href="#defining-bounds-and-extent"></a>
+<h2 id="defining-bounds-and-extent">
+<span class="header-section-number">5</span> Defining bounds and
+extent<a class="anchor" aria-label="anchor" href="#defining-bounds-and-extent"></a>
 </h2>
-<p>One of the most convenient descriptors of where an object is in space is its minimal and maximal in the coordinate plane, also known as the boundaries or spatial <strong>extent</strong> of that information. It can be thought of as bounding box around where your information exists in space. <em>Giotto</em> incorporates usage of the <code>SpatExtent</code> class and associated <code><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext()</a></code> generic from <em>terra</em> to describe objects spatially.</p>
+<p>One of the most convenient descriptors of where an object is in space
+is its minimal and maximal in the coordinate plane, also known as the
+boundaries or spatial <strong>extent</strong> of that information. It
+can be thought of as bounding box around where your information exists
+in space. <em>Giotto</em> incorporates usage of the
+<code>SpatExtent</code> class and associated <code><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext()</a></code> generic
+from <em>terra</em> to describe objects spatially.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">image</span><span class="op">)</span>     <span class="co"># giottoLargeImage</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -675,10 +699,14 @@
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">gpoly</span><span class="op">)</span>     <span class="co"># giottoPolygon</span></span></code></pre></div>
 <div class="section level3" number="5.1">
-<h3 number="5.1" id="image-extent">
+<h3 id="image-extent">
 <span class="header-section-number">5.1</span> Image extent<a class="anchor" aria-label="anchor" href="#image-extent"></a>
 </h3>
-<p>With <code>giottoLargeImage</code> objects, you are additionally able to assign how they map to space using <code><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext()</a></code>. Note that modifications performed on one <code>giottoLargeImage</code> are applied to all references to that object unless <code><a href="https://rdrr.io/pkg/data.table/man/copy.html" class="external-link">copy()</a></code> is used first.</p>
+<p>With <code>giottoLargeImage</code> objects, you are additionally able
+to assign how they map to space using <code><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext()</a></code>. Note that
+modifications performed on one <code>giottoLargeImage</code> are applied
+to all references to that object unless <code><a href="https://rdrr.io/pkg/data.table/man/copy.html" class="external-link">copy()</a></code> is used
+first.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">image</span><span class="op">)</span> <span class="co"># save extent</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">image</span><span class="op">)</span></span></code></pre></div>
@@ -693,15 +721,23 @@
 </div>
 </div>
 <div class="section level2" number="6">
-<h2 number="6" id="spatial-transformations">
-<span class="header-section-number">6</span> Spatial Transformations<a class="anchor" aria-label="anchor" href="#spatial-transformations"></a>
+<h2 id="spatial-transformations">
+<span class="header-section-number">6</span> Spatial
+Transformations<a class="anchor" aria-label="anchor" href="#spatial-transformations"></a>
 </h2>
-<p>Commonly used spatial transformations are coordinate translations, flips, and rotations. <em>Giotto</em> extends generics from <em>terra</em> through the use of <code><a href="https://drieslab.github.io/GiottoClass/reference/spatShift.html" class="external-link">spatShift()</a></code> (<code><a href="https://rdrr.io/pkg/data.table/man/shift.html" class="external-link">shift()</a></code> in <em>terra</em>), <code><a href="https://rspatial.github.io/terra/reference/flip.html" class="external-link">flip()</a></code>, and <code><a href="https://rspatial.github.io/terra/reference/spin.html" class="external-link">spin()</a></code> respectively.</p>
+<p>Commonly used spatial transformations are coordinate translations,
+flips, and rotations. <em>Giotto</em> extends generics from
+<em>terra</em> through the use of <code><a href="https://drieslab.github.io/GiottoClass/reference/spatShift.html" class="external-link">spatShift()</a></code>
+(<code><a href="https://rdrr.io/pkg/data.table/man/shift.html" class="external-link">shift()</a></code> in <em>terra</em>), <code><a href="https://rspatial.github.io/terra/reference/flip.html" class="external-link">flip()</a></code>, and
+<code><a href="https://rspatial.github.io/terra/reference/spin.html" class="external-link">spin()</a></code> respectively.</p>
 <div class="section level3" number="6.1">
-<h3 number="6.1" id="coordinate-translation">
-<span class="header-section-number">6.1</span> coordinate translation<a class="anchor" aria-label="anchor" href="#coordinate-translation"></a>
+<h3 id="coordinate-translation">
+<span class="header-section-number">6.1</span> coordinate
+translation<a class="anchor" aria-label="anchor" href="#coordinate-translation"></a>
 </h3>
-<p><code><a href="https://drieslab.github.io/GiottoClass/reference/spatShift.html" class="external-link">spatShift()</a></code> is used for simple coordinate translations. It takes the params <code>dx</code> and <code>dy</code> for distance to translate along either axis.</p>
+<p><code><a href="https://drieslab.github.io/GiottoClass/reference/spatShift.html" class="external-link">spatShift()</a></code> is used for simple coordinate translations.
+It takes the params <code>dx</code> and <code>dy</code> for distance to
+translate along either axis.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">spat_locs</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fspatial_transformations%2Funnamed-chunk-6-1.png"></p>
@@ -711,11 +747,23 @@
 <p>(pay attention to the x coords)</p>
 </div>
 <div class="section level3" number="6.2">
-<h3 number="6.2" id="flip">
+<h3 id="flip">
 <span class="header-section-number">6.2</span> flip<a class="anchor" aria-label="anchor" href="#flip"></a>
 </h3>
-<p><code><a href="https://rspatial.github.io/terra/reference/flip.html" class="external-link">flip()</a></code> will flip the data over a defined line of either “vertical” or “horizontal” symmetry (default is “vertical” with the line of symmetry being y = 0. The <code>direction</code> param partial matches for either “vertical” or “horizontal”. The <code>y0</code> and <code>x0</code> params define where the line of symmetry is.</p>
-<p>This is useful for assembling datasets where the data is based on coordinates where the y values increase negatively. This behavior is different from the default behavior in <em>terra</em> where objects are flipped over the minima of their extents. This difference is needed because often, values are defined in reference to the coordinate origin and any distance away from the axes is meaningful for alignment after flipping. If the default behavior of flipping over the extent is desired, NULL can be passed to the relevant <code>y0</code> or <code>x0</code> param.</p>
+<p><code><a href="https://rspatial.github.io/terra/reference/flip.html" class="external-link">flip()</a></code> will flip the data over a defined line of either
+“vertical” or “horizontal” symmetry (default is “vertical” with the line
+of symmetry being y = 0. The <code>direction</code> param partial
+matches for either “vertical” or “horizontal”. The <code>y0</code> and
+<code>x0</code> params define where the line of symmetry is.</p>
+<p>This is useful for assembling datasets where the data is based on
+coordinates where the y values increase negatively. This behavior is
+different from the default behavior in <em>terra</em> where objects are
+flipped over the minima of their extents. This difference is needed
+because often, values are defined in reference to the coordinate origin
+and any distance away from the axes is meaningful for alignment after
+flipping. If the default behavior of flipping over the extent is
+desired, NULL can be passed to the relevant <code>y0</code> or
+<code>x0</code> param.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoUtils/reference/getRainbowColors.html" class="external-link">getRainbowColors</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gpoly</span>, col <span class="op">=</span> <span class="va">rb</span><span class="op">)</span></span></code></pre></div>
@@ -728,10 +776,14 @@
 <p><img src="images%2Fspatial_transformations%2Funnamed-chunk-7-3.png"></p>
 </div>
 <div class="section level3" number="6.3">
-<h3 number="6.3" id="spin">
+<h3 id="spin">
 <span class="header-section-number">6.3</span> spin<a class="anchor" aria-label="anchor" href="#spin"></a>
 </h3>
-<p><code><a href="https://rspatial.github.io/terra/reference/spin.html" class="external-link">spin()</a></code> allows rotating of vector data through degrees passed to <code>angle</code> param. The rotation happens about a coordinate defined by <code>x0</code> and <code>y0</code>. By default <code>x0</code> and <code>y0</code> are defined as the object center.</p>
+<p><code><a href="https://rspatial.github.io/terra/reference/spin.html" class="external-link">spin()</a></code> allows rotating of vector data through degrees
+passed to <code>angle</code> param. The rotation happens about a
+coordinate defined by <code>x0</code> and <code>y0</code>. By default
+<code>x0</code> and <code>y0</code> are defined as the object
+center.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gpoints</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fspatial_transformations%2Funnamed-chunk-8-1.png"></p>
@@ -744,42 +796,42 @@
 </div>
 </div>
 <div class="section level2" number="7">
-<h2 number="7" id="session-info">
+<h2 id="session-info">
 <span class="header-section-number">7</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true"></a>    R version <span class="dv">4</span>.<span class="fl">2.1</span> (<span class="dv">2022-06-23</span>)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true"></a>    Platform<span class="op">:</span><span class="st"> </span>x86_<span class="dv">64</span><span class="op">-</span>apple<span class="op">-</span><span class="kw">darwin17.0</span> (<span class="dv">64</span><span class="op">-</span>bit)</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true"></a>    Running under<span class="op">:</span><span class="st"> </span>macOS Big Sur ... <span class="fl">10.16</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true"></a></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true"></a>    Matrix products<span class="op">:</span><span class="st"> </span>default</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true"></a>    BLAS<span class="op">:</span><span class="st">   </span><span class="er">/</span>Library<span class="op">/</span>Frameworks<span class="op">/</span>R.framework<span class="op">/</span>Versions<span class="op">/</span><span class="fl">4.2</span><span class="op">/</span>Resources<span class="op">/</span>lib<span class="op">/</span>libRblas.<span class="fl">0.</span>dylib</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true"></a>    LAPACK<span class="op">:</span><span class="st"> </span><span class="er">/</span>Library<span class="op">/</span>Frameworks<span class="op">/</span>R.framework<span class="op">/</span>Versions<span class="op">/</span><span class="fl">4.2</span><span class="op">/</span>Resources<span class="op">/</span>lib<span class="op">/</span>libRlapack.dylib</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true"></a></span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true"></a>    locale<span class="op">:</span></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true"></a><span class="st">    </span>[<span class="dv">1</span>] en_US.UTF<span class="dv">-8</span><span class="op">/</span>en_US.UTF<span class="dv">-8</span><span class="op">/</span>en_US.UTF<span class="dv">-8</span><span class="op">/</span>C<span class="op">/</span>en_US.UTF<span class="dv">-8</span><span class="op">/</span>en_US.UTF<span class="dv">-8</span></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true"></a></span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true"></a>    attached base packages<span class="op">:</span></span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true"></a><span class="st">    </span>[<span class="dv">1</span>] stats     graphics  grDevices utils     datasets  methods   base     </span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true"></a></span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true"></a>    other attached packages<span class="op">:</span></span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true"></a><span class="st">    </span>[<span class="dv">1</span>] GiottoData_<span class="dv">0</span>.<span class="fl">2.3</span> Giotto_<span class="dv">3</span>.<span class="fl">3.1</span>    </span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true"></a></span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true"></a>    loaded via a <span class="kw">namespace</span> (and not attached)<span class="op">:</span></span>
-<span id="cb21-19"><a href="#cb21-19" aria-hidden="true"></a><span class="st">     </span>[<span class="dv">1</span>] Rcpp_<span class="dv">1</span>.<span class="fl">0.11</span>       pillar_<span class="dv">1</span>.<span class="fl">9.0</span>      compiler_<span class="dv">4</span>.<span class="fl">2.1</span>    tools_<span class="dv">4</span>.<span class="fl">2.1</span>      </span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true"></a>     [<span class="dv">5</span>] digest_<span class="dv">0</span>.<span class="fl">6.31</span>     scattermore_<span class="fl">0.8</span>   checkmate_<span class="dv">2</span>.<span class="fl">2.0</span>   jsonlite_<span class="dv">1</span>.<span class="fl">8.4</span>   </span>
-<span id="cb21-21"><a href="#cb21-21" aria-hidden="true"></a>     [<span class="dv">9</span>] evaluate_<span class="fl">0.21</span>     lifecycle_<span class="dv">1</span>.<span class="fl">0.3</span>   tibble_<span class="dv">3</span>.<span class="fl">2.1</span>      gtable_<span class="dv">0</span>.<span class="fl">3.3</span>     </span>
-<span id="cb21-22"><a href="#cb21-22" aria-hidden="true"></a>    [<span class="dv">13</span>] lattice_<span class="fl">0.20</span><span class="dv">-45</span>   png_<span class="fl">0.1</span><span class="dv">-8</span>         pkgconfig_<span class="dv">2</span>.<span class="fl">0.3</span>   rlang_<span class="dv">1</span>.<span class="fl">1.1</span>      </span>
-<span id="cb21-23"><a href="#cb21-23" aria-hidden="true"></a>    [<span class="dv">17</span>] igraph_<span class="dv">1</span>.<span class="fl">4.2</span>      Matrix_<span class="fl">1.5</span><span class="dv">-4</span>      cli_<span class="dv">3</span>.<span class="fl">6.1</span>         rstudioapi_<span class="fl">0.14</span>  </span>
-<span id="cb21-24"><a href="#cb21-24" aria-hidden="true"></a>    [<span class="dv">21</span>] parallel_<span class="dv">4</span>.<span class="fl">2.1</span>    yaml_<span class="dv">2</span>.<span class="fl">3.7</span>        xfun_<span class="fl">0.39</span>         fastmap_<span class="dv">1</span>.<span class="fl">1.1</span>    </span>
-<span id="cb21-25"><a href="#cb21-25" aria-hidden="true"></a>    [<span class="dv">25</span>] terra_<span class="fl">1.7</span><span class="dv">-39</span>      withr_<span class="dv">2</span>.<span class="fl">5.0</span>       dplyr_<span class="dv">1</span>.<span class="fl">1.2</span>       knitr_<span class="fl">1.42</span>       </span>
-<span id="cb21-26"><a href="#cb21-26" aria-hidden="true"></a>    [<span class="dv">29</span>] generics_<span class="dv">0</span>.<span class="fl">1.3</span>    vctrs_<span class="dv">0</span>.<span class="fl">6.2</span>       rprojroot_<span class="dv">2</span>.<span class="fl">0.3</span>   grid_<span class="dv">4</span>.<span class="fl">2.1</span>       </span>
-<span id="cb21-27"><a href="#cb21-27" aria-hidden="true"></a>    [<span class="dv">33</span>] tidyselect_<span class="dv">1</span>.<span class="fl">2.0</span>  here_<span class="dv">1</span>.<span class="fl">0.1</span>        reticulate_<span class="fl">1.28</span>   glue_<span class="dv">1</span>.<span class="fl">6.2</span>       </span>
-<span id="cb21-28"><a href="#cb21-28" aria-hidden="true"></a>    [<span class="dv">37</span>] data.table_<span class="dv">1</span>.<span class="fl">14.8</span> R6_<span class="dv">2</span>.<span class="fl">5.1</span>          fansi_<span class="dv">1</span>.<span class="fl">0.4</span>       rmarkdown_<span class="fl">2.21</span>   </span>
-<span id="cb21-29"><a href="#cb21-29" aria-hidden="true"></a>    [<span class="dv">41</span>] ggplot2_<span class="dv">3</span>.<span class="fl">4.2</span>     magrittr_<span class="dv">2</span>.<span class="fl">0.3</span>    backports_<span class="dv">1</span>.<span class="fl">4.1</span>   scales_<span class="dv">1</span>.<span class="fl">2.1</span>     </span>
-<span id="cb21-30"><a href="#cb21-30" aria-hidden="true"></a>    [<span class="dv">45</span>] codetools_<span class="fl">0.2</span><span class="dv">-18</span>  htmltools_<span class="dv">0</span>.<span class="fl">5.5</span>   colorspace_<span class="fl">2.1</span><span class="dv">-0</span>  utf8_<span class="dv">1</span>.<span class="fl">2.3</span>       </span>
-<span id="cb21-31"><a href="#cb21-31" aria-hidden="true"></a>    [<span class="dv">49</span>] munsell_<span class="dv">0</span>.<span class="fl">5.0</span>    </span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>    R version <span class="dv">4</span>.<span class="fl">2.1</span> (<span class="dv">2022-06-23</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>    Platform<span class="sc">:</span> x86_64<span class="sc">-</span>apple<span class="sc">-</span><span class="fu">darwin17.0</span> (<span class="dv">64</span><span class="sc">-</span>bit)</span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>    Running under<span class="sc">:</span> macOS Big Sur ... <span class="fl">10.16</span></span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a>    Matrix products<span class="sc">:</span> default</span>
+<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a>    BLAS<span class="sc">:</span>   <span class="er">/</span>Library<span class="sc">/</span>Frameworks<span class="sc">/</span>R.framework<span class="sc">/</span>Versions<span class="sc">/</span><span class="fl">4.2</span><span class="sc">/</span>Resources<span class="sc">/</span>lib<span class="sc">/</span>libRblas.<span class="fl">0.</span>dylib</span>
+<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a>    LAPACK<span class="sc">:</span> <span class="er">/</span>Library<span class="sc">/</span>Frameworks<span class="sc">/</span>R.framework<span class="sc">/</span>Versions<span class="sc">/</span><span class="fl">4.2</span><span class="sc">/</span>Resources<span class="sc">/</span>lib<span class="sc">/</span>libRlapack.dylib</span>
+<span id="cb21-8"><a href="#cb21-8" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="#cb21-9" tabindex="-1"></a>    locale<span class="sc">:</span></span>
+<span id="cb21-10"><a href="#cb21-10" tabindex="-1"></a>    [<span class="dv">1</span>] en_US.UTF<span class="dv">-8</span><span class="sc">/</span>en_US.UTF<span class="dv">-8</span><span class="sc">/</span>en_US.UTF<span class="dv">-8</span><span class="sc">/</span>C<span class="sc">/</span>en_US.UTF<span class="dv">-8</span><span class="sc">/</span>en_US.UTF<span class="dv">-8</span></span>
+<span id="cb21-11"><a href="#cb21-11" tabindex="-1"></a></span>
+<span id="cb21-12"><a href="#cb21-12" tabindex="-1"></a>    attached base packages<span class="sc">:</span></span>
+<span id="cb21-13"><a href="#cb21-13" tabindex="-1"></a>    [<span class="dv">1</span>] stats     graphics  grDevices utils     datasets  methods   base     </span>
+<span id="cb21-14"><a href="#cb21-14" tabindex="-1"></a></span>
+<span id="cb21-15"><a href="#cb21-15" tabindex="-1"></a>    other attached packages<span class="sc">:</span></span>
+<span id="cb21-16"><a href="#cb21-16" tabindex="-1"></a>    [<span class="dv">1</span>] GiottoData_0.<span class="fl">2.3</span> Giotto_3.<span class="fl">3.1</span>    </span>
+<span id="cb21-17"><a href="#cb21-17" tabindex="-1"></a></span>
+<span id="cb21-18"><a href="#cb21-18" tabindex="-1"></a>    loaded via a <span class="fu">namespace</span> (and not attached)<span class="sc">:</span></span>
+<span id="cb21-19"><a href="#cb21-19" tabindex="-1"></a>     [<span class="dv">1</span>] Rcpp_1.<span class="fl">0.11</span>       pillar_1.<span class="fl">9.0</span>      compiler_4.<span class="fl">2.1</span>    tools_4.<span class="fl">2.1</span>      </span>
+<span id="cb21-20"><a href="#cb21-20" tabindex="-1"></a>     [<span class="dv">5</span>] digest_0.<span class="fl">6.31</span>     scattermore_0<span class="fl">.8</span>   checkmate_2.<span class="fl">2.0</span>   jsonlite_1.<span class="fl">8.4</span>   </span>
+<span id="cb21-21"><a href="#cb21-21" tabindex="-1"></a>     [<span class="dv">9</span>] evaluate_0<span class="fl">.21</span>     lifecycle_1.<span class="fl">0.3</span>   tibble_3.<span class="fl">2.1</span>      gtable_0.<span class="fl">3.3</span>     </span>
+<span id="cb21-22"><a href="#cb21-22" tabindex="-1"></a>    [<span class="dv">13</span>] lattice_0<span class="fl">.20</span><span class="dv">-45</span>   png_0<span class="fl">.1</span><span class="dv">-8</span>         pkgconfig_2.<span class="fl">0.3</span>   rlang_1.<span class="fl">1.1</span>      </span>
+<span id="cb21-23"><a href="#cb21-23" tabindex="-1"></a>    [<span class="dv">17</span>] igraph_1.<span class="fl">4.2</span>      Matrix_1<span class="fl">.5</span><span class="dv">-4</span>      cli_3.<span class="fl">6.1</span>         rstudioapi_0<span class="fl">.14</span>  </span>
+<span id="cb21-24"><a href="#cb21-24" tabindex="-1"></a>    [<span class="dv">21</span>] parallel_4.<span class="fl">2.1</span>    yaml_2.<span class="fl">3.7</span>        xfun_0<span class="fl">.39</span>         fastmap_1.<span class="fl">1.1</span>    </span>
+<span id="cb21-25"><a href="#cb21-25" tabindex="-1"></a>    [<span class="dv">25</span>] terra_1<span class="fl">.7</span><span class="dv">-39</span>      withr_2.<span class="fl">5.0</span>       dplyr_1.<span class="fl">1.2</span>       knitr_1<span class="fl">.42</span>       </span>
+<span id="cb21-26"><a href="#cb21-26" tabindex="-1"></a>    [<span class="dv">29</span>] generics_0.<span class="fl">1.3</span>    vctrs_0.<span class="fl">6.2</span>       rprojroot_2.<span class="fl">0.3</span>   grid_4.<span class="fl">2.1</span>       </span>
+<span id="cb21-27"><a href="#cb21-27" tabindex="-1"></a>    [<span class="dv">33</span>] tidyselect_1.<span class="fl">2.0</span>  here_1.<span class="fl">0.1</span>        reticulate_1<span class="fl">.28</span>   glue_1.<span class="fl">6.2</span>       </span>
+<span id="cb21-28"><a href="#cb21-28" tabindex="-1"></a>    [<span class="dv">37</span>] data.table_1.<span class="fl">14.8</span> R6_2.<span class="fl">5.1</span>          fansi_1.<span class="fl">0.4</span>       rmarkdown_2<span class="fl">.21</span>   </span>
+<span id="cb21-29"><a href="#cb21-29" tabindex="-1"></a>    [<span class="dv">41</span>] ggplot2_3.<span class="fl">4.2</span>     magrittr_2.<span class="fl">0.3</span>    backports_1.<span class="fl">4.1</span>   scales_1.<span class="fl">2.1</span>     </span>
+<span id="cb21-30"><a href="#cb21-30" tabindex="-1"></a>    [<span class="dv">45</span>] codetools_0<span class="fl">.2</span><span class="dv">-18</span>  htmltools_0.<span class="fl">5.5</span>   colorspace_2<span class="fl">.1</span><span class="dv">-0</span>  utf8_1.<span class="fl">2.3</span>       </span>
+<span id="cb21-31"><a href="#cb21-31" tabindex="-1"></a>    [<span class="dv">49</span>] munsell_0.<span class="fl">5.0</span>    </span></code></pre></div>
 </div>
   </div>
 

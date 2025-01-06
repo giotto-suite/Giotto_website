@@ -598,11 +598,15 @@
 
     
     
-<p>Tissue micrarrays (TMAs) are a good way of sampling several tissues in the same spatial assay.</p>
-<p>This example demonstrates loading in the data, isolating individual TMA cores, and annotating with a 10x Visium <a href="https://www.10xgenomics.com/datasets/mouse-tissue-microarray-in-3x3-layout-with-2-mm-edge-to-edge-spacing-ffpe-2-standard" class="external-link">mouse TMA</a> dataset.</p>
+<p>Tissue micrarrays (TMAs) are a good way of sampling several tissues
+in the same spatial assay.</p>
+<p>This example demonstrates loading in the data, isolating individual
+TMA cores, and annotating with a 10x Visium <a href="https://www.10xgenomics.com/datasets/mouse-tissue-microarray-in-3x3-layout-with-2-mm-edge-to-edge-spacing-ffpe-2-standard" class="external-link">mouse
+TMA</a> dataset.</p>
 <div class="section level2" number="1">
-<h2 number="1" id="check-giotto-installation">
-<span class="header-section-number">1</span> Check Giotto installation<a class="anchor" aria-label="anchor" href="#check-giotto-installation"></a>
+<h2 id="check-giotto-installation">
+<span class="header-section-number">1</span> Check Giotto
+installation<a class="anchor" aria-label="anchor" href="#check-giotto-installation"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed.</span></span>
@@ -618,12 +622,14 @@
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2" number="2">
-<h2 number="2" id="setup-example-tma-dataset">
-<span class="header-section-number">2</span> Setup example TMA dataset<a class="anchor" aria-label="anchor" href="#setup-example-tma-dataset"></a>
+<h2 id="setup-example-tma-dataset">
+<span class="header-section-number">2</span> Setup example TMA
+dataset<a class="anchor" aria-label="anchor" href="#setup-example-tma-dataset"></a>
 </h2>
 <div class="section level3" number="2.1">
-<h3 number="2.1" id="download-the-data">
-<span class="header-section-number">2.1</span> Download the Data<a class="anchor" aria-label="anchor" href="#download-the-data"></a>
+<h3 id="download-the-data">
+<span class="header-section-number">2.1</span> Download the
+Data<a class="anchor" aria-label="anchor" href="#download-the-data"></a>
 </h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## provide path to a folder to save the example data to</span></span>
@@ -643,8 +649,9 @@
 <span><span class="va">spat_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"spatial"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3" number="2.2">
-<h3 number="2.2" id="create-giotto-object">
-<span class="header-section-number">2.2</span> Create Giotto Object<a class="anchor" aria-label="anchor" href="#create-giotto-object"></a>
+<h3 id="create-giotto-object">
+<span class="header-section-number">2.2</span> Create Giotto
+Object<a class="anchor" aria-label="anchor" href="#create-giotto-object"></a>
 </h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://drieslab.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span>
@@ -672,11 +679,17 @@
 <p><img src="images%2Ftma%2F1_spatplot.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="2.3">
-<h3 number="2.3" id="detect-individual-tma-cores">
-<span class="header-section-number">2.3</span> Detect individual TMA cores<a class="anchor" aria-label="anchor" href="#detect-individual-tma-cores"></a>
+<h3 id="detect-individual-tma-cores">
+<span class="header-section-number">2.3</span> Detect individual TMA
+cores<a class="anchor" aria-label="anchor" href="#detect-individual-tma-cores"></a>
 </h3>
-<p>By building a spatial network, we can find out which data points are spatially contiguous by looking checking spatial distance, breaking ones that are too far away, and then checking for graph membership.</p>
-<p>This functionality is implemented as <code><a href="../reference/identifyTMAcores.html">identifyTMAcores()</a></code>, along with some additional steps that filter for minimal number of nodes to be considered a core and identify and join together cores that show up as two or more separate pieces of tissue.</p>
+<p>By building a spatial network, we can find out which data points are
+spatially contiguous by looking checking spatial distance, breaking ones
+that are too far away, and then checking for graph membership.</p>
+<p>This functionality is implemented as <code><a href="../reference/identifyTMAcores.html">identifyTMAcores()</a></code>,
+along with some additional steps that filter for minimal number of nodes
+to be considered a core and identify and join together cores that show
+up as two or more separate pieces of tissue.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create a default delaunay spatial network</span></span>
 <span><span class="va">tma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span><span class="va">tma</span><span class="op">)</span></span>
@@ -688,8 +701,11 @@
 <span>    point_alpha <span class="op">=</span> <span class="fl">0.7</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Ftma%2F2_identify_tma.png" width="100%" style="display: block; margin: auto;"></p>
-<p>The cores have been assigned numerical IDs. There is also a <code>"not_connected"</code> group which are too small to be considered a spatial region and not connected to a larger group of data points.</p>
-<p>We can also now add the core annotations from the 10X dataset description</p>
+<p>The cores have been assigned numerical IDs. There is also a
+<code>"not_connected"</code> group which are too small to be considered
+a spatial region and not connected to a larger group of data points.</p>
+<p>We can also now add the core annotations from the 10X dataset
+description</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># also add the core annotations from the 10x dataset description</span></span>
 <span><span class="va">tma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/annotateGiotto.html" class="external-link">annotateGiotto</a></span><span class="op">(</span><span class="va">tma</span>, </span>
@@ -719,15 +735,23 @@
 </div>
 </div>
 <div class="section level2" number="3">
-<h2 number="3" id="reorganize-object-by-tissue-type-optional">
-<span class="header-section-number">3</span> Reorganize Object by Tissue Type (optional)<a class="anchor" aria-label="anchor" href="#reorganize-object-by-tissue-type-optional"></a>
+<h2 id="reorganize-object-by-tissue-type-optional">
+<span class="header-section-number">3</span> Reorganize Object by
+Tissue Type (optional)<a class="anchor" aria-label="anchor" href="#reorganize-object-by-tissue-type-optional"></a>
 </h2>
-<p>This particular dataset contains two types of tissues (lung and brain). It can be helpful to analyze these in separate expression spaces.</p>
+<p>This particular dataset contains two types of tissues (lung and
+brain). It can be helpful to analyze these in separate expression
+spaces.</p>
 <div class="section level3" number="3.1">
-<h3 number="3.1" id="split-giotto-object">
-<span class="header-section-number">3.1</span> Split Giotto Object<a class="anchor" aria-label="anchor" href="#split-giotto-object"></a>
+<h3 id="split-giotto-object">
+<span class="header-section-number">3.1</span> Split Giotto
+Object<a class="anchor" aria-label="anchor" href="#split-giotto-object"></a>
 </h3>
-<p>A split operation will split a single <code>giotto</code> object into a list of several based on a cell metadata column defined by the <code>by</code> param. Here we split by the newly added <code>"sample"</code> annotation that tells us what tissue the core is from.</p>
+<p>A split operation will split a single <code>giotto</code> object into
+a list of several based on a cell metadata column defined by the
+<code>by</code> param. Here we split by the newly added
+<code>"sample"</code> annotation that tells us what tissue the core is
+from.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">object_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/splitGiotto.html" class="external-link">splitGiotto</a></span><span class="op">(</span><span class="va">tma</span>, by <span class="op">=</span> <span class="st">"sample"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">object_list</span><span class="op">)</span></span></code></pre></div>
@@ -738,10 +762,13 @@
  [6] "brain4"        "lung4"         "lung3"         "not_connected" "lung2"   </code></pre>
 </div>
 <div class="section level3" number="3.2">
-<h3 number="3.2" id="join-similar-tissue-types">
-<span class="header-section-number">3.2</span> Join Similar Tissue Types<a class="anchor" aria-label="anchor" href="#join-similar-tissue-types"></a>
+<h3 id="join-similar-tissue-types">
+<span class="header-section-number">3.2</span> Join Similar Tissue
+Types<a class="anchor" aria-label="anchor" href="#join-similar-tissue-types"></a>
 </h3>
-<p>Next we join together the <code>giotto</code> objects containing cores with similar tissue types, finishing the reorganization of the analysis objects.</p>
+<p>Next we join together the <code>giotto</code> objects containing
+cores with similar tissue types, finishing the reorganization of the
+analysis objects.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lung_reps</span> <span class="op">&lt;-</span> <span class="va">object_list</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lung1"</span>, <span class="st">"lung2"</span>, <span class="st">"lung3"</span>, <span class="st">"lung4"</span>, <span class="st">"lung5"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="va">brain_reps</span> <span class="op">&lt;-</span> <span class="va">object_list</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"brain1"</span>, <span class="st">"brain2"</span>, <span class="st">"brain3"</span>, <span class="st">"brain4"</span><span class="op">)</span><span class="op">]</span></span>
@@ -781,12 +808,17 @@
 <span>    show_image <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Ftma%2F5_brain_joined.png" width="80%" style="display: block; margin: auto;"></p>
-<p>The datasets are now organized into the two multi-sample <code>giotto</code> objects <code>lung</code> and <code>brain</code>. Downstream analyses can now continue on these two sets of data independently.</p>
-<p>Note that these objects were joined without integration, so a good first step would be to cluster the datasets and check for inter-core batch effects, and then proceed with <a href="visium_prostate_integration">integration</a> if necessary.</p>
+<p>The datasets are now organized into the two multi-sample
+<code>giotto</code> objects <code>lung</code> and <code>brain</code>.
+Downstream analyses can now continue on these two sets of data
+independently.</p>
+<p>Note that these objects were joined without integration, so a good
+first step would be to cluster the datasets and check for inter-core
+batch effects, and then proceed with <a href="visium_prostate_integration">integration</a> if necessary.</p>
 </div>
 </div>
 <div class="section level2" number="4">
-<h2 number="4" id="session-info">
+<h2 id="session-info">
 <span class="header-section-number">4</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">

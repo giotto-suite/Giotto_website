@@ -599,45 +599,75 @@
     
     
 <div class="section level2" number="1">
-<h2 number="1" id="overview-of-ontrac">
+<h2 id="overview-of-ontrac">
 <span class="header-section-number">1</span> Overview of ONTraC<a class="anchor" aria-label="anchor" href="#overview-of-ontrac"></a>
 </h2>
-<p>ONTraC (Ordered Niche Trajectory Construction) is a niche-centered, machine learning method for constructing spatially continuous trajectories. ONTraC differs from existing tools in that it treats a niche, rather than an individual cell, as the basic unit for spatial trajectory analysis. In this context, we define niche as a multicellular, spatially localized region where different cell types may coexist and interact with each other. ONTraC seamlessly integrates cell-type composition and spatial information by using the graph neural network modeling framework. Its output, which is called the niche trajectory, can be viewed as a one dimensional representation of the tissue microenvironment continuum. By disentangling cell-level and niche-level properties, niche trajectory analysis provides a coherent framework to study coordinated responses from all the cells in association with continuous tissue microenvironment variations.</p>
+<p>ONTraC (Ordered Niche Trajectory Construction) is a niche-centered,
+machine learning method for constructing spatially continuous
+trajectories. ONTraC differs from existing tools in that it treats a
+niche, rather than an individual cell, as the basic unit for spatial
+trajectory analysis. In this context, we define niche as a
+multicellular, spatially localized region where different cell types may
+coexist and interact with each other. ONTraC seamlessly integrates
+cell-type composition and spatial information by using the graph neural
+network modeling framework. Its output, which is called the niche
+trajectory, can be viewed as a one dimensional representation of the
+tissue microenvironment continuum. By disentangling cell-level and
+niche-level properties, niche trajectory analysis provides a coherent
+framework to study coordinated responses from all the cells in
+association with continuous tissue microenvironment variations.</p>
 <p><img src="images%2Fontrac%2F0-ONTraCWorkFlow.png" width="80%" style="display: block; margin: auto;"></p>
-<p><a href="https://www.biorxiv.org/content/10.1101/2024.04.23.590827v1" class="external-link">ONTraC paper</a></p>
-<p><a href="https://github.com/gyuanlab/ONTraC" class="external-link">ONTraC GitHub repository</a></p>
+<p><a href="https://www.biorxiv.org/content/10.1101/2024.04.23.590827v1" class="external-link">ONTraC
+paper</a></p>
+<p><a href="https://github.com/gyuanlab/ONTraC" class="external-link">ONTraC GitHub
+repository</a></p>
 </div>
 <div class="section level2" number="2">
-<h2 number="2" id="dataset-description">
-<span class="header-section-number">2</span> Dataset Description<a class="anchor" aria-label="anchor" href="#dataset-description"></a>
+<h2 id="dataset-description">
+<span class="header-section-number">2</span> Dataset
+Description<a class="anchor" aria-label="anchor" href="#dataset-description"></a>
 </h2>
-<p>In this tutorial, we ues a MERFISH mouse motor cortex dataset comprising 61 tissue sections and containing approximately 280,000 cells characterised by a 258-gene panel. The study identified 3 classes of cells, glutamatergic, GABAergic and non-neuronal cell groups, and further clustered into 23 annotated plus 1 other subclass-level cell types.</p>
+<p>In this tutorial, we ues a MERFISH mouse motor cortex dataset
+comprising 61 tissue sections and containing approximately 280,000 cells
+characterised by a 258-gene panel. The study identified 3 classes of
+cells, glutamatergic, GABAergic and non-neuronal cell groups, and
+further clustered into 23 annotated plus 1 other subclass-level cell
+types.</p>
 <p><img src="images%2Fontrac%2F0-Dataset.png" width="100%" style="display: block; margin: auto;"></p>
-<p>MERFISH is a massively multiplexed single-molecule imaging technology for spatially resolved transcriptomics capable of simultaneously measuring the copy number and spatial distribution of hundreds to tens of thousands of RNA species in individual cells. For further information, please visit the official <a href="https://vizgen.com/technology/#merfish" class="external-link">website</a>.</p>
+<p>MERFISH is a massively multiplexed single-molecule imaging technology
+for spatially resolved transcriptomics capable of simultaneously
+measuring the copy number and spatial distribution of hundreds to tens
+of thousands of RNA species in individual cells. For further
+information, please visit the official <a href="https://vizgen.com/technology/#merfish" class="external-link">website</a>.</p>
 <p><img src="images%2Fontrac%2F0-MERFISH.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2" number="3">
-<h2 number="3" id="pre-settings">
+<h2 id="pre-settings">
 <span class="header-section-number">3</span> Pre-settings<a class="anchor" aria-label="anchor" href="#pre-settings"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">python_path</span> <span class="op">&lt;-</span> <span class="st">"giotto_ontrac_env"</span></span>
 <span><span class="va">env_name</span> <span class="op">&lt;-</span> <span class="st">"giotto_ontrac_env"</span></span></code></pre></div>
 <div class="section level3" number="3.1">
-<h3 number="3.1" id="giotto-installation">
-<span class="header-section-number">3.1</span> Giotto Installation<a class="anchor" aria-label="anchor" href="#giotto-installation"></a>
+<h3 id="giotto-installation">
+<span class="header-section-number">3.1</span> Giotto
+Installation<a class="anchor" aria-label="anchor" href="#giotto-installation"></a>
 </h3>
 <p>We need <code>R&gt;=4.4</code> for this tutorial.</p>
 <ul>
 <li>Install Giotto</li>
 </ul>
-<p>Please following the <a href="installation.html">Giotto Installation Tutorial</a>.</p>
+<p>Please following the <a href="installation.html">Giotto Installation
+Tutorial</a>.</p>
 </div>
 <div class="section level3" number="3.2">
-<h3 number="3.2" id="ontrac-installation">
-<span class="header-section-number">3.2</span> ONTraC Installation<a class="anchor" aria-label="anchor" href="#ontrac-installation"></a>
+<h3 id="ontrac-installation">
+<span class="header-section-number">3.2</span> ONTraC
+Installation<a class="anchor" aria-label="anchor" href="#ontrac-installation"></a>
 </h3>
-<p>Since ONTraC is a GNN algorithm that relies on <a href="https://pytorch-geometric.readthedocs.io/en/latest/" class="external-link">pytorch-geometric</a>, we create a new environment here in order not to interfere with other software using <code><a href="../reference/installGiottoONTraCEnvironment.html">installGiottoONTraCEnvironment()</a></code>.</p>
+<p>Since ONTraC is a GNN algorithm that relies on <a href="https://pytorch-geometric.readthedocs.io/en/latest/" class="external-link">pytorch-geometric</a>,
+we create a new environment here in order not to interfere with other
+software using <code><a href="../reference/installGiottoONTraCEnvironment.html">installGiottoONTraCEnvironment()</a></code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://drieslab.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/installGiottoONTraCEnvironment.html">installGiottoONTraCEnvironment</a></span><span class="op">(</span>envname <span class="op">=</span> <span class="va">env_name</span><span class="op">)</span></span></code></pre></div>
@@ -648,8 +678,9 @@
 <span>                          pip <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3" number="3.3">
-<h3 number="3.3" id="configuring-data-and-results-paths">
-<span class="header-section-number">3.3</span> Configuring Data and Results Paths<a class="anchor" aria-label="anchor" href="#configuring-data-and-results-paths"></a>
+<h3 id="configuring-data-and-results-paths">
+<span class="header-section-number">3.3</span> Configuring Data and
+Results Paths<a class="anchor" aria-label="anchor" href="#configuring-data-and-results-paths"></a>
 </h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>timeout<span class="op">=</span><span class="cn">Inf</span><span class="op">)</span> <span class="co"># In case of network interrupt</span></span>
@@ -662,13 +693,19 @@
 </div>
 </div>
 <div class="section level2" number="4">
-<h2 number="4" id="downloading-dataset">
-<span class="header-section-number">4</span> Downloading Dataset<a class="anchor" aria-label="anchor" href="#downloading-dataset"></a>
+<h2 id="downloading-dataset">
+<span class="header-section-number">4</span> Downloading
+Dataset<a class="anchor" aria-label="anchor" href="#downloading-dataset"></a>
 </h2>
-<p>The MERFISH mouse motor cortex data to run this tutorial can be found <a href="https://doi.brainimagelibrary.org/doi/10.35077/g.21" class="external-link">here</a></p>
-<p>You need to download the processed expression, metadata, and cell segmentation information by running these commands:</p>
-<p>Note 1: there are 61 slices here, we run on two of them to save the time. Note 2: due to the instability of network, download processing may be interrupt.</p>
-<p>We recommend to download these data in advance or download the processing giotto object from <a href="https://zenodo.org/records/13713948" class="external-link">Zenodo</a>.</p>
+<p>The MERFISH mouse motor cortex data to run this tutorial can be found
+<a href="https://doi.brainimagelibrary.org/doi/10.35077/g.21" class="external-link">here</a></p>
+<p>You need to download the processed expression, metadata, and cell
+segmentation information by running these commands:</p>
+<p>Note 1: there are 61 slices here, we run on two of them to save the
+time. Note 2: due to the instability of network, download processing may
+be interrupt.</p>
+<p>We recommend to download these data in advance or download the
+processing giotto object from <a href="https://zenodo.org/records/13713948" class="external-link">Zenodo</a>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"https://download.brainimagelibrary.org/cf/1c/cf1c1a431ef8d021/processed_data/counts.h5ad"</span>,</span>
 <span>              destfile <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_path</span>,<span class="st">"counts.h5ad"</span><span class="op">)</span><span class="op">)</span></span>
@@ -683,16 +720,19 @@
 <span>              destfile <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_path</span>,<span class="st">"segmented_cells_mouse2sample6.csv"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="5">
-<h2 number="5" id="data-analysis">
+<h2 id="data-analysis">
 <span class="header-section-number">5</span> Data Analysis<a class="anchor" aria-label="anchor" href="#data-analysis"></a>
 </h2>
 <div class="section level3" number="5.1">
-<h3 number="5.1" id="creating-the-giotto-object">
-<span class="header-section-number">5.1</span> Creating the Giotto Object<a class="anchor" aria-label="anchor" href="#creating-the-giotto-object"></a>
+<h3 id="creating-the-giotto-object">
+<span class="header-section-number">5.1</span> Creating the Giotto
+Object<a class="anchor" aria-label="anchor" href="#creating-the-giotto-object"></a>
 </h3>
-<p>There are two options for creating the giotto object. Option 1 is create the giotto object step by step. Option 2 is load the pre-constructed giotto object from <a href="https://zenodo.org/records/13713948" class="external-link">Zenodo</a>.</p>
+<p>There are two options for creating the giotto object. Option 1 is
+create the giotto object step by step. Option 2 is load the
+pre-constructed giotto object from <a href="https://zenodo.org/records/13713948" class="external-link">Zenodo</a>.</p>
 <div class="section level4" number="5.1.1">
-<h4 number="5.1.1" id="option-1">
+<h4 id="option-1">
 <span class="header-section-number">5.1.1</span> Option 1<a class="anchor" aria-label="anchor" href="#option-1"></a>
 </h4>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -790,10 +830,12 @@
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giotto_obj</span>, foldername <span class="op">=</span> <span class="st">"gobject"</span>, dir<span class="op">=</span><span class="va">results_folder</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4" number="5.1.2">
-<h4 number="5.1.2" id="option-2">
+<h4 id="option-2">
 <span class="header-section-number">5.1.2</span> Option 2<a class="anchor" aria-label="anchor" href="#option-2"></a>
 </h4>
-<p>If you facing network issue when downloading the raw dataset. Please download the processing giotto obj from <a href="https://zenodo.org/records/13713948" class="external-link">Zenodo</a>, unzip and move it to <code>results</code> folder.</p>
+<p>If you facing network issue when downloading the raw dataset. Please
+download the processing giotto obj from <a href="https://zenodo.org/records/13713948" class="external-link">Zenodo</a>, unzip and move it
+to <code>results</code> folder.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://drieslab.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span>
 <span></span>
@@ -802,8 +844,9 @@
 </div>
 </div>
 <div class="section level3" number="5.2">
-<h3 number="5.2" id="spatial-distribution-of-cell-type">
-<span class="header-section-number">5.2</span> Spatial distribution of cell type<a class="anchor" aria-label="anchor" href="#spatial-distribution-of-cell-type"></a>
+<h3 id="spatial-distribution-of-cell-type">
+<span class="header-section-number">5.2</span> Spatial distribution
+of cell type<a class="anchor" aria-label="anchor" href="#spatial-distribution-of-cell-type"></a>
 </h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">giotto_obj</span>,</span>
@@ -815,8 +858,9 @@
 <p><img src="images%2Fontrac%2F1-spatialCellTypeDis.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="5.3">
-<h3 number="5.3" id="generate-input-file-for-ontrac">
-<span class="header-section-number">5.3</span> Generate input file for ONTraC<a class="anchor" aria-label="anchor" href="#generate-input-file-for-ontrac"></a>
+<h3 id="generate-input-file-for-ontrac">
+<span class="header-section-number">5.3</span> Generate input file
+for ONTraC<a class="anchor" aria-label="anchor" href="#generate-input-file-for-ontrac"></a>
 </h3>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># We skip the processing process here to save time and use the given cell type</span></span>
@@ -840,12 +884,14 @@
 <span><span class="co">#   mouse2_slice229-100252992997994275968450436343196667192     mouse2_slice229 -6637.847   -1659.6237  Astro</span></span></code></pre></div>
 </div>
 <div class="section level3" number="5.4">
-<h3 number="5.4" id="perform-spatial-niche-trajectory-analysis-using-ontrac">
-<span class="header-section-number">5.4</span> Perform spatial niche trajectory analysis using ONTraC<a class="anchor" aria-label="anchor" href="#perform-spatial-niche-trajectory-analysis-using-ontrac"></a>
+<h3 id="perform-spatial-niche-trajectory-analysis-using-ontrac">
+<span class="header-section-number">5.4</span> Perform spatial niche
+trajectory analysis using ONTraC<a class="anchor" aria-label="anchor" href="#perform-spatial-niche-trajectory-analysis-using-ontrac"></a>
 </h3>
 <div class="section level4" number="5.4.1">
-<h4 number="5.4.1" id="option-1-run-ontrac-through-giotto">
-<span class="header-section-number">5.4.1</span> Option 1: run ONTraC through Giotto<a class="anchor" aria-label="anchor" href="#option-1-run-ontrac-through-giotto"></a>
+<h4 id="option-1-run-ontrac-through-giotto">
+<span class="header-section-number">5.4.1</span> Option 1: run
+ONTraC through Giotto<a class="anchor" aria-label="anchor" href="#option-1-run-ontrac-through-giotto"></a>
 </h4>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/runONTraCV1.html">runONTraCV1</a></span><span class="op">(</span>ONTraC_input <span class="op">=</span> <span class="va">ONTraC_input</span>,</span>
@@ -865,50 +911,60 @@
 <span>       python_path <span class="op">=</span> <span class="va">python_path</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4" number="5.4.2">
-<h4 number="5.4.2" id="option-2-run-ontrac-in-a-separate-machine">
-<span class="header-section-number">5.4.2</span> Option 2: run ONTraC in a separate machine<a class="anchor" aria-label="anchor" href="#option-2-run-ontrac-in-a-separate-machine"></a>
+<h4 id="option-2-run-ontrac-in-a-separate-machine">
+<span class="header-section-number">5.4.2</span> Option 2: run
+ONTraC in a separate machine<a class="anchor" aria-label="anchor" href="#option-2-run-ontrac-in-a-separate-machine"></a>
 </h4>
-<p>You can run ONTraC on an HPC with an NVIDIA GPU node, which would save a lot of time when applying it on larger datasets.</p>
+<p>You can run ONTraC on an HPC with an NVIDIA GPU node, which would
+save a lot of time when applying it on larger datasets.</p>
 <ul>
 <li>Install ONTraC.</li>
 </ul>
-<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a><span class="bu">source</span> ~/.bash_profile</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true"></a><span class="ex">conda</span> create -y -n ONTraC python=3.11</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true"></a></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true"></a><span class="ex">conda</span> activate ONTraC</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true"></a></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true"></a><span class="ex">pip</span> install ONTraC</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="bu">source</span> ~/.bash_profile</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">-y</span> <span class="at">-n</span> ONTraC python=3.11</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="ex">conda</span> activate ONTraC</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="ex">pip</span> install ONTraC</span></code></pre></div>
 <ul>
 <li>Copy the input file to that machine and running ONTraC.</li>
 </ul>
-<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a><span class="bu">source</span> ~/.bash_profile</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true"></a><span class="ex">conda</span> activate ONTraC</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true"></a></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true"></a><span class="ex">ONTraC</span> -d /path/to/results/ONTraC_dataset_input.csv --preprocessing-dir /path/to/results/preprocessing_dir --GNN-dir /path/to/results/GNN_dir --NTScore-dir /path/to/results/NTScore_dir --device cuda --epochs 1000 -s 42 --patience 100 --min-delta 0.001 --min-epochs 50 --lr 0.03 --hidden-feats 4 -k 6 --modularity-loss-weight 0.3 --purity-loss-weight 300 --regularization-loss-weight 0.3 --beta 0.03 <span class="op">2&gt;&amp;1</span> <span class="kw">|</span> <span class="fu">tee</span> /path/to/results/merfish_subset.log</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="bu">source</span> ~/.bash_profile</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="ex">conda</span> activate ONTraC</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="ex">ONTraC</span> <span class="at">-d</span> /path/to/results/ONTraC_dataset_input.csv <span class="at">--preprocessing-dir</span> /path/to/results/preprocessing_dir <span class="at">--GNN-dir</span> /path/to/results/GNN_dir <span class="at">--NTScore-dir</span> /path/to/results/NTScore_dir <span class="at">--device</span> cuda <span class="at">--epochs</span> 1000 <span class="at">-s</span> 42 <span class="at">--patience</span> 100 <span class="at">--min-delta</span> 0.001 <span class="at">--min-epochs</span> 50 <span class="at">--lr</span> 0.03 <span class="at">--hidden-feats</span> 4 <span class="at">-k</span> 6 <span class="at">--modularity-loss-weight</span> 0.3 <span class="at">--purity-loss-weight</span> 300 <span class="at">--regularization-loss-weight</span> 0.3 <span class="at">--beta</span> 0.03 <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="kw">|</span> <span class="fu">tee</span> /path/to/results/merfish_subset.log</span></code></pre></div>
 <ul>
-<li><p>Copy the output directories (<code>/path/to/results/preprocessing_dir</code>, <code>/path/to/results/GNN_dir</code>, and <code>/path/to/results/NTScore_dir</code>) back to the machine running Giotto.</p></li>
+<li><p>Copy the output directories
+(<code>/path/to/results/preprocessing_dir</code>,
+<code>/path/to/results/GNN_dir</code>, and
+<code>/path/to/results/NTScore_dir</code>) back to the machine running
+Giotto.</p></li>
 <li><p>For details, please refer <a href="https://github.com/gyuanlab/ONTraC" class="external-link">ONTraC’s website</a>.</p></li>
 </ul>
 </div>
 </div>
 </div>
 <div class="section level2" number="6">
-<h2 number="6" id="visualization">
+<h2 id="visualization">
 <span class="header-section-number">6</span> Visualization<a class="anchor" aria-label="anchor" href="#visualization"></a>
 </h2>
 <div class="section level3" number="6.1">
-<h3 number="6.1" id="load-ontrac-results">
-<span class="header-section-number">6.1</span> Load ONTraC results<a class="anchor" aria-label="anchor" href="#load-ontrac-results"></a>
+<h3 id="load-ontrac-results">
+<span class="header-section-number">6.1</span> Load ONTraC
+results<a class="anchor" aria-label="anchor" href="#load-ontrac-results"></a>
 </h3>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">giotto_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loadOntraCResults.html">loadOntraCResults</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giotto_obj</span>,</span>
 <span>                                ontrac_results_dir <span class="op">=</span> <span class="va">results_folder</span>,</span>
 <span>                                NTScore_reverse <span class="op">=</span> <span class="cn">TRUE</span> <span class="co"># whether to reverse the NTScore (direction of the trajectory)</span></span>
 <span>                                <span class="op">)</span></span></code></pre></div>
-<p>This function will look for the <code>preprocessing_dir</code>, <code>GNN_dir</code>, and <code>NTScore_dir</code> under the <code>results_folder</code> automatically.</p>
-<p>The NTScore and binarized niche cluster info were stored in cell metadata as below:</p>
+<p>This function will look for the <code>preprocessing_dir</code>,
+<code>GNN_dir</code>, and <code>NTScore_dir</code> under the
+<code>results_folder</code> automatically.</p>
+<p>The NTScore and binarized niche cluster info were stored in cell
+metadata as below:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">giotto_obj</span>, spat_unit <span class="op">=</span> <span class="st">"cell"</span>, feat_type <span class="op">=</span> <span class="st">"rna"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
@@ -920,7 +976,9 @@
 <span><span class="co">#   4:  mouse2_slice229-100209662400867003194056898065587980841 mouse2_sample6  mouse2_slice229 Other           Oligo    Oligo_1   mouse2_slice229  0.6010420 NicheCluster_5</span></span>
 <span><span class="co">#   5:  mouse2_slice229-100218038012295593766653119076639444055 mouse2_sample6  mouse2_slice229 Glutamatergic   L2/3 IT  L23_IT_4  mouse2_slice229  0.7132024 NicheCluster_1</span></span>
 <span><span class="co">#   6:  mouse2_slice229-100252992997994275968450436343196667192 mouse2_sample6  mouse2_slice229 Other           Astro    Astro_2   mouse2_slice229  0.1980136 NicheCluster_3</span></span></code></pre></div>
-<p>The 1) probability matrix of each cell assigned to each niche cluster and 2) connectivity between niche cluster were stored as additional matrix here:</p>
+<p>The 1) probability matrix of each cell assigned to each niche cluster
+and 2) connectivity between niche cluster were stored as additional
+matrix here:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">GiottoClass</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/list_expression.html" class="external-link">list_expression</a></span><span class="op">(</span><span class="va">giotto_obj</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
@@ -931,8 +989,9 @@
 <span><span class="co"># 3: niche cluster  connectivity normalized</span></span></code></pre></div>
 </div>
 <div class="section level3" number="6.2">
-<h3 number="6.2" id="niche-cluster-probability-distribution">
-<span class="header-section-number">6.2</span> Niche cluster probability distribution<a class="anchor" aria-label="anchor" href="#niche-cluster-probability-distribution"></a>
+<h3 id="niche-cluster-probability-distribution">
+<span class="header-section-number">6.2</span> Niche cluster
+probability distribution<a class="anchor" aria-label="anchor" href="#niche-cluster-probability-distribution"></a>
 </h3>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSpatNicheClusterProb.html">plotSpatNicheClusterProb</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giotto_obj</span>,</span>
@@ -943,8 +1002,9 @@
 <p><img src="images%2Fontrac%2F2-spatialNicheClusterProb.png" width="60%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="6.3">
-<h3 number="6.3" id="binarized-niche-cluster-for-each-cell">
-<span class="header-section-number">6.3</span> Binarized niche cluster for each cell<a class="anchor" aria-label="anchor" href="#binarized-niche-cluster-for-each-cell"></a>
+<h3 id="binarized-niche-cluster-for-each-cell">
+<span class="header-section-number">6.3</span> Binarized niche
+cluster for each cell<a class="anchor" aria-label="anchor" href="#binarized-niche-cluster-for-each-cell"></a>
 </h3>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSpatNicheClusterBin.html">plotSpatNicheClusterBin</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giotto_obj</span>,</span>
@@ -955,8 +1015,9 @@
 <p><img src="images%2Fontrac%2F3-spatialBinNicheCluster.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="6.4">
-<h3 number="6.4" id="niche-cluster-spatial-connectivity">
-<span class="header-section-number">6.4</span> Niche cluster spatial connectivity<a class="anchor" aria-label="anchor" href="#niche-cluster-spatial-connectivity"></a>
+<h3 id="niche-cluster-spatial-connectivity">
+<span class="header-section-number">6.4</span> Niche cluster spatial
+connectivity<a class="anchor" aria-label="anchor" href="#niche-cluster-spatial-connectivity"></a>
 </h3>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span>  <span class="co"># fix the node positions</span></span>
@@ -966,8 +1027,9 @@
 <p><img src="images%2Fontrac%2F4-nicheClusterConnectivity.png" width="60%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="6.5">
-<h3 number="6.5" id="nt-niche-trajectory-score">
-<span class="header-section-number">6.5</span> NT (niche trajectory) score<a class="anchor" aria-label="anchor" href="#nt-niche-trajectory-score"></a>
+<h3 id="nt-niche-trajectory-score">
+<span class="header-section-number">6.5</span> NT (niche trajectory)
+score<a class="anchor" aria-label="anchor" href="#nt-niche-trajectory-score"></a>
 </h3>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giotto_obj</span>, </span>
@@ -992,8 +1054,9 @@
 <p><img src="images%2Fontrac%2F6-violinCellTypeOverNTScore.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="6.6">
-<h3 number="6.6" id="cell-type-composition-within-niche-cluster">
-<span class="header-section-number">6.6</span> Cell type composition within niche cluster<a class="anchor" aria-label="anchor" href="#cell-type-composition-within-niche-cluster"></a>
+<h3 id="cell-type-composition-within-niche-cluster">
+<span class="header-section-number">6.6</span> Cell type composition
+within niche cluster<a class="anchor" aria-label="anchor" href="#cell-type-composition-within-niche-cluster"></a>
 </h3>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotCTCompositionInNicheCluster.html">plotCTCompositionInNicheCluster</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giotto_obj</span>,</span>
@@ -1013,7 +1076,7 @@
 </div>
 </div>
 <div class="section level2" number="7">
-<h2 number="7" id="session-info">
+<h2 id="session-info">
 <span class="header-section-number">7</span> Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">

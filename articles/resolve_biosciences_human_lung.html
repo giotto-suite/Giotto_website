@@ -599,11 +599,21 @@
     
     
 <div class="section level2" number="1">
-<h2 number="1" id="dataset-explanation">
-<span class="header-section-number">1</span> Dataset explanation<a class="anchor" aria-label="anchor" href="#dataset-explanation"></a>
+<h2 id="dataset-explanation">
+<span class="header-section-number">1</span> Dataset
+explanation<a class="anchor" aria-label="anchor" href="#dataset-explanation"></a>
 </h2>
-<p>This dataset was generated in-house at Resolve Biosciences using customer-provided tissue sections. The experiment used a custom 34-gene target panel to measure gene expression in situ for five samples across three Molecular observation slides (Slide 873, Sample C1; Slide 874, Sample D2; Slide 879, Samples B1, C2, D2). The dataset contains DAPI image, expression matrix, gene list, and cell segmentation files for download. Data made available with kind permission from a Resolve Biosciences customer.</p>
-<p>You can download the files <a href="https://resolvebiosciences.com/datasets/human-lung-dataset/" class="external-link">here</a>. To run this example, we will use the Molecular observation slide 873.</p>
+<p>This dataset was generated in-house at Resolve Biosciences using
+customer-provided tissue sections. The experiment used a custom 34-gene
+target panel to measure gene expression in situ for five samples across
+three Molecular observation slides (Slide 873, Sample C1; Slide 874,
+Sample D2; Slide 879, Samples B1, C2, D2). The dataset contains DAPI
+image, expression matrix, gene list, and cell segmentation files for
+download. Data made available with kind permission from a Resolve
+Biosciences customer.</p>
+<p>You can download the files <a href="https://resolvebiosciences.com/datasets/human-lung-dataset/" class="external-link">here</a>.
+To run this example, we will use the Molecular observation slide
+873.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed.</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -623,7 +633,7 @@
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2" number="2">
-<h2 number="2" id="start-giotto">
+<h2 id="start-giotto">
 <span class="header-section-number">2</span> Start Giotto<a class="anchor" aria-label="anchor" href="#start-giotto"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -646,7 +656,7 @@
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="3">
-<h2 number="3" id="input-files">
+<h2 id="input-files">
 <span class="header-section-number">3</span> Input Files<a class="anchor" aria-label="anchor" href="#input-files"></a>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -668,8 +678,9 @@
 <span><span class="va">tx_coord</span> <span class="op">&lt;-</span> <span class="va">tx_coord</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">gene_id</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 </div>
 <div class="section level2" number="4">
-<h2 number="4" id="create-subcellular-giotto-object">
-<span class="header-section-number">4</span> Create Subcellular Giotto Object<a class="anchor" aria-label="anchor" href="#create-subcellular-giotto-object"></a>
+<h2 id="create-subcellular-giotto-object">
+<span class="header-section-number">4</span> Create Subcellular
+Giotto Object<a class="anchor" aria-label="anchor" href="#create-subcellular-giotto-object"></a>
 </h2>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">testobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObjectSubcellular.html" class="external-link">createGiottoObjectSubcellular</a></span><span class="op">(</span></span>
@@ -680,8 +691,9 @@
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="5">
-<h2 number="5" id="create-spatial-locations">
-<span class="header-section-number">5</span> Create Spatial Locations<a class="anchor" aria-label="anchor" href="#create-spatial-locations"></a>
+<h2 id="create-spatial-locations">
+<span class="header-section-number">5</span> Create Spatial
+Locations<a class="anchor" aria-label="anchor" href="#create-spatial-locations"></a>
 </h2>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># centroids are now used to provide the spatial locations (centroid of each cell)</span></span>
@@ -691,8 +703,9 @@
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="6">
-<h2 number="6" id="add-image-information">
-<span class="header-section-number">6</span> Add Image Information<a class="anchor" aria-label="anchor" href="#add-image-information"></a>
+<h2 id="add-image-information">
+<span class="header-section-number">6</span> Add Image
+Information<a class="anchor" aria-label="anchor" href="#add-image-information"></a>
 </h2>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create Giotto images</span></span>
@@ -725,8 +738,9 @@
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/showGiottoImageNames.html" class="external-link">showGiottoImageNames</a></span><span class="op">(</span><span class="va">testobj</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="7">
-<h2 number="7" id="visualize-original-images">
-<span class="header-section-number">7</span> Visualize Original Images<a class="anchor" aria-label="anchor" href="#visualize-original-images"></a>
+<h2 id="visualize-original-images">
+<span class="header-section-number">7</span> Visualize Original
+Images<a class="anchor" aria-label="anchor" href="#visualize-original-images"></a>
 </h2>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># visualize overlay of calculated cell centroid with original image and segmentation mask file</span></span>
@@ -745,8 +759,9 @@
 <p><img src="images%2Fresolve_biosciences%2F1-spatPlot2D.png"></p>
 </div>
 <div class="section level2" number="8">
-<h2 number="8" id="calculate-cell-shape-overlap">
-<span class="header-section-number">8</span> Calculate Cell Shape Overlap<a class="anchor" aria-label="anchor" href="#calculate-cell-shape-overlap"></a>
+<h2 id="calculate-cell-shape-overlap">
+<span class="header-section-number">8</span> Calculate Cell Shape
+Overlap<a class="anchor" aria-label="anchor" href="#calculate-cell-shape-overlap"></a>
 </h2>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu">tic</span><span class="op">(</span><span class="op">)</span></span>
@@ -766,7 +781,7 @@
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="9">
-<h2 number="9" id="filter-data">
+<h2 id="filter-data">
 <span class="header-section-number">9</span> Filter Data<a class="anchor" aria-label="anchor" href="#filter-data"></a>
 </h2>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -788,8 +803,9 @@
 <p><img src="images%2Fresolve_biosciences%2F69-spatPlot2D.png"></p>
 </div>
 <div class="section level2" number="10">
-<h2 number="10" id="process-giotto-object">
-<span class="header-section-number">10</span> Process Giotto Object<a class="anchor" aria-label="anchor" href="#process-giotto-object"></a>
+<h2 id="process-giotto-object">
+<span class="header-section-number">10</span> Process Giotto
+Object<a class="anchor" aria-label="anchor" href="#process-giotto-object"></a>
 </h2>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># rna data, default.</span></span>
@@ -810,8 +826,9 @@
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/showGiottoExpression.html" class="external-link">showGiottoExpression</a></span><span class="op">(</span><span class="va">subc_test</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="11">
-<h2 number="11" id="dimension-reduction">
-<span class="header-section-number">11</span> Dimension Reduction<a class="anchor" aria-label="anchor" href="#dimension-reduction"></a>
+<h2 id="dimension-reduction">
+<span class="header-section-number">11</span> Dimension
+Reduction<a class="anchor" aria-label="anchor" href="#dimension-reduction"></a>
 </h2>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Find highly valuable Features</span></span>
@@ -854,7 +871,7 @@
 <p><img src="images%2Fresolve_biosciences%2F8-UMAP.png"></p>
 </div>
 <div class="section level2" number="12">
-<h2 number="12" id="cluster">
+<h2 id="cluster">
 <span class="header-section-number">12</span> Cluster<a class="anchor" aria-label="anchor" href="#cluster"></a>
 </h2>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
@@ -912,8 +929,9 @@
 <p><img src="images%2Fresolve_biosciences%2F12-showClusterDendrogram.png"></p>
 </div>
 <div class="section level2" number="13">
-<h2 number="13" id="create-a-spatial-network">
-<span class="header-section-number">13</span> Create a Spatial Network<a class="anchor" aria-label="anchor" href="#create-a-spatial-network"></a>
+<h2 id="create-a-spatial-network">
+<span class="header-section-number">13</span> Create a Spatial
+Network<a class="anchor" aria-label="anchor" href="#create-a-spatial-network"></a>
 </h2>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">subc_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">subc_test</span>,</span>
@@ -931,8 +949,9 @@
 <p><img src="images%2Fresolve_biosciences%2F13-spatPlot2D.png"></p>
 </div>
 <div class="section level2" number="14">
-<h2 number="14" id="visualize-subcellular-data">
-<span class="header-section-number">14</span> Visualize SubCellular Data<a class="anchor" aria-label="anchor" href="#visualize-subcellular-data"></a>
+<h2 id="visualize-subcellular-data">
+<span class="header-section-number">14</span> Visualize SubCellular
+Data<a class="anchor" aria-label="anchor" href="#visualize-subcellular-data"></a>
 </h2>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Visualize clustered cells</span></span>
@@ -983,8 +1002,9 @@
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fresolve_biosciences%2F18-spatInSituPlotPoints.png"></p>
 <div class="section level3" number="14.1">
-<h3 number="14.1" id="subset-by-location">
-<span class="header-section-number">14.1</span> Subset by Location<a class="anchor" aria-label="anchor" href="#subset-by-location"></a>
+<h3 id="subset-by-location">
+<span class="header-section-number">14.1</span> Subset by
+Location<a class="anchor" aria-label="anchor" href="#subset-by-location"></a>
 </h3>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># can be used to focus on specific spatial structures</span></span>
@@ -1062,8 +1082,9 @@
 </div>
 </div>
 <div class="section level2" number="15">
-<h2 number="15" id="find-interaction-changed-features">
-<span class="header-section-number">15</span> Find Interaction Changed Features<a class="anchor" aria-label="anchor" href="#find-interaction-changed-features"></a>
+<h2 id="find-interaction-changed-features">
+<span class="header-section-number">15</span> Find Interaction
+Changed Features<a class="anchor" aria-label="anchor" href="#find-interaction-changed-features"></a>
 </h2>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># find interaction changed Features</span></span>

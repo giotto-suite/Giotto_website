@@ -598,21 +598,28 @@
 
     
     
-<p>To add a new example to the website <a href="https://drieslab.github.io/Giotto_website/" class="uri">https://drieslab.github.io/Giotto_website/</a>, please follow these steps:</p>
+<p>To add a new example to the website <a href="https://drieslab.github.io/Giotto_website/" class="uri">https://drieslab.github.io/Giotto_website/</a>, please
+follow these steps:</p>
 <div class="section level2" number="1">
-<h2 number="1" id="clone-the-giotto_website-repository">
-<span class="header-section-number">1</span> Clone the Giotto_website repository<a class="anchor" aria-label="anchor" href="#clone-the-giotto_website-repository"></a>
+<h2 id="clone-the-giotto_website-repository">
+<span class="header-section-number">1</span> Clone the
+Giotto_website repository<a class="anchor" aria-label="anchor" href="#clone-the-giotto_website-repository"></a>
 </h2>
-<p>Clone the Giotto_website repository from <a href="https://github.com/drieslab/Giotto_website" class="external-link uri">https://github.com/drieslab/Giotto_website</a> and switch to the “suite” branch.</p>
+<p>Clone the Giotto_website repository from <a href="https://github.com/drieslab/Giotto_website" class="external-link uri">https://github.com/drieslab/Giotto_website</a> and switch to
+the “suite” branch.</p>
 </div>
 <div class="section level2" number="2">
-<h2 number="2" id="create-a-new-r-markdown-file">
-<span class="header-section-number">2</span> Create a new R markdown file<a class="anchor" aria-label="anchor" href="#create-a-new-r-markdown-file"></a>
+<h2 id="create-a-new-r-markdown-file">
+<span class="header-section-number">2</span> Create a new R markdown
+file<a class="anchor" aria-label="anchor" href="#create-a-new-r-markdown-file"></a>
 </h2>
 <p>Create a new .Rmd (R markdown) file under the folder “vignettes”.</p>
 <ul>
-<li>If you are planning to include figures as part of the tutorial, create a new folder under “vignettes/images” with the same name as your .Rmd file.</li>
-<li>All scripts need a header like shown below that starts at line 1.</li>
+<li>If you are planning to include figures as part of the tutorial,
+create a new folder under “vignettes/images” with the same name as your
+.Rmd file.</li>
+<li>All scripts need a header like shown below that starts at line
+1.</li>
 <li>Here you should edit the title.</li>
 </ul>
 <pre><code>---
@@ -630,60 +637,82 @@ vignette: &gt;
 ---</code></pre>
 </div>
 <div class="section level2" number="3">
-<h2 number="3" id="set-the-r-chuncks-correctly">
-<span class="header-section-number">3</span> Set the R chuncks correctly<a class="anchor" aria-label="anchor" href="#set-the-r-chuncks-correctly"></a>
+<h2 id="set-the-r-chuncks-correctly">
+<span class="header-section-number">3</span> Set the R chuncks
+correctly<a class="anchor" aria-label="anchor" href="#set-the-r-chuncks-correctly"></a>
 </h2>
-<p>Absolutely no <code>eval=TRUE</code> for example code. To save time when rendering the website, all chunks should not evaluate the code.</p>
-<p>Image results should be included via linking or a <code>knitr</code> chunk of this style:</p>
+<p>Absolutely no <code>eval=TRUE</code> for example code. To save time
+when rendering the website, all chunks should not evaluate the code.</p>
+<p>Image results should be included via linking or a <code>knitr</code>
+chunk of this style:</p>
 <pre><code><span><span class="co">#knitr::include_graphics("images/TUTORIAL_FOLDER/#_IMAGE_NAME.png")</span></span></code></pre>
-<p><em>The upper case sections just show which areas should be edited, not that they need to be upper case</em></p>
+<p><em>The upper case sections just show which areas should be edited,
+not that they need to be upper case</em></p>
 </div>
 <div class="section level2" number="4">
-<h2 number="4" id="create-your-example">
-<span class="header-section-number">4</span> Create your example<a class="anchor" aria-label="anchor" href="#create-your-example"></a>
+<h2 id="create-your-example">
+<span class="header-section-number">4</span> Create your
+example<a class="anchor" aria-label="anchor" href="#create-your-example"></a>
 </h2>
-<p>Add the text and code of your tutorial. Please use similar variable names to previous tutorials, we have created a list of common variables and default values in this <a href="https://docs.google.com/spreadsheets/d/1ciK9-A0wR7IRotM6XwiTlImciDRnH-wMhJ0FKBcIWCI/edit?gid=0#gid=0" class="external-link">spreadsheet</a>.</p>
+<p>Add the text and code of your tutorial. Please use similar variable
+names to previous tutorials, we have created a list of common variables
+and default values in this <a href="https://docs.google.com/spreadsheets/d/1ciK9-A0wR7IRotM6XwiTlImciDRnH-wMhJ0FKBcIWCI/edit?gid=0#gid=0" class="external-link">spreadsheet</a>.</p>
 </div>
 <div class="section level2" number="5">
-<h2 number="5" id="session-info">
+<h2 id="session-info">
 <span class="header-section-number">5</span> Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<p>Files should have a session info section at the end of the tutorial.</p>
+<p>Files should have a session info section at the end of the
+tutorial.</p>
 </div>
 <div class="section level2" number="6">
-<h2 number="6" id="preview-the-document">
-<span class="header-section-number">6</span> Preview the document<a class="anchor" aria-label="anchor" href="#preview-the-document"></a>
+<h2 id="preview-the-document">
+<span class="header-section-number">6</span> Preview the
+document<a class="anchor" aria-label="anchor" href="#preview-the-document"></a>
 </h2>
-<p>Knit the document to check if the vignette looks how you like, and that it actually knits properly.</p>
-<p>Optionally, you can run <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code>, but this may be hard to run locally.</p>
+<p>Knit the document to check if the vignette looks how you like, and
+that it actually knits properly.</p>
+<p>Optionally, you can run <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code>, but this
+may be hard to run locally.</p>
 </div>
 <div class="section level2" number="7">
-<h2 number="7" id="edit-the-pkgdown-yml-file">
-<span class="header-section-number">7</span> Edit the pkgdown.yml file<a class="anchor" aria-label="anchor" href="#edit-the-pkgdown-yml-file"></a>
+<h2 id="edit-the-pkgdown-yml-file">
+<span class="header-section-number">7</span> Edit the pkgdown.yml
+file<a class="anchor" aria-label="anchor" href="#edit-the-pkgdown-yml-file"></a>
 </h2>
-<p><code>pkgdown.yml</code> is a file at the repo toplevel and it details how the links are set up for the navbars and documentation in the website.</p>
+<p><code>pkgdown.yml</code> is a file at the repo toplevel and it
+details how the links are set up for the navbars and documentation in
+the website.</p>
 <p>For most new articles:</p>
 <ul>
 <li>Under navbar:
 <ul>
-<li>Determine which section your tutorial fits better between Get started, Examples, and Tutorials.</li>
+<li>Determine which section your tutorial fits better between Get
+started, Examples, and Tutorials.</li>
 <li>Select or setup the subsection if needed.</li>
-<li>Add a <strong>text</strong> (what menu name it has) and <strong>href</strong> (“articles/VIGNETTE_NAME.html”) field for your new article.</li>
+<li>Add a <strong>text</strong> (what menu name it has) and
+<strong>href</strong> (“articles/VIGNETTE_NAME.html”) field for your new
+article.</li>
 </ul>
 </li>
 <li>Under articles:
 <ul>
-<li>Find the appropriate title for your new vignette (should be the same to the previous navbar section).</li>
-<li>Add your new vignette, with the same name as the VIGNETTE_NAME used for the href section used in navbar (minus the <code>.html</code>).</li>
+<li>Find the appropriate title for your new vignette (should be the same
+to the previous navbar section).</li>
+<li>Add your new vignette, with the same name as the VIGNETTE_NAME used
+for the href section used in navbar (minus the <code>.html</code>).</li>
 </ul>
 </li>
 </ul>
 </div>
 <div class="section level2" number="8">
-<h2 number="8" id="push-the-changes-to-github">
-<span class="header-section-number">8</span> Push the changes to Github<a class="anchor" aria-label="anchor" href="#push-the-changes-to-github"></a>
+<h2 id="push-the-changes-to-github">
+<span class="header-section-number">8</span> Push the changes to
+Github<a class="anchor" aria-label="anchor" href="#push-the-changes-to-github"></a>
 </h2>
-<p>If you are an outside collaborator, you may need to create a Pull Request. Changes usually take roughly 30 min to build and deploy on the website.</p>
+<p>If you are an outside collaborator, you may need to create a Pull
+Request. Changes usually take roughly 30 min to build and deploy on the
+website.</p>
 </div>
   </div>
 

@@ -598,180 +598,187 @@
 
     
     
-<p>Please read through the information below before submitting your issue to our GitHub page. The link to report an issue can be found at the bottom of the page.</p>
+<p>Please read through the information below before submitting your
+issue to our GitHub page. The link to report an issue can be found at
+the bottom of the page.</p>
 <div class="section level2" number="0.1">
-<h2 number="0.1" id="github-issues-guidelines">
-<span class="header-section-number">0.1</span> GitHub Issues Guidelines<a class="anchor" aria-label="anchor" href="#github-issues-guidelines"></a>
+<h2 id="github-issues-guidelines">
+<span class="header-section-number">0.1</span> GitHub Issues
+Guidelines<a class="anchor" aria-label="anchor" href="#github-issues-guidelines"></a>
 </h2>
 <div class="section level3" number="0.1.1">
-<h3 number="0.1.1" id="some-useful-commands">
-<span class="header-section-number">0.1.1</span> Some Useful Commands<a class="anchor" aria-label="anchor" href="#some-useful-commands"></a>
+<h3 id="some-useful-commands">
+<span class="header-section-number">0.1.1</span> Some Useful
+Commands<a class="anchor" aria-label="anchor" href="#some-useful-commands"></a>
 </h3>
-<p>It is helpful if you provide any relevant information about the software and Giotto object you are using. See below for some tips to get this information.</p>
+<p>It is helpful if you provide any relevant information about the
+software and Giotto object you are using. See below for some tips to get
+this information.</p>
 <ul>
 <li>What version of R are you using?</li>
 </ul>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">R.version.string</span></span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>R version <span class="dv">4</span>.<span class="fl">3.2</span> (<span class="dv">2023-10-31</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>R version <span class="dv">4</span>.<span class="fl">3.2</span> (<span class="dv">2023-10-31</span>)</span></code></pre></div>
 <ul>
 <li>What version of Giotto are you using?</li>
 </ul>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"Giotto"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="dv">4</span>.<span class="fl">0.2</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="dv">4</span>.<span class="fl">0.2</span></span></code></pre></div>
 <ul>
 <li>Are you using the Giotto environment or your own python path?</li>
 </ul>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check Giotto environment</span></span>
 <span><span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a>giotto environment found at </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a><span class="op">/</span>Users<span class="op">/</span>yuanlab<span class="op">/</span>Library<span class="op">/</span>r<span class="op">-</span>miniconda<span class="op">/</span>envs<span class="op">/</span>giotto_env<span class="op">/</span>bin<span class="op">/</span>pythonw</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>giotto environment found at </span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="sc">/</span>Users<span class="sc">/</span>yuanlab<span class="sc">/</span>Library<span class="sc">/</span>r<span class="sc">-</span>miniconda<span class="sc">/</span>envs<span class="sc">/</span>giotto_env<span class="sc">/</span>bin<span class="sc">/</span>pythonw</span></code></pre></div>
 <ul>
 <li>Show sequential processing steps/commands in the Giotto object</li>
 </ul>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/showProcessingSteps.html" class="external-link">showProcessingSteps</a></span><span class="op">(</span><span class="va">my_giotto_object</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a>Processing steps<span class="op">:</span><span class="st"> </span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a><span class="dv">0</span>_normalize </span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true"></a> <span class="dv">1</span>_subset </span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true"></a> <span class="dv">2</span>_filter </span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true"></a>     name info<span class="op">:</span><span class="st">  </span>tag tag </span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true"></a></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true"></a> <span class="dv">3</span>_feat_stats </span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true"></a></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true"></a> <span class="dv">4</span>_cell_stats </span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true"></a></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true"></a> <span class="dv">5</span>_hvf </span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true"></a>     name info<span class="op">:</span><span class="st">  </span>hvf HVFplot </span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true"></a></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true"></a> <span class="dv">6</span>_pca </span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true"></a></span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true"></a> <span class="dv">7</span>_umap </span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true"></a></span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true"></a> <span class="dv">8</span>_tsne </span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true"></a></span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true"></a> <span class="dv">9</span>_nn_network </span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true"></a></span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true"></a> <span class="dv">10</span>_cluster </span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true"></a>     name info<span class="op">:</span><span class="st">  </span>leiden_clus sNN.pca </span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true"></a></span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true"></a> <span class="dv">11</span>_delaunay_spatial_network </span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true"></a>     name info<span class="op">:</span><span class="st">  </span>Delaunay_network </span>
-<span id="cb8-29"><a href="#cb8-29" aria-hidden="true"></a></span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true"></a> <span class="dv">12</span>_spatial_network </span>
-<span id="cb8-31"><a href="#cb8-31" aria-hidden="true"></a>     name info<span class="op">:</span><span class="st">  </span>spatial_network </span>
-<span id="cb8-32"><a href="#cb8-32" aria-hidden="true"></a></span>
-<span id="cb8-33"><a href="#cb8-33" aria-hidden="true"></a> <span class="dv">13</span>_create_metafeat </span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true"></a>     name info<span class="op">:</span><span class="st">  </span>cluster_metagene </span>
-<span id="cb8-35"><a href="#cb8-35" aria-hidden="true"></a></span>
-<span id="cb8-36"><a href="#cb8-36" aria-hidden="true"></a> <span class="dv">14</span>_pca </span>
-<span id="cb8-37"><a href="#cb8-37" aria-hidden="true"></a>     name info<span class="op">:</span><span class="st">  </span>custom_pca </span>
-<span id="cb8-38"><a href="#cb8-38" aria-hidden="true"></a></span>
-<span id="cb8-39"><a href="#cb8-39" aria-hidden="true"></a> <span class="dv">15</span>_umap </span>
-<span id="cb8-40"><a href="#cb8-40" aria-hidden="true"></a>     name info<span class="op">:</span><span class="st">  </span>custom_pca custom_umap </span>
-<span id="cb8-41"><a href="#cb8-41" aria-hidden="true"></a></span>
-<span id="cb8-42"><a href="#cb8-42" aria-hidden="true"></a> <span class="dv">16</span>_nn_network </span>
-<span id="cb8-43"><a href="#cb8-43" aria-hidden="true"></a>     name info<span class="op">:</span><span class="st">  </span>custom_pca custom_NN </span>
-<span id="cb8-44"><a href="#cb8-44" aria-hidden="true"></a></span>
-<span id="cb8-45"><a href="#cb8-45" aria-hidden="true"></a> <span class="dv">17</span>_cluster </span>
-<span id="cb8-46"><a href="#cb8-46" aria-hidden="true"></a>     name info<span class="op">:</span><span class="st">  </span>custom_leiden custom_NN</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>Processing steps<span class="sc">:</span> </span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="dv">0</span>_normalize </span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a> <span class="dv">1</span>_subset </span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a> <span class="dv">2</span>_filter </span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>     name info<span class="sc">:</span>  tag tag </span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a> <span class="dv">3</span>_feat_stats </span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a> <span class="dv">4</span>_cell_stats </span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a> <span class="dv">5</span>_hvf </span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>     name info<span class="sc">:</span>  hvf HVFplot </span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a> <span class="dv">6</span>_pca </span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a> <span class="dv">7</span>_umap </span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a></span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a> <span class="dv">8</span>_tsne </span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a></span>
+<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a> <span class="dv">9</span>_nn_network </span>
+<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a></span>
+<span id="cb8-24"><a href="#cb8-24" tabindex="-1"></a> <span class="dv">10</span>_cluster </span>
+<span id="cb8-25"><a href="#cb8-25" tabindex="-1"></a>     name info<span class="sc">:</span>  leiden_clus sNN.pca </span>
+<span id="cb8-26"><a href="#cb8-26" tabindex="-1"></a></span>
+<span id="cb8-27"><a href="#cb8-27" tabindex="-1"></a> <span class="dv">11</span>_delaunay_spatial_network </span>
+<span id="cb8-28"><a href="#cb8-28" tabindex="-1"></a>     name info<span class="sc">:</span>  Delaunay_network </span>
+<span id="cb8-29"><a href="#cb8-29" tabindex="-1"></a></span>
+<span id="cb8-30"><a href="#cb8-30" tabindex="-1"></a> <span class="dv">12</span>_spatial_network </span>
+<span id="cb8-31"><a href="#cb8-31" tabindex="-1"></a>     name info<span class="sc">:</span>  spatial_network </span>
+<span id="cb8-32"><a href="#cb8-32" tabindex="-1"></a></span>
+<span id="cb8-33"><a href="#cb8-33" tabindex="-1"></a> <span class="dv">13</span>_create_metafeat </span>
+<span id="cb8-34"><a href="#cb8-34" tabindex="-1"></a>     name info<span class="sc">:</span>  cluster_metagene </span>
+<span id="cb8-35"><a href="#cb8-35" tabindex="-1"></a></span>
+<span id="cb8-36"><a href="#cb8-36" tabindex="-1"></a> <span class="dv">14</span>_pca </span>
+<span id="cb8-37"><a href="#cb8-37" tabindex="-1"></a>     name info<span class="sc">:</span>  custom_pca </span>
+<span id="cb8-38"><a href="#cb8-38" tabindex="-1"></a></span>
+<span id="cb8-39"><a href="#cb8-39" tabindex="-1"></a> <span class="dv">15</span>_umap </span>
+<span id="cb8-40"><a href="#cb8-40" tabindex="-1"></a>     name info<span class="sc">:</span>  custom_pca custom_umap </span>
+<span id="cb8-41"><a href="#cb8-41" tabindex="-1"></a></span>
+<span id="cb8-42"><a href="#cb8-42" tabindex="-1"></a> <span class="dv">16</span>_nn_network </span>
+<span id="cb8-43"><a href="#cb8-43" tabindex="-1"></a>     name info<span class="sc">:</span>  custom_pca custom_NN </span>
+<span id="cb8-44"><a href="#cb8-44" tabindex="-1"></a></span>
+<span id="cb8-45"><a href="#cb8-45" tabindex="-1"></a> <span class="dv">17</span>_cluster </span>
+<span id="cb8-46"><a href="#cb8-46" tabindex="-1"></a>     name info<span class="sc">:</span>  custom_leiden custom_NN</span></code></pre></div>
 <ul>
 <li>Show the structure of the Giotto object</li>
 </ul>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">my_giotto_object</span>, max.level <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a>Formal class <span class="st">"giotto"</span> [package <span class="st">"Giotto"</span>] with <span class="dv">23</span> slots</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true"></a>  ..<span class="op">@</span><span class="st"> </span>expression         <span class="op">:</span>List of <span class="dv">1</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span>cell<span class="op">:</span>List of <span class="dv">1</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true"></a>  ..<span class="op">@</span><span class="st"> </span>expression_feat    <span class="op">:</span><span class="st"> </span>chr <span class="st">"rna"</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true"></a>  ..<span class="op">@</span><span class="st"> </span>spatial_locs       <span class="op">:</span>List of <span class="dv">1</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span>cell<span class="op">:</span>List of <span class="dv">1</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true"></a>  ..<span class="op">@</span><span class="st"> </span>spatial_info       <span class="op">:</span><span class="st"> </span><span class="ot">NULL</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true"></a>  ..<span class="op">@</span><span class="st"> </span>cell_metadata      <span class="op">:</span>List of <span class="dv">1</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span>cell<span class="op">:</span>List of <span class="dv">1</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true"></a>  ..<span class="op">@</span><span class="st"> </span>feat_metadata      <span class="op">:</span>List of <span class="dv">1</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span>cell<span class="op">:</span>List of <span class="dv">1</span></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true"></a>  ..<span class="op">@</span><span class="st"> </span>feat_info          <span class="op">:</span><span class="st"> </span><span class="ot">NULL</span></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true"></a>  ..<span class="op">@</span><span class="st"> </span>cell_ID            <span class="op">:</span>List of <span class="dv">1</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span>cell<span class="op">:</span><span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">624</span>] <span class="st">"AAAGGGATGTAGCAAG-1"</span> <span class="st">"AAATGGCATGTCTTGT-1"</span> <span class="st">"AAATGGTCAATGTGCC-1"</span> <span class="st">"AAATTAACGGGTAGCT-1"</span> ...</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true"></a>  ..<span class="op">@</span><span class="st"> </span>feat_ID            <span class="op">:</span>List of <span class="dv">1</span></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span>rna<span class="op">:</span><span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">634</span>] <span class="st">"Gna12"</span> <span class="st">"Ccnd2"</span> <span class="st">"Btbd17"</span> <span class="st">"Sox9"</span> ...</span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true"></a>  ..<span class="op">@</span><span class="st"> </span>spatial_network    <span class="op">:</span>List of <span class="dv">1</span></span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span>cell<span class="op">:</span>List of <span class="dv">2</span></span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true"></a>  ..<span class="op">@</span><span class="st"> </span>spatial_grid       <span class="op">:</span><span class="st"> </span><span class="ot">NULL</span></span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true"></a>  ..<span class="op">@</span><span class="st"> </span>spatial_enrichment <span class="op">:</span>List of <span class="dv">1</span></span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span>cell<span class="op">:</span>List of <span class="dv">1</span></span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true"></a>  ..<span class="op">@</span><span class="st"> </span>dimension_reduction<span class="op">:</span>List of <span class="dv">1</span></span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span>cells<span class="op">:</span>List of <span class="dv">1</span></span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true"></a>  ..<span class="op">@</span><span class="st"> </span>nn_network         <span class="op">:</span>List of <span class="dv">1</span></span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span>cell<span class="op">:</span>List of <span class="dv">1</span></span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true"></a>  ..<span class="op">@</span><span class="st"> </span>images             <span class="op">:</span><span class="st"> </span><span class="ot">NULL</span></span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true"></a>  ..<span class="op">@</span><span class="st"> </span>largeImages        <span class="op">:</span>List of <span class="dv">1</span></span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span>image<span class="op">:</span>Formal class <span class="st">"giottoLargeImage"</span> [package <span class="st">"Giotto"</span>] with <span class="dv">13</span> slots</span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true"></a>  ..<span class="op">@</span><span class="st"> </span>parameters         <span class="op">:</span>List of <span class="dv">18</span></span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span><span class="dv">0</span>_normalize                <span class="op">:</span><span class="st"> </span>Named chr [<span class="dv">1</span><span class="op">:</span><span class="dv">14</span>] <span class="st">"mini_visium"</span> <span class="st">"raw"</span> <span class="st">"standard"</span> <span class="st">"TRUE"</span> ...</span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true"></a>  .. .. ..<span class="op">-</span><span class="st"> </span><span class="kw">attr</span>(<span class="op">*</span>, <span class="st">"names"</span>)=<span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">14</span>] <span class="st">"gobject"</span> <span class="st">"expression_values"</span> <span class="st">"norm_methods"</span> <span class="st">"library_size_norm"</span> ...</span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span><span class="dv">1</span>_subset                   <span class="op">:</span><span class="st"> </span>Named chr [<span class="dv">1</span><span class="op">:</span><span class="dv">12</span>] <span class="st">"gobject"</span> <span class="st">"spat_unit"</span> <span class="st">"feat_type"</span> <span class="st">"selected_cell_ids"</span> ...</span>
-<span id="cb10-33"><a href="#cb10-33" aria-hidden="true"></a>  .. .. ..<span class="op">-</span><span class="st"> </span><span class="kw">attr</span>(<span class="op">*</span>, <span class="st">"names"</span>)=<span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">12</span>] <span class="st">"gobject"</span> <span class="st">"spat_unit"</span> <span class="st">"feat_type"</span> <span class="st">"cell_ids"</span> ...</span>
-<span id="cb10-34"><a href="#cb10-34" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span><span class="dv">2</span>_filter                   <span class="op">:</span><span class="st"> </span>Named chr [<span class="dv">1</span><span class="op">:</span><span class="dv">13</span>] <span class="st">"mini_visium"</span> <span class="st">"raw"</span> <span class="st">"1"</span> <span class="st">"5"</span> ...</span>
-<span id="cb10-35"><a href="#cb10-35" aria-hidden="true"></a>  .. .. ..<span class="op">-</span><span class="st"> </span><span class="kw">attr</span>(<span class="op">*</span>, <span class="st">"names"</span>)=<span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">13</span>] <span class="st">"gobject"</span> <span class="st">"expression_values"</span> <span class="st">"expression_threshold"</span> <span class="st">"feat_det_in_min_cells"</span> ...</span>
-<span id="cb10-36"><a href="#cb10-36" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span><span class="dv">3</span>_feat_stats               <span class="op">:</span><span class="st"> </span>Named chr [<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>] <span class="st">"mini_visium"</span> <span class="st">"normalized"</span> <span class="st">"0"</span> <span class="st">"TRUE"</span></span>
-<span id="cb10-37"><a href="#cb10-37" aria-hidden="true"></a>  .. .. ..<span class="op">-</span><span class="st"> </span><span class="kw">attr</span>(<span class="op">*</span>, <span class="st">"names"</span>)=<span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>] <span class="st">"gobject"</span> <span class="st">"expression_values"</span> <span class="st">"detection_threshold"</span> <span class="st">"return_gobject"</span></span>
-<span id="cb10-38"><a href="#cb10-38" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span><span class="dv">4</span>_cell_stats               <span class="op">:</span><span class="st"> </span>Named chr [<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>] <span class="st">"mini_visium"</span> <span class="st">"normalized"</span> <span class="st">"0"</span> <span class="st">"TRUE"</span></span>
-<span id="cb10-39"><a href="#cb10-39" aria-hidden="true"></a>  .. .. ..<span class="op">-</span><span class="st"> </span><span class="kw">attr</span>(<span class="op">*</span>, <span class="st">"names"</span>)=<span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>] <span class="st">"gobject"</span> <span class="st">"expression_values"</span> <span class="st">"detection_threshold"</span> <span class="st">"return_gobject"</span></span>
-<span id="cb10-40"><a href="#cb10-40" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span><span class="dv">5</span>_hvf                      <span class="op">:</span><span class="st"> </span>Named chr [<span class="dv">1</span><span class="op">:</span><span class="dv">17</span>] <span class="st">"mini_visium"</span> <span class="st">"normalized"</span> <span class="st">"cov_groups"</span> <span class="st">"FALSE"</span> ...</span>
-<span id="cb10-41"><a href="#cb10-41" aria-hidden="true"></a>  .. .. ..<span class="op">-</span><span class="st"> </span><span class="kw">attr</span>(<span class="op">*</span>, <span class="st">"names"</span>)=<span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">17</span>] <span class="st">"gobject"</span> <span class="st">"expression_values"</span> <span class="st">"method"</span> <span class="st">"reverse_log_scale"</span> ...</span>
-<span id="cb10-42"><a href="#cb10-42" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span><span class="dv">6</span>_pca                      <span class="op">:</span><span class="st"> </span>Named chr [<span class="dv">1</span><span class="op">:</span><span class="dv">15</span>] <span class="st">"mini_visium"</span> <span class="st">"normalized"</span> <span class="st">"cells"</span> <span class="st">"hvf"</span> ...</span>
-<span id="cb10-43"><a href="#cb10-43" aria-hidden="true"></a>  .. .. ..<span class="op">-</span><span class="st"> </span><span class="kw">attr</span>(<span class="op">*</span>, <span class="st">"names"</span>)=<span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">15</span>] <span class="st">"gobject"</span> <span class="st">"expression_values"</span> <span class="st">"reduction"</span> <span class="st">"feats_to_use"</span> ...</span>
-<span id="cb10-44"><a href="#cb10-44" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span><span class="dv">7</span>_umap                     <span class="op">:</span><span class="st"> </span>Named chr [<span class="dv">1</span><span class="op">:</span><span class="dv">17</span>] <span class="st">"mini_visium"</span> <span class="st">"normalized"</span> <span class="st">"cells"</span> <span class="st">"pca"</span> ...</span>
-<span id="cb10-45"><a href="#cb10-45" aria-hidden="true"></a>  .. .. ..<span class="op">-</span><span class="st"> </span><span class="kw">attr</span>(<span class="op">*</span>, <span class="st">"names"</span>)=<span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">17</span>] <span class="st">"gobject"</span> <span class="st">"expression_values"</span> <span class="st">"reduction"</span> <span class="st">"dim_reduction_to_use"</span> ...</span>
-<span id="cb10-46"><a href="#cb10-46" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span><span class="dv">8</span>_tsne                     <span class="op">:</span><span class="st"> </span>Named chr [<span class="dv">1</span><span class="op">:</span><span class="dv">14</span>] <span class="st">"mini_visium"</span> <span class="st">"normalized"</span> <span class="st">"cells"</span> <span class="st">"pca"</span> ...</span>
-<span id="cb10-47"><a href="#cb10-47" aria-hidden="true"></a>  .. .. ..<span class="op">-</span><span class="st"> </span><span class="kw">attr</span>(<span class="op">*</span>, <span class="st">"names"</span>)=<span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">14</span>] <span class="st">"gobject"</span> <span class="st">"expression_values"</span> <span class="st">"reduction"</span> <span class="st">"dim_reduction_to_use"</span> ...</span>
-<span id="cb10-48"><a href="#cb10-48" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span><span class="dv">9</span>_nn_network               <span class="op">:</span><span class="st"> </span>Named chr [<span class="dv">1</span><span class="op">:</span><span class="dv">11</span>] <span class="st">"mini_visium"</span> <span class="st">"sNN"</span> <span class="st">"pca"</span> <span class="st">"1:5"</span> ...</span>
-<span id="cb10-49"><a href="#cb10-49" aria-hidden="true"></a>  .. .. ..<span class="op">-</span><span class="st"> </span><span class="kw">attr</span>(<span class="op">*</span>, <span class="st">"names"</span>)=<span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">11</span>] <span class="st">"gobject"</span> <span class="st">"type"</span> <span class="st">"dim_reduction_to_use"</span> <span class="st">"dimensions_to_use"</span> ...</span>
-<span id="cb10-50"><a href="#cb10-50" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span><span class="dv">10</span>_cluster                 <span class="op">:</span><span class="st"> </span>Named chr [<span class="dv">1</span><span class="op">:</span><span class="dv">11</span>] <span class="st">"mini_visium"</span> <span class="st">"leiden_clus"</span> <span class="st">"sNN"</span> <span class="st">"sNN.pca"</span> ...</span>
-<span id="cb10-51"><a href="#cb10-51" aria-hidden="true"></a>  .. .. ..<span class="op">-</span><span class="st"> </span><span class="kw">attr</span>(<span class="op">*</span>, <span class="st">"names"</span>)=<span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">11</span>] <span class="st">"gobject"</span> <span class="st">"name"</span> <span class="st">"nn_network_to_use"</span> <span class="st">"network_name"</span> ...</span>
-<span id="cb10-52"><a href="#cb10-52" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span><span class="dv">11</span>_delaunay_spatial_network<span class="op">:</span><span class="st"> </span>Named chr [<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>] <span class="st">"dimensions: sdimx and sdimy"</span> <span class="st">"deldir"</span> <span class="st">"auto"</span> <span class="st">"Delaunay_network"</span></span>
-<span id="cb10-53"><a href="#cb10-53" aria-hidden="true"></a>  .. .. ..<span class="op">-</span><span class="st"> </span><span class="kw">attr</span>(<span class="op">*</span>, <span class="st">"names"</span>)=<span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>] <span class="st">"dimensions used"</span> <span class="st">"method"</span> <span class="st">"maximum distance threshold"</span> <span class="st">"name of spatial network"</span></span>
-<span id="cb10-54"><a href="#cb10-54" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span><span class="dv">12</span>_spatial_network         <span class="op">:</span><span class="st"> </span>Named chr [<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>] <span class="st">"10"</span> <span class="st">"all"</span> <span class="st">"400"</span> <span class="st">"spatial_network"</span></span>
-<span id="cb10-55"><a href="#cb10-55" aria-hidden="true"></a>  .. .. ..<span class="op">-</span><span class="st"> </span><span class="kw">attr</span>(<span class="op">*</span>, <span class="st">"names"</span>)=<span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>] <span class="st">"k neighbours"</span> <span class="st">"dimensions used"</span> <span class="st">"maximum distance threshold"</span> <span class="st">"name of spatial network"</span></span>
-<span id="cb10-56"><a href="#cb10-56" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span><span class="dv">13</span>_create_metafeat         <span class="op">:</span><span class="st"> </span>Named chr [<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>] <span class="st">"mini_visium"</span> <span class="st">"normalized"</span> <span class="st">"cluster_genes"</span> <span class="st">"cluster_metagene"</span> ...</span>
-<span id="cb10-57"><a href="#cb10-57" aria-hidden="true"></a>  .. .. ..<span class="op">-</span><span class="st"> </span><span class="kw">attr</span>(<span class="op">*</span>, <span class="st">"names"</span>)=<span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>] <span class="st">"gobject"</span> <span class="st">"expression_values"</span> <span class="st">"feat_clusters"</span> <span class="st">"name"</span> ...</span>
-<span id="cb10-58"><a href="#cb10-58" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span><span class="dv">14</span>_pca                     <span class="op">:</span><span class="st"> </span>Named chr [<span class="dv">1</span><span class="op">:</span><span class="dv">16</span>] <span class="st">"mini_visium"</span> <span class="st">"normalized"</span> <span class="st">"cells"</span> <span class="st">"custom_pca"</span> ...</span>
-<span id="cb10-59"><a href="#cb10-59" aria-hidden="true"></a>  .. .. ..<span class="op">-</span><span class="st"> </span><span class="kw">attr</span>(<span class="op">*</span>, <span class="st">"names"</span>)=<span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">16</span>] <span class="st">"gobject"</span> <span class="st">"expression_values"</span> <span class="st">"reduction"</span> <span class="st">"name"</span> ...</span>
-<span id="cb10-60"><a href="#cb10-60" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span><span class="dv">15</span>_umap                    <span class="op">:</span><span class="st"> </span>Named chr [<span class="dv">1</span><span class="op">:</span><span class="dv">19</span>] <span class="st">"mini_visium"</span> <span class="st">"normalized"</span> <span class="st">"cells"</span> <span class="st">"pca"</span> ...</span>
-<span id="cb10-61"><a href="#cb10-61" aria-hidden="true"></a>  .. .. ..<span class="op">-</span><span class="st"> </span><span class="kw">attr</span>(<span class="op">*</span>, <span class="st">"names"</span>)=<span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">19</span>] <span class="st">"gobject"</span> <span class="st">"expression_values"</span> <span class="st">"reduction"</span> <span class="st">"dim_reduction_to_use"</span> ...</span>
-<span id="cb10-62"><a href="#cb10-62" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span><span class="dv">16</span>_nn_network              <span class="op">:</span><span class="st"> </span>Named chr [<span class="dv">1</span><span class="op">:</span><span class="dv">13</span>] <span class="st">"mini_visium"</span> <span class="st">"sNN"</span> <span class="st">"pca"</span> <span class="st">"custom_pca"</span> ...</span>
-<span id="cb10-63"><a href="#cb10-63" aria-hidden="true"></a>  .. .. ..<span class="op">-</span><span class="st"> </span><span class="kw">attr</span>(<span class="op">*</span>, <span class="st">"names"</span>)=<span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">13</span>] <span class="st">"gobject"</span> <span class="st">"type"</span> <span class="st">"dim_reduction_to_use"</span> <span class="st">"dim_reduction_name"</span> ...</span>
-<span id="cb10-64"><a href="#cb10-64" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span><span class="dv">17</span>_cluster                 <span class="op">:</span><span class="st"> </span>Named chr [<span class="dv">1</span><span class="op">:</span><span class="dv">11</span>] <span class="st">"mini_visium"</span> <span class="st">"custom_leiden"</span> <span class="st">"sNN"</span> <span class="st">"custom_NN"</span> ...</span>
-<span id="cb10-65"><a href="#cb10-65" aria-hidden="true"></a>  .. .. ..<span class="op">-</span><span class="st"> </span><span class="kw">attr</span>(<span class="op">*</span>, <span class="st">"names"</span>)=<span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">11</span>] <span class="st">"gobject"</span> <span class="st">"name"</span> <span class="st">"nn_network_to_use"</span> <span class="st">"network_name"</span> ...</span>
-<span id="cb10-66"><a href="#cb10-66" aria-hidden="true"></a>  ..<span class="op">@</span><span class="st"> </span>instructions       <span class="op">:</span>List of <span class="dv">13</span></span>
-<span id="cb10-67"><a href="#cb10-67" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span>python_path     <span class="op">:</span><span class="st"> </span>chr <span class="st">"/Users/yuanlab/Library/r-miniconda/envs/giotto_env/bin/pythonw"</span></span>
-<span id="cb10-68"><a href="#cb10-68" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span>show_plot       <span class="op">:</span><span class="st"> </span>logi <span class="ot">TRUE</span></span>
-<span id="cb10-69"><a href="#cb10-69" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span>return_plot     <span class="op">:</span><span class="st"> </span>logi <span class="ot">FALSE</span></span>
-<span id="cb10-70"><a href="#cb10-70" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span>save_plot       <span class="op">:</span><span class="st"> </span>logi <span class="ot">FALSE</span></span>
-<span id="cb10-71"><a href="#cb10-71" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span>save_dir        <span class="op">:</span><span class="st"> </span>logi <span class="ot">NA</span></span>
-<span id="cb10-72"><a href="#cb10-72" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span>plot_format     <span class="op">:</span><span class="st"> </span>chr <span class="st">"png"</span></span>
-<span id="cb10-73"><a href="#cb10-73" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span>dpi             <span class="op">:</span><span class="st"> </span>num <span class="dv">300</span></span>
-<span id="cb10-74"><a href="#cb10-74" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span>units           <span class="op">:</span><span class="st"> </span>chr <span class="st">"in"</span></span>
-<span id="cb10-75"><a href="#cb10-75" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span>height          <span class="op">:</span><span class="st"> </span>num <span class="dv">9</span></span>
-<span id="cb10-76"><a href="#cb10-76" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span>width           <span class="op">:</span><span class="st"> </span>num <span class="dv">9</span></span>
-<span id="cb10-77"><a href="#cb10-77" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span>is_docker       <span class="op">:</span><span class="st"> </span>logi <span class="ot">FALSE</span></span>
-<span id="cb10-78"><a href="#cb10-78" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span>active_spat_unit<span class="op">:</span><span class="st"> </span>chr <span class="st">"cell"</span></span>
-<span id="cb10-79"><a href="#cb10-79" aria-hidden="true"></a>  .. ..<span class="op">$</span><span class="st"> </span>active_feat_type<span class="op">:</span><span class="st"> </span>chr <span class="st">"rna"</span></span>
-<span id="cb10-80"><a href="#cb10-80" aria-hidden="true"></a>  ..<span class="op">@</span><span class="st"> </span>offset_file        <span class="op">:</span><span class="st"> </span><span class="ot">NULL</span></span>
-<span id="cb10-81"><a href="#cb10-81" aria-hidden="true"></a>  ..<span class="op">@</span><span class="st"> </span>OS_platform        <span class="op">:</span><span class="st"> </span>chr <span class="st">"unix"</span></span>
-<span id="cb10-82"><a href="#cb10-82" aria-hidden="true"></a>  ..<span class="op">@</span><span class="st"> </span>join_info          <span class="op">:</span><span class="st"> </span><span class="ot">NULL</span></span>
-<span id="cb10-83"><a href="#cb10-83" aria-hidden="true"></a>  ..<span class="op">@</span><span class="st"> </span>multiomics         <span class="op">:</span><span class="st"> </span><span class="ot">NULL</span></span>
-<span id="cb10-84"><a href="#cb10-84" aria-hidden="true"></a>  ..<span class="op">@</span><span class="st"> </span>h5_file            <span class="op">:</span><span class="st"> </span><span class="ot">NULL</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>Formal class <span class="st">"giotto"</span> [package <span class="st">"Giotto"</span>] with <span class="dv">23</span> slots</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  ..<span class="sc">@</span> expression         <span class="sc">:</span>List of <span class="dv">1</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  .. ..<span class="sc">$</span> cell<span class="sc">:</span>List of <span class="dv">1</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  ..<span class="sc">@</span> expression_feat    <span class="sc">:</span> chr <span class="st">"rna"</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>  ..<span class="sc">@</span> spatial_locs       <span class="sc">:</span>List of <span class="dv">1</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>  .. ..<span class="sc">$</span> cell<span class="sc">:</span>List of <span class="dv">1</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>  ..<span class="sc">@</span> spatial_info       <span class="sc">:</span> <span class="cn">NULL</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>  ..<span class="sc">@</span> cell_metadata      <span class="sc">:</span>List of <span class="dv">1</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>  .. ..<span class="sc">$</span> cell<span class="sc">:</span>List of <span class="dv">1</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>  ..<span class="sc">@</span> feat_metadata      <span class="sc">:</span>List of <span class="dv">1</span></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>  .. ..<span class="sc">$</span> cell<span class="sc">:</span>List of <span class="dv">1</span></span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>  ..<span class="sc">@</span> feat_info          <span class="sc">:</span> <span class="cn">NULL</span></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>  ..<span class="sc">@</span> cell_ID            <span class="sc">:</span>List of <span class="dv">1</span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>  .. ..<span class="sc">$</span> cell<span class="sc">:</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">624</span>] <span class="st">"AAAGGGATGTAGCAAG-1"</span> <span class="st">"AAATGGCATGTCTTGT-1"</span> <span class="st">"AAATGGTCAATGTGCC-1"</span> <span class="st">"AAATTAACGGGTAGCT-1"</span> ...</span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>  ..<span class="sc">@</span> feat_ID            <span class="sc">:</span>List of <span class="dv">1</span></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a>  .. ..<span class="sc">$</span> rna<span class="sc">:</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">634</span>] <span class="st">"Gna12"</span> <span class="st">"Ccnd2"</span> <span class="st">"Btbd17"</span> <span class="st">"Sox9"</span> ...</span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a>  ..<span class="sc">@</span> spatial_network    <span class="sc">:</span>List of <span class="dv">1</span></span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a>  .. ..<span class="sc">$</span> cell<span class="sc">:</span>List of <span class="dv">2</span></span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a>  ..<span class="sc">@</span> spatial_grid       <span class="sc">:</span> <span class="cn">NULL</span></span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a>  ..<span class="sc">@</span> spatial_enrichment <span class="sc">:</span>List of <span class="dv">1</span></span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a>  .. ..<span class="sc">$</span> cell<span class="sc">:</span>List of <span class="dv">1</span></span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a>  ..<span class="sc">@</span> dimension_reduction<span class="sc">:</span>List of <span class="dv">1</span></span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a>  .. ..<span class="sc">$</span> cells<span class="sc">:</span>List of <span class="dv">1</span></span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a>  ..<span class="sc">@</span> nn_network         <span class="sc">:</span>List of <span class="dv">1</span></span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a>  .. ..<span class="sc">$</span> cell<span class="sc">:</span>List of <span class="dv">1</span></span>
+<span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a>  ..<span class="sc">@</span> images             <span class="sc">:</span> <span class="cn">NULL</span></span>
+<span id="cb10-27"><a href="#cb10-27" tabindex="-1"></a>  ..<span class="sc">@</span> largeImages        <span class="sc">:</span>List of <span class="dv">1</span></span>
+<span id="cb10-28"><a href="#cb10-28" tabindex="-1"></a>  .. ..<span class="sc">$</span> image<span class="sc">:</span>Formal class <span class="st">"giottoLargeImage"</span> [package <span class="st">"Giotto"</span>] with <span class="dv">13</span> slots</span>
+<span id="cb10-29"><a href="#cb10-29" tabindex="-1"></a>  ..<span class="sc">@</span> parameters         <span class="sc">:</span>List of <span class="dv">18</span></span>
+<span id="cb10-30"><a href="#cb10-30" tabindex="-1"></a>  .. ..<span class="sc">$</span> <span class="dv">0</span>_normalize                <span class="sc">:</span> Named chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">14</span>] <span class="st">"mini_visium"</span> <span class="st">"raw"</span> <span class="st">"standard"</span> <span class="st">"TRUE"</span> ...</span>
+<span id="cb10-31"><a href="#cb10-31" tabindex="-1"></a>  .. .. ..<span class="sc">-</span> <span class="fu">attr</span>(<span class="sc">*</span>, <span class="st">"names"</span>)<span class="ot">=</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">14</span>] <span class="st">"gobject"</span> <span class="st">"expression_values"</span> <span class="st">"norm_methods"</span> <span class="st">"library_size_norm"</span> ...</span>
+<span id="cb10-32"><a href="#cb10-32" tabindex="-1"></a>  .. ..<span class="sc">$</span> <span class="dv">1</span>_subset                   <span class="sc">:</span> Named chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>] <span class="st">"gobject"</span> <span class="st">"spat_unit"</span> <span class="st">"feat_type"</span> <span class="st">"selected_cell_ids"</span> ...</span>
+<span id="cb10-33"><a href="#cb10-33" tabindex="-1"></a>  .. .. ..<span class="sc">-</span> <span class="fu">attr</span>(<span class="sc">*</span>, <span class="st">"names"</span>)<span class="ot">=</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>] <span class="st">"gobject"</span> <span class="st">"spat_unit"</span> <span class="st">"feat_type"</span> <span class="st">"cell_ids"</span> ...</span>
+<span id="cb10-34"><a href="#cb10-34" tabindex="-1"></a>  .. ..<span class="sc">$</span> <span class="dv">2</span>_filter                   <span class="sc">:</span> Named chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">13</span>] <span class="st">"mini_visium"</span> <span class="st">"raw"</span> <span class="st">"1"</span> <span class="st">"5"</span> ...</span>
+<span id="cb10-35"><a href="#cb10-35" tabindex="-1"></a>  .. .. ..<span class="sc">-</span> <span class="fu">attr</span>(<span class="sc">*</span>, <span class="st">"names"</span>)<span class="ot">=</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">13</span>] <span class="st">"gobject"</span> <span class="st">"expression_values"</span> <span class="st">"expression_threshold"</span> <span class="st">"feat_det_in_min_cells"</span> ...</span>
+<span id="cb10-36"><a href="#cb10-36" tabindex="-1"></a>  .. ..<span class="sc">$</span> <span class="dv">3</span>_feat_stats               <span class="sc">:</span> Named chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>] <span class="st">"mini_visium"</span> <span class="st">"normalized"</span> <span class="st">"0"</span> <span class="st">"TRUE"</span></span>
+<span id="cb10-37"><a href="#cb10-37" tabindex="-1"></a>  .. .. ..<span class="sc">-</span> <span class="fu">attr</span>(<span class="sc">*</span>, <span class="st">"names"</span>)<span class="ot">=</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>] <span class="st">"gobject"</span> <span class="st">"expression_values"</span> <span class="st">"detection_threshold"</span> <span class="st">"return_gobject"</span></span>
+<span id="cb10-38"><a href="#cb10-38" tabindex="-1"></a>  .. ..<span class="sc">$</span> <span class="dv">4</span>_cell_stats               <span class="sc">:</span> Named chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>] <span class="st">"mini_visium"</span> <span class="st">"normalized"</span> <span class="st">"0"</span> <span class="st">"TRUE"</span></span>
+<span id="cb10-39"><a href="#cb10-39" tabindex="-1"></a>  .. .. ..<span class="sc">-</span> <span class="fu">attr</span>(<span class="sc">*</span>, <span class="st">"names"</span>)<span class="ot">=</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>] <span class="st">"gobject"</span> <span class="st">"expression_values"</span> <span class="st">"detection_threshold"</span> <span class="st">"return_gobject"</span></span>
+<span id="cb10-40"><a href="#cb10-40" tabindex="-1"></a>  .. ..<span class="sc">$</span> <span class="dv">5</span>_hvf                      <span class="sc">:</span> Named chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">17</span>] <span class="st">"mini_visium"</span> <span class="st">"normalized"</span> <span class="st">"cov_groups"</span> <span class="st">"FALSE"</span> ...</span>
+<span id="cb10-41"><a href="#cb10-41" tabindex="-1"></a>  .. .. ..<span class="sc">-</span> <span class="fu">attr</span>(<span class="sc">*</span>, <span class="st">"names"</span>)<span class="ot">=</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">17</span>] <span class="st">"gobject"</span> <span class="st">"expression_values"</span> <span class="st">"method"</span> <span class="st">"reverse_log_scale"</span> ...</span>
+<span id="cb10-42"><a href="#cb10-42" tabindex="-1"></a>  .. ..<span class="sc">$</span> <span class="dv">6</span>_pca                      <span class="sc">:</span> Named chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">15</span>] <span class="st">"mini_visium"</span> <span class="st">"normalized"</span> <span class="st">"cells"</span> <span class="st">"hvf"</span> ...</span>
+<span id="cb10-43"><a href="#cb10-43" tabindex="-1"></a>  .. .. ..<span class="sc">-</span> <span class="fu">attr</span>(<span class="sc">*</span>, <span class="st">"names"</span>)<span class="ot">=</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">15</span>] <span class="st">"gobject"</span> <span class="st">"expression_values"</span> <span class="st">"reduction"</span> <span class="st">"feats_to_use"</span> ...</span>
+<span id="cb10-44"><a href="#cb10-44" tabindex="-1"></a>  .. ..<span class="sc">$</span> <span class="dv">7</span>_umap                     <span class="sc">:</span> Named chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">17</span>] <span class="st">"mini_visium"</span> <span class="st">"normalized"</span> <span class="st">"cells"</span> <span class="st">"pca"</span> ...</span>
+<span id="cb10-45"><a href="#cb10-45" tabindex="-1"></a>  .. .. ..<span class="sc">-</span> <span class="fu">attr</span>(<span class="sc">*</span>, <span class="st">"names"</span>)<span class="ot">=</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">17</span>] <span class="st">"gobject"</span> <span class="st">"expression_values"</span> <span class="st">"reduction"</span> <span class="st">"dim_reduction_to_use"</span> ...</span>
+<span id="cb10-46"><a href="#cb10-46" tabindex="-1"></a>  .. ..<span class="sc">$</span> <span class="dv">8</span>_tsne                     <span class="sc">:</span> Named chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">14</span>] <span class="st">"mini_visium"</span> <span class="st">"normalized"</span> <span class="st">"cells"</span> <span class="st">"pca"</span> ...</span>
+<span id="cb10-47"><a href="#cb10-47" tabindex="-1"></a>  .. .. ..<span class="sc">-</span> <span class="fu">attr</span>(<span class="sc">*</span>, <span class="st">"names"</span>)<span class="ot">=</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">14</span>] <span class="st">"gobject"</span> <span class="st">"expression_values"</span> <span class="st">"reduction"</span> <span class="st">"dim_reduction_to_use"</span> ...</span>
+<span id="cb10-48"><a href="#cb10-48" tabindex="-1"></a>  .. ..<span class="sc">$</span> <span class="dv">9</span>_nn_network               <span class="sc">:</span> Named chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">11</span>] <span class="st">"mini_visium"</span> <span class="st">"sNN"</span> <span class="st">"pca"</span> <span class="st">"1:5"</span> ...</span>
+<span id="cb10-49"><a href="#cb10-49" tabindex="-1"></a>  .. .. ..<span class="sc">-</span> <span class="fu">attr</span>(<span class="sc">*</span>, <span class="st">"names"</span>)<span class="ot">=</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">11</span>] <span class="st">"gobject"</span> <span class="st">"type"</span> <span class="st">"dim_reduction_to_use"</span> <span class="st">"dimensions_to_use"</span> ...</span>
+<span id="cb10-50"><a href="#cb10-50" tabindex="-1"></a>  .. ..<span class="sc">$</span> <span class="dv">10</span>_cluster                 <span class="sc">:</span> Named chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">11</span>] <span class="st">"mini_visium"</span> <span class="st">"leiden_clus"</span> <span class="st">"sNN"</span> <span class="st">"sNN.pca"</span> ...</span>
+<span id="cb10-51"><a href="#cb10-51" tabindex="-1"></a>  .. .. ..<span class="sc">-</span> <span class="fu">attr</span>(<span class="sc">*</span>, <span class="st">"names"</span>)<span class="ot">=</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">11</span>] <span class="st">"gobject"</span> <span class="st">"name"</span> <span class="st">"nn_network_to_use"</span> <span class="st">"network_name"</span> ...</span>
+<span id="cb10-52"><a href="#cb10-52" tabindex="-1"></a>  .. ..<span class="sc">$</span> <span class="dv">11</span>_delaunay_spatial_network<span class="sc">:</span> Named chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>] <span class="st">"dimensions: sdimx and sdimy"</span> <span class="st">"deldir"</span> <span class="st">"auto"</span> <span class="st">"Delaunay_network"</span></span>
+<span id="cb10-53"><a href="#cb10-53" tabindex="-1"></a>  .. .. ..<span class="sc">-</span> <span class="fu">attr</span>(<span class="sc">*</span>, <span class="st">"names"</span>)<span class="ot">=</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>] <span class="st">"dimensions used"</span> <span class="st">"method"</span> <span class="st">"maximum distance threshold"</span> <span class="st">"name of spatial network"</span></span>
+<span id="cb10-54"><a href="#cb10-54" tabindex="-1"></a>  .. ..<span class="sc">$</span> <span class="dv">12</span>_spatial_network         <span class="sc">:</span> Named chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>] <span class="st">"10"</span> <span class="st">"all"</span> <span class="st">"400"</span> <span class="st">"spatial_network"</span></span>
+<span id="cb10-55"><a href="#cb10-55" tabindex="-1"></a>  .. .. ..<span class="sc">-</span> <span class="fu">attr</span>(<span class="sc">*</span>, <span class="st">"names"</span>)<span class="ot">=</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>] <span class="st">"k neighbours"</span> <span class="st">"dimensions used"</span> <span class="st">"maximum distance threshold"</span> <span class="st">"name of spatial network"</span></span>
+<span id="cb10-56"><a href="#cb10-56" tabindex="-1"></a>  .. ..<span class="sc">$</span> <span class="dv">13</span>_create_metafeat         <span class="sc">:</span> Named chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>] <span class="st">"mini_visium"</span> <span class="st">"normalized"</span> <span class="st">"cluster_genes"</span> <span class="st">"cluster_metagene"</span> ...</span>
+<span id="cb10-57"><a href="#cb10-57" tabindex="-1"></a>  .. .. ..<span class="sc">-</span> <span class="fu">attr</span>(<span class="sc">*</span>, <span class="st">"names"</span>)<span class="ot">=</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>] <span class="st">"gobject"</span> <span class="st">"expression_values"</span> <span class="st">"feat_clusters"</span> <span class="st">"name"</span> ...</span>
+<span id="cb10-58"><a href="#cb10-58" tabindex="-1"></a>  .. ..<span class="sc">$</span> <span class="dv">14</span>_pca                     <span class="sc">:</span> Named chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>] <span class="st">"mini_visium"</span> <span class="st">"normalized"</span> <span class="st">"cells"</span> <span class="st">"custom_pca"</span> ...</span>
+<span id="cb10-59"><a href="#cb10-59" tabindex="-1"></a>  .. .. ..<span class="sc">-</span> <span class="fu">attr</span>(<span class="sc">*</span>, <span class="st">"names"</span>)<span class="ot">=</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>] <span class="st">"gobject"</span> <span class="st">"expression_values"</span> <span class="st">"reduction"</span> <span class="st">"name"</span> ...</span>
+<span id="cb10-60"><a href="#cb10-60" tabindex="-1"></a>  .. ..<span class="sc">$</span> <span class="dv">15</span>_umap                    <span class="sc">:</span> Named chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">19</span>] <span class="st">"mini_visium"</span> <span class="st">"normalized"</span> <span class="st">"cells"</span> <span class="st">"pca"</span> ...</span>
+<span id="cb10-61"><a href="#cb10-61" tabindex="-1"></a>  .. .. ..<span class="sc">-</span> <span class="fu">attr</span>(<span class="sc">*</span>, <span class="st">"names"</span>)<span class="ot">=</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">19</span>] <span class="st">"gobject"</span> <span class="st">"expression_values"</span> <span class="st">"reduction"</span> <span class="st">"dim_reduction_to_use"</span> ...</span>
+<span id="cb10-62"><a href="#cb10-62" tabindex="-1"></a>  .. ..<span class="sc">$</span> <span class="dv">16</span>_nn_network              <span class="sc">:</span> Named chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">13</span>] <span class="st">"mini_visium"</span> <span class="st">"sNN"</span> <span class="st">"pca"</span> <span class="st">"custom_pca"</span> ...</span>
+<span id="cb10-63"><a href="#cb10-63" tabindex="-1"></a>  .. .. ..<span class="sc">-</span> <span class="fu">attr</span>(<span class="sc">*</span>, <span class="st">"names"</span>)<span class="ot">=</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">13</span>] <span class="st">"gobject"</span> <span class="st">"type"</span> <span class="st">"dim_reduction_to_use"</span> <span class="st">"dim_reduction_name"</span> ...</span>
+<span id="cb10-64"><a href="#cb10-64" tabindex="-1"></a>  .. ..<span class="sc">$</span> <span class="dv">17</span>_cluster                 <span class="sc">:</span> Named chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">11</span>] <span class="st">"mini_visium"</span> <span class="st">"custom_leiden"</span> <span class="st">"sNN"</span> <span class="st">"custom_NN"</span> ...</span>
+<span id="cb10-65"><a href="#cb10-65" tabindex="-1"></a>  .. .. ..<span class="sc">-</span> <span class="fu">attr</span>(<span class="sc">*</span>, <span class="st">"names"</span>)<span class="ot">=</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">11</span>] <span class="st">"gobject"</span> <span class="st">"name"</span> <span class="st">"nn_network_to_use"</span> <span class="st">"network_name"</span> ...</span>
+<span id="cb10-66"><a href="#cb10-66" tabindex="-1"></a>  ..<span class="sc">@</span> instructions       <span class="sc">:</span>List of <span class="dv">13</span></span>
+<span id="cb10-67"><a href="#cb10-67" tabindex="-1"></a>  .. ..<span class="sc">$</span> python_path     <span class="sc">:</span> chr <span class="st">"/Users/yuanlab/Library/r-miniconda/envs/giotto_env/bin/pythonw"</span></span>
+<span id="cb10-68"><a href="#cb10-68" tabindex="-1"></a>  .. ..<span class="sc">$</span> show_plot       <span class="sc">:</span> logi <span class="cn">TRUE</span></span>
+<span id="cb10-69"><a href="#cb10-69" tabindex="-1"></a>  .. ..<span class="sc">$</span> return_plot     <span class="sc">:</span> logi <span class="cn">FALSE</span></span>
+<span id="cb10-70"><a href="#cb10-70" tabindex="-1"></a>  .. ..<span class="sc">$</span> save_plot       <span class="sc">:</span> logi <span class="cn">FALSE</span></span>
+<span id="cb10-71"><a href="#cb10-71" tabindex="-1"></a>  .. ..<span class="sc">$</span> save_dir        <span class="sc">:</span> logi <span class="cn">NA</span></span>
+<span id="cb10-72"><a href="#cb10-72" tabindex="-1"></a>  .. ..<span class="sc">$</span> plot_format     <span class="sc">:</span> chr <span class="st">"png"</span></span>
+<span id="cb10-73"><a href="#cb10-73" tabindex="-1"></a>  .. ..<span class="sc">$</span> dpi             <span class="sc">:</span> num <span class="dv">300</span></span>
+<span id="cb10-74"><a href="#cb10-74" tabindex="-1"></a>  .. ..<span class="sc">$</span> units           <span class="sc">:</span> chr <span class="st">"in"</span></span>
+<span id="cb10-75"><a href="#cb10-75" tabindex="-1"></a>  .. ..<span class="sc">$</span> height          <span class="sc">:</span> num <span class="dv">9</span></span>
+<span id="cb10-76"><a href="#cb10-76" tabindex="-1"></a>  .. ..<span class="sc">$</span> width           <span class="sc">:</span> num <span class="dv">9</span></span>
+<span id="cb10-77"><a href="#cb10-77" tabindex="-1"></a>  .. ..<span class="sc">$</span> is_docker       <span class="sc">:</span> logi <span class="cn">FALSE</span></span>
+<span id="cb10-78"><a href="#cb10-78" tabindex="-1"></a>  .. ..<span class="sc">$</span> active_spat_unit<span class="sc">:</span> chr <span class="st">"cell"</span></span>
+<span id="cb10-79"><a href="#cb10-79" tabindex="-1"></a>  .. ..<span class="sc">$</span> active_feat_type<span class="sc">:</span> chr <span class="st">"rna"</span></span>
+<span id="cb10-80"><a href="#cb10-80" tabindex="-1"></a>  ..<span class="sc">@</span> offset_file        <span class="sc">:</span> <span class="cn">NULL</span></span>
+<span id="cb10-81"><a href="#cb10-81" tabindex="-1"></a>  ..<span class="sc">@</span> OS_platform        <span class="sc">:</span> chr <span class="st">"unix"</span></span>
+<span id="cb10-82"><a href="#cb10-82" tabindex="-1"></a>  ..<span class="sc">@</span> join_info          <span class="sc">:</span> <span class="cn">NULL</span></span>
+<span id="cb10-83"><a href="#cb10-83" tabindex="-1"></a>  ..<span class="sc">@</span> multiomics         <span class="sc">:</span> <span class="cn">NULL</span></span>
+<span id="cb10-84"><a href="#cb10-84" tabindex="-1"></a>  ..<span class="sc">@</span> h5_file            <span class="sc">:</span> <span class="cn">NULL</span></span></code></pre></div>
 </div>
 <div class="section level3" number="0.1.2">
-<h3 number="0.1.2" id="warning-messages">
-<span class="header-section-number">0.1.2</span> Warning Messages<a class="anchor" aria-label="anchor" href="#warning-messages"></a>
+<h3 id="warning-messages">
+<span class="header-section-number">0.1.2</span> Warning
+Messages<a class="anchor" aria-label="anchor" href="#warning-messages"></a>
 </h3>
 <ul>
 <li>Deprecation warning</li>
@@ -779,74 +786,92 @@
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObject.html" class="external-link">createGiottoObject</a></span><span class="op">(</span>raw_exprs <span class="op">=</span> <span class="st">"path/to/expression/data"</span>,</span>
 <span>                                       spatial_locs <span class="op">=</span> <span class="st">"path/to/spatial/data"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a>Warning message<span class="op">:</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a>In <span class="kw">createGiottoObject</span>(<span class="dt">raw_exprs =</span> <span class="st">"/Users/username/path/to/data"</span>,  <span class="op">:</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true"></a><span class="st">    </span>raw_exprs argument is deprecated, use expression argument <span class="cf">in</span> the future </span></code></pre></div>
-<p><strong>Solution</strong> The code has still run and your object has been created, but in the future use the following command:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>Warning message<span class="sc">:</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>In <span class="fu">createGiottoObject</span>(<span class="at">raw_exprs =</span> <span class="st">"/Users/username/path/to/data"</span>,  <span class="sc">:</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>    raw_exprs argument is deprecated, use expression argument <span class="cf">in</span> the future </span></code></pre></div>
+<p><strong>Solution</strong> The code has still run and your object has
+been created, but in the future use the following command:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObject.html" class="external-link">createGiottoObject</a></span><span class="op">(</span>expression <span class="op">=</span> <span class="st">"path/to/expression/data"</span>,</span>
 <span>                                       spatial_locs <span class="op">=</span> <span class="st">"path/to/spatial/data"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3" number="0.1.3">
-<h3 number="0.1.3" id="errors">
+<h3 id="errors">
 <span class="header-section-number">0.1.3</span> Errors<a class="anchor" aria-label="anchor" href="#errors"></a>
 </h3>
 <ul>
 <li>Is this an error from Giotto?</li>
 </ul>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a>Error <span class="cf">in</span> <span class="kw">adjustGiottoMatrix</span>(<span class="dt">gobject =</span> my_giotto_object, <span class="dt">expression_values =</span> <span class="kw">c</span>(<span class="st">"normalized"</span>)<span class="op">:</span><span class="st"> </span>covariate column <span class="kw">name</span>(s) were not found <span class="cf">in</span> the cell metadata </span></code></pre></div>
-<p><strong>Solution</strong> In this case, you would need to check your cell metadata (<code>my_giotto_object@cell_metadata</code>) and make appropriate adjustments.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>Error <span class="cf">in</span> <span class="fu">adjustGiottoMatrix</span>(<span class="at">gobject =</span> my_giotto_object, <span class="at">expression_values =</span> <span class="fu">c</span>(<span class="st">"normalized"</span>)<span class="sc">:</span> covariate column <span class="fu">name</span>(s) were not found <span class="cf">in</span> the cell metadata </span></code></pre></div>
+<p><strong>Solution</strong> In this case, you would need to check your
+cell metadata (<code>my_giotto_object@cell_metadata</code>) and make
+appropriate adjustments.</p>
 <ul>
 <li>Is this an error from an external package?</li>
 </ul>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a>Error <span class="cf">in</span> methods<span class="op">::</span><span class="kw">as</span>(<span class="kw">as.matrix</span>(x[, <span class="dv">-1</span>]), <span class="st">"Matrix"</span>) <span class="op">:</span><span class="st"> </span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true"></a>no method or default <span class="cf">for</span> coercing <span class="st">"matrix"</span> to <span class="st">"Matrix"</span></span></code></pre></div>
-<p><strong>Solution</strong> Ensure that the Matrix library is loaded:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>Error <span class="cf">in</span> methods<span class="sc">::</span><span class="fu">as</span>(<span class="fu">as.matrix</span>(x[, <span class="sc">-</span><span class="dv">1</span>]), <span class="st">"Matrix"</span>) <span class="sc">:</span> </span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>no method or default <span class="cf">for</span> coercing <span class="st">"matrix"</span> to <span class="st">"Matrix"</span></span></code></pre></div>
+<p><strong>Solution</strong> Ensure that the Matrix library is
+loaded:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://Matrix.R-forge.R-project.org" class="external-link">Matrix</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2" number="0.2">
-<h2 number="0.2" id="some-steps-before-posting-an-issue">
-<span class="header-section-number">0.2</span> Some steps before posting an issue<a class="anchor" aria-label="anchor" href="#some-steps-before-posting-an-issue"></a>
+<h2 id="some-steps-before-posting-an-issue">
+<span class="header-section-number">0.2</span> Some steps before
+posting an issue<a class="anchor" aria-label="anchor" href="#some-steps-before-posting-an-issue"></a>
 </h2>
 <ul>
 <li>Google (or whichever search engine you prefer) the error</li>
 <li>Look up the documentation for the package the error came from</li>
 </ul>
 <div class="section level3" number="0.2.1">
-<h3 number="0.2.1" id="required-information-to-provide">
-<span class="header-section-number">0.2.1</span> Required information to provide<a class="anchor" aria-label="anchor" href="#required-information-to-provide"></a>
+<h3 id="required-information-to-provide">
+<span class="header-section-number">0.2.1</span> Required
+information to provide<a class="anchor" aria-label="anchor" href="#required-information-to-provide"></a>
 </h3>
 <ul>
-<li>What code/data did you use? (copy-pasted or an example is helpful)</li>
+<li>What code/data did you use? (copy-pasted or an example is
+helpful)</li>
 <li>What did you expect your result to be?</li>
 <li>What was your result?</li>
-<li>If your result was an error message, please see the category on error messages to determine whether the source was Giotto or an external package.</li>
+<li>If your result was an error message, please see the category on
+error messages to determine whether the source was Giotto or an external
+package.</li>
 </ul>
 </div>
 <div class="section level3" number="0.2.2">
-<h3 number="0.2.2" id="how-to-create-a-reproducible-example">
-<span class="header-section-number">0.2.2</span> How to create a reproducible example<a class="anchor" aria-label="anchor" href="#how-to-create-a-reproducible-example"></a>
+<h3 id="how-to-create-a-reproducible-example">
+<span class="header-section-number">0.2.2</span> How to create a
+reproducible example<a class="anchor" aria-label="anchor" href="#how-to-create-a-reproducible-example"></a>
 </h3>
-<p>For us to be able to help you at the best of our ability, it"s helpful if you can provide a reproducible example. This just means that anyone who reads your GitHub issue should be able to accurately reproduce your error.</p>
-<p>For more information on minimal reproducible examples check out <a href="https://stackoverflow.com/help/minimal-reproducible-example" class="external-link">this link</a>.</p>
-<p>And to see what other people recommend, please check out <a href="https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example" class="external-link">this forum</a>.</p>
+<p>For us to be able to help you at the best of our ability, it"s
+helpful if you can provide a reproducible example. This just means that
+anyone who reads your GitHub issue should be able to accurately
+reproduce your error.</p>
+<p>For more information on minimal reproducible examples check out <a href="https://stackoverflow.com/help/minimal-reproducible-example" class="external-link">this
+link</a>.</p>
+<p>And to see what other people recommend, please check out <a href="https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example" class="external-link">this
+forum</a>.</p>
 </div>
 <div class="section level3" number="0.2.3">
-<h3 number="0.2.3" id="example-of-a-good-github-issue">
-<span class="header-section-number">0.2.3</span> Example of a Good GitHub issue<a class="anchor" aria-label="anchor" href="#example-of-a-good-github-issue"></a>
+<h3 id="example-of-a-good-github-issue">
+<span class="header-section-number">0.2.3</span> Example of a Good
+GitHub issue<a class="anchor" aria-label="anchor" href="#example-of-a-good-github-issue"></a>
 </h3>
 <ul>
 <li>Provide a code example</li>
-<li>Please use the GitHub “insert code” function or wrap your code like so:</li>
+<li>Please use the GitHub “insert code” function or wrap your code like
+so:</li>
 </ul>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">`x &lt;- "hello world"</span></span>
 <span><span class="va"></span></span>
 <span><span class="va">print(x)`</span></span></code></pre></div>
 <p><em>If applicable, provide a screenshot of the issue</em></p>
-<p>I am having trouble adjusting my Giotto matix. I have inputted the following code:</p>
+<p>I am having trouble adjusting my Giotto matix. I have inputted the
+following code:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu">GiottoData</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoData/reference/loadGiottoMini.html" class="external-link">loadGiottoMini</a></span><span class="op">(</span><span class="st">"visium"</span><span class="op">)</span></span>
 <span></span>
@@ -854,15 +879,20 @@
 <span>                                       expression_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"normalized"</span><span class="op">)</span>,</span>
 <span>                                       covariate_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"nr_genes"</span>,</span>
 <span>                                                             <span class="st">"total_expr"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>I expected that my matrix would be appropriately adjusted, but I got the following error:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true"></a>Error <span class="cf">in</span> <span class="kw">adjustGiottoMatrix</span>(<span class="dt">gobject =</span> my_giotto_object, <span class="dt">expression_values =</span> <span class="kw">c</span>(<span class="st">"normalized"</span>)<span class="op">:</span><span class="st"> </span>covariate column <span class="kw">name</span>(s) were not found <span class="cf">in</span> the cell metadata </span></code></pre></div>
-<p>For more context, I am running R version 4.3.2 and Giotto version 4.0.2. I can send you the data I used if necessary.</p>
+<p>I expected that my matrix would be appropriately adjusted, but I got
+the following error:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>Error <span class="cf">in</span> <span class="fu">adjustGiottoMatrix</span>(<span class="at">gobject =</span> my_giotto_object, <span class="at">expression_values =</span> <span class="fu">c</span>(<span class="st">"normalized"</span>)<span class="sc">:</span> covariate column <span class="fu">name</span>(s) were not found <span class="cf">in</span> the cell metadata </span></code></pre></div>
+<p>For more context, I am running R version 4.3.2 and Giotto version
+4.0.2. I can send you the data I used if necessary.</p>
 </div>
 <div class="section level3" number="0.2.4">
-<h3 number="0.2.4" id="example-of-a-bad-github-issue">
-<span class="header-section-number">0.2.4</span> Example of a Bad GitHub issue<a class="anchor" aria-label="anchor" href="#example-of-a-bad-github-issue"></a>
+<h3 id="example-of-a-bad-github-issue">
+<span class="header-section-number">0.2.4</span> Example of a Bad
+GitHub issue<a class="anchor" aria-label="anchor" href="#example-of-a-bad-github-issue"></a>
 </h3>
-<p>I am having trouble adjusting my Giotto matrix. My error says that the covariate column name(s) were not found in the cell meta data. What do I do?</p>
+<p>I am having trouble adjusting my Giotto matrix. My error says that
+the covariate column name(s) were not found in the cell meta data. What
+do I do?</p>
 <p>Report An Issue <a href="https://github.com/drieslab/Giotto/issues" class="external-link uri">https://github.com/drieslab/Giotto/issues</a></p>
 </div>
 </div>
