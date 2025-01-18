@@ -24,7 +24,7 @@ object."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mat
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.0</span>
       </span>
     </div>
 
@@ -480,15 +480,27 @@ object.</p>
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">createGiottoCosMxObject</span><span class="op">(</span></span>
-<span>  cosmx_dir <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  data_to_use <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"subcellular"</span>, <span class="st">"aggregate"</span><span class="op">)</span>,</span>
-<span>  remove_background_polygon <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  background_algo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"range"</span><span class="op">)</span>,</span>
-<span>  remove_unvalid_polygons <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">cosmx_dir</span>,</span>
+<span>  version <span class="op">=</span> <span class="st">"default"</span>,</span>
 <span>  FOVs <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  instructions <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  feat_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rna"</span>, <span class="st">"negprobes"</span><span class="op">)</span>,</span>
+<span>  split_keyword <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"NegPrb"</span><span class="op">)</span>,</span>
+<span>  load_images <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>composite <span class="op">=</span> <span class="st">"composite"</span>, overlay <span class="op">=</span> <span class="st">"overlay"</span><span class="op">)</span>,</span>
+<span>  load_expression <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  load_cellmeta <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  fov_shifts_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  transcript_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cell_labels_dir <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  expression_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  metadata_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cores <span class="op">=</span> <span class="fu">determine_cores</span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  verbose <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  instructions <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  remove_unvalid_polygons <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  data_to_use <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  remove_background_polygon <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  background_algo <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -500,28 +512,72 @@ object.</p>
 <dd><p>full path to the exported cosmx directory</p></dd>
 
 
-<dt id="arg-data-to-use">data_to_use<a class="anchor" aria-label="anchor" href="#arg-data-to-use"></a></dt>
-<dd><p>which type(s) of expression data to build the gobject with
-Default is <code>'all'</code> information available. <code>'subcellular'</code> loads
-the transcript coordinates only. <code>'aggregate'</code> loads the provided
-aggregated expression matrix.</p></dd>
-
-
-<dt id="arg-remove-background-polygon">remove_background_polygon<a class="anchor" aria-label="anchor" href="#arg-remove-background-polygon"></a></dt>
-<dd><p>try to remove background polygon
-(default: FALSE)</p></dd>
-
-
-<dt id="arg-background-algo">background_algo<a class="anchor" aria-label="anchor" href="#arg-background-algo"></a></dt>
-<dd><p>algorithm to remove background polygon</p></dd>
-
-
-<dt id="arg-remove-unvalid-polygons">remove_unvalid_polygons<a class="anchor" aria-label="anchor" href="#arg-remove-unvalid-polygons"></a></dt>
-<dd><p>remove unvalid polygons (default: TRUE)</p></dd>
+<dt id="arg-version">version<a class="anchor" aria-label="anchor" href="#arg-version"></a></dt>
+<dd><p>character. Version of CosMx output. Current selections are
+either "default", "v6", and "legacy" (for the NSCLC dataset).</p></dd>
 
 
 <dt id="arg-fovs">FOVs<a class="anchor" aria-label="anchor" href="#arg-fovs"></a></dt>
 <dd><p>field of views to load (only affects subcellular data and images)</p></dd>
+
+
+<dt id="arg-feat-type">feat_type<a class="anchor" aria-label="anchor" href="#arg-feat-type"></a></dt>
+<dd><p>character. feature type. Provide more than one value if
+using the <code>split_keyword</code> param. For each set of keywords to split by, an
+additional feat_type should be provided in the same order. Affects how
+the transcripts information is loaded. Helpful for separating out the
+QC probes. See details.</p></dd>
+
+
+<dt id="arg-split-keyword">split_keyword<a class="anchor" aria-label="anchor" href="#arg-split-keyword"></a></dt>
+<dd><p>list of character vectors of keywords to split the
+transcripts based on their feat_ID. Keywords will be <code><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl()</a></code>
+matched against the feature IDs information. See details.</p></dd>
+
+
+<dt id="arg-load-images">load_images<a class="anchor" aria-label="anchor" href="#arg-load-images"></a></dt>
+<dd><p>named list of filepaths to directories. Loads the
+composite and overlay images by default.</p></dd>
+
+
+<dt id="arg-load-expression">load_expression<a class="anchor" aria-label="anchor" href="#arg-load-expression"></a></dt>
+<dd><p>logical. (Default = FALSE) whether to load provided
+expression matrix</p></dd>
+
+
+<dt id="arg-load-cellmeta">load_cellmeta<a class="anchor" aria-label="anchor" href="#arg-load-cellmeta"></a></dt>
+<dd><p>logical. (Default = TRUE) whether to load provided
+cell metadata</p></dd>
+
+
+<dt id="arg-fov-shifts-path">fov_shifts_path<a class="anchor" aria-label="anchor" href="#arg-fov-shifts-path"></a></dt>
+<dd><p>Optional. Filepath to fov_positions_file</p></dd>
+
+
+<dt id="arg-transcript-path">transcript_path<a class="anchor" aria-label="anchor" href="#arg-transcript-path"></a></dt>
+<dd><p>Optional. Filepath to desired transcripts file to
+load.</p></dd>
+
+
+<dt id="arg-cell-labels-dir">cell_labels_dir<a class="anchor" aria-label="anchor" href="#arg-cell-labels-dir"></a></dt>
+<dd><p>Optional. Path to directory containing CellLabels
+images to load as polygons.</p></dd>
+
+
+<dt id="arg-expression-path">expression_path<a class="anchor" aria-label="anchor" href="#arg-expression-path"></a></dt>
+<dd><p>Optional. Filepath to cell feature matrix to load.</p></dd>
+
+
+<dt id="arg-metadata-path">metadata_path<a class="anchor" aria-label="anchor" href="#arg-metadata-path"></a></dt>
+<dd><p>Optional. Filepath to metadata file to load.</p></dd>
+
+
+<dt id="arg-cores">cores<a class="anchor" aria-label="anchor" href="#arg-cores"></a></dt>
+<dd><p>nthreads to use when loading in cell metadata and transcripts</p></dd>
+
+
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>be verbose when building Giotto object</p></dd>
 
 
 <dt id="arg-instructions">instructions<a class="anchor" aria-label="anchor" href="#arg-instructions"></a></dt>
@@ -529,13 +585,36 @@ aggregated expression matrix.</p></dd>
 from <code><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">createGiottoInstructions</a></code></p></dd>
 
 
-<dt id="arg-cores">cores<a class="anchor" aria-label="anchor" href="#arg-cores"></a></dt>
-<dd><p>how many cores or threads to use to read data if paths are
-provided</p></dd>
+<dt id="arg-remove-unvalid-polygons">remove_unvalid_polygons<a class="anchor" aria-label="anchor" href="#arg-remove-unvalid-polygons"></a></dt>
+<dd><p>deprecated. Now always done</p></dd>
 
 
-<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
-<dd><p>be verbose when building Giotto object</p></dd>
+<dt id="arg-data-to-use">data_to_use<a class="anchor" aria-label="anchor" href="#arg-data-to-use"></a></dt>
+<dd><p>deprecated. Not used</p></dd>
+
+
+<dt id="arg-remove-background-polygon">remove_background_polygon<a class="anchor" aria-label="anchor" href="#arg-remove-background-polygon"></a></dt>
+<dd><p>deprecated. Now always done</p></dd>
+
+
+<dt id="arg-background-algo">background_algo<a class="anchor" aria-label="anchor" href="#arg-background-algo"></a></dt>
+<dd><p>deprecated. Not used</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Arguments passed on to <code><a href="importCosMx.html">importCosMx</a></code></p><dl><dt><code>slide</code></dt>
+<dd><p>numeric. Slide number. Defaults to 1</p></dd>
+
+    <dt><code>micron</code></dt>
+<dd><p>logical. Whether to scale spatial information as micron
+instead of the default pixels</p></dd>
+
+    <dt><code>px2um</code></dt>
+<dd><p>numeric. Scalefactor from pixels to micron. Defaults to 0.12028
+based on `CosMx-ReadMe.html` info</p></dd>
+
+
+</dl></dd>
 
 </dl></div>
     <div id="value">
@@ -555,24 +634,19 @@ function matches against:</p><ul><li><p><strong>CellComposite</strong> (folder o
 <li><p>experimentname_<strong>fov_positions_file</strong>.csv (file)</p></li>
 <li><p>experimentname_<strong>metadata_file</strong>.csv (file)</p></li>
 <li><p>experimentname_<strong>tx_file</strong>.csv (file)</p></li>
-</ul><p>[<strong>Workflows</strong>] Workflow to use is accessed through the data_to_use
-param</p><ul><li><p>'all' - loads and requires subcellular information from tx_file and
-  fov_positions_file
-  and also the existing aggregated information
-  (expression, spatial locations, and metadata)
-  from exprMat_file and metadata_file.</p></li>
-<li><p>'subcellular' - loads and requires subcellular information from
-  tx_file and
-  fov_positions_file only.</p></li>
-<li><p>'aggregate' - loads and requires the existing aggregate information
-  (expression, spatial locations, and metadata) from exprMat_file and
-  metadata_file.</p></li>
-</ul><p>[<strong>Images</strong>] Images in the default CellComposite, CellLabels,
-CompartmentLabels, and CellOverlay
-folders will be loaded as giotto largeImage objects in all workflows as
-long as they are available. Additionally, CellComposite images will be
-converted to giotto image objects, making plotting with
-these image objects more responsive when accessing them from a server.
+</ul><p>[<strong>feat_type and split_keyword</strong>]
+Additional QC probe information is in the subcellular feature detections
+information and must be separated from the gene expression information
+during processing.
+The QC probes have prefixes that allow them to be selected from the rest of
+the feature IDs.
+Giotto uses <code>feat_type</code> and <code>split_keyword</code> params to select these QC
+probes out as separate feature types. See examples in
+<code>[GiottoClass::createGiottoPoints]</code> for how this works.</p>
+<p>The Gene expression subset labeled as <code>rna</code> is accepted as the subset of
+feat_IDs that do not get matched to any of the <code>split_keywords</code>.</p>
+<p>[<strong>Images</strong>] Images in the expected CellComposite and CellOverlay
+folders will be loaded as giotto largeImage objects by default.
 <code><a href="https://drieslab.github.io/GiottoClass/reference/showGiottoImageNames.html" class="external-link">showGiottoImageNames</a></code> can be used to see the available images.</p>
     </div>
 
