@@ -5,13 +5,9 @@
 # Giotto Suite <img src="man/figures/GiottoLogo.png" align="right" alt="" width="160" />
 
 <!-- badges: start -->
-
-[![License: GPL
-v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-![Last
-Commit](https://badgen.net/github/last-commit/drieslab/Giotto/suite)
-![Commits Since
-Latest](https://img.shields.io/github/commits-since/drieslab/Giotto/latest/suite)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://tlo.mit.edu/understand-ip/exploring-mit-open-source-license-comprehensive-guide)
+![Last Commit](https://badgen.net/github/last-commit/drieslab/Giotto/suite)
+![Commits Since Latest](https://img.shields.io/github/commits-since/drieslab/Giotto/latest/suite)
 [![R-CMD-check](https://github.com/drieslab/Giotto/actions/workflows/main_check.yaml/badge.svg?branch=suite)](https://github.com/drieslab/Giotto/actions/workflows/main_check.yaml)
 <!-- badges: end -->
 
@@ -35,7 +31,7 @@ If you prefer to skip the installation process, check the tutorials for using Gi
 
 ### Location change
 
-With Giotto version 4.0, we updated the website at http://giottosuite.com, you can still find the previous website at https://giottosuite.readthedocs.io/en/latest/
+This website (http://giottosuite.com) is for Giotto Suite v4.0 and greater. You can still find the previous website at https://giottosuite.readthedocs.io/en/latest/ (defunct)
 
 ### Website description  
 
