@@ -37,13 +37,6 @@ if(!genv_exists){
 ```{r, eval=FALSE}
 library(Giotto)
 
-# Custom color palettes from rcartocolor
-pal10 <- c("#66C5CC","#F6CF71","#F89C74","#DCB0F2","#87C55F",
-           "#9EB9F3","#FE88B1","#C9DB74","#8BE0A4","#B3B3B3")
-
-viv10 <- c("#E58606","#5D69B1","#52BCA3","#99C945","#CC61B0",
-           "#24796C","#DAA51B","#2F8AC4","#764E9F","#A5AA99")
-
 # set working directory
 results_folder <- "/path/to/results/"
 
@@ -54,212 +47,44 @@ python_path <- NULL # alternatively, "/local/python/path/python" if desired.
 
 ## Set object behavior
 # by directly saving plots, but not rendering them you will save a lot of time
-instructions <- createGiottoInstructions(save_dir = results_folder,
-                                         save_plot = TRUE,
-                                         show_plot = FALSE,
-                                         return_plot = FALSE,
-                                         python_path = python_path)
+instrs <- createGiottoInstructions(
+    save_dir = results_folder,
+    save_plot = TRUE,
+    show_plot = FALSE,
+    return_plot = FALSE,
+    python_path = python_path
+)
 ```
 
 
-# Create the Giotto object using the convenience function
-
-Convenience function for loading in the CosMx data. It loads subcellular transcript information and polygons and generates a `giotto` object with `giottoPoints` objects for both "rna" and "neg_probe" nested in the gobject `feat_info` slot, and a `giottoPolygon` object for the "cell" spatial unit in the `spatial_info` slot.
-
-This function performs the manual object creation steps described  below. To skip those steps and preliminary data exploration, go to Section 5.
-
-Additionally, a comparison of the count matrix produced through the convenience function "subcellular" workflow and Nanostring"s provided matrix can be found at Section 6.4.
-
+# Create the Giotto object using the import utility
 
 ```{r, eval=FALSE}
 ## provide path to nanostring folder
 data_path <- "/path/to/data/"
 
 ## create giotto cosmx object
-fov_join <- createGiottoCosMxObject(cosmx_dir = data_path,
-                                    data_to_use = "subcellular", # only subcellular
-                                    FOVs = c(2,3,4),
-                                    instructions = instructions)
-
-showGiottoFeatInfo(fov_join)
-showGiottoSpatialInfo(fov_join)
+cosmx <- createGiottoCosMxObject(
+    cosmx_dir = data_path, 
+    version = "legacy", # set to this for legacy NSCLC dataset
+    FOVs = seq_len(28), # defaults to all FOVs
+    load_expression = FALSE, # defaults to FALSE (see feature aggregation step below)
+    instructions = instrs
+)
 ```
 
-
-# Manual creation of the Giotto object
-
-## Subcellular detections (points info)
-
-`tx_file.csv` contains the subcellular detections information. It contains information on each of the individual feature detections within the sample.
-
-- **fov** which FOV the detection happened in
-- **cell_ID** the ID of the cell the detection happened in
-- **x_global_px** the global spatial x location in pixels
-- **y_global_px** the global spatial y location in pixels
-- **x_local_px** the spatial x location in pixels within the FOV
-- **y_local_px** the spatial y location in pixels within the FOV
-- **z** the z plane the detection was called in (-1 to 16)
-- **target** the feature the probe is targeted against
-- **CellComp** Cellular compartment the detection happened in (0, Cytoplasm, Membrane, Nuclear)
-
-
-```{r, eval=FALSE}
-# load transcript coordinates
-tx_coord_all <- data.table::fread(file.path(data_path, "Lung12_tx_file.csv"))
-
-colnames(tx_coord_all)
-
-# z planes
-tx_coord_all[, table(z)]
-
-# Cell compartment
-tx_coord_all[, table(CellComp)]
-```
-
-## Split detections by features vs negative probes
-
-`tx_file.csv` contains information on both actual features (960 targeted gene probes in this dataset) and negative probes (20) that are targeted to alien sequences defined by the External RNA Controls  Consortium (ERCC) that do not exist in human tissue. These two types of detections will be treated as separate feature types (`feat_type`) and placed in separate expression matrices.
-
-
-```{r, eval=FALSE}
-all_IDs <- tx_coord_all[, unique(target)]
-
-# negative probe IDs
-neg_IDs <- all_IDs[grepl(pattern = "NegPrb", all_IDs)]
-neg_IDs
-
-# Feature IDs
-feat_IDs <- all_IDs[!all_IDs %in% neg_IDs]
-length(feat_IDs)
-
-# split detections
-feat_coords_all <- tx_coord_all[target %in% feat_IDs]
-neg_coords_all <- tx_coord_all[target %in% neg_IDs]
-
-cat("\nFeatures: ", feat_coords_all[, .N], "\n",
-    "NegProbes: ", neg_coords_all[, .N])
-```
+CosMx data is very FOV-based, and a column called `fov` is included in the cell metadata.
 
 ### Preview negative probes (optional)
 
-Previewing the probe information can be done by converting to `giottoPoints` and then using `plot()`. Here we show a preview of the negative probes.
-
-**Note:** if previewing the rna expression information, it is highly recommended to set a subset of features using the `feats` param. The default is to plot all points, which can be very slow for large data.
-
-
+You can directly pull out `giottoPoints` objects and plot them
 ```{r, eval=FALSE}
-neg_points <- createGiottoPoints(
-  x = neg_coords_all[, .(target, x_global_px, y_global_px)]
-)
-
-plot(neg_points, 
-     point_size = 0.2, 
-     feats = neg_IDs)
+neg_points <- cosmx[[, "negprobes"]][[1]]
+plot(neg_points, feats = featIDs(neg_points))
 ```
 
-![](images/nanostring_cosmx_lung_cancer/preview_negprb.png)
-
-## FOV shifts
-
-`fov_positions_file.csv` contains information on the x and y shifts needed in order to put the FOVs tiles together into a cohesive whole. This information is needed during the image attachment and alignment process.
-
-
-```{r, eval=FALSE}
-#  load field of vision (fov) positions
-fov_offset_file <- data.table::fread(file.path(data_path, "Lung12_fov_positions_file.csv"))
-```
-
-
-## Choose field of view for analysis
-
-CosMx data is large and Giotto loads in the subcellular information by FOV. This dataset includes 28 FOVs which can be difficult for most computers to handle at once.
-
-This tutorial will use FOVs "02", "03", and "04" which correspond to the 3 FOVs visible on the bottom right in the negative probe preview above.
-
-
-```{r, eval=FALSE}
-gobjects_list <- list()
-
-id_set <- c("02", "03", "04")
-```
-
-## Create a Giotto Object for each FOV
-
-```{r, eval=FALSE}
-for(fov_i in 1:length(id_set)) {
-
-  fov_id <- id_set[fov_i]
-
-  # 1. original composite image as png
-  original_composite_image <- paste0(data_path, "CellComposite/CellComposite_F0", fov_id,".jpg")
-
-  # 2. input cell segmentation as mask file
-  segmentation_mask <- paste0(data_path, "CellLabels/CellLabels_F0", fov_id, ".tif")
-
-  # 3. input features coordinates + offset
-  feat_coord <- feat_coords_all[fov == as.numeric(fov_id)]
-  neg_coord <- neg_coords_all[fov == as.numeric(fov_id)]
-  feat_coord <- feat_coord[,.(x_local_px, y_local_px, z, target)]
-  neg_coord <- neg_coord[,.(x_local_px, y_local_px, z, target)]
-  colnames(feat_coord) <- c("x", "y", "z", "gene_id")
-  colnames(neg_coord) <- c("x", "y", "z", "gene_id")
-  feat_coord <- feat_coord[,.(x, y, gene_id)]
-  neg_coord <- neg_coord[,.(x, y, gene_id)]
-
-
-  fovsubset <- createGiottoObjectSubcellular(
-    gpoints = list("rna" = feat_coord,
-                   "neg_probe" = neg_coord),
-    gpolygons = list("cell" = segmentation_mask),
-    polygon_mask_list_params = list(
-      mask_method = "guess",
-      flip_vertical = TRUE,
-      flip_horizontal = FALSE,
-      shift_horizontal_step = FALSE
-    ),
-    instructions = instructions
-  )
-
-
-  # cell centroids are now used to provide the spatial locations
-  fovsubset <- addSpatialCentroidLocations(fovsubset,
-                                           poly_info = "cell")
-
-  # create and add Giotto images
-  composite <- createGiottoLargeImage(raster_object = original_composite_image,
-                                      negative_y = FALSE,
-                                      name = "composite")
-
-  fovsubset <- addGiottoImage(gobject = fovsubset,
-                              images = list(composite))
-
-
-  fovsubset <- convertGiottoLargeImageToMG(giottoLargeImage = composite,
-                                           gobject = fovsubset,
-                                           return_gobject = TRUE)
-
-  gobjects_list[[fov_i]] <- fovsubset
-
-}
-```
-
-
-## Join FOV Giotto Objects
-
-
-```{r, eval=FALSE}
-new_names <- paste0("fov0", id_set)
-
-id_match <- match(as.numeric(id_set), fov_offset_file$fov)
-x_shifts <- fov_offset_file[id_match]$x_global_px
-y_shifts <- fov_offset_file[id_match]$y_global_px
-
-# Create Giotto object that includes all selected FOVs
-fov_join <- joinGiottoObjects(gobject_list = gobjects_list,
-                              gobject_names = new_names,
-                              join_method = "shift",
-                              x_shift = x_shifts,
-                              y_shift = y_shifts)
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/preview_negprb.png")
 ```
 
 
@@ -267,140 +92,145 @@ fov_join <- joinGiottoObjects(gobject_list = gobjects_list,
 
 When plotting subcellular data, Giotto uses the `spatInSituPlot` functions. Spatial plots showing the feature points and polygons are plotted using `spatInSituPlotPoints()`.
 
-
 ```{r, eval=FALSE}
-showGiottoImageNames(fov_join)
+showGiottoImageNames(cosmx)
 
 # Set up vector of image names
-id_set <- c("02", "03", "04")
-new_names <- paste0("fov0", id_set)
-image_names <- paste0(new_names, "-image")
+id_set <- seq_len(28) # there are 28 FOVs here
+image_names <- sprintf("composite_fov%03d", id_set)
 
-spatInSituPlotPoints(fov_join,
-                     show_image = TRUE,
-                     image_name = image_names,
-                     feats = list("rna" = c("MMP2", "VEGFA", "IGF1R",
-                                            "MKI67", "EPCAM", "KRT8")),
-                     feats_color_code = viv10,
-                     spat_unit = "cell",
-                     point_size = 0.01,
-                     show_polygon = TRUE,
-                     use_overlap = FALSE,
-                     polygon_feat_type = "cell",
-                     polygon_color = "white",
-                     polygon_line_size = 0.03,
-                     save_param = list(base_height = 3))
+spatInSituPlotPoints(cosmx,
+    show_image = TRUE,
+    image_name = image_names,
+    feats = list("rna" = c(
+        "MMP2", "VEGFA", "IGF1R",
+                        "MKI67", "EPCAM", "KRT8")
+        ),
+    feats_color_code = getColors("Vivid", 10),
+    spat_unit = "cell",
+    point_size = 0.01,
+    use_overlap = FALSE,
+    polygon_alpha = 0,
+    polygon_color = "white",
+    polygon_line_size = 0.03,
+    save_param = list(
+        save_name = "1_poly_plot"
+    )
+)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/0-spatInSituPlotPoints.png)
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/1_poly_plot.png")
+```
+
 
 ## Visualize Cell Centroids
 
-The standard `spatPlot2D()` function can also be used, but this works off only the aggregated information that is assembled based on the subcellular information. Plotting information based on cell centroids can be done through this function.
-
 ```{r, eval=FALSE}
-spatPlot2D(gobject = fov_join,
-           image_name = image_names,
-           show_image = TRUE,
-           point_shape = "no_border",
-           point_size = 0.01,
-           point_alpha = 0.5,
-           coord_fix_ratio = 1,
-           save_param = list(base_height = 2))
+spatPlot2D(cosmx,
+    image_name = image_names,
+    show_image = TRUE,
+    point_border_stroke = 0,
+    cell_color = "white",
+    point_size = 0.3,
+    point_alpha = 0.8,
+    title = "centroids",
+    save_param = list(
+        save_name = "2_centroids_plot"
+    )
+)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/1-spatPlot2D.png)
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/2_centroids_plot.png")
+```
+
+
 
 # Aggregate subcellular features
 
-Giotto supports working directly with the subcellular features in order to generate cell by feature matrices. The data generated this way is then given the spatial unit `"cell"`. This workflow is recommended over loading the provided cell by feature (aggregated expression) matrix and then including the subcellular information as secondary data.
+For more information on feature aggregation: [link](./feature_aggregation.html)
 
-When both the raw subcellular information and the pre-made expression matrix are loaded in at the same time, the subcellular data and all data generated from it should be given the spatial unit `"cell"` and the pre-generated aggregated information should be given a different spatial unit such as `"cell_agg"` to differentiate between the two sources of information.
+To generate a cell by feature matrix, Giotto performs feature detection aggregation based on the cell polygons. This workflow is recommended over loading the matrix provided in the outputs.
 
-In this step, we will be aggregating the feature points of `"rna"` and `"neg_probe"` into the `"cell"` spatial unit.
+If directly loading the expression info in the outputs is desired, set `load_expression` (and also `load_cellmeta`) to `TRUE` when creating the object with `createGiottoCosMxObject()`
 
 ```{r, eval=FALSE}
 # Find the feature points overlapped by polygons. This overlap information is then
 # returned to the relevant giottoPolygon object"s overlaps slot.
-fov_join <- calculateOverlapRaster(fov_join, 
-                                   feat_info = "rna")
-
-fov_join <- calculateOverlapRaster(fov_join, 
-                                   feat_info = "neg_probe")
+cosmx <- calculateOverlapRaster(cosmx, feat_info = "rna")
+cosmx <- calculateOverlapRaster(cosmx, feat_info = "negprobes")
 
 # Convert the overlap information into a cell by feature expression matrix which
 # is then stored in the Giotto object"s expression slot
-fov_join <- overlapToMatrix(fov_join, 
-                            feat_info = "rna")
-
-fov_join <- overlapToMatrix(fov_join, 
-                            feat_info = "neg_probe")
-
-showGiottoExpression(fov_join)
+cosmx <- overlapToMatrix(cosmx, feat_info = "rna")
+cosmx <- overlapToMatrix(cosmx, feat_info = "negprobes")
 ```
 
 ## Plot histograms of total counts per cell
 
 ```{r, eval=FALSE}
-filterDistributions(fov_join,
-                    plot_type = "hist",
-                    detection = "cells",
-                    method = "sum",
-                    feat_type = "rna",
-                    nr_bins = 100,
-                    save_param = list(base_height = 3))
+filterDistributions(cosmx,
+    plot_type = "hist",
+    detection = "cells",
+    method = "sum",
+    feat_type = "rna",
+    nr_bins = 100,
+    save_param = list(
+        save_name = "3_filter_dist_rna",
+        base_height = 3
+    )
+)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/2-filterDistributions.png)
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/3_filter_dist_rna.png")
+```
+
 
 ```{r, eval=FALSE}
-filterDistributions(fov_join,
-                    plot_type = "hist",
-                    detection = "cells",
-                    method = "sum",
-                    feat_type = "neg_probe",
-                    nr_bins = 25,
-                    save_param = list(base_height = 3))
+filterDistributions(cosmx,
+    plot_type = "hist",
+    detection = "cells",
+    method = "sum",
+    feat_type = "negprobes",
+    nr_bins = 25,
+    save_param = list(
+        save_name = "4_filter_dist_negprobes",
+        base_height = 3
+    )
+)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/3-filterDistributions.png)
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/4_filter_dist_negprobes.png")
+```
 
 ## 2D Density Plots
 
-Density-based representations may sometimes be preferred instead of viewing the raw points information, especially when points are dense enough that there is overplotting. After overlaps information has been calculated, `spatInSituPlotDensity()` can be used in order to get a general idea of how much expression there is of a feature.
+Density-based representations may sometimes be preferred instead of viewing the raw points information, especially when points are dense enough that there is overplotting.
 
 ```{r, eval=FALSE}
-spatInSituPlotDensity(gobject = fov_join,
-                      feats = c("MMP2", "VEGFA", "IGF1R",
-                                "MKI67", "EPCAM", "KRT8"),
-                      cow_n_col = 2,
-                      save_param = list(base_height = 4))
+spatInSituPlotDensity(cosmx,
+    show_polygon = FALSE,
+    use_overlap = FALSE,
+    feats = c("MMP2", "VEGFA", "IGF1R",
+              "MKI67", "EPCAM", "KRT8"),
+    cow_n_col = 2,
+    save_param = list(
+        base_height = 12,
+        base_width = 9,
+        save_name = "5_density"
+    )
+)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/4-spatInSituPlotDensity.png)
-
-## Extract Data from Giotto Object
-
-```{r, eval=FALSE}
-# combine cell data
-morphometa <- combineCellData(fov_join,
-                              feat_type = "rna")
-
-# combine feature data
-featmeta <- combineFeatureData(fov_join,
-                               feat_type = "rna")
-
-# combine overlapping feature data
-featoverlapmeta <- combineFeatureOverlapData(fov_join,
-                                             feat_type = "rna")
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/5_density.png")
 ```
 
 
 # Filtering and normalization
-
-After the expression matrix is generated from the subcellular information, analysis proceeds through data filtering and normalization.
-
-For the normalization step, we will employ two types.
 
 - **standard normalization method:** *library size normalization and log normalization.* This method will produce both normalized and scaled values that are be returned as the "normalized" and "scaled"expression matrices respectively. In this tutorial, the normalized values will be used for generating expression statistics and plotting expression values. The scaled values will be ignored. We will also generate normalized values for the negative probes for visualization purposes during which the library normalization step will be skipped.
 
@@ -408,126 +238,114 @@ For the normalization step, we will employ two types.
 
 
 ```{r, eval=FALSE}
-# filter (feat_type = "rna" by default)
-fov_join <- filterGiotto(gobject = fov_join,
-                         feat_type = "rna",
-                         expression_threshold = 1,
-                         feat_det_in_min_cells = 5,
-                         min_det_feats_per_cell = 5)
+cosmx <- filterGiotto(cosmx,
+    feat_type = "rna",
+    expression_threshold = 1,
+    feat_det_in_min_cells = 5,
+    min_det_feats_per_cell = 5
+)
 
 # normalize
 # standard method of normalization (log normalization based)
-fov_join <- normalizeGiotto(gobject = fov_join,
-                            feat_type = "rna",
-                            norm_methods = "standard",
-                            verbose = TRUE)
-
-fov_join <- normalizeGiotto(gobject = fov_join,
-                            feat_type = "neg_probe",
-                            norm_methods = "standard",
-                            library_size_norm = FALSE,
-                            verbose = TRUE)
+cosmx <- normalizeGiotto(cosmx,
+    feat_type = "rna",
+    norm_methods = "standard"
+)
 
 # new normalization method based on pearson correlations (Lause/Kobak et al. 2021)
 # this normalized matrix is given the name "pearson" using the update_slot param
-fov_join <- normalizeGiotto(gobject = fov_join,
-                            feat_type = "rna",
-                            scalefactor = 5000,
-                            verbose = TRUE,
-                            norm_methods = "pearson_resid",
-                            update_slot = "pearson")
-
-showGiottoExpression(fov_join)
+cosmx <- normalizeGiotto(cosmx,
+    feat_type = "rna",
+    scalefactor = 5000,
+    norm_methods = "pearson_resid",
+    name = "pearson"
+)
 ```
 
 ```{r, eval=FALSE}
-# add statistics based on log normalized values for features rna and negative probes
-fov_join <- addStatistics(gobject = fov_join,
-                          expression_values = "normalized",
-                          feat_type = "rna")
+# add statistics based on log normalized values
+cosmx <- addStatistics(cosmx,
+    expression_values = "normalized",
+    feat_type = "rna"
+)
 
-fov_join <- addStatistics(gobject = fov_join,
-                          expression_values = "normalized",
-                          feat_type = "neg_probe")
+# add statistics for the raw negative probe values
+cosmx <- addStatistics(cosmx,
+    expression_values = "raw",
+    feat_type = "negprobes"
+)
 
 # View cellular data (default is feat = "rna")
-showGiottoCellMetadata(fov_join)
+showGiottoCellMetadata(cosmx)
 
 # View feature data
-showGiottoFeatMetadata(fov_join)
+showGiottoFeatMetadata(cosmx)
 ```
 
-**Note:** The show functions for metadata do not return the information. To retrieve the metadata information, instead use `pDataDT()` and `fDataDT()` along with the `feat_type` param for either "rna" or "neg_probe".
+**Note:** The show functions for metadata do not return the information. To retrieve the metadata information, instead use `pDataDT()` and `fDataDT()` along with the `feat_type` param for either "rna" or "negprobes".
 
 # View Transcript Total Expression Distribution
 
 ## Histogram of log normalized data
 
 ```{r, eval=FALSE}
-filterDistributions(fov_join,
-                    detection = "cells",
-                    feat_type = "rna",
-                    expression_values = "normalized",
-                    method = "sum",
-                    nr_bins = 100,
-                    save_param = list(base_height = 3))
+filterDistributions(cosmx,
+    detection = "cells",
+    feat_type = "rna",
+    expression_values = "normalized",
+    method = "sum",
+    nr_bins = 100,
+    save_param = list(
+        base_height = 3,
+        save_name = "6_filter_dist_rna_lognorm"
+    )
+)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/5-filterDistributions.png)
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/6_filter_dist_rna_lognorm.png")
+```
+
+
+## Plot normalized total expression
 
 ```{r, eval=FALSE}
-filterDistributions(fov_join,
-                    detection = "cell",
-                    feat_type = "neg_probe",
-                    expression_values = "normalized",
-                    method = "sum",
-                    nr_bins = 20,
-                    save_param = list(base_height = 3))
+spatPlot2D(cosmx,
+    cell_color = "total_expr",
+    gradient_style = "sequential",
+    color_as_factor = FALSE,
+    point_size = 0.9,
+    background_color = "black",
+    save_param = list(
+        save_name = "8_normexp"
+    )
+)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/6-filterDistributions.png)
-
-## Plot spatially as centroids
-
-```{r, eval=FALSE}
-spatPlot2D(gobject = fov_join,
-           cell_color = "total_expr",
-           color_as_factor = FALSE,
-           show_image = TRUE,
-           image_name = image_names,
-           point_size = 0.9,
-           point_alpha = 0.75,
-           save_param = list(base_height = 2))
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/8_normexp.png")
 ```
-
-![](images/nanostring_cosmx_lung_cancer/7-spatPlot2D.png)
 
 ## Plot spatially as color-scaled polygons
 
 ```{r, eval=FALSE}
-spatInSituPlotPoints(fov_join,
-                     show_polygon = TRUE,
-                     polygon_color = "gray",
-                     polygon_line_size = 0.05,
-                     polygon_fill = "total_expr",
-                     polygon_fill_as_factor = FALSE,
-                     save_param = list(base_height = 2))
+spatInSituPlotPoints(cosmx,
+    show_polygon = TRUE,
+    polygon_fill_gradient_style = "sequential",
+    polygon_color = "black",
+    polygon_line_size = 0.05,
+    polygon_fill = "total_expr",
+    polygon_fill_as_factor = FALSE,
+    save_param = list(
+        save_name = "9_total_expr"
+    )
+)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/8-spatInSituPlotPoints.png)
-
-```{r, eval=FALSE}
-spatInSituPlotPoints(fov_join,
-                     feat_type = "neg_probe",
-                     show_polygon = TRUE,
-                     polygon_color = "gray",
-                     polygon_line_size = 0.05,
-                     polygon_fill = "total_expr",
-                     polygon_fill_as_factor = FALSE,
-                     save_param = list(base_height = 2))
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/9_total_expr.png")
 ```
 
-![](images/nanostring_cosmx_lung_cancer/9-spatInSituPlotPoints.png)
 
 # Dimension Reduction
 
@@ -538,183 +356,318 @@ Detect highly variable genes using the pearson residuals method based on the "pe
 PCA generation will also be based on the "pearson" matrix. Scaling and centering of the PCA which is usually done by default will be skipped since the pearson matrix is already scaled.
 
 ```{r, eval=FALSE}
-fov_join <- calculateHVF(fov_join,
-                         method = "var_p_resid",
-                         expression_values = "pearson",
-                         save_plot = TRUE)
+cosmx <- calculateHVF(cosmx,
+    method = "var_p_resid",
+    var_number = 500, # leaving as NULL results in too few genes to use
+    save_plot = TRUE,
+    save_param = list(
+        save_name = "10_hvf"
+    )
+)
 # If you get an Error related to future.apply, please modify the maximum size 
 # of global variables by running: options(future.globals.maxSize = 1e10)
 
 # print HVFs
-gene_metadata <- fDataDT(fov_join)
+gene_metadata <- fDataDT(cosmx)
 gene_metadata[hvf == "yes", feat_ID]
 ```
 
-![](images/nanostring_cosmx_lung_cancer/10-HVFplot.png)
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/10_hvf.png")
+```
 
 ```{r, eval=FALSE}
-fov_join <- runPCA(fov_join,
-                   scale_unit = FALSE,
-                   center = FALSE,
-                   expression_values = "pearson")
+cosmx <- runPCA(cosmx,
+    scale_unit = FALSE,
+    center = FALSE,
+    expression_values = "pearson"
+)
 
 # screeplot uses the generated PCA. No need to specify expr values
-screePlot(fov_join, 
-          ncp = 20)
+screePlot(cosmx,
+    ncp = 20, 
+    save_param = list(
+        save_name = "11_scree"
+    )
+)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/11-screePlot.png)
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/11_scree.png")
+```
 
 ```{r, eval=FALSE}
-plotPCA(fov_join,
-        cell_color = "nr_feats", # (from log norm statistics)
-        color_as_factor = FALSE,
-        point_size = 0.1,
-        point_shape = "no_border")
+plotPCA(cosmx,
+    cell_color = "nr_feats", # (from log normed expression statistics)
+    color_as_factor = FALSE,
+    point_size = 0.8,
+    gradient_style = "sequential",
+    point_border_stroke = 0,
+    background_color = "black",
+    save_param = list(
+        save_name = "12_pca"
+    )
+)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/12-PCA.png)
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/12_pca.png")
+```
 
-## Run UMAP
+## Run tSNE and UMAP
 
 ```{r, eval=FALSE}
-# Generate UMAP from PCA
-fov_join <- runUMAP(fov_join,
-                    dimensions_to_use = 1:10,
-                    n_threads = 4)
+cosmx <- runtSNE(cosmx,
+    dimensions_to_use = 1:10
+)
 
-plotUMAP(gobject = fov_join)
+cosmx <- runUMAP(cosmx,
+    dimensions_to_use = 1:10
+)
+
+plotTSNE(cosmx,
+    cell_color = "fov",
+    show_center_label = FALSE,
+    save_param = list(
+        save_name = "13_tsne_fov"
+    )
+)
+
+showGiottoDimRed(cosmx)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/13-UMAP.png)
+```{r, echo=FALSE, out.width="60%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/13_tsne_fov.png")
+```
+
+```{r, eval=FALSE}
+plotUMAP(cosmx,
+    cell_color = "fov",
+    show_center_label = FALSE,
+    save_param = list(
+        save_name = "14_umap_fov"
+    )
+)
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/14_umap_fov.png")
+```
 
 ## Plot features on expression space
 
 ```{r, eval=FALSE}
-dimFeatPlot2D(gobject = fov_join,
-              feat_type = "rna",
-              feats = c("MKI67", "CD8A", "CD4",
-                        "COL1A1", "MS4A1", "MZB1"),
-              expression_values = "normalized",
-              point_shape = "no_border",
-              point_size = 0.01,
-              cow_n_col = 3,
-              save_param = list(base_height = 5))
+dimFeatPlot2D(cosmx,
+    feats = c(
+        "MKI67", "CD8A", "CD4", "COL1A1", "MS4A1", "MZB1"),
+    expression_values = "normalized",
+    gradient_style = "sequential",
+    point_border_stroke = 0,
+    point_size = 0.2,
+    cow_n_col = 3,
+    background_color = "black",
+    save_param = list(
+        base_height = 5,
+        save_name = "15_dfp_umap"
+    )
+)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/14-dimFeatPlot2D.png)
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/15_dfp_umap.png")
+```
+
+```{r, eval=FALSE}
+dimFeatPlot2D(cosmx,
+    feats = c(
+        "MKI67", "CD8A", "CD4", "COL1A1", "MS4A1", "MZB1"),
+    expression_values = "normalized",
+    dim_reduction_to_use = "tsne",
+    dim_reduction_name = "tsne",
+    gradient_style = "sequential",
+    point_border_stroke = 0,
+    point_size = 0.2,
+    cow_n_col = 3,
+    background_color = "black",
+    save_param = list(
+        base_height = 5,
+        save_name = "16_dfp_tsne"
+    )
+)
+```
+
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/16_dfp_tsne.png")
+```
 
 # Cluster
 
 ## Visualize clustering
 
 ```{r, eval=FALSE}
-fov_join <- createNearestNetwork(gobject = fov_join,
-                                 dimensions_to_use = 1:10,
-                                 k = 10)
+cosmx <- createNearestNetwork(cosmx,
+    dimensions_to_use = 1:10,
+    k = 10
+)
 
-fov_join <- doLeidenCluster(gobject = fov_join,
-                            resolution = 0.07,
-                            n_iterations = 1000)
+cosmx <- doLeidenCluster(cosmx,
+    resolution = 0.07,
+    n_iterations = 100
+)
+
+clus_colors <- getColors("Vivid", 10)
 
 # visualize UMAP cluster results
-plotUMAP(gobject = fov_join,
-         cell_color = "leiden_clus",
-         cell_color_code = pal10,
-         show_NN_network = TRUE,
-         point_size = 2)
+plotUMAP(cosmx,
+    cell_color = "leiden_clus",
+    cell_color_code = clus_colors,
+    point_border_stroke = 0,
+    point_size = 0.3,
+    save_param = list(
+        save_name = "17_leiden_umap"
+    )
+)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/15-UMAP.png)
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/17_leiden_umap.png")
+```
+
+```{r, eval=FALSE}
+plotTSNE(cosmx,
+    cell_color = "leiden_clus",
+    cell_color_code = clus_colors,
+    point_border_stroke = 0,
+    point_size = 0.3,
+    save_param = list(
+        save_name = "18_leiden_tsne"
+    )
+)
+```
+
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/18_leiden_tsne.png")
+```
+
 
 ## Visualize clustering on expression and spatial space
 
 ```{r, eval=FALSE}
 # visualize UMAP and spatial results
-spatDimPlot2D(gobject = fov_join,
-              show_image = TRUE,
-              image_name = image_names,
-              cell_color = "leiden_clus",
-              cell_color_code = pal10,
-              spat_point_size = 1)
+spatDimPlot2D(cosmx,
+    show_image = TRUE,
+    image_name = image_names,
+    cell_color = "leiden_clus",
+    cell_color_code = clus_colors,
+    spat_point_size = 1,
+    save_param = list(
+        base_width = 9,
+        base_height = 15,
+        save_name = "19_sdplot"
+    )
+)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/16-spatDimPlot2D.png)
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/19_sdplot.png")
+```
+
 
 ## Map clustering spatially
 
 ```{r, eval=FALSE}
-spatInSituPlotPoints(fov_join,
-                     feats = list("rna" = c("MMP2", "VEGFA", "IGF1R",
-                                            "MKI67", "EPCAM", "MZB1")),
-                     point_size = 0.15,
-                     feats_color_code = viv10,
-                     show_polygon = TRUE,
-                     polygon_color = "white",
-                     polygon_line_size = 0.01,
-                     polygon_fill = "leiden_clus",
-                     polygon_fill_as_factor = TRUE,
-                     polygon_fill_code = pal10,
-                     save_param = list(base_height = 5))
+spatInSituPlotPoints(cosmx,
+    show_polygon = TRUE,
+    polygon_color = "white",
+    polygon_line_size = 0.01,
+    polygon_fill = "leiden_clus",
+    polygon_fill_as_factor = TRUE,
+    polygon_fill_code = clus_colors,
+    save_param = list(
+        save_name = "20_sisp_leiden"
+    )
+)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/17-spatInSituPlotPoints.png)
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/20_sisp_leiden.png")
+```
 
 # Small Subset Visualization
 
 ```{r, eval=FALSE}
 #subset a Giotto object based on spatial locations
-smallfov <- subsetGiottoLocs(fov_join,
-                             x_max = 3000,
-                             x_min = 1000,
-                             y_max = -157800,
-                             y_min = -159800)
+smallfov <- subsetGiottoLocs(cosmx,
+    x_max = 3000,
+    x_min = 1000,
+    y_max = -157800,
+    y_min = -159800
+)
 
 #extract all genes observed in new object
 smallfeats <- fDataDT(smallfov)[, feat_ID]
 
 #plot all genes
 spatInSituPlotPoints(smallfov,
-                     feats = list(smallfeats),
-                     point_size = 0.15,
-                     polygon_line_size = 0.1,
-                     show_polygon = TRUE,
-                     polygon_color = "white",
-                     show_image = TRUE,
-                     image_name = "fov002-composite",
-                     show_legend = FALSE)
+    feats = list(smallfeats),
+    point_size = 0.15,
+    polygon_line_size = 0.1,
+    show_polygon = TRUE,
+    use_overlap = FALSE,
+    polygon_color = "white",
+    show_image = TRUE,
+    image_name = "composite_fov002",
+    show_legend = FALSE,
+    save_param = list(
+        save_name = "21_smallfov1"
+    )
+)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/18-spatInSituPlotPoints.png)
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/21_smallfov1.png")
+```
 
 ```{r, eval=FALSE}
 # plot only the polygon outlines
 spatInSituPlotPoints(smallfov,
-                     polygon_line_size = 0.1,
-                     polygon_alpha = 0,
-                     polygon_color = "white",
-                     show_polygon = TRUE,
-                     show_image = TRUE,
-                     image_name = "fov002-composite",
-                     show_legend = FALSE)
+    polygon_line_size = 0.1,
+    polygon_alpha = 0,
+    polygon_color = "white",
+    show_polygon = TRUE,
+    show_image = TRUE,
+    image_name = "composite_fov002",
+    show_legend = FALSE,
+    save_param = list(
+        save_name = "22_smallfov2"
+    )
+)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/19-spatInSituPlotPoints.png)
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/22_smallfov2.png")
+```
 
 ```{r, eval=FALSE}
 # plot polygons colorlabeled with leiden clusters
 spatInSituPlotPoints(smallfov,
-                     polygon_line_size = 0.1,
-                     show_polygon = TRUE,
-                     polygon_fill = "leiden_clus",
-                     polygon_fill_as_factor = TRUE,
-                     polygon_fill_code = pal10,
-                     show_image = TRUE,
-                     image_name = "fov002-composite",
-                     show_legend = FALSE)
+    polygon_line_size = 0.1,
+    show_polygon = TRUE,
+    polygon_fill = "leiden_clus",
+    polygon_fill_as_factor = TRUE,
+    polygon_fill_code = clus_colors,
+    show_image = TRUE,
+    image_name = "composite_fov002",
+    show_legend = FALSE,
+    save_param = list(
+        save_name = "23_smallfov3"
+    )
+)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/20-spatInSituPlotPoints.png)
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/23_smallfov3.png")
+```
 
 # Spatial Expression Patterns
 
@@ -722,24 +675,34 @@ Find spatially organized gene expression by examining the binarized expression o
 
 ```{r, eval=FALSE}
 # create spatial network based on physical distance of cell centroids
-fov_join <- createSpatialNetwork(gobject = fov_join,
-                                 minimum_k = 2,
-                                 maximum_distance_delaunay = 50)
+cosmx <- createSpatialNetwork(cosmx,
+    minimum_k = 2,
+    maximum_distance_delaunay = 50
+)
 
 # perform Binary Spatial Extraction of genes - NOTE: Depending on your system this could take time
-km_spatialfeats <- binSpect(fov_join)
+km_spatialfeats <- binSpect(cosmx)
 
 # visualize spatial expression of selected genes obtained from binSpect
-spatFeatPlot2D(fov_join,
-               expression_values = "normalized",
-               feats = km_spatialfeats$feats[1:10],
-               point_shape = "no_border",
-               point_border_stroke = 0.01,
-               point_size = 0.01,
-               cow_n_col = 2)
+spatFeatPlot2D(cosmx,
+    expression_values = "normalized",
+    feats = km_spatialfeats$feats[1:10],
+    point_shape = "no_border",
+    point_border_stroke = 0.01,
+    point_size = 0.01,
+    cow_n_col = 3,
+    gradient_style = "sequential",
+    save_param = list(
+        base_height = 12,
+        base_width = 10,
+        save_name = "24_top_binspect_spat"
+    )
+)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/21-spatFeatPlot2D.png)
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/24_top_binspect_spat.png")
+```
 
 # Identify cluster differential expression genes
 
@@ -747,12 +710,13 @@ spatFeatPlot2D(fov_join,
 
 ```{r, eval=FALSE}
 # Gini
-markers_gini <- findMarkers_one_vs_all(gobject = fov_join,
-                                       method = "gini",
-                                       expression_values = "normalized",
-                                       cluster_column = "leiden_clus",
-                                       min_feats = 1,
-                                       rank_score = 2)
+markers_gini <- findMarkers_one_vs_all(cosmx,
+    method = "gini",
+    expression_values = "normalized",
+    cluster_column = "leiden_clus",
+    min_feats = 1,
+    rank_score = 2
+)
 
 # First 5 results by cluster
 markers_gini[, head(.SD, 5), by = "cluster"]
@@ -760,127 +724,352 @@ markers_gini[, head(.SD, 5), by = "cluster"]
 # violinplot
 topgenes_gini <- unique(markers_gini[, head(.SD, 2), by = "cluster"]$feats)
 
-violinPlot(fov_join,
-           feats = topgenes_gini,
-           cluster_column = "leiden_clus",
-           strip_position = "right")
+violinPlot(cosmx,
+    feats = topgenes_gini,
+    cluster_column = "leiden_clus",
+    strip_position = "right",
+    save_param = list(
+        save_name = "25_vplot"
+    )
+)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/22-violinPlot.png)
+```{r, echo=FALSE, out.width="100%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/25_vplot.png")
+```
 
 ## Heatmap
 
 ```{r, eval=FALSE}
-cluster_order <- 1:10
-
-plotMetaDataHeatmap(fov_join,
-                    expression_values = "normalized",
-                    metadata_cols = "leiden_clus",
-                    selected_feats = topgenes_gini,
-                    custom_cluster_order = cluster_order,
-                    save_param = list(base_height = 5))
+plotMetaDataHeatmap(cosmx,
+    expression_values = "normalized",
+    metadata_cols = "leiden_clus",
+    selected_feats = topgenes_gini,
+    save_param = list(
+        base_height = 5,
+        save_name = "26_heatmap_gini"
+    )
+)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/23-plotMetaDataHeatmap.png)
+```{r, echo=FALSE, out.width="100%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/26_heatmap_gini.png")
+```
 
 ## Plot gini genes on UMAP
 
 ```{r, eval=FALSE}
 # low, mid, high
-custom_scale = c("#440154", "#1F968B", "#FDE725")
+custom_scale = c("#555555", "red")
 
-dimFeatPlot2D(fov_join,
-              expression_values = "normalized",
-              cell_color_gradient = custom_scale,
-              gradient_midpoint = 5,
-              feats = topgenes_gini,
-              point_shape = "no_border",
-              point_size = 0.001,
-              cow_n_col = 4,
-              save_param = list(base_height = 8))
+dimFeatPlot2D(cosmx,
+    cell_color_gradient = custom_scale,
+    feats = topgenes_gini,
+    point_border_stroke = 0,
+    point_size = 0.2,
+    cow_n_col = 4,
+    show_legend = FALSE,
+    background_color = "black",
+    save_param = list(
+        save_name = "27_dfp_gini"
+    )
+)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/24-dimFeatPlot2D.png)
+```{r, echo=FALSE, out.width="100%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/27_dfp_gini.png")
+```
+
+
+## Protein staining info
+
+```{r, eval=FALSE}
+spatPlot2D(cosmx, 
+    cell_color = "Mean.CD3",
+    gradient_style = "sequential",
+    gradient_limits = c(0, 300), # custom setting so we can see the non-artefacted values
+    color_as_factor = FALSE, 
+    point_border_stroke = 0, 
+    point_size = 0.8,
+    background_color = "black",
+    save_param = list(
+        save_name = "28_spat_cd3"
+    )
+)
+# fovs 11,12,14,15,16 are artefacted for CD3
+```
+
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/28_spat_cd3.png")
+```
+
+NSCLC is an epithelial cancer, so high expression of cytokeratins are likely cancer.
+```{r, eval=FALSE}
+spatPlot2D(cosmx, 
+    cell_color = "Mean.PanCK",
+    gradient_style = "sequential",
+    gradient_limits = c(0, 3e4),
+    color_as_factor = FALSE, 
+    point_border_stroke = 0, 
+    point_size = 0.8,
+    background_color = "black",
+    save_param = list(
+        save_name = "29_spat_pck"
+    )
+)
+```
+
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/29_spat_pck.png")
+```
+
+CD45 (general immune marker -- T cells, B cells, NK cells, monocytes, macrophages, dendritic cells, and granulocytes)
+```{r, eval=FALSE}
+spatPlot2D(cosmx, 
+    cell_color = "Mean.CD45",
+    gradient_style = "sequential",
+    gradient_limits = c(0, 1e3),
+    color_as_factor = FALSE, 
+    point_border_stroke = 0, 
+    point_size = 0.8,
+    background_color = "black",
+    save_param = list(
+        save_name = "30_spat_cd45"
+    )
+)
+```
+
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/30_spat_cd45.png")
+```
+
+```{r, eval=FALSE}
+# drop problematic FOV data
+p1 <- dimPlot2D(subset(cosmx, subset = !fov %in% c(11,12,14,15,16)),
+    cell_color = "Mean.CD3",
+    color_as_factor = FALSE,
+    cell_color_gradient = custom_scale,
+    gradient_limits = c(0, 300),
+    point_border_stroke = 0,
+    point_size = 0.8,
+    show_legend = FALSE,
+    background_color = "black",
+    return_plot = TRUE,
+    save_plot = FALSE
+)
+
+p2 <- dimPlot2D(cosmx,
+    cell_color = "Mean.PanCK",
+    color_as_factor = FALSE,
+    cell_color_gradient = custom_scale,
+    point_border_stroke = 0,
+    point_size = 0.8,
+    show_legend = FALSE,
+    background_color = "black",
+    return_plot = TRUE,
+    save_plot = FALSE
+)
+
+p3 <- dimPlot2D(cosmx,
+    cell_color = "Mean.CD45",
+    color_as_factor = FALSE,
+    cell_color_gradient = custom_scale,
+    gradient_limits = c(0, 1e3),
+    point_border_stroke = 0,
+    point_size = 0.8,
+    show_legend = FALSE,
+    background_color = "black",
+    return_plot = TRUE,
+    save_plot = FALSE
+)
+
+stains_plot <- cowplot::plot_grid(p1, p2, p3)
+stains_plot
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/31_prot_umap.png")
+```
 
 ## Cell Type Annotation
 
 ```{r, eval=FALSE}
 ## add cell types ###
-clusters_cell_types <- c("Normal Epithelial 1", "Cancer", "Stromal", "B-lineage",
-                         "Macrophage", "B-lineage", "Cancer",
-                         "Normal Epithelial 2", "Stromal", "B-lineage")
+clusters_cell_types <- c(
+    "Normal Epithelial",
+    "Cancer",
+    "CAF",
+    "APC and Epithelial",
+    "Plasmablast IgA1+",
+    "Plasmablast IgG2+",
+    "Normal Epithelial",
+    "Plasmablast IgG2+",
+    "Plasmablast IgA1+"
+)
+names(clusters_cell_types) <- seq(9)
 
-names(clusters_cell_types) <- 1:10
-
-fov_join <- annotateGiotto(gobject = fov_join,
-                           annotation_vector = clusters_cell_types,
-                           cluster_column = "leiden_clus",
-                           name = "cell_types")
-
-plotUMAP(fov_join,
-         cell_color = "cell_types",
-         cell_color_code = viv10,
-         point_size = 1.5)
+ct_colors <- c(
+    "CAF" = clus_colors[3],
+    "Cancer" = clus_colors[2],
+    "Normal Epithelial" = clus_colors[1],
+    "APC and Epithelial" = clus_colors[4],
+    "Plasmablast IgA1+" = clus_colors[5],
+    "Plasmablast IgG2+" = clus_colors[6]
+)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/25-UMAP.png)
+Other immune celltypes need further subclustering of leiden clusters  1 and 4. Either that or binarized cutoff approaches might be needed since specific markers for immune celltypes are not cluster specific in this dataset.
+
+```{r, eval=FALSE}
+cosmx <- annotateGiotto(cosmx,
+    annotation_vector = clusters_cell_types,
+    cluster_column = "leiden_clus",
+    name = "cell_types"
+)
+
+plotUMAP(cosmx,
+    cell_color = "cell_types",
+    cell_color_code = ct_colors,
+    point_size = 1.5,
+    save_param = list(
+        save_name = "32_celltypes_umap"
+    )
+)
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/32_celltypes_umap.png")
+```
 
 ## Visualize
 
 ```{r, eval=FALSE}
-spatDimPlot2D(gobject = fov_join,
-              show_image = TRUE,
-              image_name = image_names,
-              cell_color = "cell_types",
-              cell_color_code = viv10,
-              spat_point_size = 1)
+spatInSituPlotPoints(cosmx,
+    polygon_fill = "cell_types",
+    polygon_fill_code = ct_colors,
+    polygon_fill_as_factor = TRUE,
+    polygon_line_size = 0.01,
+    polygon_color = "white",
+    background_color = "black",
+    save_param = list(
+        save_name = "33_celltypes_sisp"
+    )
+)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/26-spatDimPlot2D.png)
-
-```{r, eval=FALSE}
-spatInSituPlotPoints(fov_join,
-                     show_polygon = TRUE,
-                     polygon_feat_type = "cell",
-                     polygon_color = "grey",
-                     polygon_line_size = 0.05,
-                     polygon_fill = "cell_types",
-                     polygon_fill_as_factor = TRUE,
-                     polygon_fill_code = viv10,
-                     save_param = list(base_height = 2))
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/33_celltypes_sisp.png")
 ```
 
-![](images/nanostring_cosmx_lung_cancer/27-spatInSituPlotPoints.png)
 
-# Interaction Changed Genes
 
+# Interaction Changed Features (ICF)
+
+Identify features that change based on the proximity of another celltype.
 ```{r, eval=FALSE}
-future::plan("multisession", workers = 4) # NOTE: Depending on your system this could take time
+future::plan("multisession", workers = 4) # NOTE: Depending on your system this could take a while
+options("future.globals.maxSize" = 1e10)
 
-icf <- findInteractionChangedFeats(gobject = fov_join,
-                                   cluster_column = "cell_types")
-
-# Identify top ten interaction changed features
-icf$ICFscores[type_int == "hetero"]$feats[1:10]
-
-# Skip first two genes since they are too highly expressed
-icf_plotfeats <- icf$ICFscores[type_int == "hetero"]$feats[3:12]
+icf <- findInteractionChangedFeats(cosmx, cluster_column = "cell_types")
 
 # Visualize ICF expression
-spatInSituPlotPoints(fov_join,
-                     feats = list(icf_plotfeats),
-                     point_size = 0.001,
-                     show_polygon = TRUE,
-                     polygon_feat_type = "cell",
-                     polygon_color = "gray",
-                     polygon_line_size = 0.05,
-                     polygon_fill = "cell_types",
-                     polygon_fill_as_factor = TRUE,
-                     polygon_fill_code = pal10,
-                     save_param = list(base_height = 6))
+plotCellProximityFeats(cosmx, 
+    icfObject = icf, 
+    method = "dotplot",
+    show_plot = FALSE,
+    save_plot = TRUE,
+    return_plot = FALSE,
+    save_param = list(
+        save_name = "34_cpf"
+    )
+)
 ```
 
-![](images/nanostring_cosmx_lung_cancer/28-spatInSituPlotPoints.png)
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/34_cpf.png")
+```
+
+ICF is very sensitive to contaminants, as in transcripts that should belong to another cell, but are mistakenly assigned to your source cell. This is reflected when the top ICFs are celltype markers of the other interacting celltype, instead of a more interesting gene that actually belongs to your source cell that is modulated by the distance to your interacting cell.
+
+```{r, eval=FALSE}
+icf_filtered <- filterICF(icf,
+    min_cells = 20,
+    min_int_cells = 20,
+    min_fdr = 0.1,
+    min_spat_diff = 0.1,
+    min_log2_fc = 0.1,
+    min_zscore = 1
+)
+
+top_icf <- icf_filtered$ICFscores[cell_type == "CAF" & type_int == "hetero", head(.SD, 2), by = int_cell_type]
+top_icf_feats <- top_icf$feats
+names(top_icf_feats) <- top_icf$int_cell_type
+
+plotICF(cosmx,
+    icfObject = icf_filtered,
+    source_type = "CAF",
+    source_markers = c("COL1A2", "COL6A3"),
+    ICF_feats = top_icf_feats,
+    save_param = list(
+        save_name = "35_icf"
+    )
+)
+```
+
+One thing we can do to pick features that that do not have good correlations between their ranks as an icf vs as a marker for the interacting cell type. However, this method of gene selection would have to be repeated for each icf pair of interest.
+
+```{r, eval=FALSE}
+# find cell type markers
+scran_markers <- findMarkers_one_vs_all(cosmx, 
+    cluster_column = "cell_types", 
+    min_feats = nrow(cosmx) # do not remove any features
+) 
+scran_markers_Cancer <- scran_markers[cluster == "Cancer"]
+
+# select CAF/Cancer comparison from icfs
+icf_table <- icf$ICFscores
+icf_table_CAF_cancer <- icf_table[cell_type == "CAF" & int_cell_type == "Cancer"]
+
+# select only shared features between markers and ICFs
+cancer_feats <- intersect(scran_markers_Cancer$feats, icf_table$feats)
+icf_table_CAF_cancer <- icf_table_CAF_cancer[match(cancer_feats, feats)]
+# assign ranks to ICF values
+icf_table_CAF_cancer[, rank := seq(.N)]
+
+icf_rank_caf_cancer <- icf_table_CAF_cancer$rank
+marker_rank_cancer <- scran_markers_Cancer$ranking
+
+plot(icf_rank_caf_cancer, marker_rank_cancer)
+```
+
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/36_icf_feats_to_use.png")
+```
+
+```{r, eval=FALSE}
+# find differences from the diagonal
+center_diffs <- abs(icf_rank_caf_cancer - marker_rank_cancer)
+sum(center_diffs > 150) # 8 features greater than 150
+
+# get features to use
+cancer_feats_to_use <- cancer_feats[center_diffs > 150]
+names(cancer_feats_to_use) <- rep("Cancer", length(cancer_feats_to_use))
+
+plotICF(cosmx,
+    icfObject = icf,
+    source_type = "CAF",
+    source_markers = c("COL1A2", "COL6A3"),
+    ICF_feats = cancer_feats_to_use,
+    save_param = list(
+        save_name = "37_caf_cancer_icf"
+    )
+)
+```
+
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/nanostring_cosmx_lung_cancer/37_caf_cancer_icf.png")
+```
+
 
 # Saving the giotto object
 
@@ -890,6 +1079,7 @@ Giotto uses many objects that include pointers to information that live on disk 
 
 ```{r, eval=FALSE}
 saveGiotto(gobject = fov_join,
+           export_image = FALSE, # don't save the images again, and rely on reconnections
            foldername = "new_folder_name",
            dir = "/directory/to/save/to/")
 ```
