@@ -1,0 +1,183 @@
+---
+title: "Xenium FFPE Human Lung Cancer with Multimodal Cell Segmentation"
+output: 
+  html_document:
+    number_sections: true
+    toc: true
+pkgdown:
+  as_is: true
+vignette: >
+  %\VignetteIndexEntry{Xenium FFPE Human Lung Cancer with Multimodal Cell Segmentation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Install Extra Packages
+
+## _arrow_ installation
+
+Xenium datasets requires arrow with ZTSD support to be installed to work with 
+parquet files.
+This is optional if you want to use a different format for the tabular data.
+Building with ZTSD support may take a while.
+```{r, eval=FALSE}
+has_arrow <- requireNamespace("arrow", quietly = TRUE)
+zstd <- TRUE
+if (has_arrow) {
+    # check arrow_info() to see that zstd support should be TRUE
+    # See https://arrow.apache.org/docs/r/articles/install.html for details
+    zstd <- arrow::arrow_info()$capabilities[["zstd"]]
+}
+if (!has_arrow || !zstd) {
+    # install with compression library needed for 10x parquet files
+    # this may take a while
+    Sys.setenv(ARROW_WITH_ZSTD = "ON")
+    install.packages("arrow", repos = c("https://apache.r-universe.dev"), type = "source")
+}
+```
+
+## _tifffile_ and _imagecodecs_ installation
+
+_tifffile_ is a python package for working with tif images. 
+_imagecodecs_ provides the needed JPEG2000 compression codec.
+10x provides their images as `ome.tif` but _Giotto_ usually either cannot open 
+or incurs a large speed penalty when accessing these files. Instead we use
+_tifffile_ to convert these images into normal `tif` images.
+
+Check that _Giotto_ can access a python env and install one if it can't. Then
+activate that python env.
+
+```{r, eval=FALSE}
+library(Giotto)
+
+# Ensure Giotto can access a python env
+genv_exists <- checkGiottoEnvironment()
+if(!genv_exists){
+  # The following command need only be run once to 
+  # install a default Giotto environment
+  installGiottoEnvironment()
+}
+
+# set specific python path to use or python environment name
+# leaving NULL will use default (see ?set_giotto_python_path())
+python_path <- NULL
+set_giotto_python_path(python_path = python_path)
+```
+
+Check for presence of _tifffile_ and _imagecodecs_ in selected python env then
+install if missing.
+```{r, eval=FALSE}
+# install packages if not already installed in environment
+need_py_inst <- try(GiottoUtils::package_check(
+    pkg_name = c("tifffile", "imagecodecs"), repository = c("pip:tifffile", "pip:imagecodecs")
+), silent = TRUE)
+if (!isTRUE(need_py_inst)) {
+    active_env <- GiottoUtils::py_active_env()
+    reticulate::conda_install(
+        envname = active_env, packages = c("tifffile", "imagecodecs"), pip = TRUE
+    )
+    # may need a session restart after installation
+}
+```
+
+
+# Dataset Explanation
+
+This is the [10X Xenium FFPE Human Lung Cancer dataset](https://www.10xgenomics.com/datasets/preview-data-ffpe-human-lung-cancer-with-xenium-multimodal-cell-segmentation-1-standard). 
+Xenium captures individual transcript detections with a spatial resolution of ~100nm, providing an extremely highly resolved subcellular spatial dataset.
+This particular dataset also showcases their multimodal cell segmentation.
+
+The Xenium Human Multi-Tissue and Cancer Panel (377) genes was used. The exported data is from their Xenium Onboard Analysis v2.0.0 pipeline.
+
+The relevant items are:
+
+- Xenium Output Bundle (full)
+- Supplemental: Post-Xenium H&E image (OME-TIFF)
+- Supplemental: H&E Image Alignment File (CSV)
+
+## Expected Directory Structure
+
+When unzipped, you should have the following directory structure:
+
+<details><summary>expand</summary>
+```
+    ├── analysis.tar.gz
+    ├── analysis.zarr.zip
+    ├── analysis_summary.html
+    ├── aux_outputs.tar.gz
+    ├── transcripts.csv.gz
+    ├── transcripts.parquet
+    ├── transcripts.zarr.zip
+    ├── cell_boundaries.csv.gz
+    ├── cell_boundaries.parquet
+    ├── nucleus_boundaries.csv.gz
+    ├── nucleus_boundaries.parquet
+    ├── cell_feature_matrix.tar.gz
+    ├── cell_feature_matrix
+    │   ├── barcodes.tsv.gz
+    │   ├── features.tsv.gz
+    │   └── matrix.mtx.gz
+    ├── cell_feature_matrix.h5
+    ├── cell_feature_matrix.zarr.zip
+    ├── cells.csv.gz
+    ├── cells.parquet
+    ├── cells.zarr.zip
+    ├── experiment.xenium
+    ├── gene_panel.json
+    ├── metrics_summary.csv
+    ├── morphology.ome.tif
+    ├── morphology_focus
+    │   ├── morphology_focus_0000.ome.tif
+    │   ├── morphology_focus_0001.ome.tif
+    │   ├── morphology_focus_0002.ome.tif
+    │   ├── morphology_focus_0003.ome.tif
+    ├── Xenium_V1_humanLung_Cancer_FFPE_he_image.ome.tif
+    └── Xenium_V1_humanLung_Cancer_FFPE_he_imagealignment.csv
+```
+</details>
+
+<br>
+
+The above directory structuring and naming is characteristic of Xenium v2.0 
+pipeline outputs. The only items that may not be exactly the same across all 
+outputs are the morphology focus directory if multimodal segmentation was not
+done, and the naming of the aligned image items 
+(`Xenium_V1_humanLung_Cancer_FFPE_he_image.ome.tif` and 
+`Xenium_V1_humanLung_Cancer_FFPE_he_imagealignment.csv`).
+
+For the morphology focus images, you may have fewer images if the experiment 
+did not include the multimodal cell segmentation. As for the aligned images, 
+this is usually done after the Xenium experiment concludes and is added on using
+Xenium Explorer. Naming and location of the aligned image(s) and associated 
+alignment info are entirely up to creator of the dataset.
+
+<details>
+<summary>more about xenium pre-release image types</summary>
+
+<hr>
+
+This dataset provides several images
+
+**images to load**
+
+- `Xenium_FFPE_Human_Breast_Cancer_Rep1_he_image.ome.tif`
+  - post-Xenium H&E. Used with alignment matrix.
+- `Xenium_FFPE_Human_Breast_Cancer_Rep1_if_image.ome.tif`
+  - post-Xenium IF. Used with alignment matrix.
+- `morphology_focus.ome.tif`
+  - DAPI image combined from the most in-focus regions from multiple z stacks
+
+**images not loaded**
+
+- `morphology.ome.tif`
+  - z-stacked image. Many planes may be less focused
+- `morphology_mip.ome.tif`
+  - [maximum intensity projection](https://en.wikipedia.org/wiki/Maximum_intensity_projection) 
+  image created from the `morphology.ome.tif`.
+  Has more even brightness compared against `morphology_focus.ome.tif`, but is
+  also slightly blurrier. This image type was only provided with the
+  pre-release and does not show up in later Xenium pipeline versions.
+
+</details>
+
+<br>

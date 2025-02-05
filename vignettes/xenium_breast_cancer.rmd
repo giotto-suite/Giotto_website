@@ -1397,7 +1397,14 @@ spatInSituPlotPoints(xenium_gobj,
 knitr::include_graphics("images/xenium_breast_cancer/xen_transfer.png")
 ```
 
-
+```{r, eval=FALSE}
+res <- labelTransfer(xenium_gobj, sc,
+    labels = "cell_types",
+    integration_method = "harmony",
+    k = 10,
+    dimensions_to_use = seq(ndims)
+)
+```
 
 ```{r, eval=FALSE}
 sessionInfo()
