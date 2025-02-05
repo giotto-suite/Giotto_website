@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.1</span>
       </span>
     </div>
 
@@ -404,10 +404,10 @@
     <li class="divider">
     </li>
 <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Image alignment</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Spatial data alignment</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../articles/image_alignment.html">Image alignment</a>
+          <a href="../articles/affine_registration.html">Spatial data alignment</a>
         </li>
       </ul>
 </li>
@@ -601,10 +601,30 @@
 
     
     
+<p>Example dataset: Vizgen’s Mouse Brain Receptor Map data release.</p>
+<p>Some of the subobject data will be extracted to illustrate the
+transforms.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed</span></span>
+<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"drieslab/Giotto"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># Ensure Giotto Data is installed</span></span>
+<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"GiottoData"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"drieslab/GiottoData"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://drieslab.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu">GiottoData</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoData/reference/loadGiottoMini.html" class="external-link">loadGiottoMini</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"vizgen"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/activeSpatUnit-generic.html" class="external-link">activeSpatUnit</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"aggregate"</span></span>
+<span></span>
+<span><span class="va">gpoly</span> <span class="op">&lt;-</span> <span class="va">g</span><span class="op">[[</span>, <span class="st">"aggregate"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="va">gimg</span> <span class="op">&lt;-</span> <span class="va">g</span><span class="op">[[</span>, <span class="st">"dapi_z0"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <div class="section level2" number="1">
-<h2 id="spatial-object-manipulation">
-<span class="header-section-number">1</span> Spatial Object
-Manipulation<a class="anchor" aria-label="anchor" href="#spatial-object-manipulation"></a>
+<h2 id="overview">
+<span class="header-section-number">1</span> Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
 <p>Spatial-omics data is defined both by the biological information that
 it contains and the way that it maps to space. When assembling and
@@ -615,226 +635,426 @@ overlaid.</p>
 <p><em>Giotto</em> extends a set of generics from <em>terra</em> in
 order to make it simple to figure out where data is in space and to move
 it where you need it.</p>
+<div class="section level3" number="1.1">
+<h3 id="spatial-transforms">
+<span class="header-section-number">1.1</span> Spatial
+transforms:<a class="anchor" aria-label="anchor" href="#spatial-transforms"></a>
+</h3>
+<p>We support simple transformations and more complex affine
+transformations which can be used to combine and encode more than one
+simple transform.</p>
+<ul>
+<li>
+<code><a href="https://drieslab.github.io/GiottoClass/reference/spatShift.html" class="external-link">spatShift()</a></code> - translations</li>
+<li>
+<code><a href="https://rspatial.github.io/terra/reference/spin.html" class="external-link">spin()</a></code> - rotations (degrees)</li>
+<li>
+<code><a href="https://rspatial.github.io/terra/reference/rescale.html" class="external-link">rescale()</a></code> - scaling</li>
+<li>
+<code><a href="https://rspatial.github.io/terra/reference/flip.html" class="external-link">flip()</a></code> - flip vertical or horizontal across arbitrary
+lines</li>
+<li>
+<code><a href="https://rdrr.io/r/base/t.html" class="external-link">t()</a></code> - transpose</li>
+<li>
+<code><a href="https://drieslab.github.io/GiottoClass/reference/shear.html" class="external-link">shear()</a></code> - shear transform</li>
+<li>
+<code><a href="https://drieslab.github.io/GiottoClass/reference/affine.html" class="external-link">affine()</a></code> - affine matrix transform</li>
+</ul>
+</div>
+<div class="section level3" number="1.2">
+<h3 id="spatial-utilities">
+<span class="header-section-number">1.2</span> Spatial
+utilities:<a class="anchor" aria-label="anchor" href="#spatial-utilities"></a>
+</h3>
+<p>Helpful functions for working with spatial information</p>
+<ul>
+<li>
+<code><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext()</a></code>/<code>ext()&lt;-</code> - get and set spatial
+extent or bounding box</li>
+<li>
+<code><a href="https://drieslab.github.io/GiottoClass/reference/XY.html" class="external-link">XY()</a></code>/<code>XY()&lt;-</code> - get and set the xy
+coordinates (or vertices) of the object as a <code>matrix</code>
+</li>
+<li>
+<code><a href="https://rspatial.github.io/terra/reference/crop.html" class="external-link">crop()</a></code> - cut out a spatial region of the data</li>
+<li>
+<code><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot()</a></code> - plot a spatial object (uses {base}
+<code><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot()</a></code>)</li>
+</ul>
+</div>
+<div class="section level3" number="1.3">
+<h3 id="giotto-spatial-classes">
+<span class="header-section-number">1.3</span> Giotto spatial
+classes:<a class="anchor" aria-label="anchor" href="#giotto-spatial-classes"></a>
+</h3>
+<p>The following objects and subobjects are spatial objects and respond
+to the spatial manipulation functions on this page.</p>
+<ul>
+<li>
+<code>spatLocsObj</code> - xy centroids</li>
+<li>
+<code>spatialNetworkObj</code> - spatial networks between
+centroids</li>
+<li>
+<code>giottoPoints</code> - xy feature point detections</li>
+<li>
+<code>giottoPolygon</code> - spatial polygons</li>
+<li>
+<code>giottoImage</code> (mostly deprecated) - magick-based
+images</li>
+<li>
+<code>giottoLargeImage</code>/<code>giottoAffineImage</code> -
+terra-based images</li>
+<li>
+<code>affine2d</code> - affine matrix container</li>
+<li>
+<code>giotto</code> - giotto analysis object</li>
+</ul>
+</div>
 </div>
 <div class="section level2" number="2">
-<h2 id="start-giotto">
-<span class="header-section-number">2</span> Start Giotto<a class="anchor" aria-label="anchor" href="#start-giotto"></a>
+<h2 id="examples">
+<span class="header-section-number">2</span> Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
 </h2>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed</span></span>
-<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"drieslab/Giotto"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># Ensure Giotto Data is installed</span></span>
-<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"GiottoData"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"drieslab/GiottoData"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># Ensure the Python environment for Giotto has been installed</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="co"># The following command need only be run once to install the Giotto environment</span></span>
-<span>  <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div>
-</div>
-<div class="section level2" number="3">
-<h2 id="load-mini-giotto-object-example">
-<span class="header-section-number">3</span> Load mini giotto object
-example<a class="anchor" aria-label="anchor" href="#load-mini-giotto-object-example"></a>
-</h2>
-<p>First we will load in the a mini dataset put together from Vizgen’s
-Mouse Brain Receptor Map data release. This mini giotto object has been
-pre-analyzed and comes with many analyses and data objects attached.
-Most of these analyses have been performed on the “aggregate” spatial
-unit so we will set it as the active spatial unit in order to default to
-it.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://drieslab.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">viz</span> <span class="op">&lt;-</span> <span class="fu">GiottoData</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoData/reference/loadGiottoMini.html" class="external-link">loadGiottoMini</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"vizgen"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/activeSpatUnit-generic.html" class="external-link">activeSpatUnit</a></span><span class="op">(</span><span class="va">viz</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"aggregate"</span></span></code></pre></div>
-</div>
-<div class="section level2" number="4">
-<h2 id="extract-spatial-info">
-<span class="header-section-number">4</span> Extract spatial
-info<a class="anchor" aria-label="anchor" href="#extract-spatial-info"></a>
-</h2>
-<p>Then we will extract the spatial subobjects that we will use. These
-will be all subobjects in Giotto that contain coordinates data or
-directly map their data to space.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">image</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/getGiottoImage.html" class="external-link">getGiottoImage</a></span><span class="op">(</span><span class="va">viz</span>, </span>
-<span>                        image_type <span class="op">=</span> <span class="st">"largeImage"</span>, </span>
-<span>                        name <span class="op">=</span> <span class="st">"dapi_z0"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">spat_locs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/getSpatialLocations.html" class="external-link">getSpatialLocations</a></span><span class="op">(</span><span class="va">viz</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">spat_net</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/getSpatialNetwork.html" class="external-link">getSpatialNetwork</a></span><span class="op">(</span><span class="va">viz</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">gpoints</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/getFeatureInfo.html" class="external-link">getFeatureInfo</a></span><span class="op">(</span><span class="va">viz</span>, </span>
-<span>                          return_giottoPoints <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">gpoly</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/getPolygonInfo.html" class="external-link">getPolygonInfo</a></span><span class="op">(</span><span class="va">viz</span>, </span>
-<span>                        polygon_name <span class="op">=</span> <span class="st">"aggregate"</span>, </span>
-<span>                        return_giottoPolygon <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2" number="5">
-<h2 id="defining-bounds-and-extent">
-<span class="header-section-number">5</span> Defining bounds and
-extent<a class="anchor" aria-label="anchor" href="#defining-bounds-and-extent"></a>
-</h2>
+<div class="section level3" number="2.1">
+<h3 id="ext-spatial-bounds-and-extent">
+<span class="header-section-number">2.1</span> <code>ext()</code>
+spatial bounds and extent<a class="anchor" aria-label="anchor" href="#ext-spatial-bounds-and-extent"></a>
+</h3>
 <p>One of the most convenient descriptors of where an object is in space
 is its minimal and maximal in the coordinate plane, also known as the
 boundaries or spatial <strong>extent</strong> of that information. It
 can be thought of as bounding box around where your information exists
-in space. <em>Giotto</em> incorporates usage of the
-<code>SpatExtent</code> class and associated <code><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext()</a></code> generic
-from <em>terra</em> to describe objects spatially.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">image</span><span class="op">)</span>     <span class="co"># giottoLargeImage</span></span></code></pre></div>
+in space. {Giotto} incorporates usage of the <code>SpatExtent</code>
+class and associated <code><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext()</a></code> generic from {terra} to describe
+objects spatially.</p>
+<div class="section level4" number="2.1.1">
+<h4 id="getting-extent">
+<span class="header-section-number">2.1.1</span> Getting extent<a class="anchor" aria-label="anchor" href="#getting-extent"></a>
+</h4>
+<p>Works for all spatial objects</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">gimg</span><span class="op">)</span>     <span class="co"># giottoLargeImage</span></span></code></pre></div>
+<pre><code>SpatExtent : 6400.029, 6900.037, -5150.007, -4699.967 (xmin, xmax, ymin, ymax)</code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">spat_locs</span><span class="op">)</span> <span class="co"># spatLocsObj</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">spat_net</span><span class="op">)</span>  <span class="co"># spatNetObj</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">gpoints</span><span class="op">)</span>   <span class="co"># giottoPoints</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">gpoly</span><span class="op">)</span>     <span class="co"># giottoPolygon</span></span></code></pre></div>
-<div class="section level3" number="5.1">
-<h3 id="image-extent">
-<span class="header-section-number">5.1</span> Image extent<a class="anchor" aria-label="anchor" href="#image-extent"></a>
-</h3>
-<p>With <code>giottoLargeImage</code> objects, you are additionally able
-to assign how they map to space using <code><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext()</a></code>. Note that
-modifications performed on one <code>giottoLargeImage</code> are applied
-to all references to that object unless <code><a href="https://rdrr.io/pkg/data.table/man/copy.html" class="external-link">copy()</a></code> is used
-first.</p>
+<pre><code>SpatExtent : 6399.24384990901, 6903.24298517207, -5152.38959073896, -4694.86823300896 (xmin, xmax, ymin, ymax)</code></pre>
+<p>The <code>giotto</code> analysis object finds the searches through
+all objects of the <code>spat_unit</code>. It returns an extent that
+encompasses everything it found. You can set <code>prefer</code> to
+limit the search to specific types of data. Allowed terms are “polygon”,
+“spatlocs”, “points”, “images”.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span> <span class="co"># all data for default spat unit ("aggregate")</span></span></code></pre></div>
+<pre><code>SpatExtent : 6391.46568586489, 6903.57332779812, -5153.89721175534, -4694.86823300896 (xmin, xmax, ymin, ymax)</code></pre>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">image</span><span class="op">)</span> <span class="co"># save extent</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">image</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fspatial_transformations%2Funnamed-chunk-5-1.png"></p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># modify extent</span></span>
-<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">image</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">40</span>,<span class="fl">0</span>,<span class="fl">10</span><span class="op">)</span> <span class="co"># xmin, xmax, ymin, ymax</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">image</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fspatial_transformations%2Funnamed-chunk-5-2.png"></p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">g</span>, prefer <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"points"</span>, <span class="st">"spatlocs"</span><span class="op">)</span><span class="op">)</span> <span class="co"># restrict to only points and spatial location centroids</span></span></code></pre></div>
+<pre><code>SpatExtent : 6400.037, 6900.0317, -5149.9834, -4699.9785 (xmin, xmax, ymin, ymax)</code></pre>
+</div>
+<div class="section level4" number="2.1.2">
+<h4 id="setting-extent">
+<span class="header-section-number">2.1.2</span> Setting Extent<a class="anchor" aria-label="anchor" href="#setting-extent"></a>
+</h4>
+<p>Directly set the spatial extent of objects. This changes the object
+<em>by reference</em> for <code>giottoPolygon</code>,
+<code>giottoPoints</code>, and <code>giottoLargeImage</code> inheriting
+objects. In order to avoid changing the object everywhere it is being
+used, <code><a href="https://rdrr.io/pkg/data.table/man/copy.html" class="external-link">copy()</a></code> should be run.</p>
+<p>Setting the extent is supported for all objects except
+<code>spatialNetworkObj</code> (since they may contain additional
+statistics that normally should be recalculated from the raw spatial
+locations after a transform) and the <code>giotto</code> object as
+whole.</p>
+<ul>
+<li>
+<code>affine2d</code> is also an exception since
+<code>ext()&lt;-</code> assigns the anchoring spatial extent instead of
+what might otherwise be expected.</li>
+</ul>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">image</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">e</span> <span class="co"># replace</span></span></code></pre></div>
-</div>
-</div>
-<div class="section level2" number="6">
-<h2 id="spatial-transformations">
-<span class="header-section-number">6</span> Spatial
-Transformations<a class="anchor" aria-label="anchor" href="#spatial-transformations"></a>
-</h2>
-<p>Commonly used spatial transformations are coordinate translations,
-flips, and rotations. <em>Giotto</em> extends generics from
-<em>terra</em> through the use of <code><a href="https://drieslab.github.io/GiottoClass/reference/spatShift.html" class="external-link">spatShift()</a></code>
-(<code><a href="https://rdrr.io/pkg/data.table/man/shift.html" class="external-link">shift()</a></code> in <em>terra</em>), <code><a href="https://rspatial.github.io/terra/reference/flip.html" class="external-link">flip()</a></code>, and
-<code><a href="https://rspatial.github.io/terra/reference/spin.html" class="external-link">spin()</a></code> respectively.</p>
-<div class="section level3" number="6.1">
-<h3 id="coordinate-translation">
-<span class="header-section-number">6.1</span> coordinate
-translation<a class="anchor" aria-label="anchor" href="#coordinate-translation"></a>
-</h3>
-<p><code><a href="https://drieslab.github.io/GiottoClass/reference/spatShift.html" class="external-link">spatShift()</a></code> is used for simple coordinate translations.
-It takes the params <code>dx</code> and <code>dy</code> for distance to
-translate along either axis.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">spat_locs</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fspatial_transformations%2Funnamed-chunk-6-1.png"></p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gimg</span><span class="op">)</span></span>
+<span><span class="va">gimg_copy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/copy.html" class="external-link">copy</a></span><span class="op">(</span><span class="va">gimg</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">gimg_copy</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">20</span>, <span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># xmin, xmax, ymin, ymax</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gimg_copy</span><span class="op">)</span></span></code></pre></div>
+<pre><code>SpatExtent : 0, 20, 0, 10 (xmin, xmax, ymin, ymax)</code></pre>
+<p><img src="images%2Fspatial_transformations%2F01_ext_img.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/spatShift.html" class="external-link">spatShift</a></span><span class="op">(</span><span class="va">spat_locs</span>, dx <span class="op">=</span> <span class="fl">5e3</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fspatial_transformations%2Funnamed-chunk-6-2.png"></p>
-<p>(pay attention to the x coords)</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gpoly</span><span class="op">)</span></span>
+<span><span class="va">gpoly_copy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/copy.html" class="external-link">copy</a></span><span class="op">(</span><span class="va">gpoly</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">gpoly_copy</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">20</span>, <span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># xmin, xmax, ymin, ymax</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">gpoly_copy</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gpoly_copy</span><span class="op">)</span></span></code></pre></div>
+<pre><code>SpatExtent : 0, 20, 0, 10 (xmin, xmax, ymin, ymax)</code></pre>
+<p><img src="images%2Fspatial_transformations%2F02_ext_gpoly.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
-<div class="section level3" number="6.2">
-<h3 id="flip">
-<span class="header-section-number">6.2</span> flip<a class="anchor" aria-label="anchor" href="#flip"></a>
+</div>
+<div class="section level3" number="2.2">
+<h3 id="xy-accessing-spatial-coordinates">
+<span class="header-section-number">2.2</span> <code>XY()</code>
+accessing spatial coordinates<a class="anchor" aria-label="anchor" href="#xy-accessing-spatial-coordinates"></a>
 </h3>
-<p><code><a href="https://rspatial.github.io/terra/reference/flip.html" class="external-link">flip()</a></code> will flip the data over a defined line of either
-“vertical” or “horizontal” symmetry (default is “vertical” with the line
-of symmetry being y = 0. The <code>direction</code> param partial
-matches for either “vertical” or “horizontal”. The <code>y0</code> and
-<code>x0</code> params define where the line of symmetry is.</p>
-<p>This is useful for assembling datasets where the data is based on
-coordinates where the y values increase negatively. This behavior is
-different from the default behavior in <em>terra</em> where objects are
-flipped over the minima of their extents. This difference is needed
-because often, values are defined in reference to the coordinate origin
-and any distance away from the axes is meaningful for alignment after
-flipping. If the default behavior of flipping over the extent is
-desired, NULL can be passed to the relevant <code>y0</code> or
-<code>x0</code> param.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">rb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoUtils/reference/getRainbowColors.html" class="external-link">getRainbowColors</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gpoly</span>, col <span class="op">=</span> <span class="va">rb</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fspatial_transformations%2Funnamed-chunk-7-1.png"></p>
+<p>Spatial coordinates for can be directly retrieved and replaced for
+<code>giottoPoints</code>, <code>giottoPolygon</code>, and
+<code>spatLocsObj</code>. The coordinates when retrieving or being set
+should be of class <code>matrix</code>.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/flip.html" class="external-link">flip</a></span><span class="op">(</span><span class="va">gpoly</span><span class="op">)</span>, col <span class="op">=</span> <span class="va">rb</span><span class="op">)</span> <span class="co"># flip to positive y</span></span></code></pre></div>
-<p><img src="images%2Fspatial_transformations%2Funnamed-chunk-7-2.png"></p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/flip.html" class="external-link">flip</a></span><span class="op">(</span><span class="va">gpoly</span>, direction <span class="op">=</span> <span class="st">"h"</span>, x0 <span class="op">=</span> <span class="fl">1e4</span><span class="op">)</span>, col <span class="op">=</span> <span class="va">rb</span><span class="op">)</span> <span class="co"># flip across x = 10000</span></span></code></pre></div>
-<p><img src="images%2Fspatial_transformations%2Funnamed-chunk-7-3.png"></p>
-</div>
-<div class="section level3" number="6.3">
-<h3 id="spin">
-<span class="header-section-number">6.3</span> spin<a class="anchor" aria-label="anchor" href="#spin"></a>
-</h3>
-<p><code><a href="https://rspatial.github.io/terra/reference/spin.html" class="external-link">spin()</a></code> allows rotating of vector data through degrees
-passed to <code>angle</code> param. The rotation happens about a
-coordinate defined by <code>x0</code> and <code>y0</code>. By default
-<code>x0</code> and <code>y0</code> are defined as the object
-center.</p>
+<code class="sourceCode R"><span><span class="co"># point-type data</span></span>
+<span><span class="va">sl</span> <span class="op">&lt;-</span> <span class="va">g</span><span class="op">[[</span><span class="st">"spatial_locs"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="co"># spatLocsObj</span></span>
+<span><span class="va">sl_mini</span> <span class="op">&lt;-</span> <span class="va">sl</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/XY.html" class="external-link">XY</a></span><span class="op">(</span><span class="va">sl_mini</span><span class="op">)</span></span></code></pre></div>
+<pre><code>             x         y
+ [1,] 6405.067 -4780.499
+ [2,] 6426.020 -4972.519
+ [3,] 6428.456 -4799.158
+ [4,] 6408.155 -4816.583
+ [5,] 6425.894 -4862.808
+ [6,] 6426.858 -5070.148
+ [7,] 6413.179 -5109.696
+ [8,] 6402.438 -5112.440
+ [9,] 6428.358 -5046.636
+[10,] 6410.095 -5094.962</code></pre>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gpoints</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fspatial_transformations%2Funnamed-chunk-8-1.png"></p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/spin.html" class="external-link">spin</a></span><span class="op">(</span><span class="va">gpoints</span>, angle <span class="op">=</span> <span class="fl">45</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fspatial_transformations%2Funnamed-chunk-8-2.png"></p>
+<code class="sourceCode R"><span><span class="co"># polygon-type data</span></span>
+<span><span class="va">gpoly_mini</span> <span class="op">&lt;-</span> <span class="va">gpoly</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span>
+<span><span class="va">gpoly_mini_xy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/XY.html" class="external-link">XY</a></span><span class="op">(</span><span class="va">gpoly_mini</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">gpoly_mini_xy</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># provides individual vertices (not separated by poly_ID)</span></span></code></pre></div>
+<pre><code>             x         y
+ [1,] 6642.257 -5136.674
+ [2,] 6642.711 -5137.020
+ [3,] 6643.050 -5137.462
+ [4,] 6643.310 -5137.956
+ [5,] 6643.484 -5138.518
+ [6,] 6643.589 -5139.191
+ [7,] 6643.584 -5139.974
+ [8,] 6643.687 -5140.649
+ [9,] 6643.805 -5141.326
+[10,] 6643.663 -5142.028</code></pre>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/spin.html" class="external-link">spin</a></span><span class="op">(</span><span class="va">gpoints</span>, angle <span class="op">=</span> <span class="fl">45</span>, x0 <span class="op">=</span> <span class="fl">0</span>, y0 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fspatial_transformations%2Funnamed-chunk-8-3.png"></p>
+<code class="sourceCode R"><span><span class="co"># edit coordinate matrix and return to object</span></span>
+<span><span class="va">gpoly_mini_xy</span><span class="op">[</span>, <span class="st">"x"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gpoly_mini_xy</span><span class="op">[</span>, <span class="st">"x"</span><span class="op">]</span> <span class="op">/</span> <span class="fl">2</span></span>
+<span></span>
+<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/XY.html" class="external-link">XY</a></span><span class="op">(</span><span class="va">gpoly_mini</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">gpoly_mini_xy</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gpoly_mini</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images%2Fspatial_transformations%2F03_xy_edit.png" width="40%" style="display: block; margin: auto;"></p>
 </div>
-</div>
-<div class="section level2" number="7">
-<h2 id="session-info">
-<span class="header-section-number">7</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
-</h2>
+<div class="section level3" number="2.3">
+<h3 id="simple-transforms">
+<span class="header-section-number">2.3</span> Simple
+transforms<a class="anchor" aria-label="anchor" href="#simple-transforms"></a>
+</h3>
+<p>Plots demonstrating no transform, <code><a href="https://drieslab.github.io/GiottoClass/reference/spatShift.html" class="external-link">spatShift()</a></code>,
+<code><a href="https://rspatial.github.io/terra/reference/spin.html" class="external-link">spin()</a></code>, <code><a href="https://rspatial.github.io/terra/reference/rescale.html" class="external-link">rescale()</a></code>, <code><a href="https://rspatial.github.io/terra/reference/flip.html" class="external-link">flip()</a></code>,
+<code><a href="https://rdrr.io/r/base/t.html" class="external-link">t()</a></code>, and <code><a href="https://drieslab.github.io/GiottoClass/reference/shear.html" class="external-link">shear()</a></code> usage. The blue rectangle
+marks out the original spatial extent that the data occupied (if it
+would still be within the field of view).</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">rain</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">gpoly</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">line_width</span> <span class="op">&lt;-</span> <span class="fl">0.3</span></span>
+<span><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">gpoly</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># par to setup the grid plotting layout</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>no.readonly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">gpoly</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"no transform"</span>, col <span class="op">=</span> <span class="va">rain</span>, lwd <span class="op">=</span> <span class="va">line_width</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">e</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, border <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span>
+<span><span class="va">gpoly</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/spatShift.html" class="external-link">spatShift</a></span><span class="op">(</span>dx <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"spatShift(dx = 1000)"</span>, col <span class="op">=</span> <span class="va">rain</span>, lwd <span class="op">=</span> <span class="va">line_width</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">e</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, border <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span>
+<span><span class="va">gpoly</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/spin.html" class="external-link">spin</a></span><span class="op">(</span><span class="fl">45</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"spin(45)"</span>, col <span class="op">=</span> <span class="va">rain</span>, lwd <span class="op">=</span> <span class="va">line_width</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">e</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, border <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span>
+<span><span class="va">gpoly</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rescale.html" class="external-link">rescale</a></span><span class="op">(</span>fx <span class="op">=</span> <span class="fl">10</span>, fy <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"rescale(fx = 10, fy = 6)"</span>, col <span class="op">=</span> <span class="va">rain</span>, lwd <span class="op">=</span> <span class="va">line_width</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">e</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, border <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span>
+<span><span class="va">gpoly</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/flip.html" class="external-link">flip</a></span><span class="op">(</span>direction <span class="op">=</span> <span class="st">"vertical"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"flip()"</span>, col <span class="op">=</span> <span class="va">rain</span>, lwd <span class="op">=</span> <span class="va">line_width</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">e</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, border <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span>
+<span><span class="va">gpoly</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"t()"</span>, col <span class="op">=</span> <span class="va">rain</span>, lwd <span class="op">=</span> <span class="va">line_width</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">e</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, border <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span>
+<span><span class="va">gpoly</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/shear.html" class="external-link">shear</a></span><span class="op">(</span>fx <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"shear(fx = 0.5)"</span>, col <span class="op">=</span> <span class="va">rain</span>, lwd <span class="op">=</span> <span class="va">line_width</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">e</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, border <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images%2Fspatial_transformations%2F04_transforms.png" width="100%" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level3" number="2.4">
+<h3 id="affine-transforms">
+<span class="header-section-number">2.4</span> Affine
+transforms<a class="anchor" aria-label="anchor" href="#affine-transforms"></a>
+</h3>
+<p>The above transforms are all simple, but you can imagine that
+performing them in sequence on your dataset can be computationally
+expensive.</p>
+<p>Luckily, the above operations are all affine transformation, and they
+can be condensed into a single step. Affine transforms where the x and y
+values undergo a linear transform. These transforms in 2D, can all be
+represented as a 2x2 matrix or 2x3 if the xy translation values are
+included.</p>
+<p><img src="images%2Fspatial_transformations%2F05_affine_matrix.png" width="80%" style="display: block; margin: auto;"></p>
+<p>To perform the linear transform, the xy coordinates just need to be
+matrix multiplied by the 2x2 affine matrix. The resulting values should
+then be added to the translate values.</p>
+<p><img src="images%2Fspatial_transformations%2F06_apply_matrix.png" width="60%" style="display: block; margin: auto;"></p>
+<p>Due to the nature of matrix multiplication, you can simply multiply
+the affine matrices with each other and when the xy coordinates are
+multiplied by the resulting matrix, it performs both linear transforms
+in the same step.</p>
+<p>Giotto provides a utility <code>affine2d</code> S4 class that can be
+created from any affine matrix and responds to the affine transform
+functions to simplify this accumulation of simple transforms.</p>
+<p>Once done, the <code>affine2d</code> can be applied to spatial
+objects in a single step using <code><a href="https://drieslab.github.io/GiottoClass/reference/affine.html" class="external-link">affine()</a></code> in the same way
+that you would use a matrix.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># create affine2d</span></span>
+<span><span class="va">aff</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/affine.html" class="external-link">affine</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># when called without params, this is the same as affine(diag(c(1, 1)))</span></span></code></pre></div>
+<p>The <code>affine2d</code> object also has an anchor spatial extent,
+which is used in calculations of the translation values.
+<code>affine2d</code> generates with a default extent, but a specific
+one matching that of the object you are manipulating (such as that of
+the <code>giottoPolygon</code>) should be set.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">aff</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">gpoly</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># append several simple transforms</span></span>
+<span><span class="va">aff</span> <span class="op">&lt;-</span> <span class="va">aff</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/spatShift.html" class="external-link">spatShift</a></span><span class="op">(</span>dx <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rspatial.github.io/terra/reference/spin.html" class="external-link">spin</a></span><span class="op">(</span><span class="fl">45</span>, x0 <span class="op">=</span> <span class="fl">0</span>, y0 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># without the x0, y0 params, the extent center is used</span></span>
+<span>    <span class="fu"><a href="https://rspatial.github.io/terra/reference/rescale.html" class="external-link">rescale</a></span><span class="op">(</span><span class="fl">10</span>, x0 <span class="op">=</span> <span class="fl">0</span>, y0 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># without the x0, y0 params, the extent center is used</span></span>
+<span>    <span class="fu"><a href="https://rspatial.github.io/terra/reference/flip.html" class="external-link">flip</a></span><span class="op">(</span>direction <span class="op">=</span> <span class="st">"vertical"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/shear.html" class="external-link">shear</a></span><span class="op">(</span>fx <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/force.html" class="external-link">force</a></span><span class="op">(</span><span class="va">aff</span><span class="op">)</span></span></code></pre></div>
+<pre><code>&lt;affine2d&gt;
+anchor    : 6391.46568586489, 6903.57332779812, -5153.89721175534, -4694.86823300896  (xmin, xmax, ymin, ymax)
+rotate    : -0.785398163397448  (rad)
+shear     : 0.5, 0  (x, y)
+scale     : 10, 10  (x, y)
+translate : 978.859285884871, 7071.06781186547  (x, y)</code></pre>
+<p>The <code><a href="https://rdrr.io/r/methods/show.html" class="external-link">show()</a></code> function displays some information about the
+stored affine transform, including a set of decomposed simple
+transformations.</p>
+<p>You can then plot the affine object and see a projection of the
+spatial transform where blue is the starting position and red is the
+end.</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">aff</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images%2Fspatial_transformations%2F07_plot_aff.png" width="80%" style="display: block; margin: auto;"></p>
+<p>We can then apply the affine transforms to the
+<code>giottoPolygon</code> to see that it indeed in the location and
+orientation that the projection suggests.</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/affine.html" class="external-link">affine</a></span><span class="op">(</span><span class="va">gpoly</span>, <span class="va">aff</span><span class="op">)</span>, main <span class="op">=</span> <span class="st">"affine()"</span>, col <span class="op">=</span> <span class="va">rain</span>, lwd <span class="op">=</span> <span class="va">line_width</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images%2Fspatial_transformations%2F08_aff.png" width="80%" style="display: block; margin: auto;"></p>
+<div class="section level4" number="2.4.1">
+<h4 id="affine-image-transforms">
+<span class="header-section-number">2.4.1</span> Affine image
+transforms<a class="anchor" aria-label="anchor" href="#affine-image-transforms"></a>
+</h4>
+<p>Giotto uses <code>giottoLargeImages</code> as the core image class
+which is based on terra <code>SpatRaster</code>. Images are not loaded
+into memory when the object is generated and instead an amount of
+regular sampling appropriate to the zoom level requested is performed at
+time of plotting.</p>
+<p><code><a href="https://drieslab.github.io/GiottoClass/reference/spatShift.html" class="external-link">spatShift()</a></code> and <code><a href="https://rspatial.github.io/terra/reference/rescale.html" class="external-link">rescale()</a></code> operations are
+supported by terra <code>SpatRaster</code>, and we inherit those
+functionalities. <code><a href="https://rspatial.github.io/terra/reference/spin.html" class="external-link">spin()</a></code>, <code><a href="https://rspatial.github.io/terra/reference/flip.html" class="external-link">flip()</a></code>,
+<code><a href="https://rdrr.io/r/base/t.html" class="external-link">t()</a></code>, <code><a href="https://drieslab.github.io/GiottoClass/reference/shear.html" class="external-link">shear()</a></code>, <code><a href="https://drieslab.github.io/GiottoClass/reference/affine.html" class="external-link">affine()</a></code> operations
+will coerce <code>giottoLargeImage</code> to
+<code>giottoAffineImage</code>, which is much the same, except it
+contains an <code>affine2d</code> object that tracks spatial
+manipulations performed, so that they can be applied through
+<code><a href="https://docs.ropensci.org/magick/reference/transform.html" class="external-link">magick::image_distort()</a></code> processing after sampled values are
+pulled into memory. <code>giottoAffineImage</code> also has alternative
+<code><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext()</a></code> and <code><a href="https://rspatial.github.io/terra/reference/crop.html" class="external-link">crop()</a></code> methods so that those
+operations respect both the expected post-affine space and
+un-transformed source image.</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># affine transform of image info matches with polygon info</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/affine.html" class="external-link">affine</a></span><span class="op">(</span><span class="va">gimg</span>, <span class="va">aff</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/affine.html" class="external-link">affine</a></span><span class="op">(</span><span class="va">gpoly</span>, <span class="va">aff</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, border <span class="op">=</span> <span class="st">"cyan"</span>, lwd <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images%2Fspatial_transformations%2F09_aff_img_poly.png" width="80%" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level4" number="2.4.2">
+<h4 id="affine-giotto-object-transforms">
+<span class="header-section-number">2.4.2</span> Affine
+<code>giotto</code> object transforms<a class="anchor" aria-label="anchor" href="#affine-giotto-object-transforms"></a>
+</h4>
+<p>Giotto objects can be transformed using <code><a href="https://drieslab.github.io/GiottoClass/reference/affine.html" class="external-link">affine()</a></code></p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">gaffine</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/affine.html" class="external-link">affine</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">aff</span><span class="op">)</span></span>
+<span>    </span>
+<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">gaffine</span>,</span>
+<span>    show_image <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>    feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rna <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Adgrl1"</span>, <span class="st">"Gfap"</span>, <span class="st">"Ntrk3"</span>, <span class="st">"Slc17a7"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    feats_color_code <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span>,</span>
+<span>    polygon_color <span class="op">=</span> <span class="st">"cyan"</span>,</span>
+<span>    polygon_line_size <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>    point_size <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>    use_overlap <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="images%2Fspatial_transformations%2F10_aff_giotto.png" width="80%" style="display: block; margin: auto;"></p>
+</div>
+</div>
+</div>
+<div class="section level2" number="3">
+<h2 id="session-info">
+<span class="header-section-number">3</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+</h2>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>    R version <span class="dv">4</span>.<span class="fl">2.1</span> (<span class="dv">2022-06-23</span>)</span>
-<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>    Platform<span class="sc">:</span> x86_64<span class="sc">-</span>apple<span class="sc">-</span><span class="fu">darwin17.0</span> (<span class="dv">64</span><span class="sc">-</span>bit)</span>
-<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>    Running under<span class="sc">:</span> macOS Big Sur ... <span class="fl">10.16</span></span>
-<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a></span>
-<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a>    Matrix products<span class="sc">:</span> default</span>
-<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a>    BLAS<span class="sc">:</span>   <span class="er">/</span>Library<span class="sc">/</span>Frameworks<span class="sc">/</span>R.framework<span class="sc">/</span>Versions<span class="sc">/</span><span class="fl">4.2</span><span class="sc">/</span>Resources<span class="sc">/</span>lib<span class="sc">/</span>libRblas.<span class="fl">0.</span>dylib</span>
-<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a>    LAPACK<span class="sc">:</span> <span class="er">/</span>Library<span class="sc">/</span>Frameworks<span class="sc">/</span>R.framework<span class="sc">/</span>Versions<span class="sc">/</span><span class="fl">4.2</span><span class="sc">/</span>Resources<span class="sc">/</span>lib<span class="sc">/</span>libRlapack.dylib</span>
-<span id="cb21-8"><a href="#cb21-8" tabindex="-1"></a></span>
-<span id="cb21-9"><a href="#cb21-9" tabindex="-1"></a>    locale<span class="sc">:</span></span>
-<span id="cb21-10"><a href="#cb21-10" tabindex="-1"></a>    [<span class="dv">1</span>] en_US.UTF<span class="dv">-8</span><span class="sc">/</span>en_US.UTF<span class="dv">-8</span><span class="sc">/</span>en_US.UTF<span class="dv">-8</span><span class="sc">/</span>C<span class="sc">/</span>en_US.UTF<span class="dv">-8</span><span class="sc">/</span>en_US.UTF<span class="dv">-8</span></span>
-<span id="cb21-11"><a href="#cb21-11" tabindex="-1"></a></span>
-<span id="cb21-12"><a href="#cb21-12" tabindex="-1"></a>    attached base packages<span class="sc">:</span></span>
-<span id="cb21-13"><a href="#cb21-13" tabindex="-1"></a>    [<span class="dv">1</span>] stats     graphics  grDevices utils     datasets  methods   base     </span>
-<span id="cb21-14"><a href="#cb21-14" tabindex="-1"></a></span>
-<span id="cb21-15"><a href="#cb21-15" tabindex="-1"></a>    other attached packages<span class="sc">:</span></span>
-<span id="cb21-16"><a href="#cb21-16" tabindex="-1"></a>    [<span class="dv">1</span>] GiottoData_0.<span class="fl">2.3</span> Giotto_3.<span class="fl">3.1</span>    </span>
-<span id="cb21-17"><a href="#cb21-17" tabindex="-1"></a></span>
-<span id="cb21-18"><a href="#cb21-18" tabindex="-1"></a>    loaded via a <span class="fu">namespace</span> (and not attached)<span class="sc">:</span></span>
-<span id="cb21-19"><a href="#cb21-19" tabindex="-1"></a>     [<span class="dv">1</span>] Rcpp_1.<span class="fl">0.11</span>       pillar_1.<span class="fl">9.0</span>      compiler_4.<span class="fl">2.1</span>    tools_4.<span class="fl">2.1</span>      </span>
-<span id="cb21-20"><a href="#cb21-20" tabindex="-1"></a>     [<span class="dv">5</span>] digest_0.<span class="fl">6.31</span>     scattermore_0<span class="fl">.8</span>   checkmate_2.<span class="fl">2.0</span>   jsonlite_1.<span class="fl">8.4</span>   </span>
-<span id="cb21-21"><a href="#cb21-21" tabindex="-1"></a>     [<span class="dv">9</span>] evaluate_0<span class="fl">.21</span>     lifecycle_1.<span class="fl">0.3</span>   tibble_3.<span class="fl">2.1</span>      gtable_0.<span class="fl">3.3</span>     </span>
-<span id="cb21-22"><a href="#cb21-22" tabindex="-1"></a>    [<span class="dv">13</span>] lattice_0<span class="fl">.20</span><span class="dv">-45</span>   png_0<span class="fl">.1</span><span class="dv">-8</span>         pkgconfig_2.<span class="fl">0.3</span>   rlang_1.<span class="fl">1.1</span>      </span>
-<span id="cb21-23"><a href="#cb21-23" tabindex="-1"></a>    [<span class="dv">17</span>] igraph_1.<span class="fl">4.2</span>      Matrix_1<span class="fl">.5</span><span class="dv">-4</span>      cli_3.<span class="fl">6.1</span>         rstudioapi_0<span class="fl">.14</span>  </span>
-<span id="cb21-24"><a href="#cb21-24" tabindex="-1"></a>    [<span class="dv">21</span>] parallel_4.<span class="fl">2.1</span>    yaml_2.<span class="fl">3.7</span>        xfun_0<span class="fl">.39</span>         fastmap_1.<span class="fl">1.1</span>    </span>
-<span id="cb21-25"><a href="#cb21-25" tabindex="-1"></a>    [<span class="dv">25</span>] terra_1<span class="fl">.7</span><span class="dv">-39</span>      withr_2.<span class="fl">5.0</span>       dplyr_1.<span class="fl">1.2</span>       knitr_1<span class="fl">.42</span>       </span>
-<span id="cb21-26"><a href="#cb21-26" tabindex="-1"></a>    [<span class="dv">29</span>] generics_0.<span class="fl">1.3</span>    vctrs_0.<span class="fl">6.2</span>       rprojroot_2.<span class="fl">0.3</span>   grid_4.<span class="fl">2.1</span>       </span>
-<span id="cb21-27"><a href="#cb21-27" tabindex="-1"></a>    [<span class="dv">33</span>] tidyselect_1.<span class="fl">2.0</span>  here_1.<span class="fl">0.1</span>        reticulate_1<span class="fl">.28</span>   glue_1.<span class="fl">6.2</span>       </span>
-<span id="cb21-28"><a href="#cb21-28" tabindex="-1"></a>    [<span class="dv">37</span>] data.table_1.<span class="fl">14.8</span> R6_2.<span class="fl">5.1</span>          fansi_1.<span class="fl">0.4</span>       rmarkdown_2<span class="fl">.21</span>   </span>
-<span id="cb21-29"><a href="#cb21-29" tabindex="-1"></a>    [<span class="dv">41</span>] ggplot2_3.<span class="fl">4.2</span>     magrittr_2.<span class="fl">0.3</span>    backports_1.<span class="fl">4.1</span>   scales_1.<span class="fl">2.1</span>     </span>
-<span id="cb21-30"><a href="#cb21-30" tabindex="-1"></a>    [<span class="dv">45</span>] codetools_0<span class="fl">.2</span><span class="dv">-18</span>  htmltools_0.<span class="fl">5.5</span>   colorspace_2<span class="fl">.1</span><span class="dv">-0</span>  utf8_1.<span class="fl">2.3</span>       </span>
-<span id="cb21-31"><a href="#cb21-31" tabindex="-1"></a>    [<span class="dv">49</span>] munsell_0.<span class="fl">5.0</span>    </span></code></pre></div>
+<pre><code>R version 4.4.1 (2024-06-14)
+Platform: aarch64-apple-darwin20
+Running under: macOS 15.0.1
+
+Matrix products: default
+BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/New_York
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] Giotto_4.2.0      GiottoClass_0.4.7
+
+loaded via a namespace (and not attached):
+ [1] tidyselect_1.2.1            viridisLite_0.4.2           farver_2.1.2               
+ [4] dplyr_1.1.4                 GiottoVisuals_0.2.11        fastmap_1.2.0              
+ [7] SingleCellExperiment_1.26.0 lazyeval_0.2.2              digest_0.6.37              
+[10] lifecycle_1.0.4             terra_1.7-78                magrittr_2.0.3             
+[13] compiler_4.4.1              rlang_1.1.4                 tools_4.4.1                
+[16] igraph_2.1.1                utf8_1.2.4                  data.table_1.16.2          
+[19] knitr_1.49                  S4Arrays_1.4.0              labeling_0.4.3             
+[22] htmlwidgets_1.6.4           reticulate_1.39.0           DelayedArray_0.30.0        
+[25] abind_1.4-8                 withr_3.0.2                 purrr_1.0.2                
+[28] BiocGenerics_0.50.0         grid_4.4.1                  stats4_4.4.1               
+[31] fansi_1.0.6                 colorspace_2.1-1            ggplot2_3.5.1              
+[34] scales_1.3.0                gtools_3.9.5                SummarizedExperiment_1.34.0
+[37] cli_3.6.3                   rmarkdown_2.29              crayon_1.5.3               
+[40] generics_0.1.3              rstudioapi_0.16.0           httr_1.4.7                 
+[43] rjson_0.2.21                zlibbioc_1.50.0             parallel_4.4.1             
+[46] XVector_0.44.0              matrixStats_1.4.1           vctrs_0.6.5                
+[49] Matrix_1.7-0                jsonlite_1.8.9              GiottoData_0.2.15          
+[52] IRanges_2.38.0              S4Vectors_0.42.0            ggrepel_0.9.6              
+[55] scattermore_1.2             magick_2.8.5                GiottoUtils_0.2.3          
+[58] plotly_4.10.4               tidyr_1.3.1                 glue_1.8.0                 
+[61] codetools_0.2-20            cowplot_1.1.3               gtable_0.3.6               
+[64] GenomeInfoDb_1.40.0         GenomicRanges_1.56.0        UCSC.utils_1.0.0           
+[67] munsell_0.5.1               tibble_3.2.1                pillar_1.9.0               
+[70] htmltools_0.5.8.1           GenomeInfoDbData_1.2.12     R6_2.5.1                   
+[73] evaluate_1.0.1              lattice_0.22-6              Biobase_2.64.0             
+[76] png_0.1-8                   backports_1.5.0             SpatialExperiment_1.14.0   
+[79] Rcpp_1.0.13-1               SparseArray_1.4.1           checkmate_2.3.2            
+[82] colorRamp2_0.1.0            xfun_0.49                   MatrixGenerics_1.16.0      
+[85] pkgconfig_2.0.3    </code></pre>
 </div>
   </div>
 
