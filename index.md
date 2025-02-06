@@ -42,6 +42,13 @@ This website (http://giottosuite.com) is for Giotto Suite v4.0 and greater. You 
 - **News:** Here you can find the changelog for every Giotto release and video recordings from previous presentations. 
 - **Contributing:** Here you can find guidelines for submitting a pull-request, creating code following the Giotto style, creation of tutorials for the website, and more.
 
+## Giotto Workshop 2024
+
+Take a look at our 3-day workshop recordings. The materials in bookdown format are available [here](https://drieslab.github.io/giotto_workshop_2024/)
+
+[![](images/presentations/giottoworkshop2024.png){.align-center}](https://www.youtube.com/playlist?list=PL48rCHQx71I1ZptEotKvvCYRliGrqVXLW)
+
+
 ## References
 
 - [Jiaji George Chen, Joselyn Cristina Chávez-Fuentes, et al. Giotto Suite: a multi-scale and technology-agnostic spatial multi-omics analysis ecosystem. bioRxiv (2023)](https://www.biorxiv.org/content/10.1101/2023.11.26.568752v1)
