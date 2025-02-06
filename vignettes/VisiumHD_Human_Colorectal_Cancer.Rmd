@@ -16,7 +16,7 @@ vignette: >
 
 Ensure that the Giotto Suite is correctly installed and configured. 
 
-```{reval = FALSE}
+```{r, eval=FALSE}
 # Verify that the Giotto Suite is installed.
 if(!"Giotto" %in% installed.packages()) {
   pak::pkg_install("drieslab/Giotto")
@@ -82,7 +82,7 @@ To create a Giotto object, you can either use visiumHD reader function `importVi
 
 ## Using the reader function
 
-```{r eval=FALSE}
+```{r, eval=FALSE}
 readerHD <- importVisiumHD()
 
 readerHD$visiumHD_dir <- file.path(data_path, "Human_Colorectal_Cancer_workshop/square_002um")
@@ -105,6 +105,7 @@ showGiottoImageNames(visiumHD) # "image" is the default name
 ## Read in data manually
 
 ### Raw expression data
+
 ```{r, eval=FALSE}
 expression_path <- file.path(
     data_path,
@@ -992,7 +993,7 @@ visiumHD_subset <- calculateHVF(visiumHD_subset,
 )
 ```
 
-```{r}
+```{r, eval=FALSE}
 n_25_percent <- round(length(spatIDs(visiumHD_subset, "hex25")) * 0.25)
 
 # pca projection on subset
@@ -1208,11 +1209,11 @@ knitr::include_graphics("images/VisiumHD_Human_Colorectal_Cancer/30-spatInSituPl
 
 # Session info
 
-```{r eval=FALSE}
+```{r, eval=FALSE}
 sessionInfo()
 ```
 
-```{r eval=FALSE}
+```{r, eval=FALSE}
 R version 4.4.2 (2024-10-31)
 Platform: x86_64-apple-darwin20
 Running under: macOS Sequoia 15.3
