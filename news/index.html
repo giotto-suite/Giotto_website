@@ -242,14 +242,17 @@
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/feature_aggregation.html">Feature Aggregation</a>
         </li>
+        <li>
+          <a href="../articles/normalization.html">Normalization and Scaling</a>
+        </li>
+        <li>
+          <a href="../articles/process_giotto.html">Process Giotto convenience function</a>
+        </li>
       </ul></li>
     <li class="divider">
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/process_giotto.html">Process Giotto convenience function</a>
-        </li>
-        <li>
           <a href="../articles/hvf.html">Detection of Highly Variable Features</a>
         </li>
         <li>
@@ -478,8 +481,39 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="4.2.1" id="giotto-421-20250204">Giotto 4.2.1 (2025/02/04)<a class="anchor" aria-label="anchor" href="#giotto-421-20250204"></a></h2>
 <div class="section level3">
+<h3 id="changes-4-2-1">Changes<a class="anchor" aria-label="anchor" href="#changes-4-2-1"></a></h3>
+<ul><li>GiottoUtils req raised to 0.2.4</li>
+<li>terra req raised to 1.8-21</li>
+</ul></div>
+<div class="section level3">
 <h3 id="bug-fixes-4-2-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-4-2-1"></a></h3>
 <ul><li>fix <code><a href="../reference/identifyTMAcores.html">identifyTMAcores()</a></code> when no overlap relations are found and an <code>rbind</code> error is thrown</li>
+<li>fix <code><a href="../reference/createGiottoCosMxObject.html">createGiottoCosMxObject()</a></code> not passing <code>load_expression</code>, <code>load_cellmeta</code>, <code>load_transcripts</code> params to <code><a href="../reference/importCosMx.html">importCosMx()</a></code>
+</li>
+<li>fix convenience functions for {terra} <code>v1.8-21</code>
+</li>
+</ul></div>
+<div class="section level3">
+<h3 id="enhancements-4-2-1">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-4-2-1"></a></h3>
+<ul><li>
+<code>poly_pref</code> param for <code><a href="../reference/createGiottoCosMxObject.html">createGiottoCosMxObject()</a></code> and <code><a href="../reference/importCosMx.html">importCosMx()</a></code> to select between loading the mask images or the <code>polygons.csv</code> as polygon info.</li>
+<li>
+<code>image_negative_y</code> param for <code><a href="../reference/createGiottoCosMxObject.html">createGiottoCosMxObject()</a></code> for toggling how images and polygons from mask images should be spatially mapped</li>
+<li>
+<code>slide</code> param made more prominent in <code><a href="../reference/createGiottoCosMxObject.html">createGiottoCosMxObject()</a></code>
+</li>
+<li>
+<code><a href="../reference/importCosMx.html">importCosMx()</a></code> now supports vectors of filepaths when provided to <code>$load_images()</code> and <code>$load_polys()</code>
+</li>
+<li>
+<code><a href="../reference/importCosMx.html">importCosMx()</a></code> Selected FOVs are now selected in <code><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot()</a></code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-4-2-1">New<a class="anchor" aria-label="anchor" href="#new-4-2-1"></a></h3>
+<ul><li>
+<code><a href="../reference/processExpression.html">processExpression()</a></code> for <code>giotto</code> implemented via the <code><a href="../reference/processData.html">processData()</a></code> framework in {GiottoClass} v0.4.7 (see <code><a href="../reference/processData.html">?processData</a></code> and <code><a href="../reference/process_param.html">?process_param</a></code>)</li>
+<li>
+<code>arcsinh</code>, <code>L2</code>, and <code>TF-IDF</code> normalization methods accessible via the <code><a href="../reference/processData.html">processData()</a></code> framework</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -887,7 +921,7 @@
 <h3 id="changes-3-3-1">Changes<a class="anchor" aria-label="anchor" href="#changes-3-3-1"></a></h3>
 <ul><li>Fix bug in <code>combine_matrices()</code>
 </li>
-<li>Fix bug in <code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObject.html" class="external-link">createGiottoObject()</a></code> that will not allow object creation without supplied expression information</li>
+<li>Fix bug in <code><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject()</a></code> that will not allow object creation without supplied expression information</li>
 <li>Updated <code><a href="https://drieslab.github.io/GiottoClass/reference/polyStamp.html" class="external-link">polyStamp()</a></code> to replace an apply function with a crossjoin for better performance.</li>
 <li>Updated <code><a href="https://drieslab.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints()</a></code> with <code>plot_last</code> parameter. Default output now plots polygons above points for better visibility.</li>
 <li>Add check for spatLocsObj for spatlocs in polyStamp()</li>
@@ -962,7 +996,7 @@
 <ul><li>Update <code><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment()</a></code> and downstream internal functions to allow custom python installation with a new argument, <code>mini_install_path</code>.</li>
 <li>Update <code><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment()</a></code> to account for custom python installations with a new argument, <code>mini_install_path</code>.</li>
 <li>Update <code><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">removeGiottoEnvironment()</a></code> to account for custom python installations with a new argument, <code>mini_path</code>.</li>
-<li>Update <code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObject.html" class="external-link">createGiottoObject()</a></code> with new data ingestion pipeline</li>
+<li>Update <code><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject()</a></code> with new data ingestion pipeline</li>
 <li>Modify <code>cell_ID</code>, <code>feat_ID</code>, <code>cell_metadata</code>, <code>feat_metadata</code> slot initialization</li>
 <li>Update <code>read_expression_data()</code> and <code>evaluate_expr_matrix()</code> to be compatible with <code>exprObj</code>
 </li>
@@ -1049,7 +1083,7 @@
 <h2 class="page-header" data-toc-text="3.1.0" id="giotto-310-20221201">Giotto 3.1.0 (2022/12/01)<a class="anchor" aria-label="anchor" href="#giotto-310-20221201"></a></h2>
 <div class="section level3">
 <h3 id="added-3-1-0">Added<a class="anchor" aria-label="anchor" href="#added-3-1-0"></a></h3>
-<ul><li>New <code><a href="https://rdrr.io/r/methods/new.html" class="external-link">initialize()</a></code> generic that calls <code><a href="https://rdrr.io/pkg/data.table/man/truelength.html" class="external-link">setalloccol()</a></code> for data.table*based S4 subobjects to allow setting by reference</li>
+<ul><li>New <code><a href="https://rdrr.io/r/methods/new.html" class="external-link">initialize()</a></code> generic that calls <code><a href="https://rdatatable.gitlab.io/data.table/reference/truelength.html" class="external-link">setalloccol()</a></code> for data.table*based S4 subobjects to allow setting by reference</li>
 <li>New <code>spatUnit</code>, <code>spatUnit&lt;*</code>, <code>featType</code>, and <code>featType&lt;*</code> feat type generics for S4 subobjects for setting the relevant slots</li>
 <li>Add <code><a href="https://drieslab.github.io/GiottoClass/reference/hexVertices.html" class="external-link">hexVertices()</a></code> to polygon shape array generation functionality</li>
 </ul></div>

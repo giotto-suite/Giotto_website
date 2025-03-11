@@ -321,6 +321,12 @@
 <li>
           <a href="../articles/feature_aggregation.html">Feature Aggregation</a>
         </li>
+        <li>
+          <a href="../articles/normalization.html">Normalization and Scaling</a>
+        </li>
+        <li>
+          <a href="../articles/process_giotto.html">Process Giotto convenience function</a>
+        </li>
       </ul>
 </li>
     <li class="divider">
@@ -329,9 +335,6 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Analysis</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../articles/process_giotto.html">Process Giotto convenience function</a>
-        </li>
-        <li>
           <a href="../articles/hvf.html">Detection of Highly Variable Features</a>
         </li>
         <li>
@@ -770,7 +773,7 @@ file per tile<a class="anchor" aria-label="anchor" href="#process-giotto-point-f
 <span></span>
 <span><span class="co">##Spatial coordinates</span></span>
 <span><span class="va">spatial_coords_Dir</span> <span class="op">&lt;-</span> <span class="st">"/path/to/extractCoord.sh/results/spatialcoordinates.txt"</span></span>
-<span><span class="va">spatial_coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="st">"spatial_coords_Dir"</span><span class="op">)</span></span>
+<span><span class="va">spatial_coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="st">"spatial_coords_Dir"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">spatial_coords</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HDMI"</span>,<span class="st">"Lane"</span>,<span class="st">"Tile"</span>,<span class="st">"X"</span>,<span class="st">"Y"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">##Prepare Giotto Point</span></span>
@@ -779,14 +782,14 @@ file per tile<a class="anchor" aria-label="anchor" href="#process-giotto-point-f
 <span><span class="va">expr_matrix_tile</span> <span class="op">&lt;-</span> <span class="va">expr_matrix</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">expr_matrix</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">spatial_coords_tile</span><span class="op">$</span><span class="va">HDMI</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># convert expression matrix to minimal data.table object</span></span>
-<span><span class="va">matrix_tile_dt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="fu">Matrix</span><span class="fu">::</span><span class="fu">summary</span><span class="op">(</span><span class="va">expr_matrix_tile</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">matrix_tile_dt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="fu">Matrix</span><span class="fu">::</span><span class="fu">summary</span><span class="op">(</span><span class="va">expr_matrix_tile</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">genes</span> <span class="op">&lt;-</span> <span class="va">expr_matrix_tile</span><span class="op">@</span><span class="va">Dimnames</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="va">expr_matrix_tile</span><span class="op">@</span><span class="va">Dimnames</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">matrix_tile_dt</span><span class="op">[</span>, <span class="va">gene</span> <span class="op">:=</span> <span class="va">genes</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">matrix_tile_dt</span><span class="op">[</span>, <span class="va">hdmi</span> <span class="op">:=</span> <span class="va">samples</span><span class="op">[</span><span class="va">j</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># merge data.table matrix and spatial coordinates to create input for Giotto Polygons</span></span>
-<span><span class="va">gpoints</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/merge.html" class="external-link">merge.data.table</a></span><span class="op">(</span><span class="va">matrix_tile_dt</span>, </span>
+<span><span class="va">gpoints</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/merge.html" class="external-link">merge.data.table</a></span><span class="op">(</span><span class="va">matrix_tile_dt</span>, </span>
 <span>                            <span class="va">spatial_coords_tile</span>, </span>
 <span>                            by.x <span class="op">=</span> <span class="st">"hdmi"</span>, by.y <span class="op">=</span> <span class="st">"HDMI"</span><span class="op">)</span></span>
 <span></span>
@@ -805,7 +808,7 @@ the x and y axis.</p>
 <code class="sourceCode R"><span><span class="co"># check total counts per hdmi</span></span>
 <span><span class="va">gpoints_aggr</span> <span class="op">&lt;-</span> <span class="va">gpoints</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">counts</span><span class="op">)</span>, by <span class="op">=</span> <span class="fu">.</span><span class="op">(</span><span class="va">hdmi</span>, <span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gpoints_aggr</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hdmi"</span>,<span class="st">"x"</span>,<span class="st">"y"</span>,<span class="st">"total_counts"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">gpoints_aggr</span>, <span class="op">-</span><span class="va">total_counts</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">gpoints_aggr</span>, <span class="op">-</span><span class="va">total_counts</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">pl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">pl</span> <span class="op">&lt;-</span> <span class="va">pl</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">gpoints_aggr</span><span class="op">[</span><span class="va">total_counts</span> <span class="op">&lt;</span> <span class="fl">1000</span> <span class="op">&amp;</span> <span class="va">total_counts</span> <span class="op">&gt;</span> <span class="fl">8</span><span class="op">]</span>, </span>
@@ -878,7 +881,7 @@ transcript file.</p>
 <span><span class="va">gpoints_extra</span><span class="op">[</span>, <span class="va">y</span> <span class="op">:=</span> <span class="va">y</span> <span class="op">+</span> <span class="va">jitter_y</span><span class="op">]</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># add subcellular information</span></span>
-<span><span class="va">seqscope</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObjectSubcellular.html" class="external-link">createGiottoObjectSubcellular</a></span><span class="op">(</span>gpoints <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">gpoints_extra</span><span class="op">[</span>,<span class="fu">.</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">gene</span>, <span class="va">hdmi</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>,</span>
+<span><span class="va">seqscope</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObjectSubcellular</a></span><span class="op">(</span>gpoints <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">gpoints_extra</span><span class="op">[</span>,<span class="fu">.</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">gene</span>, <span class="va">hdmi</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>                                         gpolygons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">final_polygons</span><span class="op">)</span>,</span>
 <span>                                         instructions <span class="op">=</span> <span class="va">instructions</span><span class="op">)</span></span>
 <span></span>

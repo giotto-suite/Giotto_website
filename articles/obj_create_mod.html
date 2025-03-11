@@ -321,6 +321,12 @@
 <li>
           <a href="../articles/feature_aggregation.html">Feature Aggregation</a>
         </li>
+        <li>
+          <a href="../articles/normalization.html">Normalization and Scaling</a>
+        </li>
+        <li>
+          <a href="../articles/process_giotto.html">Process Giotto convenience function</a>
+        </li>
       </ul>
 </li>
     <li class="divider">
@@ -329,9 +335,6 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Analysis</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../articles/process_giotto.html">Process Giotto convenience function</a>
-        </li>
-        <li>
           <a href="../articles/hvf.html">Detection of Highly Variable Features</a>
         </li>
         <li>
@@ -648,9 +651,9 @@ loading steps<a class="anchor" aria-label="anchor" href="#abbreviated-data-loadi
 <span></span>
 <span><span class="va">mini_viz_poly_path</span> <span class="op">&lt;-</span> <span class="fu">mini_viz_raw</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"cell_boundaries"</span>, <span class="st">"z0_polygons.gz"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">mini_viz_tx_path</span> <span class="op">&lt;-</span> <span class="fu">mini_viz_raw</span><span class="op">(</span><span class="st">"vizgen_transcripts.gz"</span><span class="op">)</span></span>
-<span><span class="va">poly_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">mini_viz_poly_path</span><span class="op">)</span></span>
+<span><span class="va">poly_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">mini_viz_poly_path</span><span class="op">)</span></span>
 <span><span class="va">viz_gpoly</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygon</a></span><span class="op">(</span><span class="va">poly_dt</span><span class="op">)</span></span>
-<span><span class="va">tx_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">mini_viz_tx_path</span><span class="op">)</span></span>
+<span><span class="va">tx_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">mini_viz_tx_path</span><span class="op">)</span></span>
 <span><span class="va">tx_dt</span><span class="op">[</span>, <span class="va">global_y</span> <span class="op">:=</span> <span class="op">-</span><span class="va">global_y</span><span class="op">]</span> <span class="co"># flip values to match polys </span></span>
 <span><span class="va">viz_gpoints</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPoints.html" class="external-link">createGiottoPoints</a></span><span class="op">(</span><span class="va">tx_dt</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -676,12 +679,12 @@ features      : rna
 
 Use objHistory() to see steps and params used</code></pre>
 <p>This is essentially the same object as the one created through
-<code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObjectSubcellular.html" class="external-link">createGiottoObjectSubcellular()</a></code> as shown in the previously
+<code><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObjectSubcellular()</a></code> as shown in the previously
 mentioned tutorial.</p>
 <p>Appending additional information in this manner can be used both when
 objects are created from scratch using <code><a href="https://drieslab.github.io/GiottoClass/reference/giotto-class.html" class="external-link">giotto()</a></code> and when
 they are created through more guided approaches such as
-<code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObject.html" class="external-link">createGiottoObject()</a></code> and technology-specific convenience
+<code><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject()</a></code> and technology-specific convenience
 functions. This method of object creation and modification can be
 helpful for editing the object, adding additional modalities, or setting
 up objects for custom workflows.</p>

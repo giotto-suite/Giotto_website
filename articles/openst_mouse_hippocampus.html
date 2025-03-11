@@ -321,6 +321,12 @@
 <li>
           <a href="../articles/feature_aggregation.html">Feature Aggregation</a>
         </li>
+        <li>
+          <a href="../articles/normalization.html">Normalization and Scaling</a>
+        </li>
+        <li>
+          <a href="../articles/process_giotto.html">Process Giotto convenience function</a>
+        </li>
       </ul>
 </li>
     <li class="divider">
@@ -329,9 +335,6 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Analysis</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../articles/process_giotto.html">Process Giotto convenience function</a>
-        </li>
-        <li>
           <a href="../articles/hvf.html">Detection of Highly Variable Features</a>
         </li>
         <li>
@@ -900,11 +903,11 @@ clusters<a class="anchor" aria-label="anchor" href="#spatially-informed-clusters
 <code class="sourceCode R"><span><span class="co"># top 30 genes per spatial co-expression cluster</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">spat_cor_netw_DT</span><span class="op">$</span><span class="va">cor_clusters</span><span class="op">$</span><span class="va">spat_netw_clus</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">coexpr_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span></span>
+<span><span class="va">coexpr_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span></span>
 <span>  genes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">spat_cor_netw_DT</span><span class="op">$</span><span class="va">cor_clusters</span><span class="op">$</span><span class="va">spat_netw_clus</span><span class="op">)</span>,</span>
 <span>  cluster <span class="op">=</span> <span class="va">spat_cor_netw_DT</span><span class="op">$</span><span class="va">cor_clusters</span><span class="op">$</span><span class="va">spat_netw_clus</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">coexpr_dt</span>, <span class="va">cluster</span><span class="op">)</span></span>
+<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">coexpr_dt</span>, <span class="va">cluster</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">top30_coexpr_dt</span> <span class="op">&lt;-</span> <span class="va">coexpr_dt</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">30</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">cluster</span><span class="op">]</span></span>
 <span></span>

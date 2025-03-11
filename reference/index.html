@@ -242,14 +242,17 @@
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/feature_aggregation.html">Feature Aggregation</a>
         </li>
+        <li>
+          <a href="../articles/normalization.html">Normalization and Scaling</a>
+        </li>
+        <li>
+          <a href="../articles/process_giotto.html">Process Giotto convenience function</a>
+        </li>
       </ul></li>
     <li class="divider">
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/process_giotto.html">Process Giotto convenience function</a>
-        </li>
-        <li>
           <a href="../articles/hvf.html">Detection of Highly Variable Features</a>
         </li>
         <li>
@@ -691,7 +694,7 @@
           <p class="section-desc"></p><p>Functions to help to import raw spatial data.</p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObject.html" class="external-link">createGiottoObject()</a></code> </p>
+          <p><code><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject()</a></code> <code><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObjectSubcellular()</a></code> </p>
         </td>
         <td><p>Create a giotto object (from GiottoClass)</p></td>
       </tr><tr><td>
@@ -703,9 +706,9 @@
         </td>
         <td><p>Create 10x VisiumHD Giotto Object</p></td>
       </tr><tr><td>
-          <p><code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObjectSubcellular.html" class="external-link">createGiottoObjectSubcellular()</a></code> </p>
+          <p><code><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject()</a></code> <code><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObjectSubcellular()</a></code> </p>
         </td>
-        <td><p>Create a giotto object from subcellular data (from GiottoClass)</p></td>
+        <td><p>Create a giotto object (from GiottoClass)</p></td>
       </tr><tr><td>
           <p><code><a href="createGiottoCosMxObject.html">createGiottoCosMxObject()</a></code> </p>
         </td>
@@ -803,7 +806,7 @@
           <p class="section-desc"></p><p>Functions to extract report tables of information</p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="https://drieslab.github.io/GiottoClass/reference/spatValues.html" class="external-link">spatValues()</a></code> </p>
+          <p><code><a href="https://drieslab.github.io/GiottoClass/reference/spatValues.html" class="external-link">spatValues()</a></code> <code><a href="https://drieslab.github.io/GiottoClass/reference/spatValues.html" class="external-link">svkey()</a></code> </p>
         </td>
         <td><p>Giotto object spatial values (from GiottoClass)</p></td>
       </tr><tr><td>
@@ -1007,8 +1010,8 @@
         </td>
         <td><p>showPatternGenes</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="modify-giotto-object">Modify Giotto Object <a href="#modify-giotto-object" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>Modifications to the Giotto objects.</p>
+          <h2 id="data-processing">Data Processing <a href="#data-processing" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p><p>Data Processing Functions</p>
         </th>
       </tr></tbody><tbody><tr><td>
           <p><code><a href="filterGiotto.html">filterGiotto()</a></code> </p>
@@ -1023,6 +1026,82 @@
         </td>
         <td><p>filterDistributions</p></td>
       </tr><tr><td>
+          <p><code><a href="normalizeGiotto.html">normalizeGiotto()</a></code> </p>
+        </td>
+        <td><p>normalizeGiotto</p></td>
+      </tr><tr><td>
+          <p><code><a href="adjustGiottoMatrix.html">adjustGiottoMatrix()</a></code> </p>
+        </td>
+        <td><p>Adjust expression values</p></td>
+      </tr><tr><td>
+          <p><code><a href="process_param.html">normParam()</a></code> <code><a href="process_param.html">scaleParam()</a></code> <code><a href="process_param.html">adjustParam()</a></code> </p>
+        </td>
+        <td><p>Data Processing Parameter Classes</p></td>
+      </tr><tr><td>
+          <p><code><a href="norm_default.html">norm_default</a></code> </p>
+        </td>
+        <td><p>Default Giotto Normalization</p></td>
+      </tr><tr><td>
+          <p><code><a href="norm_library.html">norm_library</a></code> </p>
+        </td>
+        <td><p>Library Size Normalization</p></td>
+      </tr><tr><td>
+          <p><code><a href="norm_log.html">norm_log</a></code> </p>
+        </td>
+        <td><p>Log Normalization</p></td>
+      </tr><tr><td>
+          <p><code><a href="norm_arcsinh.html">norm_arcsinh</a></code> </p>
+        </td>
+        <td><p>Arcsinh Normalization</p></td>
+      </tr><tr><td>
+          <p><code><a href="norm_pearson.html">norm_pearson</a></code> </p>
+        </td>
+        <td><p>Lause/Kobak Pearson Residuals Normalization</p></td>
+      </tr><tr><td>
+          <p><code><a href="norm_osmfish.html">norm_osmfish</a></code> </p>
+        </td>
+        <td><p>osmFISH Normalization</p></td>
+      </tr><tr><td>
+          <p><code><a href="norm_quantile.html">norm_quantile</a></code> </p>
+        </td>
+        <td><p>Quantile Normalization</p></td>
+      </tr><tr><td>
+          <p><code><a href="norm_tfidf.html">norm_tfidf</a></code> </p>
+        </td>
+        <td><p>TF-IDF Normalization</p></td>
+      </tr><tr><td>
+          <p><code><a href="norm_l2.html">norm_l2</a></code> </p>
+        </td>
+        <td><p>L2 Normalization</p></td>
+      </tr><tr><td>
+          <p><code><a href="scale_default.html">scale_default</a></code> </p>
+        </td>
+        <td><p>Default Giotto Scaling</p></td>
+      </tr><tr><td>
+          <p><code><a href="scale_zscore.html">scale_zscore</a></code> </p>
+        </td>
+        <td><p>Z Score Scaling</p></td>
+      </tr><tr><td>
+          <p><code><a href="adjust_limma.html">adjust_limma</a></code> </p>
+        </td>
+        <td><p>Limma Batch Correction</p></td>
+      </tr><tr><td>
+          <p><code><a href="processExpression.html">processExpression()</a></code> </p>
+        </td>
+        <td><p>Expression Data Processing</p></td>
+      </tr><tr><td>
+          <p><code><a href="processData.html">processData(<i>&lt;exprObj&gt;</i>,<i>&lt;list&gt;</i>)</a></code> <code><a href="processData.html">processData(<i>&lt;exprObj&gt;</i>,<i>&lt;normParam&gt;</i>)</a></code> <code><a href="processData.html">processData(<i>&lt;exprObj&gt;</i>,<i>&lt;scaleParam&gt;</i>)</a></code> <code><a href="processData.html">processData(<i>&lt;exprObj&gt;</i>,<i>&lt;adjustParam&gt;</i>)</a></code> <code><a href="processData.html">processData(<i>&lt;allMatrix&gt;</i>,<i>&lt;list&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Composable Data Processing</p></td>
+      </tr><tr><td>
+          <p><code><a href="processGiotto.html">processGiotto()</a></code> </p>
+        </td>
+        <td><p>processGiotto</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="modify-giotto-object">Modify Giotto Object <a href="#modify-giotto-object" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p><p>Modifications to the Giotto objects.</p>
+        </th>
+      </tr></tbody><tbody><tr><td>
           <p><code><a href="https://drieslab.github.io/GiottoClass/reference/subsetGiotto.html" class="external-link">subsetGiotto()</a></code> </p>
         </td>
         <td><p>subsetGiotto (from GiottoClass)</p></td>
@@ -1038,14 +1117,6 @@
           <p><code><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects()</a></code> </p>
         </td>
         <td><p>Join giotto objects (from GiottoClass)</p></td>
-      </tr><tr><td>
-          <p><code><a href="normalizeGiotto.html">normalizeGiotto()</a></code> </p>
-        </td>
-        <td><p>normalizeGiotto</p></td>
-      </tr><tr><td>
-          <p><code><a href="adjustGiottoMatrix.html">adjustGiottoMatrix()</a></code> </p>
-        </td>
-        <td><p>Adjust expression values</p></td>
       </tr><tr><td>
           <p><code><a href="https://drieslab.github.io/GiottoClass/reference/annotateGiotto.html" class="external-link">annotateGiotto()</a></code> </p>
         </td>
@@ -1090,10 +1161,6 @@
           <p><code><a href="addCellIntMetadata.html">addCellIntMetadata()</a></code> </p>
         </td>
         <td><p>addCellIntMetadata</p></td>
-      </tr><tr><td>
-          <p><code><a href="processGiotto.html">processGiotto()</a></code> </p>
-        </td>
-        <td><p>processGiotto</p></td>
       </tr><tr><td>
           <p><code><a href="filterCPG.html">filterCPG()</a></code> </p>
         </td>

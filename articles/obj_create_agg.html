@@ -321,6 +321,12 @@
 <li>
           <a href="../articles/feature_aggregation.html">Feature Aggregation</a>
         </li>
+        <li>
+          <a href="../articles/normalization.html">Normalization and Scaling</a>
+        </li>
+        <li>
+          <a href="../articles/process_giotto.html">Process Giotto convenience function</a>
+        </li>
       </ul>
 </li>
     <li class="divider">
@@ -329,9 +335,6 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Analysis</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../articles/process_giotto.html">Process Giotto convenience function</a>
-        </li>
-        <li>
           <a href="../articles/hvf.html">Detection of Highly Variable Features</a>
         </li>
         <li>
@@ -660,7 +663,7 @@ use<a class="anchor" aria-label="anchor" href="#download-data-to-use"></a>
 Suite<a class="anchor" aria-label="anchor" href="#read-data-into-giotto-suite"></a>
 </h2>
 <p>Aggregate data (matrix and spatial locations -based data) can be read
-in using <code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObject.html" class="external-link">createGiottoObject()</a></code>. There are two examples. Data
+in using <code><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject()</a></code>. There are two examples. Data
 formatting guidelines are shown below this code block.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Example 1.</span></span>
@@ -668,7 +671,7 @@ formatting guidelines are shown below this code block.</p>
 <span><span class="va">osm_exprs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"osmFISH_prep_expression.txt"</span><span class="op">)</span></span>
 <span><span class="va">osm_locs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"osmFISH_prep_cell_coordinates.txt"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">minimum_gobject1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObject.html" class="external-link">createGiottoObject</a></span><span class="op">(</span></span>
+<span><span class="va">minimum_gobject1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span></span>
 <span>    expression <span class="op">=</span> <span class="va">osm_exprs</span>,</span>
 <span>    spatial_locs <span class="op">=</span> <span class="va">osm_locs</span></span>
 <span><span class="op">)</span></span>
@@ -691,9 +694,9 @@ Use objHistory() to see steps and params used</code></pre>
 <span><span class="co"># Create a giotto object using objects already loaded into workspace</span></span>
 <span><span class="co"># readExprMatrix will load matrix formats into memory as a Matrix format</span></span>
 <span><span class="va">expression_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/readExprMatrix.html" class="external-link">readExprMatrix</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">osm_exprs</span><span class="op">)</span> <span class="co"># fast method to read expression matrix</span></span>
-<span><span class="va">cell_locations</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">osm_locs</span><span class="op">)</span></span>
+<span><span class="va">cell_locations</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">osm_locs</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">minimum_gobject2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObject.html" class="external-link">createGiottoObject</a></span><span class="op">(</span></span>
+<span><span class="va">minimum_gobject2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span></span>
 <span>    expression <span class="op">=</span> <span class="va">expression_matrix</span>,</span>
 <span>    spatial_locs <span class="op">=</span> <span class="va">cell_locations</span></span>
 <span><span class="op">)</span></span>
@@ -765,7 +768,7 @@ object creation by using a named list.</p>
 <span><span class="co"># Provide multiple expression matrices at once to the Giotto Object</span></span>
 <span><span class="co"># If these matrices are stored in files rather than in the workspace,</span></span>
 <span><span class="co"># file paths may be provided instead of variables</span></span>
-<span><span class="va">multi_expr_gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObject.html" class="external-link">createGiottoObject</a></span><span class="op">(</span></span>
+<span><span class="va">multi_expr_gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span></span>
 <span>    expression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span> <span class="co"># named list of multiple expression matrices</span></span>
 <span>        raw <span class="op">=</span> <span class="va">expression_matrix</span>,</span>
 <span>        scaled <span class="op">=</span> <span class="va">scaled_matrix</span>,</span>

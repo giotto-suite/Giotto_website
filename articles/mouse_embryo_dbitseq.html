@@ -321,6 +321,12 @@
 <li>
           <a href="../articles/feature_aggregation.html">Feature Aggregation</a>
         </li>
+        <li>
+          <a href="../articles/normalization.html">Normalization and Scaling</a>
+        </li>
+        <li>
+          <a href="../articles/process_giotto.html">Process Giotto convenience function</a>
+        </li>
       </ul>
 </li>
     <li class="divider">
@@ -329,9 +335,6 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Analysis</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../articles/process_giotto.html">Process Giotto convenience function</a>
-        </li>
-        <li>
           <a href="../articles/hvf.html">Detection of Highly Variable Features</a>
         </li>
         <li>
@@ -678,7 +681,7 @@ object<a class="anchor" aria-label="anchor" href="#create-giotto-object"></a>
 <span>                                         show_plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                                         return_plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">giottoObject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObject.html" class="external-link">createGiottoObject</a></span><span class="op">(</span>expression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>raw <span class="op">=</span> <span class="va">rna_expression</span>,</span>
+<span><span class="va">giottoObject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span>expression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>raw <span class="op">=</span> <span class="va">rna_expression</span>,</span>
 <span>                                                     raw <span class="op">=</span> <span class="va">protein_expression</span><span class="op">)</span>,</span>
 <span>                                   expression_feat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rna"</span>, <span class="st">"protein"</span><span class="op">)</span>,</span>
 <span>                                   spatial_locs <span class="op">=</span> <span class="va">spatial_coords</span>,</span>
@@ -1018,13 +1021,13 @@ scRNAseq<a class="anchor" aria-label="anchor" href="#preparation-of-the-scrnaseq
 <span></span>
 <span><span class="co"># or run in your terminal: wget https://shendure-web.gs.washington.edu/content/members/cao1025/public/mouse_embryo_atlas/cell_annotate.csv</span></span>
 <span></span>
-<span><span class="va">cell_annotation</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"cell_annotate.csv"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">cell_annotation</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"cell_annotate.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">cell_annotation</span> <span class="op">&lt;-</span> <span class="va">cell_annotation</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sample"</span>, <span class="st">"Total_mRNAs"</span>, <span class="st">"num_genes_expressed"</span>, <span class="st">"Main_cell_type"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">cell_annotation</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"cell_ID"</span></span>
 <span></span>
 <span><span class="va">cell_annotation</span> <span class="op">&lt;-</span> <span class="va">cell_annotation</span><span class="op">[</span><span class="va">cell_annotation</span><span class="op">$</span><span class="va">cell_ID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gene_count_cleaned_sampled_100k</span><span class="op">)</span>,<span class="op">]</span></span></code></pre></div>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sc_giotto</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObject.html" class="external-link">createGiottoObject</a></span><span class="op">(</span>expression <span class="op">=</span> <span class="va">gene_count_cleaned_sampled_100k</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">sc_giotto</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span>expression <span class="op">=</span> <span class="va">gene_count_cleaned_sampled_100k</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sc_giotto</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/subsetGiotto.html" class="external-link">subsetGiotto</a></span><span class="op">(</span><span class="va">sc_giotto</span>,</span>
 <span>                          cell_ids <span class="op">=</span> <span class="va">cell_annotation</span><span class="op">$</span><span class="va">cell_ID</span><span class="op">)</span></span>

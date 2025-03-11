@@ -321,6 +321,12 @@
 <li>
           <a href="../articles/feature_aggregation.html">Feature Aggregation</a>
         </li>
+        <li>
+          <a href="../articles/normalization.html">Normalization and Scaling</a>
+        </li>
+        <li>
+          <a href="../articles/process_giotto.html">Process Giotto convenience function</a>
+        </li>
       </ul>
 </li>
     <li class="divider">
@@ -329,9 +335,6 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Analysis</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../articles/process_giotto.html">Process Giotto convenience function</a>
-        </li>
-        <li>
           <a href="../articles/hvf.html">Detection of Highly Variable Features</a>
         </li>
         <li>
@@ -739,7 +742,7 @@ data<a class="anchor" aria-label="anchor" href="#tissue-positions-data"></a>
 <span>    <span class="st">"/Human_Colorectal_Cancer_workshop/square_002um/spatial/tissue_positions.parquet"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">tissue_positions</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="fu">arrow</span><span class="fu">::</span><span class="fu">read_parquet</span><span class="op">(</span><span class="va">tissue_positions_path</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">tissue_positions</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="fu">arrow</span><span class="fu">::</span><span class="fu">read_parquet</span><span class="op">(</span><span class="va">tissue_positions_path</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4" number="4.2.3">
 <h4 id="merge-expression-and-2-micron-position-data">
@@ -748,14 +751,14 @@ and 2 micron position data<a class="anchor" aria-label="anchor" href="#merge-exp
 </h4>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># convert expression matrix to minimal data.frame or data.table object</span></span>
-<span><span class="va">matrix_tile_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="fu">Matrix</span><span class="fu">::</span><span class="fu">summary</span><span class="op">(</span><span class="va">expr_results</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">matrix_tile_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="fu">Matrix</span><span class="fu">::</span><span class="fu">summary</span><span class="op">(</span><span class="va">expr_results</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">genes</span> <span class="op">&lt;-</span> <span class="va">expr_results</span><span class="op">@</span><span class="va">Dimnames</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="va">expr_results</span><span class="op">@</span><span class="va">Dimnames</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">matrix_tile_dt</span><span class="op">[</span>, <span class="va">gene</span> <span class="op">:=</span> <span class="va">genes</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">matrix_tile_dt</span><span class="op">[</span>, <span class="va">pixel</span> <span class="op">:=</span> <span class="va">samples</span><span class="op">[</span><span class="va">j</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># merge data.table matrix and spatial coordinates to create input for Giotto Polygons</span></span>
-<span><span class="va">expr_pos_data</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/merge.html" class="external-link">merge.data.table</a></span><span class="op">(</span><span class="va">matrix_tile_dt</span>,</span>
+<span><span class="va">expr_pos_data</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/merge.html" class="external-link">merge.data.table</a></span><span class="op">(</span><span class="va">matrix_tile_dt</span>,</span>
 <span>    <span class="va">tissue_positions</span>,</span>
 <span>    by.x <span class="op">=</span> <span class="st">"pixel"</span>,</span>
 <span>    by.y <span class="op">=</span> <span class="st">"barcode"</span></span>
@@ -810,7 +813,7 @@ and polygons to create Giotto object<a class="anchor" aria-label="anchor" href="
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># gpoints provides spatial gene expression information</span></span>
 <span><span class="co"># gpolygons provides spatial unit information (here = hexagon tiles)</span></span>
-<span><span class="va">visiumHD</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoObjectSubcellular.html" class="external-link">createGiottoObjectSubcellular</a></span><span class="op">(</span></span>
+<span><span class="va">visiumHD</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObjectSubcellular</a></span><span class="op">(</span></span>
 <span>    gpoints <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"rna"</span> <span class="op">=</span> <span class="va">giotto_points</span><span class="op">)</span>,</span>
 <span>    gpolygons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"hex400"</span> <span class="op">=</span> <span class="va">hexbin400</span><span class="op">)</span>,</span>
 <span>    instructions <span class="op">=</span> <span class="va">instructions</span></span>
@@ -1700,7 +1703,7 @@ organization resolution.</p>
 <span>                      iter.max <span class="op">=</span> <span class="fl">1000</span>, </span>
 <span>                      nstart <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">prop_kmeansDT</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span>cell_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">prop_kmeans</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span>, </span>
+<span><span class="va">prop_kmeansDT</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span>cell_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">prop_kmeans</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span>, </span>
 <span>                                        niche <span class="op">=</span> <span class="va">prop_kmeans</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">visiumHD_subset</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addCellMetadata.html" class="external-link">addCellMetadata</a></span><span class="op">(</span><span class="va">visiumHD_subset</span>,</span>

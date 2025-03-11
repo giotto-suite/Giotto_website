@@ -243,14 +243,17 @@ based on scran's implementation of findMarkers."><!-- mathjax --><script src="ht
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/feature_aggregation.html">Feature Aggregation</a>
         </li>
+        <li>
+          <a href="../articles/normalization.html">Normalization and Scaling</a>
+        </li>
+        <li>
+          <a href="../articles/process_giotto.html">Process Giotto convenience function</a>
+        </li>
       </ul></li>
     <li class="divider">
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/process_giotto.html">Process Giotto convenience function</a>
-        </li>
-        <li>
           <a href="../articles/hvf.html">Detection of Highly Variable Features</a>
         </li>
         <li>
@@ -573,10 +576,6 @@ based on scran's implementation of findMarkers.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> python already initialized in this session</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  active environment : '/usr/bin/python3'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  python version : 3.12</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> checking default envname 'giotto_env'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> a system default python environment was found</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Using python path:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>  "/usr/bin/python3"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">findScranMarkers_one_vs_all</span><span class="op">(</span><span class="va">g</span>, cluster_column <span class="op">=</span> <span class="st">"leiden_clus"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> using 'Scran' to detect marker feats. If used in published</span>
@@ -585,82 +584,19 @@ based on scran's implementation of findMarkers.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>       data with Bioconductor.'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>       F1000Res., 5, 2122. doi: 10.12688/f1000research.9501.2. </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> start with cluster  1start with cluster  2start with cluster  3start with cluster  4start with cluster  5start with cluster  6start with cluster  7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       Top     p.value        FDR     logFC    feats cluster ranking</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;int&gt;       &lt;num&gt;      &lt;num&gt;     &lt;num&gt;   &lt;char&gt;  &lt;char&gt;   &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  1:     1 0.000354327 0.19546782 0.4994571   Arpp19       1       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  2:     4 0.002932856 0.44588387 0.5955190    Pde1a       1       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  3:     5 0.003516434 0.44588387 0.5293216   Ipcef1       1       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  4:     6 0.008882113 0.71268782 0.4552590   Camk2d       1       6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  5:     7 0.013139650 0.71268782 0.4803266     Ngef       1       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  6:    10 0.016171727 0.71268782 0.4738020     Tbr1       1       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  7:    15 0.018401100 0.71268782 0.4359583     Myl4       1       8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  8:    16 0.020925524 0.71268782 0.4179815    Nptxr       1      10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  9:    17 0.021056054 0.71268782 0.4410319    Lamp5       1       7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10:    33 0.041136065 0.76110482 0.4264191    Stx1a       1       9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11:     1 0.002208825 0.53711117 0.5832163    Prr18       2       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12:     2 0.003332138 0.53711117 0.5181029  Carhsp1       2       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13:     3 0.004700090 0.53711117 0.4810502     Tprn       2       7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14:     4 0.004921900 0.53711117 0.4670464    Padi2       2       9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15:     5 0.005490721 0.53711117 0.4393166    S1pr5       2      11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16:     7 0.006812177 0.53711117 0.3894486    Clic1       2      22</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17:     8 0.007043215 0.53711117 0.4882910   Tmbim1       2       6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18:     9 0.007624607 0.53711117 0.5138513  Tmem88b       2       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19:    10 0.009028757 0.54975200 0.3764765    Cryab       2      26</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20:    12 0.011597115 0.54975200 0.4520588   Phldb1       2      10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21:    13 0.012453659 0.54975200 0.4894421    Grb14       2       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22:    15 0.015239247 0.54975200 0.4697248 Ppp1r14a       2       8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23:    27 0.028652205 0.54975200 0.5009713    Tnnt1       2       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24:    11 0.015565349 0.81477908 0.3794660     Bcam       3       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25:    20 0.026477390 0.81477908 0.4633258     Grm1       3       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26:    22 0.028812026 0.83031020 0.4163589    Itih3       3       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27:    55 0.091050217 0.96701893 0.3757642    Plcb4       3       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28:    61 0.100930232 0.96701893 0.4724775    Prkcd       3       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29:    64 0.110921899 0.96701893 0.3306064  Aldh1a1       3       7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30:    65 0.111962853 0.96701893 0.3296060      Vim       3       8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31:    66 0.114585832 0.96701893 0.2897821    Prox1       3      10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32:    73 0.133643639 0.96701893 0.3633652     Zic1       3       6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33:   107 0.175926132 0.96701893 0.3074804    Vamp1       3       9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34:     7 0.003429921 0.28637427 0.6202705    Pcdh8       4       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35:     9 0.004989616 0.34768541 0.5338170      Gss       4       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 36:    10 0.005483997 0.34768541 0.6350344     Cygb       4       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37:    11 0.008053972 0.41605624 0.5981233   Sowaha       4       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 38:    25 0.021696009 0.52964105 0.4588221   Homer3       4       9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39:    31 0.027383336 0.53917299 0.5491473    Wipf3       4       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 40:    33 0.029708388 0.53917299 0.5052576    C1ql2       4       7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 41:    38 0.033496196 0.53917299 0.5205546    Calb1       4       6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 42:    45 0.038269376 0.53917299 0.4568997   Vstm2l       4      10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 43:    73 0.076839208 0.66734326 0.4669022    Synpr       4       8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 44:    10 0.032781719 0.96693210 0.4073136  Ppp1r1a       5       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 45:    13 0.035476975 0.96693210 0.3952556 Serpinh1       5       7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 46:    16 0.039171568 0.96693210 0.4033382   Cacng5       5       6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 47:    17 0.041923751 0.96693210 0.3813645   Suclg2       5       9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 48:    23 0.050830947 0.96693210 0.4847041   Bcl11b       5       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49:    29 0.065093223 0.96693210 0.3870576    Grb14       5       8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 50:    35 0.070743235 0.96693210 0.4102664  Pitpnm2       5       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 51:    40 0.091234404 0.96693210 0.4110672   Sowaha       5       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 52:    60 0.118368025 0.96693210 0.4153359  Fam163b       5       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 53:    64 0.121852917 0.96693210 0.3794176     Rora       5      10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 54:    13 0.001389098 0.06774522 0.8375194    Smim1       6       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 55:    20 0.008407944 0.24881180 0.6904204      Ttr       6       7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 56:    25 0.010250009 0.24881180 0.8264599     Hopx       6       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 57:    30 0.012423050 0.24976015 0.7589815  Siglech       6       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 58:    33 0.013357161 0.24976015 0.7804225    Cldn5       6       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 59:    39 0.022190202 0.36073304 0.6920161   Homer2       6       6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 60:    44 0.029494591 0.42499024 0.6463815    Evi2a       6       8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 61:    45 0.030635500 0.43137095 0.7611254    Cabp7       6       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 62:    47 0.032523726 0.43137095 0.6352972     Vsir       6       9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 63:    51 0.036742690 0.45676206 0.6266049  Cyp2d22       6      10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 64:    77 0.019024942 0.15664692 1.0917235     Sypl       7       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 65:    80 0.038112923 0.30204492 1.0720757     Vwa1       7       6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 66:    87 0.065087126 0.46778865 1.0877216    Man1a       7       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 67:    92 0.075133648 0.51776883 1.1714598    Olig2       7       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 68:   103 0.095480764 0.58771655 1.0561925     Gng4       7       7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 69:   104 0.096534827 0.58849116 1.1651781     Myrf       7       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 70:   111 0.112835941 0.64448637 0.9399060   Pbxip1       7      10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 71:   113 0.125182233 0.70234987 1.2522299   Pou3f1       7       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 72:   117 0.133698127 0.72448387 0.9716501     Aspa       7       9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 73:   127 0.179546145 0.89631698 1.0321280     Lmo1       7       8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       Top     p.value        FDR     logFC    feats cluster ranking</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        Top      p.value       FDR      logFC   feats cluster ranking</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;int&gt;        &lt;num&gt;     &lt;num&gt;      &lt;num&gt;  &lt;char&gt;  &lt;char&gt;   &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:     1 0.0003543270 0.1954678  0.4994571  Arpp19       1       3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     2 0.0006166177 0.1954678 -0.1260320 Emilin1       1     531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:     3 0.0009440501 0.1995093 -0.3386237    Sod3       1     632</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:     4 0.0029328557 0.4458839  0.5955190   Pde1a       1       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:     5 0.0035164343 0.4458839  0.5293216  Ipcef1       1       2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 188:   104 0.0965348270 0.5884912  1.1651781    Myrf       7       3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 189:   111 0.1128359409 0.6444864  0.9399060  Pbxip1       7      10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 190:   113 0.1251822332 0.7023499  1.2522299  Pou3f1       7       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 191:   117 0.1336981269 0.7244839  0.9716501    Aspa       7       9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 192:   127 0.1795461454 0.8963170  1.0321280    Lmo1       7       8</span>
 </code></pre></div>
     </div>
   </div>
