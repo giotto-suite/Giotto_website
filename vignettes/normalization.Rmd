@@ -1,0 +1,337 @@
+---
+title: "Data Normalization and Scaling"
+output: 
+  html_document:
+    number_sections: true
+    toc: true
+pkgdown:
+  as_is: true
+vignette: >
+  %\VignetteIndexEntry{Affine Image Registration}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, eval=FALSE}
+# Ensure Giotto Suite is installed.
+if(!"Giotto" %in% installed.packages()) {
+    remotes::install_github("drieslab/GiottoUtils")
+    GiottoUtils::suite_install()
+}
+
+# Ensure the Python environment for Giotto has been installed.
+genv_exists <- Giotto::checkGiottoEnvironment()
+if(!genv_exists){
+  # The following command need only be run once to install the Giotto environment.
+  Giotto::installGiottoEnvironment()
+}
+```
+
+# Expression Value Processing Pipeline
+
+{Giotto} `v4.2.1` and {GiottoClass} `v0.4.7` add a composable framework for
+data normalization and transformation with 2 main components:
+
+* `processExpression()` - `giotto` object-level function for
+**working with the expression values**. Passes to `processData()` after handling
+any `giotto` object-level data extraction/processing.
+    * `processData()` - lower-level generic that handles specific operations at the
+data representation level.
+* Factory functions for method-specific **parameter classes** that both define the operation
+to perform and also contain all relevant parameters in an editable format. For
+the full set of available methods, see `?process_param`
+    * `normParam()` - data normalization
+    * `scaleParam()` - data scaling
+    * `adjustParam()` - matrix adjustments
+
+
+*This workflow supercedes the original `normalizeGiotto()` function.*
+
+## Single Operations
+
+**Performing a simple log2 transform:**
+```{r, eval=FALSE}
+library(Giotto)
+# load example data to use
+g <- GiottoData::loadGiottoMini("visium")
+
+logparam <- normParam("log")
+force(logparam) # class of "logNormParam"
+
+g <- processExpression(g,
+    expression_values = "raw", # (default = "raw") name of expression values to use
+    param = logparam, # parameter object to use
+    name = "log" # name to apply to resulting transformed values
+)
+
+# extract and display values
+force(g[["expression", "log"]])
+```
+
+**Changing params in a parameter class:**
+
+Get param settings in a parameter class using the `$` operator. Available params
+will tab autocomplete. Param definitions are also documented in the help
+pages of specific parameter classes.
+
+See also:
+
+* `?process_param` - central directory of provided processing parameters
+* `?norm_log` - help page for log normalization param
+
+```{r, eval=FALSE}
+# changing a parameter (available param names will autocomplete)
+force(logparam$base)
+logparam$base <- 10 # change to base 10 log
+
+g <- processExpression(g,
+    param = logparam,
+    name = "log10"
+)
+
+# extract and display values
+force(g[["expression", "log10"]])
+```
+
+## Chained Operations
+
+**These operations can additionally be chained together when provided as list:**
+```{r, eval=FALSE}
+g <- processExpression(g, 
+    list(normParam("log"),
+         normParam("library")),
+    name = "log_lib"
+)
+
+# extract and display values
+force(g[["expression", "log_lib"]])
+```
+
+
+# Example workflows
+
+## Default Normalization and Scaling
+
+The default normalization and scaling method as implemented by
+`normalizeGiotto()` is:
+
+1. library normalization
+2. log normalization
+3. zscore scaling along features
+4. zscore scaling along cells/samples/observations
+
+With `processExpression()`, this can be rewritten as either of the two below:
+
+Using "default" params:
+
+```{r, eval=FALSE}
+g <- processExpression(g, 
+    normParam(),
+    name = "normalized"
+)
+
+g <- processExpression(g,
+    expression_values = "normalized",
+    scaleParam(),
+    name = "scaled"
+)
+```
+
+or written out fully:
+
+```{r, eval=FALSE}
+g <- processExpression(g,
+    list(
+        normParam("library"),
+        normParam("log")
+    ),
+    name = "normalized"
+)
+
+g <- processExpression(g,
+    expression_values = "normalized",
+    list(
+        scaleParam("zscore", MARGIN = 1), # along rows (features)
+        scaleParam("zscore", MARGIN = 2) # along cols (samples)
+    ),
+    name = "scaled"
+)
+```
+
+See also:
+
+* `?norm_log`
+* `?norm_library`
+* `?scale_zscore`
+
+## Pearson Residual Normalization
+
+A normalization method described in [Lause, 2021](https://doi.org/10.1186/s13059-021-02451-7),
+designed for detection of highly variable features and dimension reduction/clustering.
+This method includes a z-score-like transformation, so scaling is not recommended after
+this. Using these values for differential gene expression analysis is also not
+recommended.
+
+```{r, eval=FALSE}
+g <- processExpression(g,
+    normParam("pearson"),
+    name = "pearson"
+)
+```
+
+See also:
+
+* `?norm_pearson`
+
+## Arcsinh Transformation with Cofactor C
+
+Arcsinh transformation is commonly used with spatial proteomics/intensity type data.
+It is suited for data with a wide dynamic range and zero/near-zero values and
+preserves detail across multiple orders of magnitude, where a linear or log
+transform would distort important features.
+
+A **cofactor C** controls the transition between linear and logarithmic behaviors.
+With CODEX or CyCIF, `c = 5` is commonly used. `c = 1` or `5` is commonly used with
+IMC.
+
+* Smaller C values (1-3): More aggressive transformation, useful for very wide dynamic ranges
+* Larger C values (5-10): More gentle transformation, preserving more of the original data structure
+
+```{r, eval=FALSE}
+anorm <- normParam("arcsinh")
+anorm$c <- 5 # (this is the default c value)
+
+g <- processExpression(g, list(
+    anorm,
+    scaleParam("zscore", MARGIN = 2) # zscore across samples
+), name = "arcsinh")
+```
+
+See also:
+
+* `?norm_arcsinh`
+* `?scale_zscore`
+
+## TF-IDF Normalization
+
+TF-IDF (Term Frequency-Inverse Document Frequency) is commonly used in ATAC-seq
+data, but is generally helpful in situations where the data is very noisy. This
+normalization method pulls on concepts of natural language processing to
+effectively focus in on features specific to particular samples/cells.
+
+```{r, eval=FALSE}
+g <- processExpression(g, list(
+    normParam("tf-idf"),
+    normParam("l2") # L2 normalization (Euclidean normalization) is commonly performed afterwards
+), name = "tfidf")
+```
+
+See also:
+
+* `?norm_tfidf`
+* `?norm_l2`
+
+# Adding A Custom Method
+
+Processing methods for this framework are defined for the `processData()`
+generic from {GiottoClass} against **parameter class** and **data class**
+combinations. **parameter classes** should inherit from the `processParam`
+class defined in {GiottoClass}
+
+```{r, eval=FALSE}
+library(methods)
+library(GiottoClass)
+
+# parameter class definition
+setClass("custom_threshold", contains = "processParam")
+# method definition
+setMethod("processData",
+    signature(x = "Matrix", param = "custom_threshold"),
+    function(x, param, ...) {
+        # param and ... are unused since this example function doesn't need external params
+        
+        # ************************************************************
+        # function here should return a supported matrix-type output
+        # with the same dimensions
+        # ************************************************************
+        
+        # simple thresholding example
+        x[x < 5] <- 0
+        return(x)
+    }
+)
+
+# run defined operation
+g <- processExpression(g,
+    new("custom_threshold"),
+    name = "thresh5"
+)
+
+# check thresholding worked
+## original
+raw_mat <- g[["expression", "raw"]][[1]][]
+sum(raw_mat > 0 & raw_mat < 5) # 134986
+
+## thresholded
+thresh_mat <- g[["expression", "thresh5"]][[1]][]
+sum(thresh_mat > 0 & thresh_mat < 5) # 0
+```
+
+
+# Session Info
+```{r, eval=FALSE}
+sessionInfo()
+```
+
+```
+R version 4.4.1 (2024-06-14)
+Platform: aarch64-apple-darwin20
+Running under: macOS 15.3.1
+
+Matrix products: default
+BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/New_York
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] Giotto_4.2.1      GiottoClass_0.4.7
+
+loaded via a namespace (and not attached):
+ [1] tidyselect_1.2.1            viridisLite_0.4.2           dplyr_1.1.4                
+ [4] GiottoVisuals_0.2.12        fastmap_1.2.0               SingleCellExperiment_1.26.0
+ [7] lazyeval_0.2.2              digest_0.6.37               dbMatrix_0.0.0.9023        
+[10] lifecycle_1.0.4             terra_1.8-29                magrittr_2.0.3             
+[13] compiler_4.4.1              rlang_1.1.4                 tools_4.4.1                
+[16] yaml_2.3.10                 igraph_2.1.1                utf8_1.2.4                 
+[19] data.table_1.16.2           knitr_1.49                  S4Arrays_1.4.0             
+[22] htmlwidgets_1.6.4           reticulate_1.39.0           DelayedArray_0.30.0        
+[25] abind_1.4-8                 withr_3.0.2                 purrr_1.0.2                
+[28] BiocGenerics_0.50.0         grid_4.4.1                  stats4_4.4.1               
+[31] fansi_1.0.6                 colorspace_2.1-1            ggplot2_3.5.1              
+[34] scales_1.3.0                gtools_3.9.5                SummarizedExperiment_1.34.0
+[37] cli_3.6.3                   rmarkdown_2.29              crayon_1.5.3               
+[40] generics_0.1.3              rstudioapi_0.16.0           httr_1.4.7                 
+[43] rjson_0.2.21                zlibbioc_1.50.0             parallel_4.4.1             
+[46] XVector_0.44.0              matrixStats_1.4.1           vctrs_0.6.5                
+[49] Matrix_1.7-0                jsonlite_1.8.9              GiottoData_0.2.15          
+[52] IRanges_2.38.0              S4Vectors_0.42.0            ggrepel_0.9.6              
+[55] scattermore_1.2             magick_2.8.5                GiottoUtils_0.2.4          
+[58] plotly_4.10.4               tidyr_1.3.1                 glue_1.8.0                 
+[61] codetools_0.2-20            cowplot_1.1.3               gtable_0.3.6               
+[64] GenomeInfoDb_1.40.0         GenomicRanges_1.56.0        UCSC.utils_1.0.0           
+[67] munsell_0.5.1               tibble_3.2.1                pillar_1.9.0               
+[70] htmltools_0.5.8.1           GenomeInfoDbData_1.2.12     R6_2.5.1                   
+[73] evaluate_1.0.1              lattice_0.22-6              Biobase_2.64.0             
+[76] png_0.1-8                   backports_1.5.0             SpatialExperiment_1.14.0   
+[79] Rcpp_1.0.13-1               SparseArray_1.4.1           checkmate_2.3.2            
+[82] colorRamp2_0.1.0            xfun_0.49                   MatrixGenerics_1.16.0      
+[85] pkgconfig_2.0.3  
+```
