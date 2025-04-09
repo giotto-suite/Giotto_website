@@ -19,7 +19,7 @@ Giotto Suite is a major upgrade to the Giotto package that provides tools to pro
 ### Local installation
 
 To install Giotto suite use
-`pak::pkg_install("drieslab/Giotto")`. 
+`pak::pkg_install("drieslab/Giotto")`.
 
 Visit the Giotto [Discussions](https://github.com/drieslab/Giotto/discussions) page for more information.
 
