@@ -14,19 +14,51 @@ vignette: >
 
 # Dataset explanation
 
-[10X genomics](https://www.10xgenomics.com/spatial-transcriptomics/) recently launched a new platform to obtain spatial expression data using a Visium Spatial Gene Expression slide.
+[10X genomics](https://www.10xgenomics.com/spatial-transcriptomics/) launched a platform to obtain spatial expression data using a Visium Spatial Gene Expression slide.
 
-The Visium brain data to run this tutorial can be found [here](https://support.10xgenomics.com/spatial-gene-expression/datasets/1.1.0/V1_Adult_Mouse_Brain)
-
-Visium technology:
+Visium allows you to perform spatial transcriptomics, which combines histological information with whole transcriptome gene expression profiles (fresh frozen or FFPE) to provide you with spatially resolved gene expression.
 
 ![](images/general_figs/visium_technology.png)
+
+You can use standard fixation and staining techniques, including hematoxylin and eosin (H&E) staining, to visualize tissue sections on slides using a brightfield microscope and immunofluorescence (IF) staining to visualize protein detection in tissue sections on slides using a fluorescent microscope.
 
 High resolution png from original tissue:
 
 ![]images/general_figs/mouse_brain_highres.png)
 
+The [visium fresh frozen mouse brain tissue (Strain C57BL/6)](https://support.10xgenomics.com/spatial-gene-expression/datasets/1.1.0/V1_Adult_Mouse_Brain) dataset was obtained from 10X genomics. The tissue was embedded and cryosectioned as described in Visium Spatial Protocols - Tissue Preparation Guide (Demonstrated Protocol CG000240). Tissue sections of 10 µm thickness from a slice of the coronal plane were placed on Visium Gene Expression Slides.
+
+You can find more information about this sample [here](https://support.10xgenomics.com/spatial-gene-expression/datasets/1.1.0/V1_Adult_Mouse_Brain)
+
+# Download dataset
+
+You need to download the expression matrix and spatial information by running these commands:
+
+```{r, eval=FALSE}
+dir.create("/path/to/data/")
+
+download.file(url = "https://cf.10xgenomics.com/samples/spatial-exp/1.1.0/V1_Adult_Mouse_Brain/V1_Adult_Mouse_Brain_raw_feature_bc_matrix.tar.gz",
+              destfile = "data/V1_Adult_Mouse_Brain_raw_feature_bc_matrix.tar.gz")
+
+download.file(url = "https://cf.10xgenomics.com/samples/spatial-exp/1.1.0/V1_Adult_Mouse_Brain/V1_Adult_Mouse_Brain_spatial.tar.gz",
+              destfile = "data/V1_Adult_Mouse_Brain_spatial.tar.gz")
+```
+
+After downloading, unzip the gz files. You should get the "raw_feature_bc_matrix" and "spatial" folders inside your "/path/to/data/".
+
+```{r, eval=FALSE}
+untar(tarfile = "data/V1_Adult_Mouse_Brain_raw_feature_bc_matrix.tar.gz", 
+      exdir = "data/")
+
+untar(tarfile = "data/V1_Adult_Mouse_Brain_spatial.tar.gz", 
+      exdir = "data/")
+```
+
 # Set up Giotto Environment
+
+Ensure that the Giotto package is installed. Additionally, check that the mini conda Giotto environment with Python dependencies is installed.
+
+If you have installation troubles, visit the [Installation](https://drieslab.github.io/Giotto_website/articles/installation.html) and [Frequently Asked Questions](https://drieslab.github.io/Giotto_website/articles/faqs.html) sections.
 
 ```{r, eval=FALSE}
 # Ensure Giotto Suite is installed.
@@ -42,20 +74,21 @@ if(!genv_exists){
 }
 ```
 
-# Create Giotto Visium Object and visualize
+# Set the Giotto instructions
+
+{Giotto} instructions are used to apply settings to giotto object behavior at the project level. Each giotto object needs a set of instructions information that can either be manually set or generated with defaults when the giotto object is first created. Once added, these instructions are stored in the giotto object @instructions slot.
 
 ```{r, eval=FALSE}
 library(Giotto)
 
-# 1. set working directory
+# Set the results directory to save plots
 results_folder <- "path/to/results"
 
-# Optional: Specify a path to a Python executable within a conda or miniconda 
-# environment. If set to NULL (default), the Python executable within the previously
-# installed Giotto environment will be used.
+# Optional: Specify the path to a Python executable within a conda or miniconda 
+# environment. If set to NULL (default), the Python executable within the previously installed Giotto environment will be used.
 python_path <- NULL # alternatively, "/local/python/path/python" if desired.
 
-# 3. Create Giotto Instructions
+# Create Giotto Instructions
 instructions <- createGiottoInstructions(save_dir = results_folder,
                                          save_plot = TRUE,
                                          show_plot = FALSE,
@@ -63,11 +96,15 @@ instructions <- createGiottoInstructions(save_dir = results_folder,
                                          python_path = python_path)
 ```
 
+# Create the Giotto Object and visualize
+
+createGiottoVisiumObject() will look for the standardized files organization from the Visium technology in the data folder and will automatically load the expression and spatial information to create the Giotto object.
+
 ```{r, eval=FALSE}
 ## provide path to visium folder
 data_path <- "/path/to/data/"
 
-## directly from visium folder
+## read the data
 visium_brain <- createGiottoVisiumObject(visium_dir = data_path,
                                          expr_data = "raw",
                                          png_name = "tissue_lowres_image.png",
@@ -79,44 +116,114 @@ showGiottoImageNames(visium_brain) # "image" is the default name
 
 ## check metadata
 pDataDT(visium_brain)
+```
 
-## show plot
+# Subset on spots that were covered by tissue
+
+Use the metadata column "in_tissue" to highlight the spots corresponding to the tissue area.
+
+```{r, eval=FALSE}
 spatPlot2D(gobject = visium_brain, 
            cell_color = "in_tissue", 
-           point_size = 2,
+           point_size = 3,
            cell_color_code = c("0" = "lightgrey", "1" = "blue"), 
            show_image = TRUE, 
            image_name = "image")
 ```
 
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial plot of the Visium mouse brain sample, color indicates wheter the spot is in tissue (1) or not (0)."}
 knitr::include_graphics("images/visium_mouse_brain/0-spatPlot2D.png")
 ```
 
-# Process Giotto Visium Object
+Use the same metadata column "in_tissue" to subset the object and keep only the spots corresponding to the tissue area.
 
 ```{r, eval=FALSE}
-## subset on spots that were covered by tissue
 metadata <- pDataDT(visium_brain)
 in_tissue_barcodes <- metadata[in_tissue == 1]$cell_ID
 
 visium_brain <- subsetGiotto(visium_brain, 
                              cell_ids = in_tissue_barcodes)
+```
 
-## filter
+# Quality control
+
+Use the function addStatistics() to count the number of features per spot. The statistics information will be stored in the metadata table under the new column “nr_feats”. Then, use this column to visualize the number of features per spot across the sample.
+
+```{r, eval=FALSE}
+visium_brain_statistics <- addStatistics(gobject = visium_brain,
+                                         expression_values = "raw")
+
+## visualize
+spatPlot2D(gobject = visium_brain_statistics, 
+           cell_color = "nr_feats", 
+           color_as_factor = FALSE)
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial distribution of features per spot."}
+knitr::include_graphics("images/visium_mouse_brain/1-spatPlot2D.png")
+```
+
+filterDistributions() creates a histogram to show the distribution of features per spot across the sample.
+
+```{r, eval=FALSE}
+filterDistributions(gobject = visium_brain_statistics, 
+                    detection = "cells")
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Distribution of features per spot."}
+knitr::include_graphics("images/visium_mouse_brain/2-filterDistributions.png")
+```
+
+When setting the detection = "feats", the histogram shows the distribution of spots with certain number of features across the sample.
+
+```{r, eval=FALSE}
+filterDistributions(gobject = visium_brain_statistics, 
+                    detection = "feats")
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Distribution of cells with different features per spot."}
+knitr::include_graphics("images/visium_mouse_brain/3-filterDistributions.png")
+```
+
+filterCombinations() may be used to test how different filtering parameters will affect the number of cells and features in the filtered data:
+
+```{r, eval=FALSE}
+filterCombinations(gobject = visium_brain_statistics,
+                   expression_thresholds = c(1, 2, 3),
+                   feat_det_in_min_cells = c(50, 100, 200),
+                   min_det_feats_per_cell = c(500, 1000, 1500))
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Number of spots and features filtered when using multiple feat_det_in_min_cells and min_det_feats_per_cell combinations."}
+knitr::include_graphics("images/visium_mouse_brain/4-filterCombinations.png")
+```
+
+# Filtering
+
+Use the arguments feat_det_in_min_cells and min_det_feats_per_cell to set the minimal number of cells where an individual feature must be detected and the minimal number of features per spot/cell, respectively, to filter the giotto object. All the features and spots/cells under those thresholds will be removed from the sample.
+
+```{r, eval=FALSE}
 visium_brain <- filterGiotto(gobject = visium_brain,
                              expression_threshold = 1,
                              feat_det_in_min_cells = 50,
                              min_det_feats_per_cell = 1000,
                              expression_values = "raw",
                              verbose = TRUE)
+```
 
-## normalize
+# Normalization
+
+Use scalefactor to set the scale factor to use after library size normalization. The default value is 6000, but you can use a different one.
+
+```{r, eval=FALSE}
 visium_brain <- normalizeGiotto(gobject = visium_brain, 
                                 scalefactor = 6000, 
                                 verbose = TRUE)
+```
 
-## add gene & cell statistics
+Calculate the normalized number of features per spot and save the statistics in the metadata table.
+
+```{r, eval=FALSE}
 visium_brain <- addStatistics(gobject = visium_brain)
 
 ## visualize
@@ -127,59 +234,123 @@ spatPlot2D(gobject = visium_brain,
            color_as_factor = FALSE)
 ```
 
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/1-spatPlot2D.png")
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial distribution of the number of features per spot."}
+knitr::include_graphics("images/visium_mouse_brain/5-spatPlot2D.png")
+```
+
+# Feature selection
+
+Calculating Highly Variable Features (HVF) is necessary to identify genes (or features) that display significant variability across the spots. There are a few methods to choose from depending on the underlying distribution of the data:
+
+- loess regression is used when the relationship between mean expression and variance is non-linear or can be described by a non-parametric model.
+
+```{r, eval=FALSE}
+visium_brain <- calculateHVF(gobject = visium_brain, 
+                             method = "cov_loess",
+                             save_plot = TRUE)
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Covariance of HVFs using the loess method."}
+knitr::include_graphics("images/visium_mouse_brain/6-HVFplot.png")
+```
+
+- pearson residuals are used for variance stabilization (to account for technical noise) and highlighting overdispersed genes.
+
+```{r, eval=FALSE}
+visium_brain <- calculateHVF(gobject = visium_brain, 
+                             method = "var_p_resid",
+                             save_plot = TRUE)
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Variance of HVFs using the pearson residuals method."}
+knitr::include_graphics("images/visium_mouse_brain/7-HVFplot.png")
+```
+
+- binned (covariance groups) are used when gene expression variability differs across expression levels or spatial regions, without assuming a specific relationship between mean expression and variance. This is the default method in the calculateHVF() function.
+
+```{r, eval=FALSE}
+visium_brain <- calculateHVF(gobject = visium_brain, 
+                             method = "cov_groups",
+                             save_plot = TRUE)
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Covariance of HVFs using the binned method."}
+knitr::include_graphics("images/visium_mouse_brain/8-HVFplot.png")
 ```
 
 # Dimension Reduction
 
-```{r, eval=FALSE}
-## highly variable features / genes (HVF)
-visium_brain <- calculateHVF(gobject = visium_brain, 
-                             save_plot = TRUE)
-```
+## PCA
 
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/2-HVFplot.png")
-```
+Principal Components Analysis (PCA) is applied to reduce the dimensionality of gene expression data by transforming it into principal components, which are linear combinations of genes ranked by the variance they explain, with the first components capturing the most variance.
+
+- runPCA() will look for the previous calculation of highly variable features, stored as a column in the feature metadata. If the HVF labels are not found in the giotto object, then runPCA() will use all the features available in the sample to calculate the Principal Components.
 
 ```{r, eval=FALSE}
-## run PCA on expression values (default)
-gene_metadata <- fDataDT(visium_brain)
-featgenes <- gene_metadata[hvf == "yes" & perc_cells > 3 & mean_expr_det > 0.4]$feat_ID
+visium_brain <- runPCA(gobject = visium_brain)
+```
 
-## run PCA on expression values (default)
+- You can also use specific features for the Principal Components calculation, by passing a vector of features in the "feats_to_use" argument.
+
+```{r, eval=FALSE}
+my_features <- head(getFeatureMetadata(visium_brain, 
+                                       output = "data.table")$feat_ID, 
+                    1000)
+
 visium_brain <- runPCA(gobject = visium_brain,
-                       feats_to_use = featgenes)
+                       feats_to_use = my_features,
+                       name = "custom_pca")
+```
 
-screePlot(visium_brain, 
+Create a screeplot to visualize the percentage of variance explained by each component.
+
+```{r, eval=FALSE}
+screePlot(gobject = visium_brain, 
           ncp = 30)
 ```
 
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/3-screePlot.png")
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Screeplot showing the variance explained per principal component."}
+knitr::include_graphics("images/visium_mouse_brain/9-screePlot.png")
 ```
+
+- Visualize the PCA calculated using the HVFs.
 
 ```{r, eval=FALSE}
-dimPlot2D(gobject = visium_brain,
-          dim_reduction_to_use = "pca")
+plotPCA(gobject = visium_brain)
 ```
 
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/4-dimPlot2D.png")
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="PCA plot using HVFs."}
+knitr::include_graphics("images/visium_mouse_brain/10-PCA.png")
 ```
+
+- Visualize the custom PCA calculated using the vector of features.
 
 ```{r, eval=FALSE}
-## run UMAP and tSNE on PCA space (default)
+plotPCA(gobject = visium_brain,
+        dim_reduction_name = "custom_pca")
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="PCA using custom features."}
+knitr::include_graphics("images/visium_mouse_brain/11-PCA.png")
+```
+
+## UMAP
+
+Unlike PCA, Uniform Manifold Approximation and Projection (UMAP) and t-Stochastic Neighbor Embedding (t-SNE) do not assume linearity. After running PCA, UMAP or t-SNE allows you to visualize the dataset in 2D.
+
+```{r, eval=FALSE}
+## run UMAP on PCA space (default)
 visium_brain <- runUMAP(visium_brain, 
                         dimensions_to_use = 1:10)
 
 plotUMAP(gobject = visium_brain)
 ```
 
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/5-UMAP.png")
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="UMAP using the 10 first principal components."}
+knitr::include_graphics("images/visium_mouse_brain/12-UMAP.png")
 ```
+
+## tSNE
 
 ```{r, eval=FALSE}
 visium_brain <- runtSNE(visium_brain, 
@@ -188,81 +359,81 @@ visium_brain <- runtSNE(visium_brain,
 plotTSNE(gobject = visium_brain)
 ```
 
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/6-tSNE.png")
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="tSNE using the 10 first principal components."}
+knitr::include_graphics("images/visium_mouse_brain/13-tSNE.png")
 ```
 
 # Clustering
 
+## Calculate the nearest neighbors
+
+In preparation for the clustering calculation, finding the spots/cells with similar expression behavior is needed. There are two methods available in Giotto:
+
+- Create a sNN network (default)
+
+The shared Nearest Neighbor algorithm defines the similarity between a pair of points in terms of their shared nearest neighbors. That is, the similarity between two points is "confirmed" by their common (shared) near neighbors. If point A is close to point B and if they are both close to a set of points C then we can say that A and B are close with greater confidence since their similarity is "confirmed" by the points in set C. You can find more information about this method [here](https://d1wqtxts1xzle7.cloudfront.net/67759720/siam_hd_snn_cluster-libre.pdf?1624717643=&response-content-disposition=inline%3B+filename%3DA_new_shared_nearest_neighbor_clustering.pdf&Expires=1744241905&Signature=EKZIFpKKGUPYegDxxL58WDtO6UhM9suqxSvauIzd8SWExXv5SPbhSgnvsnbMTOSWy56Vk-gyQUgazWCfh~lRg65CIZQqFStuNptUdIB4RvnWFJPT2jYfLgojTpDBKWLX8fn3Ab-sPxlUaqPV5m9E6WCunZqlQMNClLTKOK6L4D5NJs2XJl5u7bHGfHuMCLzPLLzBBfB-QLWDrXvhBmpX1ZOcX0O1YcOD1aNyQ2bCjNdCKRlSEMtX2Cboxe7B-Xf5bKRlA31JDTC~MUn3JGxHuDKpFKlwCZss980SIb1dbNz0vULD86nO6qIYbS1oQRIJHG260jox5s65TCJvO8rRIA__&Key-Pair-Id=APKAJLOHF5GGSLRBV4ZA). By default, createNearestNetwork() calculates the 30 shared Nearest Neighbors to each spot/cell, but you can modify this number using the "k" parameter.
+
 ```{r, eval=FALSE}
-## sNN network (default)
 visium_brain <- createNearestNetwork(gobject = visium_brain, 
                                      dimensions_to_use = 1:10, 
                                      k = 15)
+```
+
+- Create a kNN network
+
+The K-Nearest Neighbors (kNN) algorithm operates on the principle of likelihood of similarity. It posits that similar data points tend to cluster near each other in space. You can find more information about this method [here.](https://link.springer.com/article/10.1186/s40537-024-00973-y) By default, createNearestNetwork() calculates the 30 K-Nearest Neighbors to each spot/cell, but you can modify this number using the "k" parameter.
+
+```{r, eval=FALSE}
+visium_brain <- createNearestNetwork(gobject = visium_brain, 
+                                     dimensions_to_use = 1:10, 
+                                     k = 15,
+                                     type = "kNN")
+```
 
 ## Leiden clustering
+
+This algorithm is more complicated than the Louvain algorithm and have an accurate and fast result for the computation time. The Leiden algorithm consists of three phases. The first phase is the modularity optimization process, the second phase is the refinement of partition, and the third phase is the community aggregation process. This algorithm performs well on small, medium and large-scale networks.
+
+You can find more information about Louvain and Leiden clustering [here](https://iopscience.iop.org/article/10.1088/1742-6596/2129/1/012028/pdf)
+
+```{r, eval=FALSE}
 visium_brain <- doLeidenCluster(gobject = visium_brain, 
                                 resolution = 0.4, 
                                 n_iterations = 1000)
+```
 
+Plot dimension and spatial plots using the Leiden clusters information.
+
+```{r, eval=FALSE}
+plotPCA(gobject = visium_brain,
+        cell_color = "leiden_clus")
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="PCA plot, colors indicate the Leiden clusters."}
+knitr::include_graphics("images/visium_mouse_brain/14-PCA.png")
+```
+
+Set the argument "show_NN_network = TRUE" to visualize the connections between spots.
+
+```{r, eval=FALSE}
 plotUMAP(gobject = visium_brain,
          cell_color = "leiden_clus", 
          show_NN_network = TRUE, 
          point_size = 2.5)
 ```
 
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/7-UMAP.png")
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="UMAP plot, colors indicate the Leiden clusters."}
+knitr::include_graphics("images/visium_mouse_brain/15-UMAP.png")
 ```
 
 ```{r, eval=FALSE}
-# spatial and dimension plots
-spatDimPlot(gobject = visium_brain, 
-            cell_color = "leiden_clus",
-            dim_point_size = 2, 
-            spat_point_size = 2.5)
-```
-
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/8-spatDimPlot2D.png")
-```
-
-```{r, eval=FALSE}
-spatDimPlot(gobject = visium_brain, 
-            cell_color = "nr_feats", 
-            color_as_factor = FALSE,
-            dim_point_size = 2, 
-            spat_point_size = 2.5)
-```
-
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/9-spatDimPlot2D.png")
-```
-
-```{r, eval=FALSE}
-# dimension plots grouped by cluster
 spatPlot2D(visium_brain, 
            cell_color = "leiden_clus",
            coord_fix_ratio = 1)
 ```
 
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/10-spatPlot2D.png")
-```
-
-Plot with group by:
-
-```{r, eval=FALSE}
-spatPlot2D(visium_brain, 
-           cell_color = "leiden_clus",
-           group_by = "leiden_clus", 
-           coord_fix_ratio = 1,
-           cow_n_col = 6, 
-           show_legend = FALSE)
-```
-
-```{r, echo=FALSE, out.width="90%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/11-spatPlot2D.png")
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial plot, colors indicate the Leiden clusters."}
+knitr::include_graphics("images/visium_mouse_brain/16-spatPlot2D.png")
 ```
 
 Highlight one or more groups:
@@ -278,8 +449,8 @@ spatPlot2D(visium_brain,
            other_point_size = 1.5)
 ```
 
-```{r, echo=FALSE, out.width="90%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/12-spatPlot2D.png")
+```{r, echo=FALSE, out.width="90%", fig.align="center", fig.alt="Spatial plot, highlighting only the cluster 8."}
+knitr::include_graphics("images/visium_mouse_brain/17-spatPlot2D.png")
 ```
 
 # Subset data
@@ -296,108 +467,131 @@ spatDimPlot(gobject = DG_subset,
             spat_point_size = 5)
 ```
 
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/13-spatDimPlot2D.png")
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Dimension and spatial plot of a subset object."}
+knitr::include_graphics("images/visium_mouse_brain/18-spatDimPlot2D.png")
 ```
 
-# Marker gene detection for clusters
+# Differential expression
+
+## Gini markers
+
+The Gini method identifies genes that are very selectively expressed in a specific cluster, however not always expressed in all cells of that cluster. In other words, highly specific but not necessarily sensitive at the single-cell level.
+
+Calculate the top marker genes per cluster using the gini method.
 
 ```{r, eval=FALSE}
-## ------------------ ##
-## Gini markers
-markers_gini <- findMarkers_one_vs_all(gobject = visium_brain,
+gini_markers <- findMarkers_one_vs_all(gobject = visium_brain,
                                        method = "gini",
                                        expression_values = "normalized",
                                        cluster_column = "leiden_clus",
-                                       min_feats = 20,
-                                       min_expr_gini_score = 0.5,
-                                       min_det_gini_score = 0.5)
+                                       min_feats = 10)
 
-topgenes_gini <- markers_gini[, head(.SD, 2), by = "cluster"]$feats
+topgenes_gini <- gini_markers[, head(.SD, 2), by = "cluster"]$feats
+```
 
-# violinplot
+- Plot the normalized expression distribution of the top expressed genes.
+
+```{r, eval=FALSE}
 violinPlot(visium_brain, 
            feats = unique(topgenes_gini), 
            cluster_column = "leiden_clus",
-           strip_text = 8, 
-           strip_position = "right")
+           strip_text = 6, 
+           strip_position = "right",
+           save_param = list(base_width = 10, base_height = 30))
 ```
 
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/14-violinPlot.png")
+```{r, echo=FALSE, out.width="80%", fig.align="center", fig.alt="Violin plot showing the top gini genes normalized expression."}
+knitr::include_graphics("images/visium_mouse_brain/19-violinPlot.png")
 ```
+
+- Use the cluster IDs to create a heatmap with the normalized expression of the top expressed genes per cluster.
 
 ```{r, eval=FALSE}
-# cluster heatmap
 plotMetaDataHeatmap(visium_brain, 
                     selected_feats = unique(topgenes_gini),
                     metadata_cols = "leiden_clus",
-                    x_text_size = 10, 
-                    y_text_size = 10)
+                    x_text_size = 10, y_text_size = 10)
 ```
 
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/15-plotMetaDataHeatmap.png")
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Heatmap showing the top gini genes normalized expression per Leiden cluster."}
+knitr::include_graphics("images/visium_mouse_brain/20-plotMetaDataHeatmap.png")
 ```
+
+- Visualize the scaled expression spatial distribution of the top expressed genes across the sample.
 
 ```{r, eval=FALSE}
-# umap plots
 dimFeatPlot2D(visium_brain, 
               expression_values = "scaled",
-              feats = markers_gini[, head(.SD, 1), by = "cluster"]$feats,
-              cow_n_col = 4, 
-              point_size = 0.75)
+              feats = sort(unique(topgenes_gini)),
+              cow_n_col = 5, 
+              point_size = 1,
+              save_param = list(base_width = 15, base_height = 20))
 ```
 
-```{r, echo=FALSE, out.width="90%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/16-dimFeatPlot2D.png")
+```{r, echo=FALSE, out.width="100%", fig.align="center", fig.alt="Spatial distribution of the top gini genes scaled expression."}
+knitr::include_graphics("images/visium_mouse_brain/21-dimFeatPlot2D.png")
 ```
+
+##  Scran markers
+
+The Scran method is preferred for robust differential expression analysis, especially when addressing technical variability or differences in sequencing depth across spatial locations.
+
+Calculate the top marker genes per cluster using the scran method.
 
 ```{r, eval=FALSE}
-## ------------------ ##
-# Scran Markers
-markers_scran <- findMarkers_one_vs_all(gobject = visium_brain,
+scran_markers <- findMarkers_one_vs_all(gobject = visium_brain,
                                         method = "scran",
                                         expression_values = "normalized",
-                                        cluster_column = "leiden_clus")
+                                        cluster_column = "leiden_clus",
+                                        min_feats = 10)
 
-topgenes_scran <- markers_scran[, head(.SD, 2), by = "cluster"]$feats
+topgenes_scran <- scran_markers[, head(.SD, 2), by = "cluster"]$feats
+```
 
-# violinplot
+- Plot the normalized expression distribution of the top expressed genes.
+
+```{r, eval=FALSE}
 violinPlot(visium_brain, 
            feats = unique(topgenes_scran), 
            cluster_column = "leiden_clus",
-           strip_text = 10, 
-           strip_position = "right")
+           strip_text = 6, 
+           strip_position = "right",
+           save_param = list(base_width = 10, base_height = 30))
 ```
 
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/17-violinPlot.png")
+```{r, echo=FALSE, out.width="80%", fig.align="center", fig.alt="Violin plot of the top scran genes normalized expression."}
+knitr::include_graphics("images/visium_mouse_brain/22-violinPlot.png")
 ```
+
+- Use the cluster IDs to create a heatmap with the normalized expression of the top expressed genes per cluster.
 
 ```{r, eval=FALSE}
-# cluster heatmap
 plotMetaDataHeatmap(visium_brain, 
-                    selected_feats = topgenes_scran,
-                    metadata_cols = "leiden_clus")
+                    selected_feats = unique(topgenes_scran),
+                    metadata_cols = "leiden_clus",
+                    x_text_size = 10, y_text_size = 10)
 ```
 
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/18-plotMetaDataHeatmap.png")
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Heatmap showing the top scran genes normalized expression per Leiden cluster."}
+knitr::include_graphics("images/visium_mouse_brain/23-plotMetaDataHeatmap.png")
 ```
+
+- Visualize the scaled expression spatial distribution of the top expressed genes across the sample.
 
 ```{r, eval=FALSE}
-# umap plots
 dimFeatPlot2D(visium_brain, 
               expression_values = "scaled",
-              feats = markers_scran[, head(.SD, 1), by = "cluster"]$feats,
-              cow_n_col = 3, 
-              point_size = 1)
+              feats = sort(unique(topgenes_scran)),
+              cow_n_col = 5, 
+              point_size = 1,
+              save_param = list(base_width = 20, base_height = 20))
 ```
 
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/19-dimFeatPlot2D.png")
+```{r, echo=FALSE, out.width="100%", fig.align="center", fig.alt="Spatial distribution of the top scran genes scaled expression."}
+knitr::include_graphics("images/visium_mouse_brain/24-dimFeatPlot2D.png")
 ```
+
+In practice, it is often beneficial to apply both Gini and Scran methods and compare results for a more complete understanding of differential gene expression across clusters.
 
 # Cell type enrichment
 
@@ -408,33 +602,48 @@ Visium spatial transcriptomics does not provide single-cell resolution, making c
 - Rank
 - [DWLS Deconvolution](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-021-02362-7) Corresponded Single cell dataset can be generated from [here](http://mousebrain.org/). Giotto_SC is processed from the downsampled [Loom](https://satijalab.org/loomr/loomr_tutorial) file and can also be downloaded from GiottoData::getSpatialDataset().
 
+## Download the single-cell dataset
+
 ```{r, eval=FALSE}
-# download data to results directory ####
-# if wget is installed, set method = "wget"
-# if you run into authentication issues with wgeTRUE, then add " extra = "--no-check-certificate" "
 GiottoData::getSpatialDataset(dataset = "scRNA_mouse_brain", 
                               directory = data_path)
+```
+
+## Create the single-cell object and run the normalization step
+
+```{r, eval=FALSE}
+instructions <- createGiottoInstructions(
+    save_dir = results_folder,
+    save_plot = TRUE,
+    show_plot = FALSE,
+    python_path = python_path
+)
 
 sc_expression <- file.path(data_path, "brain_sc_expression_matrix.txt.gz")
-sc_metadata <- data.table::fread(file.path(data_path, "brain_sc_metadata.csv"))
+sc_metadata <- file.path(data_path, "brain_sc_metadata.csv")
 
 giotto_SC <- createGiottoObject(expression = sc_expression,
                                 instructions = instructions)
 
-giotto_SC <- addCellMetadata(giotto_SC,
-                             new_metadata = sc_metadata[, c("Class", "Description")])
+cell_metadata <- data.table::fread(sc_metadata)
+
+giotto_SC <- addCellMetadata(giotto_SC, 
+                             new_metadata = cell_metadata[, c("Class", "Subclass")])
 
 giotto_SC <- normalizeGiotto(giotto_SC)
 ```
 
-## PAGE enrichment
+## PAGE/Rank enrichment
+
+Parametric Analysis of Gene Set Enrichment (PAGE) and Rank enrichment both aim to determine whether a predefined set of genes show statistically significant differences in expression compared to other genes in the dataset.
+
+### Create PAGE matrix
+
+PAGE matrix should be a binary matrix with each row represent a gene marker and each column represent a cell type. There are several ways to create PAGE matrix
+
+- 1. Create binary matrix of cell signature genes
 
 ```{r, eval=FALSE}
-# Create PAGE matrix
-# PAGE matrix should be a binary matrix with each row represent a gene marker and each column represent a cell type
-# There are several ways to create PAGE matrix
-# 1.1 create binary matrix of cell signature genes
-# small example #
 gran_markers <- c("Nr3c2", "Gabra5", "Tubgcp2", "Ahcyl2",
                   "Islr2", "Rasl10a", "Tmem114", "Bhlhe22", 
                   "Ntf3", "C1ql2")
@@ -447,53 +656,61 @@ di_mesench_markers <- c("Cartpt", "Scn1a", "Lypd6b",  "Drd5",
                         "Gpr88", "Plcxd2", "Cpne7", "Pou4f1",
                         "Ctxn2", "Wnt4")
 
-PAGE_matrix_1 <- makeSignMatrixPAGE(sign_names = c("Granule_neurons",
-                                                   "Oligo_dendrocytes",
-                                                   "di_mesenchephalon"),
-                                    sign_list = list(gran_markers,
-                                                     oligo_markers,
-                                                     di_mesench_markers))
+PAGE_matrix <- makeSignMatrixPAGE(sign_names = c("Granule_neurons",
+                                                 "Oligo_dendrocytes",
+                                                 "di_mesenchephalon"),
+                                  sign_list = list(gran_markers,
+                                                   oligo_markers,
+                                                   di_mesench_markers))
+```
 
-# ----
+- 2. [shortcut] fully pre-prepared matrix for all cell types
 
-# 1.2 [shortcut] fully pre-prepared matrix for all cell types
-sign_matrix_path <- system.file("extdata", "sig_matrix.txt", package = "GiottoData")
+```{r, eval=FALSE}
+sign_matrix_path <- system.file("extdata", "sig_matrix.txt", 
+                                package = "GiottoData")
 
 brain_sc_markers <- data.table::fread(sign_matrix_path) 
 
 PAGE_matrix <- as.matrix(brain_sc_markers[,-1])
 rownames(PAGE_matrix) <- brain_sc_markers$Event
+```
 
-# ---
+- 3. make PAGE matrix from single cell dataset
 
-# 1.3 make PAGE matrix from single cell dataset
+```{r, eval=FALSE}
 markers_scran <- findMarkers_one_vs_all(gobject = giotto_SC, 
                                         method = "scran",
                                         expression_values = "normalized",
                                         cluster_column = "Class", 
                                         min_feats = 3)
 
-topgenes_scran <- markers_scran[, head(.SD, 10), by = "cluster"]
-
+top_markers <- markers_scran[, head(.SD, 10), by = "cluster"]
 celltypes <- levels(factor(markers_scran$cluster)) 
 
 sign_list <- list()
 
 for (i in 1:length(celltypes)){
-  sign_list[[i]] <- topgenes_scran[which(topgenes_scran$cluster == celltypes[i]),]$feats
+  sign_list[[i]] = top_markers[which(top_markers$cluster == celltypes[i]),]$feats
 }
 
-PAGE_matrix <- makeSignMatrixPAGE(sign_names = celltypes,
+sign_matrix <- makeSignMatrixPAGE(sign_names = celltypes,
                                   sign_list = sign_list)
+```
 
-# 1.4 enrichment test with PAGE
+### Run the enrichment test with PAGE
 
-# runSpatialEnrich() can also be used as a wrapper for all currently provided enrichment options
+runSpatialEnrich() can also be used as a wrapper for all currently provided enrichment options.
+
+```{r, eval=FALSE}
 visium_brain <- runPAGEEnrich(gobject = visium_brain, 
-                              sign_matrix = PAGE_matrix)
+                              sign_matrix = sign_matrix)
+```
 
-# 1.5 heatmap of enrichment versus annotation (e.g. clustering result)
-cell_types_PAGE <- colnames(PAGE_matrix)
+- Create a heatmap showing the enrichment of cell types (from the single-cell data annotation) in the spatial dataset clusters.
+
+```{r, eval=FALSE}
+cell_types_PAGE <- colnames(sign_matrix)
 
 plotMetaDataCellsHeatmap(gobject = visium_brain,
                          metadata_cols = "leiden_clus",
@@ -503,37 +720,24 @@ plotMetaDataCellsHeatmap(gobject = visium_brain,
                          y_text_size = 8)
 ```
 
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/20-plotMetaDataCellsHeatmap.png")
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Cell types enrichment per Leiden cluster, identified using the PAGE method."}
+knitr::include_graphics("images/visium_mouse_brain/25-plotMetaDataCellsHeatmap.png")
 ```
 
+- Plot the spatial distribution of the cell types.
+
 ```{r, eval=FALSE}
-# 1.6 visualizations
 spatCellPlot2D(gobject = visium_brain,
                spat_enr_names = "PAGE",
-               cell_annotation_values = cell_types_PAGE[1:4],
-               cow_n_col = 2,
+               cell_annotation_values = cell_types_PAGE,
+               cow_n_col = 3,
                coord_fix_ratio = 1, 
-               point_size = 1.25, 
+               point_size = 1, 
                show_legend = TRUE)
 ```
 
-```{r, echo=FALSE, out.width="80%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/21-spatCellPlot2D.png")
-```
-
-```{r, eval=FALSE}
-spatDimCellPlot2D(gobject = visium_brain,
-                  spat_enr_names = "PAGE",
-                  cell_annotation_values = cell_types_PAGE[1:4],
-                  cow_n_col = 1, 
-                  spat_point_size = 1,
-                  plot_alignment = "horizontal",
-                  save_param = list(base_width = 7, base_height = 10))
-```
-
-```{r, echo=FALSE, out.width="80%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/22-spatDimCellPlot2D.png")
+```{r, echo=FALSE, out.width="80%", fig.align="center", fig.alt="Spatial distribution of cell types identified using the PAGE method."}
+knitr::include_graphics("images/visium_mouse_brain/26-spatCellPlot2D.png")
 ```
 
 ## HyperGeometric test
@@ -541,9 +745,9 @@ knitr::include_graphics("images/visium_mouse_brain/22-spatDimCellPlot2D.png")
 ```{r, eval=FALSE}
 visium_brain <- runHyperGeometricEnrich(gobject = visium_brain,
                                         expression_values = "normalized",
-                                        sign_matrix = PAGE_matrix)
+                                        sign_matrix = sign_matrix)
 
-cell_types_HyperGeometric <- colnames(PAGE_matrix)
+cell_types_HyperGeometric <- colnames(sign_matrix)
 
 spatCellPlot(gobject = visium_brain,
              spat_enr_names = "hypergeometric",
@@ -553,22 +757,28 @@ spatCellPlot(gobject = visium_brain,
              point_size = 1.75)
 ```
 
-```{r, echo=FALSE, out.width="80%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/23-spatCellPlot2D.png")
+```{r, echo=FALSE, out.width="80%", fig.align="center", fig.alt="Spatial distribution of cell types identified using the HyperGeometric method."}
+knitr::include_graphics("images/visium_mouse_brain/27-spatCellPlot2D.png")
 ```
 
 ## Rank Enrichment
 
+### Create rank matrix 
+
+Note that rank matrix is different from PAGE. A count matrix and a vector for all cell labels will be needed.
+
 ```{r, eval=FALSE}
-# Create rank matrix, not that rank matrix is different from PAGE
-# A count matrix and a vector for all cell labels will be needed
 rank_matrix <- makeSignMatrixRank(sc_matrix = getExpression(giotto_SC,
                                                             values = "normalized",
                                                             output = "matrix"),
                                   sc_cluster_ids = pDataDT(giotto_SC)$Class)
 
 colnames(rank_matrix) <- levels(factor(pDataDT(giotto_SC)$Class))
+```
 
+### Run Rank enrichment
+
+```{r, eval=FALSE}
 visium_brain <- runRankEnrich(gobject = visium_brain, 
                               sign_matrix = rank_matrix,
                               expression_values = "normalized")
@@ -582,26 +792,37 @@ spatCellPlot2D(gobject = visium_brain,
                point_size = 1)
 ```
 
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/24-spatCellPlot2D.png")
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial distribution of cell types identified using the Rank method.}
+knitr::include_graphics("images/visium_mouse_brain/28-spatCellPlot2D.png")
 ```
 
 ## DWLS spatial deconvolution
 
+Spatial Dampened Weighted Least Squares (DWLS) estimates the proportions of different cell types across spots in a tissue.
+
+### Create DWLS matrix
+
+Note that DWLS matrix is different from PAGE and rank. A count matrix a vector for a list of gene signatures and a vector for all cell labels will be needed. 
+
 ```{r, eval=FALSE}
-# Create DWLS matrix, not that DWLS matrix is different from PAGE and rank
-# A count matrix a vector for a list of gene signatures and a vector for all cell labels will be needed
 DWLS_matrix <- makeSignMatrixDWLSfromMatrix(
   matrix = getExpression(giotto_SC,
                          values = "normalized",
                          output = "matrix"),
   cell_type = pDataDT(giotto_SC)$Class,
-  sign_gene = topgenes_scran$feats)
+  sign_gene = topgenes_scran)
+```
 
+### Run DWLS deconvolution
+
+```{r, eval=FALSE}
 visium_brain <- runDWLSDeconv(gobject = visium_brain, 
                               sign_matrix = DWLS_matrix)
+```
 
-# Plot DWLS deconvolution result
+- Plot the DWLS deconvolution result coloring by the proportion of a certain cell type per spot.
+
+```{r, eval=FALSE}
 spatCellPlot2D(gobject = visium_brain,
                spat_enr_names = "DWLS",
                cell_annotation_values = levels(factor(pDataDT(giotto_SC)$Class))[1:4],
@@ -610,22 +831,25 @@ spatCellPlot2D(gobject = visium_brain,
                point_size = 1)
 ```
 
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/25-spatCellPlot2D.png")
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial plot colored by the proportion of specific cell types."}
+knitr::include_graphics("images/visium_mouse_brain/29-spatCellPlot2D.png")
 ```
 
+- Plot the DWLS deconvolution result creating with pie plots showing the proportion of each cell type per spot.
+
 ```{r, eval=FALSE}
-# Plot DWLS deconvolution result with Pie plots
 spatDeconvPlot(visium_brain, 
                show_image = TRUE,
                radius = 50)
 ```
 
-```{r, echo=FALSE, out.width="80%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/26-spatDeconvPlot.png")
+```{r, echo=FALSE, out.width="80%", fig.align="center", fig.alt="Spatial deconvolution plot showing the proportion of cell types per spot, identified using the DWLS method."}
+knitr::include_graphics("images/visium_mouse_brain/30-spatDeconvPlot.png")
 ```
 
 # Spatial Grid
+
+Create spatial grids by specifying the step size in both axis. This information will be saved in the Giotto object.
 
 ```{r, eval=FALSE}
 visium_brain <- createSpatialGrid(gobject = visium_brain,
@@ -642,20 +866,20 @@ spatPlot2D(visium_brain,
            spatial_grid_name = "spatial_grid")
 ```
 
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/27-spatPlot2D.png")
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial plot with grids."}
+knitr::include_graphics("images/visium_mouse_brain/31-spatPlot2D.png")
 ```
 
-# Spatial network
+# Spatial expression patterns
+
+## Create a spatial network
 
 ```{r, eval=FALSE}
 visium_brain <- createSpatialNetwork(gobject = visium_brain,
                                      method = "kNN", 
-                                     k = 5,
+                                     k = 6,
                                      maximum_distance_knn = 400,
                                      name = "spatial_network")
-
-showGiottoSpatNetworks(visium_brain)
 
 spatPlot2D(gobject = visium_brain,  
            show_network= TRUE,
@@ -663,96 +887,121 @@ spatPlot2D(gobject = visium_brain,
            spatial_network_name = "spatial_network")
 ```
 
-```{r, echo=FALSE, out.width="80%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/28-spatPlot2D.png")
+```{r, echo=FALSE, out.width="80%", fig.align="center", fig.alt="Spatial network across spots in the Visium mouse sample."}
+knitr::include_graphics("images/visium_mouse_brain/32-spatPlot2D.png")
 ```
 
-# Spatial Genes
+## Find spatial genes
+
+Use the rank binarization. Rank the genes on the spatial dataset depending on whether they exhibit a spatial pattern location or not. This step may take a few minutes to run.
 
 ```{r, eval=FALSE}
-## rank binarization
 ranktest <- binSpect(visium_brain, 
                      bin_method = "rank",
                      calc_hub = TRUE, 
                      hub_min_int = 5,
                      spatial_network_name = "spatial_network")
+```
 
+- Plot the scaled expression of genes with the highest probability of being spatial genes.
+
+```{r, eval=FALSE}
 spatFeatPlot2D(visium_brain, 
                expression_values = "scaled",
                feats = ranktest$feats[1:6], 
                cow_n_col = 2, 
-               point_size = 1.5)
+               point_size = 1)
 ```
 
-```{r, echo=FALSE, out.width="80%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/29-spatFeatPlot2D.png")
+```{r, echo=FALSE, out.width="80%", fig.align="center", fig.alt="Spatial distribution of the top spatial genes scaled expression."}
+knitr::include_graphics("images/visium_mouse_brain/33-spatFeatPlot2D.png")
 ```
 
-# Spatial Co-Expression modules
+## Spatial Co-Expression modules
+
+- Cluster the top 500 spatial genes into 20 clusters
 
 ```{r, eval=FALSE}
-# cluster the top 500 spatial genes into 20 clusters
-my_spatial_genes <- ranktest[1:1500,]$feats
+ext_spatial_genes <- ranktest[1:500,]$feats
+```
 
-# here we use existing detectSpatialCorGenes function to calculate pairwise distances between genes (but set network_smoothing=0 to use default clustering)
-spat_cor_netw_DT <- detectSpatialCorFeats(visium_brain,
-                                          method = "network",
-                                          spatial_network_name = "spatial_network",
-                                          subset_feats = my_spatial_genes)
+- Use detectSpatialCorGenes() to calculate pairwise distances between genes.
 
-# 2. identify most similar spatially correlated genes for one gene
+```{r, eval=FALSE}
+spat_cor_netw_DT <- detectSpatialCorFeats(
+    visium_brain,
+    method = "network",
+    spatial_network_name = "spatial_network",
+    subset_feats = ext_spatial_genes)
+```
+
+- Identify most similar spatially correlated genes for one gene.
+
+```{r, eval=FALSE}
 top10_genes <- showSpatialCorFeats(spat_cor_netw_DT, 
-                                   feats = "Mbp", 
-                                   show_top_feats = 10)
+                                  feats = "Mbp", 
+                                  show_top_feats = 10)
+```
 
+- Plot the scaled expression of the 3 genes with most similar spatial patterns to Mbp.
+
+```{r, eval=FALSE}
 spatFeatPlot2D(visium_brain, 
                expression_values = "scaled",
                feats = top10_genes$variable[1:4], 
-               point_size = 3)
+               point_size = 1.5)
 ```
 
-
-```{r, echo=FALSE, out.width="80%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/30-spatFeatPlot2D.png")
+```{r, echo=FALSE, out.width="80%", fig.align="center", fig.alt="Spatial distribution of the scaled expression of 3 genes with similar spatial pattern to Mbp."}
+knitr::include_graphics("images/visium_mouse_brain/34-spatFeatPlot2D.png")
 ```
+
+- Cluster spatial genes.
 
 ```{r, eval=FALSE}
-# cluster spatial genes
 spat_cor_netw_DT <- clusterSpatialCorFeats(spat_cor_netw_DT, 
                                            name = "spat_netw_clus", 
                                            k = 20)
+```
 
-# visualize clusters
+- Plot the correlation of the top 500 spatial genes with their assigned cluster.
+
+```{r, eval=FALSE}
 heatmSpatialCorFeats(visium_brain,
                      spatCorObject = spat_cor_netw_DT,
                      use_clus_name = "spat_netw_clus",
                      heatmap_legend_param = list(title = NULL))
 ```
 
-
-```{r, echo=FALSE, out.width="80%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/31-heatmSpatialCorFeats.png")
+```{r, echo=FALSE, out.width="80%", fig.align="center", fig.alt="Correlations heatmap between spatial genes and correlated clusters."}
+knitr::include_graphics("images/visium_mouse_brain/35-heatmSpatialCorFeats.png")
 ```
 
-```{r, eval=FALSE}
-# 4. rank spatial correlated clusters and show genes for selected clusters
-netw_ranks <- rankSpatialCorGroups(visium_brain,
-                                   spatCorObject = spat_cor_netw_DT, 
-                                   use_clus_name = "spat_netw_clus")
+- Rank spatial correlated clusters and show genes for selected clusters.
 
+```{r, eval=FALSE}
+netw_ranks <- rankSpatialCorGroups(
+  visium_brain,
+  spatCorObject = spat_cor_netw_DT, 
+  use_clus_name = "spat_netw_clus")
+```
+
+- Plot the correlation and number of spatial genes in each cluster.
+
+```{r, eval=FALSE}
 top_netw_spat_cluster <- showSpatialCorFeats(spat_cor_netw_DT, 
-                                             use_clus_name = "spat_netw_clus",
-                                             selected_clusters = 6, 
-                                             show_top_feats = 1)
+                                            use_clus_name = "spat_netw_clus",
+                                            selected_clusters = 6, 
+                                            show_top_feats = 1)
 ```
 
-
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/32-rankSpatialCorGroups.png")
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Ranking of spatial correlated groups. Size indicates the number spatial genes per group."}
+knitr::include_graphics("images/visium_mouse_brain/36-rankSpatialCorGroups.png")
 ```
+
+- Create the metagene enrichment score per co-expression cluster.
 
 ```{r, eval=FALSE}
-# 5. create metagene enrichment score for clusters
 cluster_genes_DT <- showSpatialCorFeats(spat_cor_netw_DT, 
                                         use_clus_name = "spat_netw_clus", 
                                         show_top_feats = 1)
@@ -763,7 +1012,11 @@ names(cluster_genes) <- cluster_genes_DT$feat_ID
 visium_brain <- createMetafeats(visium_brain, 
                                 feat_clusters = cluster_genes, 
                                 name = "cluster_metagene")
+```
 
+- Plot the spatial distribution of the metagene enrichment scores of each spatial co-expression cluster.
+
+```{r, eval=FALSE}
 spatCellPlot(visium_brain,
              spat_enr_names = "cluster_metagene",
              cell_annotation_values = netw_ranks$clusters,
@@ -771,28 +1024,33 @@ spatCellPlot(visium_brain,
              cow_n_col = 5)
 ```
 
-
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/33-spatCellPlot2D.png")
+```{r, echo=FALSE, out.width="100%", fig.align="center", fig.alt="Spatial distribution of metagene enrichment scores per co-expression cluster."}
+knitr::include_graphics("images/visium_mouse_brain/37-spatCellPlot2D.png")
 ```
 
 # Spatially informed clusters
 
-```{r, eval=FALSE}
-# top 30 genes per spatial co-expression cluster
-table(spat_cor_netw_DT$cor_clusters$spat_netw_clus)
+## Get the top 30 genes per spatial co-expression cluster
 
+```{r, eval=FALSE}
 coexpr_dt <- data.table::data.table(
   genes = names(spat_cor_netw_DT$cor_clusters$spat_netw_clus),
   cluster = spat_cor_netw_DT$cor_clusters$spat_netw_clus)
 
 data.table::setorder(coexpr_dt, cluster)
-top30_coexpr_dt <- coexpr_dt[, head(.SD, 30), by = cluster]
 
-my_spatial_genes <- top30_coexpr_dt$genes
+top30_coexpr_dt <- coexpr_dt[, head(.SD, 30) , by = cluster]
 
+spatial_genes <- top30_coexpr_dt$genes
+```
+
+## Re-calculate the clustering 
+
+Use the spatial genes to calculate again the principal components, umap, network and clustering.
+
+```{r, eval=FALSE}
 visium_brain <- runPCA(gobject = visium_brain,
-                       feats_to_use = my_spatial_genes,
+                       feats_to_use = spatial_genes,
                        name = "custom_pca")
 
 visium_brain <- runUMAP(visium_brain, 
@@ -811,65 +1069,70 @@ visium_brain <- doLeidenCluster(gobject = visium_brain,
                                 resolution = 0.15, 
                                 n_iterations = 1000,
                                 name = "custom_leiden")
+```
 
-cell_metadata <- pDataDT(visium_brain)
-cell_clusters <- unique(cell_metadata$custom_leiden)
+- Plot the spatial distribution of the Leiden clusters calculated based on the spatial genes.
 
-giotto_colors <- getDistinctColors(length(cell_clusters))
-names(giotto_colors) <- cell_clusters
-
+```{r, eval=FALSE}
 spatPlot2D(visium_brain, 
-           cell_color = "custom_leiden", 
-           cell_color_code = giotto_colors, 
-           coord_fix_ratio = 1)
+           cell_color = "custom_leiden",
+           point_size = 3)
 ```
 
-
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/34-spatPlot2D.png")
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial distribution of Leiden clusters calculated using spatial genes."}
+knitr::include_graphics("images/visium_mouse_brain/38-spatPlot2D.png")
 ```
+
+- Plot the UMAP and color the spots using the Leiden clusters calculated based on the spatial genes.
 
 ```{r, eval=FALSE}
 plotUMAP(gobject = visium_brain, 
-         cell_color = "custom_leiden", 
-         cell_color_code = giotto_colors, 
-         point_size = 1.5)
+         cell_color = "custom_leiden")
 ```
 
-
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/35-UMAP.png")
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="UMAP plot, colors indicate the Leiden clusters calculated using spatial genes."}
+knitr::include_graphics("images/visium_mouse_brain/39-UMAP.png")
 ```
 
 # Spatial domains with HMRF
 
+Hidden Markov Random Field (HMRF) models capture spatial dependencies and segment tissue regions based on shared and gene expression patterns.
+
+- Run HMRF with different betas on top 30 genes per spatial co-expression module. This step may take several minutes to run.
+
 ```{r, eval=FALSE}
-# do HMRF with different betas on top 30 genes per spatial co-expression module
-hmrf_folder <- file.path(data_path, "HMRF")
+hmrf_folder <- file.path(results_folder, "HMRF")
 
 if(!file.exists(hmrf_folder)) dir.create(hmrf_folder, recursive = TRUE)
 
 HMRF_spatial_genes <- doHMRF(gobject = visium_brain,
                             expression_values = "scaled",
-                            spatial_genes = my_spatial_genes, 
+                            spatial_genes = spatial_genes, 
                             k = 20,
                             spatial_network_name="spatial_network",
                             betas = c(0, 10, 5),
-                            output_folder = file.path(hmrf_folder, "Spatial_genes/SG_topgenes_k20_scaled"))
+                            output_folder = hmrf_folder)
+```
 
+- Add the HMRF results to the giotto object
+
+```{r, eval=FALSE}
 visium_brain <- addHMRF(gobject = visium_brain, 
                         HMRFoutput = HMRF_spatial_genes,
                         k = 20, 
                         betas_to_add = c(0, 10, 20, 30, 40),
                         hmrf_name = "HMRF")
+```
 
+- Plot the spatial distribution of the HMRF domains.
+
+```{r, eval=FALSE}
 spatPlot2D(gobject = visium_brain, 
            cell_color = "HMRF_k20_b.40")
 ```
 
-
-```{r, echo=FALSE, out.width="60%", fig.align="center"}
-knitr::include_graphics("images/visium_mouse_brain/36-spatPlot2D.png")
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial distribution of HMRF domains."}
+knitr::include_graphics("images/visium_mouse_brain/40-spatPlot2D.png")
 ```
 
 # Session info
@@ -879,9 +1142,9 @@ sessionInfo()
 ```
 
 ```{r, eval=FALSE}
-R version 4.4.0 (2024-04-24)
+R version 4.4.2 (2024-10-31)
 Platform: x86_64-apple-darwin20
-Running under: macOS Sonoma 14.6.1
+Running under: macOS Sequoia 15.4
 
 Matrix products: default
 BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
@@ -897,58 +1160,56 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] Giotto_4.1.0      GiottoClass_0.3.4
+[1] Giotto_4.2.1      GiottoClass_0.4.7
 
 loaded via a namespace (and not attached):
-  [1] RColorBrewer_1.1-3          shape_1.4.6.1               rstudioapi_0.16.0          
-  [4] jsonlite_1.8.8              magrittr_2.0.3              magick_2.8.4               
-  [7] farver_2.1.2                rmarkdown_2.27              GlobalOptions_0.1.2        
- [10] zlibbioc_1.50.0             ragg_1.3.2                  vctrs_0.6.5                
- [13] Cairo_1.6-2                 DelayedMatrixStats_1.26.0   GiottoUtils_0.1.10         
- [16] terra_1.7-78                htmltools_0.5.8.1           S4Arrays_1.4.1             
- [19] BiocNeighbors_1.22.0        SparseArray_1.4.8           parallelly_1.38.0          
- [22] htmlwidgets_1.6.4           plyr_1.8.9                  plotly_4.10.4              
- [25] igraph_2.0.3                iterators_1.0.14            lifecycle_1.0.4            
- [28] pkgconfig_2.0.3             rsvd_1.0.5                  Matrix_1.7-0               
- [31] R6_2.5.1                    fastmap_1.2.0               clue_0.3-65                
- [34] GenomeInfoDbData_1.2.12     MatrixGenerics_1.16.0       future_1.34.0              
- [37] digest_0.6.36               colorspace_2.1-1            S4Vectors_0.42.1           
- [40] dqrng_0.4.1                 irlba_2.3.5.1               textshaping_0.4.0          
- [43] GenomicRanges_1.56.1        beachmat_2.20.0             labeling_0.4.3             
- [46] RcppZiggurat_0.1.6          progressr_0.14.0            fansi_1.0.6                
- [49] polyclip_1.10-7             httr_1.4.7                  abind_1.4-5                
- [52] compiler_4.4.0              doParallel_1.0.17           withr_3.0.0                
- [55] backports_1.5.0             BiocParallel_1.38.0         ggforce_0.4.2              
- [58] R.utils_2.12.3              MASS_7.3-61                 DelayedArray_0.30.1        
- [61] rjson_0.2.21                bluster_1.14.0              gtools_3.9.5               
- [64] GiottoVisuals_0.2.4         tools_4.4.0                 scatterpie_0.2.3           
- [67] future.apply_1.11.2         quadprog_1.5-8              R.oo_1.26.0                
- [70] glue_1.7.0                  dbscan_1.2-0                grid_4.4.0                 
- [73] checkmate_2.3.2             Rtsne_0.17                  cluster_2.1.6              
- [76] reshape2_1.4.4              generics_0.1.3              gtable_0.3.5               
- [79] R.methodsS3_1.8.2           tidyr_1.3.1                 data.table_1.15.4          
- [82] BiocSingular_1.20.0         ScaledMatrix_1.12.0         metapod_1.12.0             
- [85] sp_2.1-4                    utf8_1.2.4                  XVector_0.44.0             
- [88] BiocGenerics_0.50.0         foreach_1.5.2               ggrepel_0.9.5              
- [91] pillar_1.9.0                stringr_1.5.1               limma_3.60.4               
- [94] circlize_0.4.16             tweenr_2.0.3                dplyr_1.1.4                
- [97] lattice_0.22-6              FNN_1.1.4                   deldir_2.0-4               
-[100] tidyselect_1.2.1            ComplexHeatmap_2.20.0       SingleCellExperiment_1.26.0
-[103] locfit_1.5-9.10             scuttle_1.14.0              knitr_1.48                 
-[106] IRanges_2.38.1              edgeR_4.2.1                 SummarizedExperiment_1.34.0
-[109] scattermore_1.2             stats4_4.4.0                xfun_0.46                  
-[112] Biobase_2.64.0              statmod_1.5.0               matrixStats_1.3.0          
-[115] stringi_1.8.4               UCSC.utils_1.0.0            ggfun_0.1.5                
-[118] lazyeval_0.2.2              yaml_2.3.10                 evaluate_0.24.0            
-[121] codetools_0.2-20            GiottoData_0.2.13           tibble_3.2.1               
-[124] colorRamp2_0.1.0            cli_3.6.3                   RcppParallel_5.1.8         
-[127] uwot_0.2.2                  reticulate_1.38.0           systemfonts_1.1.0          
-[130] munsell_0.5.1               Rcpp_1.0.13                 GenomeInfoDb_1.40.1        
-[133] globals_0.16.3              png_0.1-8                   Rfast_2.1.0                
-[136] parallel_4.4.0              ggplot2_3.5.1               scran_1.32.0               
-[139] sparseMatrixStats_1.16.0    listenv_0.9.1               SpatialExperiment_1.14.0   
-[142] viridisLite_0.4.2           scales_1.3.0                purrr_1.0.2                
-[145] crayon_1.5.3                GetoptLong_1.0.5            rlang_1.1.4                
-[148] cowplot_1.1.3
+  [1] RColorBrewer_1.1-3          shape_1.4.6.1               rstudioapi_0.17.1          
+  [4] jsonlite_2.0.0              magrittr_2.0.3              magick_2.8.6               
+  [7] farver_2.1.2                rmarkdown_2.29              GlobalOptions_0.1.2        
+ [10] zlibbioc_1.52.0             ragg_1.3.3                  vctrs_0.6.5                
+ [13] Cairo_1.6-2                 memoise_2.0.1               GiottoUtils_0.2.4          
+ [16] terra_1.8-29                htmltools_0.5.8.1           S4Arrays_1.6.0             
+ [19] BiocNeighbors_2.0.1         SparseArray_1.6.2           parallelly_1.43.0          
+ [22] htmlwidgets_1.6.4           plotly_4.10.4               cachem_1.1.0               
+ [25] igraph_2.1.4                iterators_1.0.14            lifecycle_1.0.4            
+ [28] pkgconfig_2.0.3             rsvd_1.0.5                  Matrix_1.7-3               
+ [31] R6_2.6.1                    fastmap_1.2.0               clue_0.3-66                
+ [34] GenomeInfoDbData_1.2.13     MatrixGenerics_1.18.1       future_1.34.0              
+ [37] digest_0.6.37               colorspace_2.1-1            S4Vectors_0.44.0           
+ [40] dqrng_0.4.1                 irlba_2.3.5.1               textshaping_1.0.0          
+ [43] GenomicRanges_1.58.0        beachmat_2.22.0             labeling_0.4.3             
+ [46] progressr_0.15.1            httr_1.4.7                  polyclip_1.10-7            
+ [49] abind_1.4-8                 compiler_4.4.2              doParallel_1.0.17          
+ [52] withr_3.0.2                 backports_1.5.0             BiocParallel_1.40.0        
+ [55] viridis_0.6.5               ggforce_0.4.2               R.utils_2.13.0             
+ [58] MASS_7.3-65                 DelayedArray_0.32.0         rjson_0.2.23               
+ [61] bluster_1.16.0              gtools_3.9.5                GiottoVisuals_0.2.12       
+ [64] tools_4.4.2                 future.apply_1.11.3         quadprog_1.5-8             
+ [67] R.oo_1.27.0                 glue_1.8.0                  dbscan_1.2.2               
+ [70] grid_4.4.2                  checkmate_2.3.2             Rtsne_0.17                 
+ [73] cluster_2.1.8.1             generics_0.1.3              gtable_0.3.6               
+ [76] R.methodsS3_1.8.2           tidyr_1.3.1                 data.table_1.17.0          
+ [79] BiocSingular_1.22.0         tidygraph_1.3.1             ScaledMatrix_1.14.0        
+ [82] metapod_1.14.0              XVector_0.46.0              BiocGenerics_0.52.0        
+ [85] foreach_1.5.2               ggrepel_0.9.6               pillar_1.10.1              
+ [88] limma_3.62.2                circlize_0.4.16             dplyr_1.1.4                
+ [91] tweenr_2.0.3                lattice_0.22-6              FNN_1.1.4.1                
+ [94] tidyselect_1.2.1            ComplexHeatmap_2.22.0       SingleCellExperiment_1.28.1
+ [97] locfit_1.5-9.12             scuttle_1.16.0              knitr_1.50                 
+[100] gridExtra_2.3               IRanges_2.40.1              edgeR_4.4.2                
+[103] SummarizedExperiment_1.36.0 scattermore_1.2             stats4_4.4.2               
+[106] xfun_0.51                   graphlayouts_1.2.2          Biobase_2.66.0             
+[109] statmod_1.5.0               matrixStats_1.5.0           UCSC.utils_1.2.0           
+[112] lazyeval_0.2.2              yaml_2.3.10                 evaluate_1.0.3             
+[115] codetools_0.2-20            ggraph_2.2.1                GiottoData_0.2.16          
+[118] tibble_3.2.1                colorRamp2_0.1.0            cli_3.6.4                  
+[121] RcppParallel_5.1.10         uwot_0.2.3                  reticulate_1.42.0          
+[124] systemfonts_1.2.1           munsell_0.5.1               Rcpp_1.0.14                
+[127] GenomeInfoDb_1.42.3         zigg_0.0.2                  globals_0.16.3             
+[130] png_0.1-8                   Rfast_2.1.5.1               parallel_4.4.2             
+[133] ggplot2_3.5.1               scran_1.34.0                sparseMatrixStats_1.18.0   
+[136] listenv_0.9.1               SpatialExperiment_1.16.0    viridisLite_0.4.2          
+[139] scales_1.3.0                purrr_1.0.4                 crayon_1.5.3               
+[142] GetoptLong_1.0.5            rlang_1.1.5                 cowplot_1.1.3 
 ```
 
