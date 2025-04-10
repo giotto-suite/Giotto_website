@@ -24,7 +24,7 @@ You can use standard fixation and staining techniques, including hematoxylin and
 
 High resolution png from original tissue:
 
-![]images/general_figs/mouse_brain_highres.png)
+![](images/general_figs/mouse_brain_highres.png)
 
 The [visium fresh frozen mouse brain tissue (Strain C57BL/6)](https://support.10xgenomics.com/spatial-gene-expression/datasets/1.1.0/V1_Adult_Mouse_Brain) dataset was obtained from 10X genomics. The tissue was embedded and cryosectioned as described in Visium Spatial Protocols - Tissue Preparation Guide (Demonstrated Protocol CG000240). Tissue sections of 10 µm thickness from a slice of the coronal plane were placed on Visium Gene Expression Slides.
 
@@ -54,7 +54,7 @@ untar(tarfile = "data/V1_Adult_Mouse_Brain_spatial.tar.gz",
       exdir = "data/")
 ```
 
-# Set up Giotto Environment
+# Set up Giotto environment
 
 Ensure that the Giotto package is installed. Additionally, check that the mini conda Giotto environment with Python dependencies is installed.
 
@@ -96,7 +96,7 @@ instructions <- createGiottoInstructions(save_dir = results_folder,
                                          python_path = python_path)
 ```
 
-# Create the Giotto Object and visualize
+# Create the Giotto bject and visualize
 
 createGiottoVisiumObject() will look for the standardized files organization from the Visium technology in the data folder and will automatically load the expression and spatial information to create the Giotto object.
 
@@ -278,7 +278,7 @@ visium_brain <- calculateHVF(gobject = visium_brain,
 knitr::include_graphics("images/visium_mouse_brain/8-HVFplot.png")
 ```
 
-# Dimension Reduction
+# Dimension reduction
 
 ## PCA
 
@@ -367,11 +367,11 @@ knitr::include_graphics("images/visium_mouse_brain/13-tSNE.png")
 
 ## Calculate the nearest neighbors
 
-In preparation for the clustering calculation, finding the spots/cells with similar expression behavior is needed. There are two methods available in Giotto:
+In preparation for the clustering calculation, finding the spots/cells with similar expression patterns is needed. There are two methods available in Giotto:
 
 - Create a sNN network (default)
 
-The shared Nearest Neighbor algorithm defines the similarity between a pair of points in terms of their shared nearest neighbors. That is, the similarity between two points is "confirmed" by their common (shared) near neighbors. If point A is close to point B and if they are both close to a set of points C then we can say that A and B are close with greater confidence since their similarity is "confirmed" by the points in set C. You can find more information about this method [here](https://d1wqtxts1xzle7.cloudfront.net/67759720/siam_hd_snn_cluster-libre.pdf?1624717643=&response-content-disposition=inline%3B+filename%3DA_new_shared_nearest_neighbor_clustering.pdf&Expires=1744241905&Signature=EKZIFpKKGUPYegDxxL58WDtO6UhM9suqxSvauIzd8SWExXv5SPbhSgnvsnbMTOSWy56Vk-gyQUgazWCfh~lRg65CIZQqFStuNptUdIB4RvnWFJPT2jYfLgojTpDBKWLX8fn3Ab-sPxlUaqPV5m9E6WCunZqlQMNClLTKOK6L4D5NJs2XJl5u7bHGfHuMCLzPLLzBBfB-QLWDrXvhBmpX1ZOcX0O1YcOD1aNyQ2bCjNdCKRlSEMtX2Cboxe7B-Xf5bKRlA31JDTC~MUn3JGxHuDKpFKlwCZss980SIb1dbNz0vULD86nO6qIYbS1oQRIJHG260jox5s65TCJvO8rRIA__&Key-Pair-Id=APKAJLOHF5GGSLRBV4ZA). By default, createNearestNetwork() calculates the 30 shared Nearest Neighbors to each spot/cell, but you can modify this number using the "k" parameter.
+The shared Nearest Neighbor algorithm defines the similarity between a pair of points in terms of their shared nearest neighbors. That is, the similarity between two points is "confirmed" by their common (shared) near neighbors. If point A is close to point B and if they are both close to a set of points C then we can say that A and B are close with greater confidence since their similarity is "confirmed" by the points in set C. You can find more information about this method [here](https://d1wqtxts1xzle7.cloudfront.net/67759720/siam_hd_snn_cluster-libre.pdf?1624717643=&response-content-disposition=inline%3B+filename%3DA_new_shared_nearest_neighbor_clustering.pdf&Expires=1744241905&Signature=EKZIFpKKGUPYegDxxL58WDtO6UhM9suqxSvauIzd8SWExXv5SPbhSgnvsnbMTOSWy56Vk-gyQUgazWCfh~lRg65CIZQqFStuNptUdIB4RvnWFJPT2jYfLgojTpDBKWLX8fn3Ab-sPxlUaqPV5m9E6WCunZqlQMNClLTKOK6L4D5NJs2XJl5u7bHGfHuMCLzPLLzBBfB-QLWDrXvhBmpX1ZOcX0O1YcOD1aNyQ2bCjNdCKRlSEMtX2Cboxe7B-Xf5bKRlA31JDTC~MUn3JGxHuDKpFKlwCZss980SIb1dbNz0vULD86nO6qIYbS1oQRIJHG260jox5s65TCJvO8rRIA__&Key-Pair-Id=APKAJLOHF5GGSLRBV4ZA). By default, createNearestNetwork() calculates 30 shared Nearest Neighbors for each spot/cell, but you can modify this number using the "k" parameter.
 
 ```{r, eval=FALSE}
 visium_brain <- createNearestNetwork(gobject = visium_brain, 
@@ -381,7 +381,7 @@ visium_brain <- createNearestNetwork(gobject = visium_brain,
 
 - Create a kNN network
 
-The K-Nearest Neighbors (kNN) algorithm operates on the principle of likelihood of similarity. It posits that similar data points tend to cluster near each other in space. You can find more information about this method [here.](https://link.springer.com/article/10.1186/s40537-024-00973-y) By default, createNearestNetwork() calculates the 30 K-Nearest Neighbors to each spot/cell, but you can modify this number using the "k" parameter.
+The K-Nearest Neighbors (kNN) algorithm operates on the principle of likelihood of similarity. It posits that similar data points tend to cluster near each other in space. You can find more information about this method [here.](https://link.springer.com/article/10.1186/s40537-024-00973-y) By default, createNearestNetwork() finds the 30 K-Nearest Neighbors to each spot/cell, but you can modify this number using the "k" parameter.
 
 ```{r, eval=FALSE}
 visium_brain <- createNearestNetwork(gobject = visium_brain, 
@@ -392,9 +392,9 @@ visium_brain <- createNearestNetwork(gobject = visium_brain,
 
 ## Leiden clustering
 
-This algorithm is more complicated than the Louvain algorithm and have an accurate and fast result for the computation time. The Leiden algorithm consists of three phases. The first phase is the modularity optimization process, the second phase is the refinement of partition, and the third phase is the community aggregation process. This algorithm performs well on small, medium and large-scale networks.
+This algorithm is more complicated than the Louvain algorithm and have an accurate and fast result for the computation time. The Leiden algorithm consists of three phases. The first phase is the modularity optimization process, the second phase is the refinement of partition, and the third phase is the community aggregation process. This algorithm performs well on small, medium and large-scale networks. You can find more information about Louvain and Leiden clustering [here](https://iopscience.iop.org/article/10.1088/1742-6596/2129/1/012028/pdf)
 
-You can find more information about Louvain and Leiden clustering [here](https://iopscience.iop.org/article/10.1088/1742-6596/2129/1/012028/pdf)
+- Run the Leiden clustering algorithm.
 
 ```{r, eval=FALSE}
 visium_brain <- doLeidenCluster(gobject = visium_brain, 
@@ -402,7 +402,7 @@ visium_brain <- doLeidenCluster(gobject = visium_brain,
                                 n_iterations = 1000)
 ```
 
-Plot dimension and spatial plots using the Leiden clusters information.
+- Plot dimension and spatial plots using the Leiden clusters information.
 
 ```{r, eval=FALSE}
 plotPCA(gobject = visium_brain,
@@ -436,7 +436,7 @@ spatPlot2D(visium_brain,
 knitr::include_graphics("images/visium_mouse_brain/16-spatPlot2D.png")
 ```
 
-Highlight one or more groups:
+You can highlight one or more groups of interest:
 
 ```{r, eval=FALSE}
 spatPlot2D(visium_brain, 
@@ -454,6 +454,8 @@ knitr::include_graphics("images/visium_mouse_brain/17-spatPlot2D.png")
 ```
 
 # Subset data
+
+If you want to take a deeper look at certain regions of the sample, use subsetGiottoLocs() and specify the axis ranges to create a sample subset.
 
 ```{r, eval=FALSE}
 # create and show subset
@@ -477,7 +479,7 @@ knitr::include_graphics("images/visium_mouse_brain/18-spatDimPlot2D.png")
 
 The Gini method identifies genes that are very selectively expressed in a specific cluster, however not always expressed in all cells of that cluster. In other words, highly specific but not necessarily sensitive at the single-cell level.
 
-Calculate the top marker genes per cluster using the gini method.
+- Calculate the top marker genes per cluster using the gini method.
 
 ```{r, eval=FALSE}
 gini_markers <- findMarkers_one_vs_all(gobject = visium_brain,
@@ -536,7 +538,7 @@ knitr::include_graphics("images/visium_mouse_brain/21-dimFeatPlot2D.png")
 
 The Scran method is preferred for robust differential expression analysis, especially when addressing technical variability or differences in sequencing depth across spatial locations.
 
-Calculate the top marker genes per cluster using the scran method.
+- Calculate the top marker genes per cluster using the scran method.
 
 ```{r, eval=FALSE}
 scran_markers <- findMarkers_one_vs_all(gobject = visium_brain,
@@ -600,7 +602,9 @@ Visium spatial transcriptomics does not provide single-cell resolution, making c
 - PAGE
 - hypergeometric test
 - Rank
-- [DWLS Deconvolution](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-021-02362-7) Corresponded Single cell dataset can be generated from [here](http://mousebrain.org/). Giotto_SC is processed from the downsampled [Loom](https://satijalab.org/loomr/loomr_tutorial) file and can also be downloaded from GiottoData::getSpatialDataset().
+- [DWLS Deconvolution](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-021-02362-7) Corresponded Single cell dataset can be generated from [here](http://mousebrain.org/). 
+
+The Giotto_SC object was processed from the downsampled [Loom](https://satijalab.org/loomr/loomr_tutorial) file and can also be downloaded from GiottoData::getSpatialDataset().
 
 ## Download the single-cell dataset
 
@@ -635,11 +639,11 @@ giotto_SC <- normalizeGiotto(giotto_SC)
 
 ## PAGE/Rank enrichment
 
-Parametric Analysis of Gene Set Enrichment (PAGE) and Rank enrichment both aim to determine whether a predefined set of genes show statistically significant differences in expression compared to other genes in the dataset.
+Both Parametric Analysis of Gene Set Enrichment (PAGE) and Rank enrichment methods aim to determine whether a predefined set of genes show statistically significant differences in expression compared to other genes in the dataset.
 
 ### Create PAGE matrix
 
-PAGE matrix should be a binary matrix with each row represent a gene marker and each column represent a cell type. There are several ways to create PAGE matrix
+The PAGE matrix should be a binary matrix where each row represents a gene marker and each column represents a cell type. There are several ways to create the PAGE matrix:
 
 - 1. Create binary matrix of cell signature genes
 
@@ -656,7 +660,7 @@ di_mesench_markers <- c("Cartpt", "Scn1a", "Lypd6b",  "Drd5",
                         "Gpr88", "Plcxd2", "Cpne7", "Pou4f1",
                         "Ctxn2", "Wnt4")
 
-PAGE_matrix <- makeSignMatrixPAGE(sign_names = c("Granule_neurons",
+sign_matrix <- makeSignMatrixPAGE(sign_names = c("Granule_neurons",
                                                  "Oligo_dendrocytes",
                                                  "di_mesenchephalon"),
                                   sign_list = list(gran_markers,
@@ -672,11 +676,11 @@ sign_matrix_path <- system.file("extdata", "sig_matrix.txt",
 
 brain_sc_markers <- data.table::fread(sign_matrix_path) 
 
-PAGE_matrix <- as.matrix(brain_sc_markers[,-1])
-rownames(PAGE_matrix) <- brain_sc_markers$Event
+sign_matrix <- as.matrix(brain_sc_markers[,-1])
+rownames(sign_matrix) <- brain_sc_markers$Event
 ```
 
-- 3. make PAGE matrix from single cell dataset
+- 3. make a PAGE matrix from single cell dataset
 
 ```{r, eval=FALSE}
 markers_scran <- findMarkers_one_vs_all(gobject = giotto_SC, 
@@ -742,6 +746,8 @@ knitr::include_graphics("images/visium_mouse_brain/26-spatCellPlot2D.png")
 
 ## HyperGeometric test
 
+The hypergeometric test has been widely used for searching gene overrepresentation in categories such as diseases or particular Gene Ontology (GO) terms for cellular compartments, molecular functions, or biological processes. Traditionally, enrichment analysis with the hypergeometric test asks the question “What is the probability that k or more out of n genes associated with the pathway are in a list of length N, where those N genes are sampled from a background of size M?” You can find more information about this test [here](https://pmc.ncbi.nlm.nih.gov/articles/PMC10994554/)
+
 ```{r, eval=FALSE}
 visium_brain <- runHyperGeometricEnrich(gobject = visium_brain,
                                         expression_values = "normalized",
@@ -761,7 +767,9 @@ spatCellPlot(gobject = visium_brain,
 knitr::include_graphics("images/visium_mouse_brain/27-spatCellPlot2D.png")
 ```
 
-## Rank Enrichment
+## Rank enrichment
+
+In this method, enrichment is calculated based on the rank of fold-change for each gene in each spot and the rank of each marker in each cell type. 
 
 ### Create rank matrix 
 
@@ -847,7 +855,7 @@ spatDeconvPlot(visium_brain,
 knitr::include_graphics("images/visium_mouse_brain/30-spatDeconvPlot.png")
 ```
 
-# Spatial Grid
+# Spatial grid
 
 Create spatial grids by specifying the step size in both axis. This information will be saved in the Giotto object.
 
@@ -872,7 +880,11 @@ knitr::include_graphics("images/visium_mouse_brain/31-spatPlot2D.png")
 
 # Spatial expression patterns
 
+When having the spatial location of each spot/cell, you can look for genes that follow and share particular spatial distributions.
+
 ## Create a spatial network
+
+createSpatialNetwork() creates a spatial network connecting single-cells based on their physical distance to each other. There are two methods available: Delaunay and kNN. For the Delaunay method, neighbors will be decided by Delaunay triangulation and a maximum distance criterion. For the kNN method, the number of neighbors can be determined by k, or the maximum distance from each cell with or without setting a minimum k for each cell.
 
 ```{r, eval=FALSE}
 visium_brain <- createSpatialNetwork(gobject = visium_brain,
@@ -893,7 +905,7 @@ knitr::include_graphics("images/visium_mouse_brain/32-spatPlot2D.png")
 
 ## Find spatial genes
 
-Use the rank binarization. Rank the genes on the spatial dataset depending on whether they exhibit a spatial pattern location or not. This step may take a few minutes to run.
+Use the rank binarization to rank genes on the spatial dataset depending on whether they exhibit a spatial pattern location or not. This step may take a few minutes to run.
 
 ```{r, eval=FALSE}
 ranktest <- binSpect(visium_brain, 
@@ -918,6 +930,8 @@ knitr::include_graphics("images/visium_mouse_brain/33-spatFeatPlot2D.png")
 ```
 
 ## Spatial Co-Expression modules
+
+Once we have found spatial genes, we can group those genes with similar spatial patterns into co-expression modules. 
 
 - Cluster the top 500 spatial genes into 20 clusters
 
@@ -1029,6 +1043,8 @@ knitr::include_graphics("images/visium_mouse_brain/37-spatCellPlot2D.png")
 ```
 
 # Spatially informed clusters
+
+Once we identified spatial genes, we can use them to re-calculate the clusters based only on the expression information that follows spatial patterns. 
 
 ## Get the top 30 genes per spatial co-expression cluster
 
