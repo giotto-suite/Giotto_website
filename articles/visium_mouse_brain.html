@@ -630,7 +630,7 @@ on slides using a brightfield microscope and immunofluorescence (IF)
 staining to visualize protein detection in tissue sections on slides
 using a fluorescent microscope.</p>
 <p>High resolution png from original tissue:</p>
-<p>[]images/general_figs/mouse_brain_highres.png)</p>
+<p><img src="images%2Fgeneral_figs%2Fmouse_brain_highres.png"></p>
 <p>The <a href="https://support.10xgenomics.com/spatial-gene-expression/datasets/1.1.0/V1_Adult_Mouse_Brain" class="external-link">visium
 fresh frozen mouse brain tissue (Strain C57BL/6)</a> dataset was
 obtained from 10X genomics. The tissue was embedded and cryosectioned as
@@ -667,7 +667,7 @@ running these commands:</p>
 <div class="section level2" number="3">
 <h2 id="set-up-giotto-environment">
 <span class="header-section-number">3</span> Set up Giotto
-Environment<a class="anchor" aria-label="anchor" href="#set-up-giotto-environment"></a>
+environment<a class="anchor" aria-label="anchor" href="#set-up-giotto-environment"></a>
 </h2>
 <p>Ensure that the Giotto package is installed. Additionally, check that
 the mini conda Giotto environment with Python dependencies is
@@ -716,9 +716,9 @@ instructions are stored in the giotto object <span class="citation">@instruction
 <span>                                         python_path <span class="op">=</span> <span class="va">python_path</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="5">
-<h2 id="create-the-giotto-object-and-visualize">
-<span class="header-section-number">5</span> Create the Giotto
-Object and visualize<a class="anchor" aria-label="anchor" href="#create-the-giotto-object-and-visualize"></a>
+<h2 id="create-the-giotto-bject-and-visualize">
+<span class="header-section-number">5</span> Create the Giotto bject
+and visualize<a class="anchor" aria-label="anchor" href="#create-the-giotto-bject-and-visualize"></a>
 </h2>
 <p>createGiottoVisiumObject() will look for the standardized files
 organization from the Visium technology in the data folder and will
@@ -888,7 +888,7 @@ default method in the calculateHVF() function.</li>
 <div class="section level2" number="11">
 <h2 id="dimension-reduction">
 <span class="header-section-number">11</span> Dimension
-Reduction<a class="anchor" aria-label="anchor" href="#dimension-reduction"></a>
+reduction<a class="anchor" aria-label="anchor" href="#dimension-reduction"></a>
 </h2>
 <div class="section level3" number="11.1">
 <h3 id="pca">
@@ -980,7 +980,7 @@ running PCA, UMAP or t-SNE allows you to visualize the dataset in
 nearest neighbors<a class="anchor" aria-label="anchor" href="#calculate-the-nearest-neighbors"></a>
 </h3>
 <p>In preparation for the clustering calculation, finding the
-spots/cells with similar expression behavior is needed. There are two
+spots/cells with similar expression patterns is needed. There are two
 methods available in Giotto:</p>
 <ul>
 <li>Create a sNN network (default)</li>
@@ -992,8 +992,8 @@ the similarity between two points is “confirmed” by their common
 both close to a set of points C then we can say that A and B are close
 with greater confidence since their similarity is “confirmed” by the
 points in set C. You can find more information about this method <a href="https://d1wqtxts1xzle7.cloudfront.net/67759720/siam_hd_snn_cluster-libre.pdf?1624717643=&amp;response-content-disposition=inline%3B+filename%3DA_new_shared_nearest_neighbor_clustering.pdf&amp;Expires=1744241905&amp;Signature=EKZIFpKKGUPYegDxxL58WDtO6UhM9suqxSvauIzd8SWExXv5SPbhSgnvsnbMTOSWy56Vk-gyQUgazWCfh~lRg65CIZQqFStuNptUdIB4RvnWFJPT2jYfLgojTpDBKWLX8fn3Ab-sPxlUaqPV5m9E6WCunZqlQMNClLTKOK6L4D5NJs2XJl5u7bHGfHuMCLzPLLzBBfB-QLWDrXvhBmpX1ZOcX0O1YcOD1aNyQ2bCjNdCKRlSEMtX2Cboxe7B-Xf5bKRlA31JDTC~MUn3JGxHuDKpFKlwCZss980SIb1dbNz0vULD86nO6qIYbS1oQRIJHG260jox5s65TCJvO8rRIA__&amp;Key-Pair-Id=APKAJLOHF5GGSLRBV4ZA" class="external-link">here</a>.
-By default, createNearestNetwork() calculates the 30 shared Nearest
-Neighbors to each spot/cell, but you can modify this number using the
+By default, createNearestNetwork() calculates 30 shared Nearest
+Neighbors for each spot/cell, but you can modify this number using the
 “k” parameter.</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">visium_brain</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_brain</span>, </span>
@@ -1006,8 +1006,8 @@ Neighbors to each spot/cell, but you can modify this number using the
 likelihood of similarity. It posits that similar data points tend to
 cluster near each other in space. You can find more information about
 this method <a href="https://link.springer.com/article/10.1186/s40537-024-00973-y" class="external-link">here.</a>
-By default, createNearestNetwork() calculates the 30 K-Nearest Neighbors
-to each spot/cell, but you can modify this number using the “k”
+By default, createNearestNetwork() finds the 30 K-Nearest Neighbors to
+each spot/cell, but you can modify this number using the “k”
 parameter.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">visium_brain</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_brain</span>, </span>
@@ -1025,14 +1025,19 @@ have an accurate and fast result for the computation time. The Leiden
 algorithm consists of three phases. The first phase is the modularity
 optimization process, the second phase is the refinement of partition,
 and the third phase is the community aggregation process. This algorithm
-performs well on small, medium and large-scale networks.</p>
-<p>You can find more information about Louvain and Leiden clustering <a href="https://iopscience.iop.org/article/10.1088/1742-6596/2129/1/012028/pdf" class="external-link">here</a></p>
+performs well on small, medium and large-scale networks. You can find
+more information about Louvain and Leiden clustering <a href="https://iopscience.iop.org/article/10.1088/1742-6596/2129/1/012028/pdf" class="external-link">here</a></p>
+<ul>
+<li>Run the Leiden clustering algorithm.</li>
+</ul>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">visium_brain</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/doLeidenCluster.html">doLeidenCluster</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_brain</span>, </span>
 <span>                                resolution <span class="op">=</span> <span class="fl">0.4</span>, </span>
 <span>                                n_iterations <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></code></pre></div>
-<p>Plot dimension and spatial plots using the Leiden clusters
-information.</p>
+<ul>
+<li>Plot dimension and spatial plots using the Leiden clusters
+information.</li>
+</ul>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_brain</span>,</span>
 <span>        cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span><span class="op">)</span></span></code></pre></div>
@@ -1050,7 +1055,7 @@ connections between spots.</p>
 <span>           cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>           coord_fix_ratio <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images%2Fvisium_mouse_brain%2F16-spatPlot2D.png" alt="Spatial plot, colors indicate the Leiden clusters." width="60%" style="display: block; margin: auto;"></p>
-<p>Highlight one or more groups:</p>
+<p>You can highlight one or more groups of interest:</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">visium_brain</span>, </span>
 <span>           cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
@@ -1067,6 +1072,9 @@ connections between spots.</p>
 <h2 id="subset-data">
 <span class="header-section-number">13</span> Subset data<a class="anchor" aria-label="anchor" href="#subset-data"></a>
 </h2>
+<p>If you want to take a deeper look at certain regions of the sample,
+use subsetGiottoLocs() and specify the axis ranges to create a sample
+subset.</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create and show subset</span></span>
 <span><span class="va">DG_subset</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/subsetGiottoLocs.html" class="external-link">subsetGiottoLocs</a></span><span class="op">(</span><span class="va">visium_brain</span>,</span>
@@ -1092,7 +1100,10 @@ expression<a class="anchor" aria-label="anchor" href="#differential-expression">
 in a specific cluster, however not always expressed in all cells of that
 cluster. In other words, highly specific but not necessarily sensitive
 at the single-cell level.</p>
-<p>Calculate the top marker genes per cluster using the gini method.</p>
+<ul>
+<li>Calculate the top marker genes per cluster using the gini
+method.</li>
+</ul>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gini_markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/findMarkers_one_vs_all.html">findMarkers_one_vs_all</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_brain</span>,</span>
 <span>                                       method <span class="op">=</span> <span class="st">"gini"</span>,</span>
@@ -1143,8 +1154,10 @@ expressed genes across the sample.</li>
 <p>The Scran method is preferred for robust differential expression
 analysis, especially when addressing technical variability or
 differences in sequencing depth across spatial locations.</p>
-<p>Calculate the top marker genes per cluster using the scran
-method.</p>
+<ul>
+<li>Calculate the top marker genes per cluster using the scran
+method.</li>
+</ul>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scran_markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/findMarkers_one_vs_all.html">findMarkers_one_vs_all</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_brain</span>,</span>
 <span>                                        method <span class="op">=</span> <span class="st">"scran"</span>,</span>
@@ -1208,10 +1221,10 @@ signature gene lists:</p>
 <li>
 <a href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-021-02362-7" class="external-link">DWLS
 Deconvolution</a> Corresponded Single cell dataset can be generated from
-<a href="http://mousebrain.org/" class="external-link">here</a>. Giotto_SC is processed from
-the downsampled <a href="https://satijalab.org/loomr/loomr_tutorial" class="external-link">Loom</a> file and can
-also be downloaded from GiottoData::getSpatialDataset().</li>
+<a href="http://mousebrain.org/" class="external-link">here</a>.</li>
 </ul>
+<p>The Giotto_SC object was processed from the downsampled <a href="https://satijalab.org/loomr/loomr_tutorial" class="external-link">Loom</a> file and can
+also be downloaded from GiottoData::getSpatialDataset().</p>
 <div class="section level3" number="15.1">
 <h3 id="download-the-single-cell-dataset">
 <span class="header-section-number">15.1</span> Download the
@@ -1252,18 +1265,18 @@ single-cell object and run the normalization step<a class="anchor" aria-label="a
 <span class="header-section-number">15.3</span> PAGE/Rank
 enrichment<a class="anchor" aria-label="anchor" href="#pagerank-enrichment"></a>
 </h3>
-<p>Parametric Analysis of Gene Set Enrichment (PAGE) and Rank enrichment
-both aim to determine whether a predefined set of genes show
-statistically significant differences in expression compared to other
-genes in the dataset.</p>
+<p>Both Parametric Analysis of Gene Set Enrichment (PAGE) and Rank
+enrichment methods aim to determine whether a predefined set of genes
+show statistically significant differences in expression compared to
+other genes in the dataset.</p>
 <div class="section level4" number="15.3.1">
 <h4 id="create-page-matrix">
 <span class="header-section-number">15.3.1</span> Create PAGE
 matrix<a class="anchor" aria-label="anchor" href="#create-page-matrix"></a>
 </h4>
-<p>PAGE matrix should be a binary matrix with each row represent a gene
-marker and each column represent a cell type. There are several ways to
-create PAGE matrix</p>
+<p>The PAGE matrix should be a binary matrix where each row represents a
+gene marker and each column represents a cell type. There are several
+ways to create the PAGE matrix:</p>
 <ul>
 <li><ol style="list-style-type: decimal">
 <li>Create binary matrix of cell signature genes</li>
@@ -1282,7 +1295,7 @@ create PAGE matrix</p>
 <span>                        <span class="st">"Gpr88"</span>, <span class="st">"Plcxd2"</span>, <span class="st">"Cpne7"</span>, <span class="st">"Pou4f1"</span>,</span>
 <span>                        <span class="st">"Ctxn2"</span>, <span class="st">"Wnt4"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">PAGE_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/enrichment_PAGE.html">makeSignMatrixPAGE</a></span><span class="op">(</span>sign_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Granule_neurons"</span>,</span>
+<span><span class="va">sign_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/enrichment_PAGE.html">makeSignMatrixPAGE</a></span><span class="op">(</span>sign_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Granule_neurons"</span>,</span>
 <span>                                                 <span class="st">"Oligo_dendrocytes"</span>,</span>
 <span>                                                 <span class="st">"di_mesenchephalon"</span><span class="op">)</span>,</span>
 <span>                                  sign_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">gran_markers</span>,</span>
@@ -1299,11 +1312,11 @@ create PAGE matrix</p>
 <span></span>
 <span><span class="va">brain_sc_markers</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">sign_matrix_path</span><span class="op">)</span> </span>
 <span></span>
-<span><span class="va">PAGE_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/as.matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">brain_sc_markers</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">PAGE_matrix</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">brain_sc_markers</span><span class="op">$</span><span class="va">Event</span></span></code></pre></div>
+<span><span class="va">sign_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/as.matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">brain_sc_markers</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">sign_matrix</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">brain_sc_markers</span><span class="op">$</span><span class="va">Event</span></span></code></pre></div>
 <ul>
 <li><ol start="3" style="list-style-type: decimal">
-<li>make PAGE matrix from single cell dataset</li>
+<li>make a PAGE matrix from single cell dataset</li>
 </ol></li>
 </ul>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
@@ -1368,6 +1381,14 @@ single-cell data annotation) in the spatial dataset clusters.</li>
 <span class="header-section-number">15.4</span> HyperGeometric
 test<a class="anchor" aria-label="anchor" href="#hypergeometric-test"></a>
 </h3>
+<p>The hypergeometric test has been widely used for searching gene
+overrepresentation in categories such as diseases or particular Gene
+Ontology (GO) terms for cellular compartments, molecular functions, or
+biological processes. Traditionally, enrichment analysis with the
+hypergeometric test asks the question “What is the probability that k or
+more out of n genes associated with the pathway are in a list of length
+N, where those N genes are sampled from a background of size M?” You can
+find more information about this test <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10994554/" class="external-link">here</a></p>
 <div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">visium_brain</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runHyperGeometricEnrich.html">runHyperGeometricEnrich</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_brain</span>,</span>
 <span>                                        expression_values <span class="op">=</span> <span class="st">"normalized"</span>,</span>
@@ -1385,8 +1406,11 @@ test<a class="anchor" aria-label="anchor" href="#hypergeometric-test"></a>
 </div>
 <div class="section level3" number="15.5">
 <h3 id="rank-enrichment">
-<span class="header-section-number">15.5</span> Rank Enrichment<a class="anchor" aria-label="anchor" href="#rank-enrichment"></a>
+<span class="header-section-number">15.5</span> Rank enrichment<a class="anchor" aria-label="anchor" href="#rank-enrichment"></a>
 </h3>
+<p>In this method, enrichment is calculated based on the rank of
+fold-change for each gene in each spot and the rank of each marker in
+each cell type.</p>
 <div class="section level4" number="15.5.1">
 <h4 id="create-rank-matrix">
 <span class="header-section-number">15.5.1</span> Create rank
@@ -1479,7 +1503,7 @@ the proportion of each cell type per spot.</li>
 </div>
 <div class="section level2" number="16">
 <h2 id="spatial-grid">
-<span class="header-section-number">16</span> Spatial Grid<a class="anchor" aria-label="anchor" href="#spatial-grid"></a>
+<span class="header-section-number">16</span> Spatial grid<a class="anchor" aria-label="anchor" href="#spatial-grid"></a>
 </h2>
 <p>Create spatial grids by specifying the step size in both axis. This
 information will be saved in the Giotto object.</p>
@@ -1503,11 +1527,20 @@ information will be saved in the Giotto object.</p>
 <span class="header-section-number">17</span> Spatial expression
 patterns<a class="anchor" aria-label="anchor" href="#spatial-expression-patterns"></a>
 </h2>
+<p>When having the spatial location of each spot/cell, you can look for
+genes that follow and share particular spatial distributions.</p>
 <div class="section level3" number="17.1">
 <h3 id="create-a-spatial-network">
 <span class="header-section-number">17.1</span> Create a spatial
 network<a class="anchor" aria-label="anchor" href="#create-a-spatial-network"></a>
 </h3>
+<p>createSpatialNetwork() creates a spatial network connecting
+single-cells based on their physical distance to each other. There are
+two methods available: Delaunay and kNN. For the Delaunay method,
+neighbors will be decided by Delaunay triangulation and a maximum
+distance criterion. For the kNN method, the number of neighbors can be
+determined by k, or the maximum distance from each cell with or without
+setting a minimum k for each cell.</p>
 <div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">visium_brain</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_brain</span>,</span>
 <span>                                     method <span class="op">=</span> <span class="st">"kNN"</span>, </span>
@@ -1526,7 +1559,7 @@ network<a class="anchor" aria-label="anchor" href="#create-a-spatial-network"></
 <span class="header-section-number">17.2</span> Find spatial
 genes<a class="anchor" aria-label="anchor" href="#find-spatial-genes"></a>
 </h3>
-<p>Use the rank binarization. Rank the genes on the spatial dataset
+<p>Use the rank binarization to rank genes on the spatial dataset
 depending on whether they exhibit a spatial pattern location or not.
 This step may take a few minutes to run.</p>
 <div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
@@ -1552,6 +1585,8 @@ being spatial genes.</li>
 <span class="header-section-number">17.3</span> Spatial
 Co-Expression modules<a class="anchor" aria-label="anchor" href="#spatial-co-expression-modules"></a>
 </h3>
+<p>Once we have found spatial genes, we can group those genes with
+similar spatial patterns into co-expression modules.</p>
 <ul>
 <li>Cluster the top 500 spatial genes into 20 clusters</li>
 </ul>
@@ -1652,6 +1687,9 @@ each spatial co-expression cluster.</li>
 <span class="header-section-number">18</span> Spatially informed
 clusters<a class="anchor" aria-label="anchor" href="#spatially-informed-clusters"></a>
 </h2>
+<p>Once we identified spatial genes, we can use them to re-calculate the
+clusters based only on the expression information that follows spatial
+patterns.</p>
 <div class="section level3" number="18.1">
 <h3 id="get-the-top-30-genes-per-spatial-co-expression-cluster">
 <span class="header-section-number">18.1</span> Get the top 30 genes
