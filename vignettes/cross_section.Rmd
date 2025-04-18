@@ -12,7 +12,49 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+Cross sections in {Giotto} are used to generate an in-silico cross section of a
+3D dataset along an arbitrary 2D plane.
+
+A plane may be defined in one of four ways:
+
+`"equation"` - Provide a vector of 4 numerics to `equation`. These will be taken as the
+A, B, C, D coefficients in the plane-defining function Ax + By + Cz = D
+
+This method is shown below.
+
+`"3 points"` - Provide 3D coordinates to `point1`, `point2`, `point3` params. For example:
+
+```
+    method = "3 points",
+    point1 = c(100, 200, 300),
+    point2 = c(400, 200, 300),
+    point3 = c(100, 500, 700)
+```
+
+`"point and norm vector"` - Provide a 3D point anchor, then a 3D vector normal
+to the plane to set the plane rotation. For example:
+
+```
+    method = "point and norm vector",
+    point1 = c(100, 200, 300),
+    normVector = c(0, 1, 0)  # Normal points in y direction (horizontal plane)
+```
+
+`"point and two plane vectors"` - Provide a 3D point anchor and two non-parallel
+3D vectors that define the plane rotation. For example:
+
+```
+    method = "point and two plane vectors",
+    point1 = c(100, 200, 300),
+    planeVector1 = c(1, 0, 0),  # Vector along x-axis
+    planeVector2 = c(0, 0, 1)   # Vector along z-axis
+```
+
+
 # Setup and load example dataset
+
+For the example, we use a mini premade `giotto` object. This was mini dataset
+is a randomly sampled subset of a STARmap mouse brain dataset.
 
 ```{r, eval=FALSE}
 # Ensure Giotto Suite is installed
@@ -26,14 +68,6 @@ if(!"GiottoData" %in% installed.packages()) {
 }
 
 library(Giotto)
-
-# Ensure the Python environment for Giotto has been installed
-genv_exists <- checkGiottoEnvironment()
-
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment
-  installGiottoEnvironment()
-}
 ```
 
 ```{r, eval=FALSE}
@@ -41,11 +75,15 @@ if(!genv_exists){
 g <- GiottoData::loadGiottoMini("starmap")
 ```
 
+
+
+
 # Create Cross Section
 
+Next we define the cross section to create using the `"equation"` method.
+
 ```{r, eval=FALSE}
-g <- createCrossSection(
-    gobject = g,
+g <- createCrossSection(g,
     method = "equation",
     equation = c(0, 1, 0, 600),
     extend_ratio = 0.6,
@@ -56,11 +94,12 @@ g <- createCrossSection(
 
 # Plot cross section
 
+This cross section can then be used in cross section-specific plotting functions.
+
 ## 2D
 
 ```{r, eval=FALSE}
-crossSectionPlot(g, 
-                 name = "new_cs")
+crossSectionPlot(g, name = "new_cs")
 ```
 
 ```{r, echo=FALSE, out.width="100%", fig.align='center'}
