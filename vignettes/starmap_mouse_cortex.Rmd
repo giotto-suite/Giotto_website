@@ -15,6 +15,11 @@ vignette: >
 ```{r, eval=FALSE}
 library(Giotto)
 
+# install extra package needed later in this example
+if (!requireNamespace("ggridges", quietly = TRUE)) {
+    install.packages("ggridges")
+}
+
 # Ensure Giotto can access a python env
 genv_exists <- checkGiottoEnvironment()
 if(!genv_exists){
@@ -1088,7 +1093,7 @@ star <- createSpatialNetwork(star, delaunay_method = "delaunayn_geometry") # cre
 
 star <- createCrossSection(star,
     method = "equation",
-    equation = c(0, 1, 0, 1400), # equivalent to 0x + y + 0z = 1200
+    equation = c(0, 1, 0, 1400), # equivalent to 0x + y + 0z = 1400
     extend_ratio = 0.2 # decides how large the displayed meshgrid is beyond the tissue
 )
 ```
