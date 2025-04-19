@@ -627,6 +627,11 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://drieslab.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># install extra package needed later in this example</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggridges"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"ggridges"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
 <span><span class="co"># Ensure Giotto can access a python env</span></span>
 <span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
@@ -1585,7 +1590,7 @@ network once created.</p>
 <span></span>
 <span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCrossSection.html">createCrossSection</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    method <span class="op">=</span> <span class="st">"equation"</span>,</span>
-<span>    equation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1400</span><span class="op">)</span>, <span class="co"># equivalent to 0x + y + 0z = 1200</span></span>
+<span>    equation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1400</span><span class="op">)</span>, <span class="co"># equivalent to 0x + y + 0z = 1400</span></span>
 <span>    extend_ratio <span class="op">=</span> <span class="fl">0.2</span> <span class="co"># decides how large the displayed meshgrid is beyond the tissue</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>You can use <code><a href="../reference/insertCrossSectionSpatPlot3D.html">insertCrossSectionSpatPlot3D()</a></code> to visualize
