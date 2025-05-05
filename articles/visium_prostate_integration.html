@@ -165,6 +165,14 @@
         </li>
       </ul>
 </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Spatial ATAC-Seq</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/multiomics_rna_atac_me13.html">Multi-omics spatial RNA-ATAC seq Mouse Embryo</a>
+        </li>
+      </ul>
+</li>
     <li class="divider">
     </li>
 <li class="dropdown-submenu">
@@ -530,16 +538,6 @@
         </li>
       </ul>
 </li>
-    <li class="divider">
-    </li>
-<li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Scalability</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../articles/dbMatrix.html">Using dbMatrix with Giotto</a>
-        </li>
-      </ul>
-</li>
   </ul>
 </li>
 <li class="dropdown">
@@ -635,10 +633,10 @@ expression data using a Visium Spatial Gene Expression slide.</p>
 <p>The Visium Cancer Prostate data to run this tutorial can be found <a href="https://www.10xgenomics.com/resources/datasets/human-prostate-cancer-adenocarcinoma-with-invasive-carcinoma-ffpe-1-standard-1-3-0" class="external-link">here</a>
 The Visium Normal Prostate data to run this tutorial can be found <a href="https://www.10xgenomics.com/resources/datasets/normal-human-prostate-ffpe-1-standard-1-3-0" class="external-link">here</a></p>
 <p>Visium technology:</p>
-<p><img src="images%2Fgeneral_figs%2Fvisium_technology.png" width="100%"></p>
+<p><img src="images/general_figs/visium_technology.png" width="100%"></p>
 <p>High resolution png from original tissue:</p>
-<p><img src="images%2Fgeneral_figs%2FVisium_FFPE_Human_Normal_Prostate_image.png" width="50%" style="display: block; margin: auto;"></p>
-<p><img src="images%2Fgeneral_figs%2FVisium_FFPE_Human_Prostate_Cancer_image.png" width="50%" style="display: block; margin: auto;"></p>
+<p><img src="images/general_figs/Visium_FFPE_Human_Normal_Prostate_image.png" width="50%" style="display: block; margin: auto;"></p>
+<p><img src="images/general_figs/Visium_FFPE_Human_Prostate_Cancer_image.png" width="50%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2" number="2">
 <h2 id="start-giotto">
@@ -732,21 +730,21 @@ and join<a class="anchor" aria-label="anchor" href="#create-giotto-objects-and-j
 <span>           image_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NP-image"</span>, <span class="st">"CP-image"</span><span class="op">)</span>,</span>
 <span>           group_by <span class="op">=</span> <span class="st">"list_ID"</span>, </span>
 <span>           point_alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_prostate_integration%2F0-spatPlot2D.png" width="100%"></p>
+<p><img src="images/visium_prostate_integration/0-spatPlot2D.png" width="100%"></p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># this plots one selected image</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testcombo</span>, </span>
 <span>           cell_color <span class="op">=</span> <span class="st">"in_tissue"</span>,</span>
 <span>           image_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NP-image"</span><span class="op">)</span>, </span>
 <span>           point_alpha <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_prostate_integration%2F1-spatPlot2D.png" width="100%"></p>
+<p><img src="images/visium_prostate_integration/1-spatPlot2D.png" width="100%"></p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># this plots two selected images</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testcombo</span>, </span>
 <span>           cell_color <span class="op">=</span> <span class="st">"in_tissue"</span>,</span>
 <span>           image_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> <span class="st">"NP-image"</span>, <span class="st">"CP-image"</span><span class="op">)</span>,</span>
 <span>           point_alpha <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_prostate_integration%2F2-spatPlot2D.png" width="100%"></p>
+<p><img src="images/visium_prostate_integration/2-spatPlot2D.png" width="100%"></p>
 </div>
 <div class="section level2" number="4">
 <h2 id="process-giotto-objects">
@@ -784,12 +782,12 @@ Objects<a class="anchor" aria-label="anchor" href="#process-giotto-objects"></a>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/violinPlot.html" class="external-link">violinPlot</a></span><span class="op">(</span><span class="va">testcombo</span>, </span>
 <span>           feats <span class="op">=</span> <span class="va">testfeats</span>, </span>
 <span>           cluster_column <span class="op">=</span> <span class="st">"list_ID"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_prostate_integration%2F3-violinPlot.png" width="100%"></p>
+<p><img src="images/visium_prostate_integration/3-violinPlot.png" width="100%"></p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotMetaDataHeatmap.html" class="external-link">plotMetaDataHeatmap</a></span><span class="op">(</span><span class="va">testcombo</span>, </span>
 <span>                    selected_feats <span class="op">=</span> <span class="va">testfeats</span>, </span>
 <span>                    metadata_cols <span class="op">=</span> <span class="st">"list_ID"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_prostate_integration%2F4-plotMetaDataHeatmap.png" width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_prostate_integration/4-plotMetaDataHeatmap.png" width="60%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## visualize</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testcombo</span>, </span>
@@ -797,7 +795,7 @@ Objects<a class="anchor" aria-label="anchor" href="#process-giotto-objects"></a>
 <span>           cell_color <span class="op">=</span> <span class="st">"nr_feats"</span>, </span>
 <span>           color_as_factor <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>           point_size <span class="op">=</span> <span class="fl">0.75</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_prostate_integration%2F5-spatPlot2D.png" width="100%"></p>
+<p><img src="images/visium_prostate_integration/5-spatPlot2D.png" width="100%"></p>
 </div>
 <div class="section level2" number="5">
 <h2 id="dimension-reduction">
@@ -814,7 +812,7 @@ Reduction<a class="anchor" aria-label="anchor" href="#dimension-reduction"></a>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/screePlot.html">screePlot</a></span><span class="op">(</span><span class="va">testcombo</span>, </span>
 <span>          ncp <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_prostate_integration%2F6-screePlot.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_prostate_integration/6-screePlot.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2" number="6">
 <h2 id="clustering">
@@ -849,17 +847,17 @@ integration methods.</p>
 <span>         cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>, </span>
 <span>         show_NN_network <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>         point_size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_prostate_integration%2F7-UMAP.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_prostate_integration/7-UMAP.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testcombo</span>, </span>
 <span>           group_by <span class="op">=</span> <span class="st">"list_ID"</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>           point_size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_prostate_integration%2F8-spatPlot2D.png" width="100%"></p>
+<p><img src="images/visium_prostate_integration/8-spatPlot2D.png" width="100%"></p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatDimPlot.html" class="external-link">spatDimPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testcombo</span>,</span>
 <span>              cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_prostate_integration%2F9-spatDimPlot2D.png" width="100%"></p>
+<p><img src="images/visium_prostate_integration/9-spatDimPlot2D.png" width="100%"></p>
 </div>
 <div class="section level3" number="6.2">
 <h3 id="with-harmony-integration">
@@ -901,7 +899,7 @@ work well on spatial datasets.</p>
 <span>         cell_color <span class="op">=</span> <span class="st">"leiden_harmony"</span>, </span>
 <span>         show_NN_network <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>         point_size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_prostate_integration%2F10-UMAP.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_prostate_integration/10-UMAP.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># If you want to show NN network information, you will need to specify these arguments in the plotUMAP function</span></span>
 <span><span class="co"># show_NN_network = TRUE, nn_network_to_use = "sNN" , network_name = "NN.harmony"</span></span></code></pre></div>
@@ -910,22 +908,22 @@ work well on spatial datasets.</p>
 <span>           group_by <span class="op">=</span> <span class="st">"list_ID"</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"leiden_harmony"</span>,</span>
 <span>           point_size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_prostate_integration%2F11-spatPlot2D.png" width="100%"></p>
+<p><img src="images/visium_prostate_integration/11-spatPlot2D.png" width="100%"></p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatDimPlot.html" class="external-link">spatDimPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testcombo</span>,</span>
 <span>              dim_reduction_to_use <span class="op">=</span> <span class="st">"umap"</span>, </span>
 <span>              dim_reduction_name <span class="op">=</span> <span class="st">"umap_harmony"</span>,</span>
 <span>              cell_color <span class="op">=</span> <span class="st">"leiden_harmony"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_prostate_integration%2F12-spatDimPlot2D.png" width="100%"></p>
+<p><img src="images/visium_prostate_integration/12-spatDimPlot2D.png" width="100%"></p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># compare to previous results</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testcombo</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_prostate_integration%2F13-spatPlot2D.png" width="100%"></p>
+<p><img src="images/visium_prostate_integration/13-spatPlot2D.png" width="100%"></p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testcombo</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"leiden_harmony"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_prostate_integration%2F14-spatPlot2D.png" width="100%"></p>
+<p><img src="images/visium_prostate_integration/14-spatPlot2D.png" width="100%"></p>
 </div>
 </div>
 <div class="section level2" number="7">
@@ -1006,7 +1004,7 @@ of this dataset using getSpatialDataset</p>
 <span>             cow_n_col <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>             coord_fix_ratio <span class="op">=</span> <span class="cn">NULL</span>, </span>
 <span>             point_size <span class="op">=</span> <span class="fl">1.25</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_prostate_integration%2F15-spatCellPlot2D.png" width="90%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_prostate_integration/15-spatCellPlot2D.png" width="90%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="7.2">
 <h3 id="hypergeometric-test">
@@ -1026,7 +1024,7 @@ test<a class="anchor" aria-label="anchor" href="#hypergeometric-test"></a>
 <span>             cow_n_col <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>             coord_fix_ratio <span class="op">=</span> <span class="cn">NULL</span>, </span>
 <span>             point_size <span class="op">=</span> <span class="fl">1.75</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_prostate_integration%2F16-spatCellPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_prostate_integration/16-spatCellPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="7.3">
 <h3 id="rank-enrichment">
@@ -1057,7 +1055,7 @@ test<a class="anchor" aria-label="anchor" href="#hypergeometric-test"></a>
 <span>               cow_n_col <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>               coord_fix_ratio <span class="op">=</span> <span class="cn">NULL</span>, </span>
 <span>               point_size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_prostate_integration%2F17-spatCellPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_prostate_integration/17-spatCellPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="7.4">
 <h3 id="dwls-deconvolution">
@@ -1081,7 +1079,7 @@ Deconvolution<a class="anchor" aria-label="anchor" href="#dwls-deconvolution"></
 <span>               cow_n_col <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>               coord_fix_ratio <span class="op">=</span> <span class="cn">NULL</span>, </span>
 <span>               point_size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_prostate_integration%2F18-spatCellPlot2D.png" width="100%"></p>
+<p><img src="images/visium_prostate_integration/18-spatCellPlot2D.png" width="100%"></p>
 </div>
 </div>
 <div class="section level2" number="8">
@@ -1197,7 +1195,7 @@ Deconvolution<a class="anchor" aria-label="anchor" href="#dwls-deconvolution"></
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
       </footer>

@@ -165,6 +165,14 @@
         </li>
       </ul>
 </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Spatial ATAC-Seq</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/multiomics_rna_atac_me13.html">Multi-omics spatial RNA-ATAC seq Mouse Embryo</a>
+        </li>
+      </ul>
+</li>
     <li class="divider">
     </li>
 <li class="dropdown-submenu">
@@ -530,16 +538,6 @@
         </li>
       </ul>
 </li>
-    <li class="divider">
-    </li>
-<li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Scalability</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../articles/dbMatrix.html">Using dbMatrix with Giotto</a>
-        </li>
-      </ul>
-</li>
   </ul>
 </li>
 <li class="dropdown">
@@ -800,7 +798,7 @@ what might otherwise be expected.</li>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">gimg_copy</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">20</span>, <span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span> <span class="co"># xmin, xmax, ymin, ymax</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gimg_copy</span><span class="op">)</span></span></code></pre></div>
 <pre><code>SpatExtent : 0, 20, 0, 10 (xmin, xmax, ymin, ymax)</code></pre>
-<p><img src="images%2Fspatial_transformations%2F01_ext_img.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/spatial_transformations/01_ext_img.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gpoly</span><span class="op">)</span></span>
 <span><span class="va">gpoly_copy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/copy.html" class="external-link">copy</a></span><span class="op">(</span><span class="va">gpoly</span><span class="op">)</span></span>
@@ -808,7 +806,7 @@ what might otherwise be expected.</li>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">gpoly_copy</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gpoly_copy</span><span class="op">)</span></span></code></pre></div>
 <pre><code>SpatExtent : 0, 20, 0, 10 (xmin, xmax, ymin, ymax)</code></pre>
-<p><img src="images%2Fspatial_transformations%2F02_ext_gpoly.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/spatial_transformations/02_ext_gpoly.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level3" number="2.2">
@@ -858,7 +856,7 @@ should be of class <code>matrix</code>.</p>
 <span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/XY.html" class="external-link">XY</a></span><span class="op">(</span><span class="va">gpoly_mini</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">gpoly_mini_xy</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gpoly_mini</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fspatial_transformations%2F03_xy_edit.png" width="40%" style="display: block; margin: auto;"></p>
+<p><img src="images/spatial_transformations/03_xy_edit.png" width="40%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="2.3">
 <h3 id="simple-transforms">
@@ -900,7 +898,7 @@ would still be within the field of view).</p>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"shear(fx = 0.5)"</span>, col <span class="op">=</span> <span class="va">rain</span>, lwd <span class="op">=</span> <span class="va">line_width</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">e</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, border <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fspatial_transformations%2F04_transforms.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="images/spatial_transformations/04_transforms.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="2.4">
 <h3 id="affine-transforms">
@@ -915,11 +913,11 @@ can be condensed into a single step. Affine transforms where the x and y
 values undergo a linear transform. These transforms in 2D, can all be
 represented as a 2x2 matrix or 2x3 if the xy translation values are
 included.</p>
-<p><img src="images%2Fspatial_transformations%2F05_affine_matrix.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/spatial_transformations/05_affine_matrix.png" width="80%" style="display: block; margin: auto;"></p>
 <p>To perform the linear transform, the xy coordinates just need to be
 matrix multiplied by the 2x2 affine matrix. The resulting values should
 then be added to the translate values.</p>
-<p><img src="images%2Fspatial_transformations%2F06_apply_matrix.png" width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/spatial_transformations/06_apply_matrix.png" width="60%" style="display: block; margin: auto;"></p>
 <p>Due to the nature of matrix multiplication, you can simply multiply
 the affine matrices with each other and when the xy coordinates are
 multiplied by the resulting matrix, it performs both linear transforms
@@ -964,13 +962,13 @@ spatial transform where blue is the starting position and red is the
 end.</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">aff</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fspatial_transformations%2F07_plot_aff.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/spatial_transformations/07_plot_aff.png" width="80%" style="display: block; margin: auto;"></p>
 <p>We can then apply the affine transforms to the
 <code>giottoPolygon</code> to see that it indeed in the location and
 orientation that the projection suggests.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/affine.html" class="external-link">affine</a></span><span class="op">(</span><span class="va">gpoly</span>, <span class="va">aff</span><span class="op">)</span>, main <span class="op">=</span> <span class="st">"affine()"</span>, col <span class="op">=</span> <span class="va">rain</span>, lwd <span class="op">=</span> <span class="va">line_width</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fspatial_transformations%2F08_aff.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/spatial_transformations/08_aff.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="section level4" number="2.4.1">
 <h4 id="affine-image-transforms">
 <span class="header-section-number">2.4.1</span> Affine image
@@ -998,7 +996,7 @@ un-transformed source image.</p>
 <code class="sourceCode R"><span><span class="co"># affine transform of image info matches with polygon info</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/affine.html" class="external-link">affine</a></span><span class="op">(</span><span class="va">gimg</span>, <span class="va">aff</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/affine.html" class="external-link">affine</a></span><span class="op">(</span><span class="va">gpoly</span>, <span class="va">aff</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, border <span class="op">=</span> <span class="st">"cyan"</span>, lwd <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fspatial_transformations%2F09_aff_img_poly.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/spatial_transformations/09_aff_img_poly.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4" number="2.4.2">
 <h4 id="affine-giotto-object-transforms">
@@ -1018,7 +1016,7 @@ un-transformed source image.</p>
 <span>    point_size <span class="op">=</span> <span class="fl">0.1</span>,</span>
 <span>    use_overlap <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fspatial_transformations%2F10_aff_giotto.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/spatial_transformations/10_aff_giotto.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 </div>
@@ -1098,7 +1096,7 @@ loaded via a namespace (and not attached):
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
       </footer>

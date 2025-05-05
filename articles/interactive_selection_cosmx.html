@@ -165,6 +165,14 @@
         </li>
       </ul>
 </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Spatial ATAC-Seq</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/multiomics_rna_atac_me13.html">Multi-omics spatial RNA-ATAC seq Mouse Embryo</a>
+        </li>
+      </ul>
+</li>
     <li class="divider">
     </li>
 <li class="dropdown-submenu">
@@ -530,16 +538,6 @@
         </li>
       </ul>
 </li>
-    <li class="divider">
-    </li>
-<li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Scalability</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../articles/dbMatrix.html">Using dbMatrix with Giotto</a>
-        </li>
-      </ul>
-</li>
   </ul>
 </li>
 <li class="dropdown">
@@ -767,7 +765,7 @@ widget<a class="anchor" aria-label="anchor" href="#render-the-vitessce-widget"><
 </h2>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">vc</span><span class="op">$</span><span class="fu">widget</span><span class="op">(</span>theme <span class="op">=</span> <span class="st">"light"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Finteractive_selection_cosmx%2F01_vitessceR.png" width="100%"></p>
+<p><img src="images/interactive_selection_cosmx/01_vitessceR.png" width="100%"></p>
 </div>
 <div class="section level2" number="10">
 <h2 id="select-the-regions-of-interest">
@@ -775,14 +773,14 @@ widget<a class="anchor" aria-label="anchor" href="#render-the-vitessce-widget"><
 interest<a class="anchor" aria-label="anchor" href="#select-the-regions-of-interest"></a>
 </h2>
 <p>Use the lasso tool to select a region of interest.</p>
-<p><img src="images%2Finteractive_selection_cosmx%2F02_lasso_tool.png" width="100%"></p>
+<p><img src="images/interactive_selection_cosmx/02_lasso_tool.png" width="100%"></p>
 <p>After drawing the selection, the area will be highlighted and the
 corresponding cells will be mapped and highlighted in the dimension
 reduction plots.</p>
-<p><img src="images%2Finteractive_selection_cosmx%2F03_selected_region.png" width="100%"></p>
+<p><img src="images/interactive_selection_cosmx/03_selected_region.png" width="100%"></p>
 <p>You can see your selected regions in the Cell Sets panel, under the
 My Selections group.</p>
-<p><img src="images%2Finteractive_selection_cosmx%2F04_selections_window.png" width="40%" style="display: block; margin: auto;"></p>
+<p><img src="images/interactive_selection_cosmx/04_selections_window.png" width="40%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2" number="11">
 <h2 id="export-your-selected-regions">
@@ -791,7 +789,7 @@ regions<a class="anchor" aria-label="anchor" href="#export-your-selected-regions
 </h2>
 <p>When you have finished selecting the regions of interest, click on
 the dots menu and select the option Export hierarchy to csv.</p>
-<p><img src="images%2Finteractive_selection_cosmx%2F05_export_to_csv.png" width="40%" style="display: block; margin: auto;"></p>
+<p><img src="images/interactive_selection_cosmx/05_export_to_csv.png" width="40%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2" number="12">
 <h2 id="add-the-selected-regions-to-the-giotto-object">
@@ -806,7 +804,7 @@ file<a class="anchor" aria-label="anchor" href="#read-the-selections-file"></a>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_selections</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"my_selections.csv"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">my_selections</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"cell_ID"</span></span></code></pre></div>
-<p><img src="images%2Finteractive_selection_cosmx%2F06_selections_table.png" width="70%" style="display: block; margin: auto;"></p>
+<p><img src="images/interactive_selection_cosmx/06_selections_table.png" width="70%" style="display: block; margin: auto;"></p>
 <p>Use the cell_IDs to add their corresponding spatial coordinates.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spatial_locs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/getSpatialLocations.html" class="external-link">getSpatialLocations</a></span><span class="op">(</span><span class="va">giotto_object</span>,</span>
@@ -841,7 +839,7 @@ the polygons to the Giotto object<a class="anchor" aria-label="anchor" href="#ad
 <p>Let’s see how it looks like now the cell_metadata</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">giotto_object</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Finteractive_selection_cosmx%2F07_new_metadata.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/interactive_selection_cosmx/07_new_metadata.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2" number="13">
@@ -860,7 +858,7 @@ specify what Selection you want to get, e.g “Selection 1”.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getCellsFromPolygon.html">getCellsFromPolygon</a></span><span class="op">(</span><span class="va">giotto_object</span>,</span>
 <span>                    polygon_name <span class="op">=</span> <span class="st">"selections"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Finteractive_selection_cosmx%2F08_get_cells.png" width="70%" style="display: block; margin: auto;"></p>
+<p><img src="images/interactive_selection_cosmx/08_get_cells.png" width="70%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="13.2">
 <h3 id="compare-the-cell-types-between-regions">
@@ -870,7 +868,7 @@ types between regions<a class="anchor" aria-label="anchor" href="#compare-the-ce
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/compareCellAbundance.html">compareCellAbundance</a></span><span class="op">(</span><span class="va">giotto_object</span>, </span>
 <span>                     cell_type_column <span class="op">=</span> <span class="st">"cell_types"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Finteractive_selection_cosmx%2F09_compare_cells.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/interactive_selection_cosmx/09_compare_cells.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="13.3">
 <h3 id="compare-the-gene-expression-between-regions">
@@ -881,7 +879,7 @@ expression between regions<a class="anchor" aria-label="anchor" href="#compare-t
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/comparePolygonExpression.html">comparePolygonExpression</a></span><span class="op">(</span><span class="va">giotto_object</span>,</span>
 <span>                         selected_feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"KRT19"</span>, <span class="st">"SERPINA1"</span>, <span class="st">"TYK2"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Finteractive_selection_cosmx%2F10_compare_genes.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/interactive_selection_cosmx/10_compare_genes.png" width="80%" style="display: block; margin: auto;"></p>
 <p>Or you can calculate the top expressed genes per region and then plot
 them.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
@@ -894,7 +892,7 @@ them.</p>
 <span></span>
 <span><span class="fu"><a href="../reference/comparePolygonExpression.html">comparePolygonExpression</a></span><span class="op">(</span><span class="va">giotto_object</span>,</span>
 <span>                         selected_feats <span class="op">=</span> <span class="va">topgenes_scran</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Finteractive_selection_cosmx%2F11_scran_genes.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/interactive_selection_cosmx/11_scran_genes.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="13.4">
 <h3 id="plot-again-the-selected-regions">
@@ -907,7 +905,7 @@ with their corresponding Selection ID.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">giotto_object</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"selections"</span>,</span>
 <span>           point_size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Finteractive_selection_cosmx%2F12_plot_selections.png" width="100%"></p>
+<p><img src="images/interactive_selection_cosmx/12_plot_selections.png" width="100%"></p>
 </div>
 </div>
 <div class="section level2" number="14">
@@ -1028,7 +1026,7 @@ with their corresponding Selection ID.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
       </footer>

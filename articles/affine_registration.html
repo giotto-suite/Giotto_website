@@ -165,6 +165,14 @@
         </li>
       </ul>
 </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Spatial ATAC-Seq</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/multiomics_rna_atac_me13.html">Multi-omics spatial RNA-ATAC seq Mouse Embryo</a>
+        </li>
+      </ul>
+</li>
     <li class="divider">
     </li>
 <li class="dropdown-submenu">
@@ -530,16 +538,6 @@
         </li>
       </ul>
 </li>
-    <li class="divider">
-    </li>
-<li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Scalability</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../articles/dbMatrix.html">Using dbMatrix with Giotto</a>
-        </li>
-      </ul>
-</li>
   </ul>
 </li>
 <li class="dropdown">
@@ -657,7 +655,7 @@ wget https://cf.10xgenomics.com/samples/spatial-exp/1.0.0/V1_Mouse_Brain_Sagitta
 wget https://cf.10xgenomics.com/samples/spatial-exp/1.0.0/V1_Mouse_Brain_Sagittal_Posterior_Section_2/V1_Mouse_Brain_Sagittal_Posterior_Section_2_raw_feature_bc_matrix.h5</code></pre>
 <p>After downloading the above, move the files and unzip the spatial zip
 files into this kind of structure:
-<img src="images%2Faffine_registration%2F01_fs.png" width="60%" style="display: block; margin: auto;"></p>
+<img src="images/affine_registration/01_fs.png" width="60%" style="display: block; margin: auto;"></p>
 <div class="section level3" number="1.1">
 <h3 id="load-datasets">
 <span class="header-section-number">1.1</span> Load datasets<a class="anchor" aria-label="anchor" href="#load-datasets"></a>
@@ -744,7 +742,7 @@ landmark selection</p>
 <span>    source <span class="op">=</span> <span class="va">images</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="co"># image to move: slice 2</span></span>
 <span>    target <span class="op">=</span> <span class="va">images</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>  <span class="co"># image to match: slice 1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Faffine_registration%2F02_app_start.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="images/affine_registration/02_app_start.png" width="100%" style="display: block; margin: auto;"></p>
 <ul>
 <li>In datasets with larger images, you can also set
 <code>options("giotto.plot_img_max_sample" = 5e6)</code> to set the
@@ -764,7 +762,7 @@ roughly 1:1 aspect ratio, shown by making sure that the axis ticks are
 incrementing by the same amount <strong>(2)</strong> and a convenient
 level of zoom. From here, you can select pan around the image by sliding
 the x and y range slider bars <strong>(3)</strong>.</p>
-<p><img src="images%2Faffine_registration%2F03_app_square.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="images/affine_registration/03_app_square.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="2.3">
 <h3 id="place-manual-landmarks">
@@ -778,7 +776,7 @@ source and target plots. Clicking <strong>Cancel</strong> will return
 you to the console. Clicking <strong>Done</strong> finishes the
 process.</p>
 <p>At least 3 pairs of landmarks are needed.</p>
-<p><img src="images%2Faffine_registration%2F04_app_finish.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="images/affine_registration/04_app_finish.png" width="100%" style="display: block; margin: auto;"></p>
 <p>Once <strong>Done</strong> is clicked, these xy coordinates will be
 returned as a list of two <code>data.frames</code>, with the first being
 the landmarks from the source, and the latter being those from the
@@ -838,7 +836,7 @@ become cyan.</p>
 <span>    alpha <span class="op">=</span> <span class="fl">0.5</span>, </span>
 <span>    col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoUtils/reference/getMonochromeColors.html" class="external-link">getMonochromeColors</a></span><span class="op">(</span><span class="st">"green"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Faffine_registration%2F05_overlap_preview.png" width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/affine_registration/05_overlap_preview.png" width="60%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="2.5">
 <h3 id="align-datasets">
@@ -853,10 +851,10 @@ become cyan.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">j</span>, point_size <span class="op">=</span> <span class="fl">1.2</span>, cell_color <span class="op">=</span> <span class="st">"in_tissue"</span>, background_color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Faffine_registration%2F06_spatplot_overlap.png" width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/affine_registration/06_spatplot_overlap.png" width="60%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">j</span>, point_size <span class="op">=</span> <span class="fl">2</span>, cell_color <span class="op">=</span> <span class="st">"in_tissue"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Faffine_registration%2F07_spatplot3d.png" width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/affine_registration/07_spatplot3d.png" width="60%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2" number="3">
@@ -941,7 +939,7 @@ loaded via a namespace (and not attached):
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
       </footer>

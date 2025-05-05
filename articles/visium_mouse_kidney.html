@@ -165,6 +165,14 @@
         </li>
       </ul>
 </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Spatial ATAC-Seq</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/multiomics_rna_atac_me13.html">Multi-omics spatial RNA-ATAC seq Mouse Embryo</a>
+        </li>
+      </ul>
+</li>
     <li class="divider">
     </li>
 <li class="dropdown-submenu">
@@ -530,16 +538,6 @@
         </li>
       </ul>
 </li>
-    <li class="divider">
-    </li>
-<li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Scalability</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../articles/dbMatrix.html">Using dbMatrix with Giotto</a>
-        </li>
-      </ul>
-</li>
   </ul>
 </li>
 <li class="dropdown">
@@ -636,7 +634,7 @@ as described in Visium Spatial Protocols - Tissue Preparation Guide
 were placed on Visium Gene Expression Slides.</p>
 <p>The Visium kidney data to run this tutorial can be found <a href="https://support.10xgenomics.com/spatial-gene-expression/datasets/1.0.0/V1_Mouse_Kidney" class="external-link">here</a></p>
 <p>Visium technology:</p>
-<p><img src="images%2Fgeneral_figs%2Fvisium_technology.png"></p>
+<p><img src="images/general_figs/visium_technology.png"></p>
 </div>
 <div class="section level2" number="2">
 <h2 id="set-up-giotto-environment">
@@ -709,7 +707,7 @@ instructions and preparations<a class="anchor" aria-label="anchor" href="#giotto
 <span>         cell_color <span class="op">=</span> <span class="st">"in_tissue"</span>, </span>
 <span>         show_image <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>         point_alpha <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F0-spatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/0-spatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## subset on spots that were covered by tissue</span></span>
 <span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">visium_kidney</span><span class="op">)</span></span>
@@ -740,14 +738,14 @@ instructions and preparations<a class="anchor" aria-label="anchor" href="#giotto
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_kidney</span>, </span>
 <span>           show_image <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>           point_alpha <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F1-spatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/1-spatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_kidney</span>, </span>
 <span>           show_image <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>           point_alpha <span class="op">=</span> <span class="fl">0.7</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"nr_feats"</span>, </span>
 <span>           color_as_factor <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F2-spatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/2-spatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2" number="5">
 <h2 id="dimension-reduction">
@@ -758,30 +756,30 @@ reduction<a class="anchor" aria-label="anchor" href="#dimension-reduction"></a>
 <code class="sourceCode R"><span><span class="co">## highly variable features (genes)</span></span>
 <span><span class="va">visium_kidney</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculateHVF.html">calculateHVF</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_kidney</span>,</span>
 <span>                              save_plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F3-HVFplot.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/3-HVFplot.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## run PCA on expression values (default)</span></span>
 <span><span class="va">visium_kidney</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPCA.html">runPCA</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_kidney</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/screePlot.html">screePlot</a></span><span class="op">(</span><span class="va">visium_kidney</span>, </span>
 <span>          ncp <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F4-screePlot.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/4-screePlot.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_kidney</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F5-PCA.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/5-PCA.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## run UMAP and tSNE on PCA space (default)</span></span>
 <span><span class="va">visium_kidney</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span><span class="va">visium_kidney</span>, </span>
 <span>                         dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_kidney</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F6-UMAP.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/6-UMAP.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">visium_kidney</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runtSNE.html">runtSNE</a></span><span class="op">(</span><span class="va">visium_kidney</span>, </span>
 <span>                         dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotTSNE.html" class="external-link">plotTSNE</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_kidney</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F7-tSNE.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/7-tSNE.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2" number="6">
 <h2 id="clustering">
@@ -802,7 +800,7 @@ reduction<a class="anchor" aria-label="anchor" href="#dimension-reduction"></a>
 <span>         cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>, </span>
 <span>         show_NN_network <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>         point_size <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F8-UMAP.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/8-UMAP.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2" number="7">
 <h2 id="co-visualize">
@@ -814,14 +812,14 @@ reduction<a class="anchor" aria-label="anchor" href="#dimension-reduction"></a>
 <span>            cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>            dim_point_size <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>            spat_point_size <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F9-spatDimPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/9-spatDimPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatDimPlot.html" class="external-link">spatDimPlot</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_kidney</span>, </span>
 <span>            cell_color <span class="op">=</span> <span class="st">"nr_feats"</span>, </span>
 <span>            color_as_factor <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>            dim_point_size <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>            spat_point_size <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F10-spatDimPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/10-spatDimPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2" number="8">
 <h2 id="cell-type-marker-gene-detection">
@@ -851,14 +849,14 @@ detection<a class="anchor" aria-label="anchor" href="#cell-type-marker-gene-dete
 <span>           cluster_column <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>           strip_text <span class="op">=</span> <span class="fl">8</span>, </span>
 <span>           strip_position <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F11-violinPlot.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/11-violinPlot.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/violinPlot.html" class="external-link">violinPlot</a></span><span class="op">(</span><span class="va">visium_kidney</span>,</span>
 <span>           feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">topgenes_gini</span><span class="op">)</span>, </span>
 <span>           cluster_column <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>           strip_text <span class="op">=</span> <span class="fl">8</span>, </span>
 <span>           strip_position <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F12-violinPlot.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/12-violinPlot.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># cluster heatmap</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotMetaDataHeatmap.html" class="external-link">plotMetaDataHeatmap</a></span><span class="op">(</span><span class="va">visium_kidney</span>,</span>
@@ -866,7 +864,7 @@ detection<a class="anchor" aria-label="anchor" href="#cell-type-marker-gene-dete
 <span>                    metadata_cols <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>                    x_text_size <span class="op">=</span> <span class="fl">10</span>, </span>
 <span>                    y_text_size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F13-plotMetaDataHeatmap.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/13-plotMetaDataHeatmap.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># umap plots</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/dimFeatPlot2D.html" class="external-link">dimFeatPlot2D</a></span><span class="op">(</span><span class="va">visium_kidney</span>,</span>
@@ -874,7 +872,7 @@ detection<a class="anchor" aria-label="anchor" href="#cell-type-marker-gene-dete
 <span>              feats <span class="op">=</span> <span class="va">markers_gini</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">1</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"cluster"</span><span class="op">]</span><span class="op">$</span><span class="va">feats</span>,</span>
 <span>              cow_n_col <span class="op">=</span> <span class="fl">3</span>, </span>
 <span>              point_size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F14-dimFeatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/14-dimFeatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="8.2">
 <h3 id="scran">
@@ -895,13 +893,13 @@ detection<a class="anchor" aria-label="anchor" href="#cell-type-marker-gene-dete
 <span>           cluster_column <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>           strip_text <span class="op">=</span> <span class="fl">10</span>, </span>
 <span>           strip_position <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F15-violinPlot.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/15-violinPlot.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># cluster heatmap</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotMetaDataHeatmap.html" class="external-link">plotMetaDataHeatmap</a></span><span class="op">(</span><span class="va">visium_kidney</span>,</span>
 <span>                    selected_feats <span class="op">=</span> <span class="va">topgenes_scran</span>,</span>
 <span>                    metadata_cols <span class="op">=</span> <span class="st">"leiden_clus"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F16-plotMetaDataHeatmap.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/16-plotMetaDataHeatmap.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># umap plots</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/dimFeatPlot2D.html" class="external-link">dimFeatPlot2D</a></span><span class="op">(</span><span class="va">visium_kidney</span>,</span>
@@ -909,7 +907,7 @@ detection<a class="anchor" aria-label="anchor" href="#cell-type-marker-gene-dete
 <span>              feats <span class="op">=</span> <span class="va">markers_scran</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">1</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"cluster"</span><span class="op">]</span><span class="op">$</span><span class="va">feats</span>,</span>
 <span>              cow_n_col <span class="op">=</span> <span class="fl">3</span>, </span>
 <span>              point_size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F17-dimFeatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/17-dimFeatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2" number="9">
@@ -944,7 +942,7 @@ gene list:</p>
 <span>         show_grid <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>         grid_color <span class="op">=</span> <span class="st">"red"</span>, </span>
 <span>         spatial_grid_name <span class="op">=</span> <span class="st">"spatial_grid"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F18-spatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/18-spatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2" number="11">
 <h2 id="spatial-network">
@@ -954,7 +952,7 @@ gene list:</p>
 <code class="sourceCode R"><span><span class="co">## delaunay network: stats + creation</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotStatDelaunayNetwork.html" class="external-link">plotStatDelaunayNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_kidney</span>, </span>
 <span>                        maximum_distance <span class="op">=</span> <span class="fl">400</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F19-plotStatDelaunayNetwork.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/19-plotStatDelaunayNetwork.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">visium_kidney</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_kidney</span>, </span>
 <span>                                      minimum_k <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
@@ -965,7 +963,7 @@ gene list:</p>
 <span>         show_network <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>         network_color <span class="op">=</span> <span class="st">"blue"</span>, </span>
 <span>         spatial_network_name <span class="op">=</span> <span class="st">"Delaunay_network"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F20-spatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/20-spatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2" number="12">
 <h2 id="spatial-genes">
@@ -984,7 +982,7 @@ gene list:</p>
 <span>               feats <span class="op">=</span> <span class="va">km_spatialfeats</span><span class="op">$</span><span class="va">feats</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span>, </span>
 <span>               cow_n_col <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>               point_size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F21-spatFeatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/21-spatFeatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## rank binarization</span></span>
 <span><span class="va">ranktest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/binSpect.html">binSpect</a></span><span class="op">(</span><span class="va">visium_kidney</span>, </span>
@@ -995,7 +993,7 @@ gene list:</p>
 <span>               feats <span class="op">=</span> <span class="va">ranktest</span><span class="op">$</span><span class="va">feats</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span>, </span>
 <span>               cow_n_col <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>               point_size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F22-spatFeatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/22-spatFeatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="12.2">
 <h3 id="spatial-co-expression-patterns">
@@ -1024,7 +1022,7 @@ co-expression patterns<a class="anchor" aria-label="anchor" href="#spatial-co-ex
 <span>               expression_values <span class="op">=</span> <span class="st">"scaled"</span>,</span>
 <span>               feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Napsa"</span>, <span class="st">"Kap"</span>, <span class="st">"Defb29"</span>, <span class="st">"Prdx1"</span><span class="op">)</span>, </span>
 <span>               point_size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F23-spatFeatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/23-spatFeatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 3. cluster correlated genes &amp; visualize</span></span>
 <span><span class="va">spat_cor_netw_DT</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/clusterSpatialCorFeats.html">clusterSpatialCorFeats</a></span><span class="op">(</span><span class="va">spat_cor_netw_DT</span>,</span>
@@ -1035,13 +1033,13 @@ co-expression patterns<a class="anchor" aria-label="anchor" href="#spatial-co-ex
 <span>                     spatCorObject <span class="op">=</span> <span class="va">spat_cor_netw_DT</span>,</span>
 <span>                     use_clus_name <span class="op">=</span> <span class="st">"spat_netw_clus"</span>,</span>
 <span>                     heatmap_legend_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>title <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F24-heatmSpatialCorFeats.png" width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/24-heatmSpatialCorFeats.png" width="60%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 4. rank spatial correlated clusters and show genes for selected clusters</span></span>
 <span><span class="va">netw_ranks</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rankSpatialCorGroups.html">rankSpatialCorGroups</a></span><span class="op">(</span><span class="va">visium_kidney</span>,</span>
 <span>                                   spatCorObject <span class="op">=</span> <span class="va">spat_cor_netw_DT</span>,</span>
 <span>                                   use_clus_name <span class="op">=</span> <span class="st">"spat_netw_clus"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F25-rankSpatialCorGroups.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/25-rankSpatialCorGroups.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">top_netw_spat_cluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/showSpatialCorFeats.html">showSpatialCorFeats</a></span><span class="op">(</span><span class="va">spat_cor_netw_DT</span>,</span>
 <span>                                             use_clus_name <span class="op">=</span> <span class="st">"spat_netw_clus"</span>,</span>
@@ -1067,7 +1065,7 @@ co-expression patterns<a class="anchor" aria-label="anchor" href="#spatial-co-ex
 <span>             cell_annotation_values <span class="op">=</span> <span class="va">netw_ranks</span><span class="op">$</span><span class="va">clusters</span>,</span>
 <span>             point_size <span class="op">=</span> <span class="fl">1.5</span>, </span>
 <span>             cow_n_col <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F26-spatCellPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/26-spatCellPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2" number="13">
@@ -1117,12 +1115,12 @@ co-expression patterns<a class="anchor" aria-label="anchor" href="#spatial-co-ex
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_kidney</span>,</span>
 <span>         cell_color <span class="op">=</span> <span class="st">"HMRF_k5_b.0"</span>,</span>
 <span>         point_size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F27-spatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/27-spatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_kidney</span>,</span>
 <span>         cell_color <span class="op">=</span> <span class="st">"HMRF_k5_b.2"</span>,</span>
 <span>         point_size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_kidney%2F28-spatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_kidney/28-spatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2" number="14">
 <h2 id="session-info">
@@ -1240,7 +1238,7 @@ co-expression patterns<a class="anchor" aria-label="anchor" href="#spatial-co-ex
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
       </footer>

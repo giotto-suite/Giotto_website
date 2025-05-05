@@ -165,6 +165,14 @@
         </li>
       </ul>
 </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Spatial ATAC-Seq</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/multiomics_rna_atac_me13.html">Multi-omics spatial RNA-ATAC seq Mouse Embryo</a>
+        </li>
+      </ul>
+</li>
     <li class="divider">
     </li>
 <li class="dropdown-submenu">
@@ -530,16 +538,6 @@
         </li>
       </ul>
 </li>
-    <li class="divider">
-    </li>
-<li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Scalability</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../articles/dbMatrix.html">Using dbMatrix with Giotto</a>
-        </li>
-      </ul>
-</li>
   </ul>
 </li>
 <li class="dropdown">
@@ -636,14 +634,14 @@ a Visium Spatial Gene Expression slide.</p>
 histological information with whole transcriptome gene expression
 profiles (fresh frozen or FFPE) to provide you with spatially resolved
 gene expression.</p>
-<p><img src="images%2Fgeneral_figs%2Fvisium_technology.png"></p>
+<p><img src="images/general_figs/visium_technology.png"></p>
 <p>You can use standard fixation and staining techniques, including
 hematoxylin and eosin (H&amp;E) staining, to visualize tissue sections
 on slides using a brightfield microscope and immunofluorescence (IF)
 staining to visualize protein detection in tissue sections on slides
 using a fluorescent microscope.</p>
 <p>High resolution png from original tissue:</p>
-<p><img src="images%2Fgeneral_figs%2Fmouse_brain_highres.png"></p>
+<p><img src="images/general_figs/mouse_brain_highres.png"></p>
 <p>The <a href="https://support.10xgenomics.com/spatial-gene-expression/datasets/1.1.0/V1_Adult_Mouse_Brain" class="external-link">visium
 fresh frozen mouse brain tissue (Strain C57BL/6)</a> dataset was
 obtained from 10X genomics. The tissue was embedded and cryosectioned as
@@ -768,7 +766,7 @@ corresponding to the tissue area.</p>
 <span>           cell_color_code <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0"</span> <span class="op">=</span> <span class="st">"lightgrey"</span>, <span class="st">"1"</span> <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span>, </span>
 <span>           show_image <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>           image_name <span class="op">=</span> <span class="st">"image"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F0-spatPlot2D.png" alt="Spatial plot of the Visium mouse brain sample, color indicates wheter the spot is in tissue (1) or not (0)." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/0-spatPlot2D.png" alt="Spatial plot of the Visium mouse brain sample, color indicates wheter the spot is in tissue (1) or not (0)." width="60%" style="display: block; margin: auto;"></p>
 <p>Use the same metadata column “in_tissue” to subset the object and
 keep only the spots corresponding to the tissue area.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -794,20 +792,20 @@ number of features per spot across the sample.</p>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_brain_statistics</span>, </span>
 <span>           cell_color <span class="op">=</span> <span class="st">"nr_feats"</span>, </span>
 <span>           color_as_factor <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F1-spatPlot2D.png" alt="Spatial distribution of features per spot." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/1-spatPlot2D.png" alt="Spatial distribution of features per spot." width="60%" style="display: block; margin: auto;"></p>
 <p>filterDistributions() creates a histogram to show the distribution of
 features per spot across the sample.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/filterDistributions.html">filterDistributions</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_brain_statistics</span>, </span>
 <span>                    detection <span class="op">=</span> <span class="st">"cells"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F2-filterDistributions.png" alt="Distribution of features per spot." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/2-filterDistributions.png" alt="Distribution of features per spot." width="60%" style="display: block; margin: auto;"></p>
 <p>When setting the detection = “feats”, the histogram shows the
 distribution of spots with certain number of features across the
 sample.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/filterDistributions.html">filterDistributions</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_brain_statistics</span>, </span>
 <span>                    detection <span class="op">=</span> <span class="st">"feats"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F3-filterDistributions.png" alt="Distribution of cells with different features per spot." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/3-filterDistributions.png" alt="Distribution of cells with different features per spot." width="60%" style="display: block; margin: auto;"></p>
 <p>filterCombinations() may be used to test how different filtering
 parameters will affect the number of cells and features in the filtered
 data:</p>
@@ -816,7 +814,7 @@ data:</p>
 <span>                   expression_thresholds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>,</span>
 <span>                   feat_det_in_min_cells <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">100</span>, <span class="fl">200</span><span class="op">)</span>,</span>
 <span>                   min_det_feats_per_cell <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">1500</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F4-filterCombinations.png" alt="Number of spots and features filtered when using multiple feat_det_in_min_cells and min_det_feats_per_cell combinations." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/4-filterCombinations.png" alt="Number of spots and features filtered when using multiple feat_det_in_min_cells and min_det_feats_per_cell combinations." width="60%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2" number="8">
 <h2 id="filtering">
@@ -857,7 +855,7 @@ statistics in the metadata table.</p>
 <span>           point_alpha <span class="op">=</span> <span class="fl">0.7</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"nr_feats"</span>, </span>
 <span>           color_as_factor <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F5-spatPlot2D.png" alt="Spatial distribution of the number of features per spot." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/5-spatPlot2D.png" alt="Spatial distribution of the number of features per spot." width="60%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2" number="10">
 <h2 id="feature-selection">
@@ -876,7 +874,7 @@ non-parametric model.</li>
 <code class="sourceCode R"><span><span class="va">visium_brain</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculateHVF.html">calculateHVF</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_brain</span>, </span>
 <span>                             method <span class="op">=</span> <span class="st">"cov_loess"</span>,</span>
 <span>                             save_plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F6-HVFplot.png" alt="Covariance of HVFs using the loess method." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/6-HVFplot.png" alt="Covariance of HVFs using the loess method." width="60%" style="display: block; margin: auto;"></p>
 <ul>
 <li>pearson residuals are used for variance stabilization (to account
 for technical noise) and highlighting overdispersed genes.</li>
@@ -885,7 +883,7 @@ for technical noise) and highlighting overdispersed genes.</li>
 <code class="sourceCode R"><span><span class="va">visium_brain</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculateHVF.html">calculateHVF</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_brain</span>, </span>
 <span>                             method <span class="op">=</span> <span class="st">"var_p_resid"</span>,</span>
 <span>                             save_plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F7-HVFplot.png" alt="Variance of HVFs using the pearson residuals method." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/7-HVFplot.png" alt="Variance of HVFs using the pearson residuals method." width="60%" style="display: block; margin: auto;"></p>
 <ul>
 <li>binned (covariance groups) are used when gene expression variability
 differs across expression levels or spatial regions, without assuming a
@@ -896,7 +894,7 @@ default method in the calculateHVF() function.</li>
 <code class="sourceCode R"><span><span class="va">visium_brain</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculateHVF.html">calculateHVF</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_brain</span>, </span>
 <span>                             method <span class="op">=</span> <span class="st">"cov_groups"</span>,</span>
 <span>                             save_plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F8-HVFplot.png" alt="Covariance of HVFs using the binned method." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/8-HVFplot.png" alt="Covariance of HVFs using the binned method." width="60%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2" number="11">
 <h2 id="dimension-reduction">
@@ -939,13 +937,13 @@ by each component.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/screePlot.html">screePlot</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_brain</span>, </span>
 <span>          ncp <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F9-screePlot.png" alt="Screeplot showing the variance explained per principal component." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/9-screePlot.png" alt="Screeplot showing the variance explained per principal component." width="60%" style="display: block; margin: auto;"></p>
 <ul>
 <li>Visualize the PCA calculated using the HVFs.</li>
 </ul>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_brain</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F10-PCA.png" alt="PCA plot using HVFs." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/10-PCA.png" alt="PCA plot using HVFs." width="60%" style="display: block; margin: auto;"></p>
 <ul>
 <li>Visualize the custom PCA calculated using the vector of
 features.</li>
@@ -953,7 +951,7 @@ features.</li>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_brain</span>,</span>
 <span>        dim_reduction_name <span class="op">=</span> <span class="st">"custom_pca"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F11-PCA.png" alt="PCA using custom features." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/11-PCA.png" alt="PCA using custom features." width="60%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="11.2">
 <h3 id="umap">
@@ -969,7 +967,7 @@ running PCA, UMAP or t-SNE allows you to visualize the dataset in
 <span>                        dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_brain</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F12-UMAP.png" alt="UMAP using the 10 first principal components." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/12-UMAP.png" alt="UMAP using the 10 first principal components." width="60%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="11.3">
 <h3 id="tsne">
@@ -980,7 +978,7 @@ running PCA, UMAP or t-SNE allows you to visualize the dataset in
 <span>                        dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotTSNE.html" class="external-link">plotTSNE</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_brain</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F13-tSNE.png" alt="tSNE using the 10 first principal components." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/13-tSNE.png" alt="tSNE using the 10 first principal components." width="60%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2" number="12">
@@ -1054,7 +1052,7 @@ information.</li>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_brain</span>,</span>
 <span>        cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F14-PCA.png" alt="PCA plot, colors indicate the Leiden clusters." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/14-PCA.png" alt="PCA plot, colors indicate the Leiden clusters." width="60%" style="display: block; margin: auto;"></p>
 <p>Set the argument “show_NN_network = TRUE” to visualize the
 connections between spots.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
@@ -1062,12 +1060,12 @@ connections between spots.</p>
 <span>         cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>, </span>
 <span>         show_NN_network <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>         point_size <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F15-UMAP.png" alt="UMAP plot, colors indicate the Leiden clusters." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/15-UMAP.png" alt="UMAP plot, colors indicate the Leiden clusters." width="60%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">visium_brain</span>, </span>
 <span>           cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>           coord_fix_ratio <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F16-spatPlot2D.png" alt="Spatial plot, colors indicate the Leiden clusters." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/16-spatPlot2D.png" alt="Spatial plot, colors indicate the Leiden clusters." width="60%" style="display: block; margin: auto;"></p>
 <p>You can highlight one or more groups of interest:</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">visium_brain</span>, </span>
@@ -1078,7 +1076,7 @@ connections between spots.</p>
 <span>           cell_color_code <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"8"</span> <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span>, </span>
 <span>           other_cell_color <span class="op">=</span> <span class="st">"grey"</span>, </span>
 <span>           other_point_size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F17-spatPlot2D.png" alt="Spatial plot, highlighting only the cluster 8." width="90%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/17-spatPlot2D.png" alt="Spatial plot, highlighting only the cluster 8." width="90%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2" number="13">
@@ -1098,7 +1096,7 @@ subset.</p>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatDimPlot.html" class="external-link">spatDimPlot</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">DG_subset</span>,</span>
 <span>            cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>, </span>
 <span>            spat_point_size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F18-spatDimPlot2D.png" alt="Dimension and spatial plot of a subset object." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/18-spatDimPlot2D.png" alt="Dimension and spatial plot of a subset object." width="60%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2" number="14">
 <h2 id="differential-expression">
@@ -1136,7 +1134,7 @@ genes.</li>
 <span>           strip_text <span class="op">=</span> <span class="fl">6</span>, </span>
 <span>           strip_position <span class="op">=</span> <span class="st">"right"</span>,</span>
 <span>           save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>base_width <span class="op">=</span> <span class="fl">10</span>, base_height <span class="op">=</span> <span class="fl">30</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F19-violinPlot.png" alt="Violin plot showing the top gini genes normalized expression." width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/19-violinPlot.png" alt="Violin plot showing the top gini genes normalized expression." width="80%" style="display: block; margin: auto;"></p>
 <ul>
 <li>Use the cluster IDs to create a heatmap with the normalized
 expression of the top expressed genes per cluster.</li>
@@ -1146,7 +1144,7 @@ expression of the top expressed genes per cluster.</li>
 <span>                    selected_feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">topgenes_gini</span><span class="op">)</span>,</span>
 <span>                    metadata_cols <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>                    x_text_size <span class="op">=</span> <span class="fl">10</span>, y_text_size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F20-plotMetaDataHeatmap.png" alt="Heatmap showing the top gini genes normalized expression per Leiden cluster." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/20-plotMetaDataHeatmap.png" alt="Heatmap showing the top gini genes normalized expression per Leiden cluster." width="60%" style="display: block; margin: auto;"></p>
 <ul>
 <li>Visualize the scaled expression spatial distribution of the top
 expressed genes across the sample.</li>
@@ -1158,7 +1156,7 @@ expressed genes across the sample.</li>
 <span>              cow_n_col <span class="op">=</span> <span class="fl">5</span>, </span>
 <span>              point_size <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>              save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>base_width <span class="op">=</span> <span class="fl">15</span>, base_height <span class="op">=</span> <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F21-dimFeatPlot2D.png" alt="Spatial distribution of the top gini genes scaled expression." width="100%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/21-dimFeatPlot2D.png" alt="Spatial distribution of the top gini genes scaled expression." width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="14.2">
 <h3 id="scran-markers">
@@ -1190,7 +1188,7 @@ genes.</li>
 <span>           strip_text <span class="op">=</span> <span class="fl">6</span>, </span>
 <span>           strip_position <span class="op">=</span> <span class="st">"right"</span>,</span>
 <span>           save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>base_width <span class="op">=</span> <span class="fl">10</span>, base_height <span class="op">=</span> <span class="fl">30</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F22-violinPlot.png" alt="Violin plot of the top scran genes normalized expression." width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/22-violinPlot.png" alt="Violin plot of the top scran genes normalized expression." width="80%" style="display: block; margin: auto;"></p>
 <ul>
 <li>Use the cluster IDs to create a heatmap with the normalized
 expression of the top expressed genes per cluster.</li>
@@ -1200,7 +1198,7 @@ expression of the top expressed genes per cluster.</li>
 <span>                    selected_feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">topgenes_scran</span><span class="op">)</span>,</span>
 <span>                    metadata_cols <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>                    x_text_size <span class="op">=</span> <span class="fl">10</span>, y_text_size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F23-plotMetaDataHeatmap.png" alt="Heatmap showing the top scran genes normalized expression per Leiden cluster." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/23-plotMetaDataHeatmap.png" alt="Heatmap showing the top scran genes normalized expression per Leiden cluster." width="60%" style="display: block; margin: auto;"></p>
 <ul>
 <li>Visualize the scaled expression spatial distribution of the top
 expressed genes across the sample.</li>
@@ -1212,7 +1210,7 @@ expressed genes across the sample.</li>
 <span>              cow_n_col <span class="op">=</span> <span class="fl">5</span>, </span>
 <span>              point_size <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>              save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>base_width <span class="op">=</span> <span class="fl">20</span>, base_height <span class="op">=</span> <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F24-dimFeatPlot2D.png" alt="Spatial distribution of the top scran genes scaled expression." width="100%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/24-dimFeatPlot2D.png" alt="Spatial distribution of the top scran genes scaled expression." width="100%" style="display: block; margin: auto;"></p>
 <p>In practice, it is often beneficial to apply both Gini and Scran
 methods and compare results for a more complete understanding of
 differential gene expression across clusters.</p>
@@ -1374,7 +1372,7 @@ single-cell data annotation) in the spatial dataset clusters.</li>
 <span>                         spat_enr_names <span class="op">=</span> <span class="st">"PAGE"</span>,</span>
 <span>                         x_text_size <span class="op">=</span> <span class="fl">8</span>,</span>
 <span>                         y_text_size <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F25-plotMetaDataCellsHeatmap.png" alt="Cell types enrichment per Leiden cluster, identified using the PAGE method." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/25-plotMetaDataCellsHeatmap.png" alt="Cell types enrichment per Leiden cluster, identified using the PAGE method." width="60%" style="display: block; margin: auto;"></p>
 <ul>
 <li>Plot the spatial distribution of the cell types.</li>
 </ul>
@@ -1386,7 +1384,7 @@ single-cell data annotation) in the spatial dataset clusters.</li>
 <span>               coord_fix_ratio <span class="op">=</span> <span class="fl">1</span>, </span>
 <span>               point_size <span class="op">=</span> <span class="fl">1</span>, </span>
 <span>               show_legend <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F26-spatCellPlot2D.png" alt="Spatial distribution of cell types identified using the PAGE method." width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/26-spatCellPlot2D.png" alt="Spatial distribution of cell types identified using the PAGE method." width="80%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level3" number="15.4">
@@ -1415,7 +1413,7 @@ find more information about this test <a href="https://pmc.ncbi.nlm.nih.gov/arti
 <span>             cow_n_col <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>             coord_fix_ratio <span class="op">=</span> <span class="cn">NULL</span>, </span>
 <span>             point_size <span class="op">=</span> <span class="fl">1.75</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F27-spatCellPlot2D.png" alt="Spatial distribution of cell types identified using the HyperGeometric method." width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/27-spatCellPlot2D.png" alt="Spatial distribution of cell types identified using the HyperGeometric method." width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="15.5">
 <h3 id="rank-enrichment">
@@ -1456,7 +1454,7 @@ enrichment<a class="anchor" aria-label="anchor" href="#run-rank-enrichment"></a>
 <span>               cow_n_col <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>               coord_fix_ratio <span class="op">=</span> <span class="fl">1</span>, </span>
 <span>               point_size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F28-spatCellPlot2D.png" alt="Spatial distribution of cell types identified using the Rank method." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/28-spatCellPlot2D.png" alt="Spatial distribution of cell types identified using the Rank method." width="60%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level3" number="15.6">
@@ -1501,7 +1499,7 @@ certain cell type per spot.</li>
 <span>               cow_n_col <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>               coord_fix_ratio <span class="op">=</span> <span class="fl">1</span>, </span>
 <span>               point_size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F29-spatCellPlot2D.png" alt="Spatial plot colored by the proportion of specific cell types." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/29-spatCellPlot2D.png" alt="Spatial plot colored by the proportion of specific cell types." width="60%" style="display: block; margin: auto;"></p>
 <ul>
 <li>Plot the DWLS deconvolution result creating with pie plots showing
 the proportion of each cell type per spot.</li>
@@ -1510,7 +1508,7 @@ the proportion of each cell type per spot.</li>
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatDeconvPlot.html" class="external-link">spatDeconvPlot</a></span><span class="op">(</span><span class="va">visium_brain</span>, </span>
 <span>               show_image <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>               radius <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F30-spatDeconvPlot.png" alt="Spatial deconvolution plot showing the proportion of cell types per spot, identified using the DWLS method." width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/30-spatDeconvPlot.png" alt="Spatial deconvolution plot showing the proportion of cell types per spot, identified using the DWLS method." width="80%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 </div>
@@ -1533,7 +1531,7 @@ information will be saved in the Giotto object.</p>
 <span>           show_grid <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>           grid_color <span class="op">=</span> <span class="st">"red"</span>, </span>
 <span>           spatial_grid_name <span class="op">=</span> <span class="st">"spatial_grid"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F31-spatPlot2D.png" alt="Spatial plot with grids." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/31-spatPlot2D.png" alt="Spatial plot with grids." width="60%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2" number="17">
 <h2 id="spatial-expression-patterns">
@@ -1565,7 +1563,7 @@ setting a minimum k for each cell.</p>
 <span>           show_network<span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>           network_color <span class="op">=</span> <span class="st">"blue"</span>, </span>
 <span>           spatial_network_name <span class="op">=</span> <span class="st">"spatial_network"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F32-spatPlot2D.png" alt="Spatial network across spots in the Visium mouse sample." width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/32-spatPlot2D.png" alt="Spatial network across spots in the Visium mouse sample." width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="17.2">
 <h3 id="find-spatial-genes">
@@ -1591,7 +1589,7 @@ being spatial genes.</li>
 <span>               feats <span class="op">=</span> <span class="va">ranktest</span><span class="op">$</span><span class="va">feats</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span>, </span>
 <span>               cow_n_col <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>               point_size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F33-spatFeatPlot2D.png" alt="Spatial distribution of the top spatial genes scaled expression." width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/33-spatFeatPlot2D.png" alt="Spatial distribution of the top spatial genes scaled expression." width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="17.3">
 <h3 id="spatial-co-expression-modules">
@@ -1631,7 +1629,7 @@ patterns to Mbp.</li>
 <span>               expression_values <span class="op">=</span> <span class="st">"scaled"</span>,</span>
 <span>               feats <span class="op">=</span> <span class="va">top10_genes</span><span class="op">$</span><span class="va">variable</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, </span>
 <span>               point_size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F34-spatFeatPlot2D.png" alt="Spatial distribution of the scaled expression of 3 genes with similar spatial pattern to Mbp." width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/34-spatFeatPlot2D.png" alt="Spatial distribution of the scaled expression of 3 genes with similar spatial pattern to Mbp." width="80%" style="display: block; margin: auto;"></p>
 <ul>
 <li>Cluster spatial genes.</li>
 </ul>
@@ -1648,7 +1646,7 @@ assigned cluster.</li>
 <span>                     spatCorObject <span class="op">=</span> <span class="va">spat_cor_netw_DT</span>,</span>
 <span>                     use_clus_name <span class="op">=</span> <span class="st">"spat_netw_clus"</span>,</span>
 <span>                     heatmap_legend_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>title <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F35-heatmSpatialCorFeats.png" alt="Correlations heatmap between spatial genes and correlated clusters." width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/35-heatmSpatialCorFeats.png" alt="Correlations heatmap between spatial genes and correlated clusters." width="80%" style="display: block; margin: auto;"></p>
 <ul>
 <li>Rank spatial correlated clusters and show genes for selected
 clusters.</li>
@@ -1667,7 +1665,7 @@ cluster.</li>
 <span>                                            use_clus_name <span class="op">=</span> <span class="st">"spat_netw_clus"</span>,</span>
 <span>                                            selected_clusters <span class="op">=</span> <span class="fl">6</span>, </span>
 <span>                                            show_top_feats <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F36-rankSpatialCorGroups.png" alt="Ranking of spatial correlated groups. Size indicates the number spatial genes per group." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/36-rankSpatialCorGroups.png" alt="Ranking of spatial correlated groups. Size indicates the number spatial genes per group." width="60%" style="display: block; margin: auto;"></p>
 <ul>
 <li>Create the metagene enrichment score per co-expression cluster.</li>
 </ul>
@@ -1692,7 +1690,7 @@ each spatial co-expression cluster.</li>
 <span>             cell_annotation_values <span class="op">=</span> <span class="va">netw_ranks</span><span class="op">$</span><span class="va">clusters</span>,</span>
 <span>             point_size <span class="op">=</span> <span class="fl">1</span>, </span>
 <span>             cow_n_col <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F37-spatCellPlot2D.png" alt="Spatial distribution of metagene enrichment scores per co-expression cluster." width="100%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/37-spatCellPlot2D.png" alt="Spatial distribution of metagene enrichment scores per co-expression cluster." width="100%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2" number="18">
@@ -1755,7 +1753,7 @@ based on the spatial genes.</li>
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">visium_brain</span>, </span>
 <span>           cell_color <span class="op">=</span> <span class="st">"custom_leiden"</span>,</span>
 <span>           point_size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F38-spatPlot2D.png" alt="Spatial distribution of Leiden clusters calculated using spatial genes." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/38-spatPlot2D.png" alt="Spatial distribution of Leiden clusters calculated using spatial genes." width="60%" style="display: block; margin: auto;"></p>
 <ul>
 <li>Plot the UMAP and color the spots using the Leiden clusters
 calculated based on the spatial genes.</li>
@@ -1763,7 +1761,7 @@ calculated based on the spatial genes.</li>
 <div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_brain</span>, </span>
 <span>         cell_color <span class="op">=</span> <span class="st">"custom_leiden"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F39-UMAP.png" alt="UMAP plot, colors indicate the Leiden clusters calculated using spatial genes." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/39-UMAP.png" alt="UMAP plot, colors indicate the Leiden clusters calculated using spatial genes." width="60%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2" number="19">
@@ -1805,7 +1803,7 @@ co-expression module. This step may take several minutes to run.</li>
 <div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_brain</span>, </span>
 <span>           cell_color <span class="op">=</span> <span class="st">"HMRF_k20_b.40"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisium_mouse_brain%2F40-spatPlot2D.png" alt="Spatial distribution of HMRF domains." width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/visium_mouse_brain/40-spatPlot2D.png" alt="Spatial distribution of HMRF domains." width="60%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2" number="20">
 <h2 id="session-info">
@@ -1902,7 +1900,7 @@ co-expression module. This step may take several minutes to run.</li>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
       </footer>

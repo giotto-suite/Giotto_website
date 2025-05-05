@@ -165,6 +165,14 @@
         </li>
       </ul>
 </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Spatial ATAC-Seq</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/multiomics_rna_atac_me13.html">Multi-omics spatial RNA-ATAC seq Mouse Embryo</a>
+        </li>
+      </ul>
+</li>
     <li class="divider">
     </li>
 <li class="dropdown-submenu">
@@ -530,16 +538,6 @@
         </li>
       </ul>
 </li>
-    <li class="divider">
-    </li>
-<li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Scalability</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../articles/dbMatrix.html">Using dbMatrix with Giotto</a>
-        </li>
-      </ul>
-</li>
   </ul>
 </li>
 <li class="dropdown">
@@ -724,7 +722,7 @@ default.</p>
 <span><span class="co">#   Set `center = FALSE` and `scale = FALSE` if not needed.</span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPCA.html">runPCA</a></span><span class="op">(</span><span class="va">g</span>, feats_to_use <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> </span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/dimPlot.html" class="external-link">dimPlot2D</a></span><span class="op">(</span><span class="va">g</span>, dim_reduction_to_use <span class="op">=</span> <span class="st">"pca"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fdimension_reduction%2F1_pca.png" width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/dimension_reduction/1_pca.png" width="60%" style="display: block; margin: auto;"></p>
 <div class="section level4" number="2.1.1">
 <h4 id="scree-plot">
 <span class="header-section-number">2.1.1</span> Scree Plot<a class="anchor" aria-label="anchor" href="#scree-plot"></a>
@@ -738,7 +736,7 @@ in order to gauge up to which PCs contain useful information.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># will plot the `pca` by default</span></span>
 <span><span class="fu"><a href="../reference/screePlot.html">screePlot</a></span><span class="op">(</span><span class="va">g</span>, ncp <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fdimension_reduction%2F2_scree.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/dimension_reduction/2_scree.png" width="80%" style="display: block; margin: auto;"></p>
 <p>The scree plot lets us estimate that the first 20 PCs are a good
 cutoff. Following applications of this PCA such as umap or clustering
 should use only the first 20 PCs.</p>
@@ -755,7 +753,7 @@ explained by the actual vs permuted values.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># will plot the `pca` by default</span></span>
 <span><span class="fu"><a href="../reference/jackstrawPlot.html">jackstrawPlot</a></span><span class="op">(</span><span class="va">g</span>, feats_to_use <span class="op">=</span> <span class="cn">NULL</span>, ncp <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fdimension_reduction%2F3_jackstraw.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/dimension_reduction/3_jackstraw.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level3" number="2.2">
@@ -776,7 +774,7 @@ through RcppML.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runNMF.html">runNMF</a></span><span class="op">(</span><span class="va">g</span>, k <span class="op">=</span> <span class="fl">20</span>, feats_to_use <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/dimPlot.html" class="external-link">dimPlot2D</a></span><span class="op">(</span><span class="va">g</span>, dim_reduction_to_use <span class="op">=</span> <span class="st">"nmf"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fdimension_reduction%2F4_nmf.png" width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/dimension_reduction/4_nmf.png" width="60%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2" number="3">
@@ -821,10 +819,10 @@ local and global structure of the data.</p>
 <span></span>
 <span><span class="co"># visualize both dim reductions with previously added annotations</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/dimPlot.html" class="external-link">dimPlot2D</a></span><span class="op">(</span><span class="va">g</span>, dim_reduction_name <span class="op">=</span> <span class="st">"umap"</span>, cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fdimension_reduction%2F5_pca_umap.png" width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/dimension_reduction/5_pca_umap.png" width="60%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/dimPlot.html" class="external-link">dimPlot2D</a></span><span class="op">(</span><span class="va">g</span>, dim_reduction_name <span class="op">=</span> <span class="st">"nmf_umap"</span>, cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fdimension_reduction%2F6_nmf_umap.png" width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/dimension_reduction/6_nmf_umap.png" width="60%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="3.2">
 <h3 id="t-distributed-stochastic-neighbor-embedding-t-sne">
@@ -839,7 +837,7 @@ as well as UMAP.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runtSNE.html">runtSNE</a></span><span class="op">(</span><span class="va">g</span>, dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span> <span class="co"># uses any calculated 'pca' by default</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/dimPlot.html" class="external-link">dimPlot2D</a></span><span class="op">(</span><span class="va">g</span>, dim_reduction_to_use <span class="op">=</span> <span class="st">"tsne"</span>, cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fdimension_reduction%2F7_pca_tsne.png" width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/dimension_reduction/7_pca_tsne.png" width="60%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2" number="4">
@@ -985,7 +983,7 @@ loaded via a namespace (and not attached):
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
       </footer>

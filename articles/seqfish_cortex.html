@@ -165,6 +165,14 @@
         </li>
       </ul>
 </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Spatial ATAC-Seq</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/multiomics_rna_atac_me13.html">Multi-omics spatial RNA-ATAC seq Mouse Embryo</a>
+        </li>
+      </ul>
+</li>
     <li class="divider">
     </li>
 <li class="dropdown-submenu">
@@ -530,16 +538,6 @@
         </li>
       </ul>
 </li>
-    <li class="divider">
-    </li>
-<li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Scalability</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../articles/dbMatrix.html">Using dbMatrix with Giotto</a>
-        </li>
-      </ul>
-</li>
   </ul>
 </li>
 <li class="dropdown">
@@ -658,7 +656,7 @@ visualize and process all cells together imaging fields will be stitched
 together by providing x and y-offset values specific to each field.</p>
 <p>These offset values are known or estimates based on the original raw
 image:</p>
-<p><img src="images%2Fseqfish_cortex%2Fcortex_svz_location_fields.png"></p>
+<p><img src="images/seqfish_cortex/cortex_svz_location_fields.png"></p>
 </div>
 <div class="section level2" number="3">
 <h2 id="download-data">
@@ -779,7 +777,7 @@ Preparation<a class="anchor" aria-label="anchor" href="#giotto-instructions-and-
 <span></span>
 <span><span class="co"># visualize</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">SS_seqfish</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F0-spatPlot2D.png"></p>
+<p><img src="images/seqfish_cortex/0-spatPlot2D.png"></p>
 </div>
 <div class="section level2" number="6">
 <h2 id="dimension-reduction">
@@ -790,7 +788,7 @@ Reduction<a class="anchor" aria-label="anchor" href="#dimension-reduction"></a>
 <code class="sourceCode R"><span><span class="co">## highly variable features (HVF)</span></span>
 <span><span class="va">SS_seqfish</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculateHVF.html">calculateHVF</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">SS_seqfish</span>,</span>
 <span>                           save_plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F1-HVFplot.png"></p>
+<p><img src="images/seqfish_cortex/1-HVFplot.png"></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## select genes based on highly variable features and gene statistics, both found in feature (gene) metadata</span></span>
 <span><span class="va">gene_metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">SS_seqfish</span><span class="op">)</span></span>
@@ -803,23 +801,23 @@ Reduction<a class="anchor" aria-label="anchor" href="#dimension-reduction"></a>
 <span>                     center <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/screePlot.html">screePlot</a></span><span class="op">(</span><span class="va">SS_seqfish</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F2-screePlot.png"></p>
+<p><img src="images/seqfish_cortex/2-screePlot.png"></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">SS_seqfish</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F3-PCA.png"></p>
+<p><img src="images/seqfish_cortex/3-PCA.png"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">SS_seqfish</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span><span class="va">SS_seqfish</span>, </span>
 <span>                      dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">15</span>, </span>
 <span>                      n_threads <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">SS_seqfish</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F4-UMAP.png"></p>
+<p><img src="images/seqfish_cortex/4-UMAP.png"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">SS_seqfish</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runtSNE.html">runtSNE</a></span><span class="op">(</span><span class="va">SS_seqfish</span>, </span>
 <span>                      dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">15</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotTSNE.html" class="external-link">plotTSNE</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">SS_seqfish</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F5-tSNE.png"></p>
+<p><img src="images/seqfish_cortex/5-tSNE.png"></p>
 </div>
 <div class="section level2" number="7">
 <h2 id="cluster">
@@ -843,7 +841,7 @@ Reduction<a class="anchor" aria-label="anchor" href="#dimension-reduction"></a>
 <span>         show_NN_network <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>         point_size <span class="op">=</span> <span class="fl">2.5</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F6-UMAP.png"></p>
+<p><img src="images/seqfish_cortex/6-UMAP.png"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Leiden subclustering for specified clusters</span></span>
 <span><span class="va">SS_seqfish</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subClusterCells.html">doLeidenSubCluster</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">SS_seqfish</span>,</span>
@@ -875,7 +873,7 @@ Reduction<a class="anchor" aria-label="anchor" href="#dimension-reduction"></a>
 <span>         legend_text <span class="op">=</span> <span class="fl">12</span>, </span>
 <span>         legend_symbol_size <span class="op">=</span> <span class="fl">3</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F7-UMAP.png"></p>
+<p><img src="images/seqfish_cortex/7-UMAP.png"></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## show cluster relationships</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/showClusterHeatmap.html" class="external-link">showClusterHeatmap</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">SS_seqfish</span>, </span>
@@ -883,7 +881,7 @@ Reduction<a class="anchor" aria-label="anchor" href="#dimension-reduction"></a>
 <span>                   row_names_gp <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/gpar.html" class="external-link">gpar</a></span><span class="op">(</span>fontsize <span class="op">=</span> <span class="fl">9</span><span class="op">)</span>, </span>
 <span>                   column_names_gp <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/gpar.html" class="external-link">gpar</a></span><span class="op">(</span>fontsize <span class="op">=</span> <span class="fl">9</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F8-showClusterHeatmap.png"></p>
+<p><img src="images/seqfish_cortex/8-showClusterHeatmap.png"></p>
 <p>The following step requires the installation of {ggdendro}.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages('ggdendro')</span></span>
@@ -892,7 +890,7 @@ Reduction<a class="anchor" aria-label="anchor" href="#dimension-reduction"></a>
 <span>                      h <span class="op">=</span> <span class="fl">0.5</span>, </span>
 <span>                      rotate <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>                      cluster_column <span class="op">=</span> <span class="st">"sub_leiden_clus_select"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F9-showClusterDendrogram.png"></p>
+<p><img src="images/seqfish_cortex/9-showClusterDendrogram.png"></p>
 </div>
 <div class="section level2" number="8">
 <h2 id="visualize-spatial-and-expression-space">
@@ -907,7 +905,7 @@ Expression Space<a class="anchor" aria-label="anchor" href="#visualize-spatial-a
 <span>            dim_point_size <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>            spat_point_size <span class="op">=</span> <span class="fl">2</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F10-spatDimPlot2D.png"></p>
+<p><img src="images/seqfish_cortex/10-spatDimPlot2D.png"></p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># selected groups and provide new colors</span></span>
 <span><span class="va">groups_of_interest</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6.1</span>, <span class="fl">6.2</span>, <span class="fl">7.1</span>, <span class="fl">7.2</span><span class="op">)</span></span>
@@ -921,7 +919,7 @@ Expression Space<a class="anchor" aria-label="anchor" href="#visualize-spatial-a
 <span>            select_cell_groups <span class="op">=</span> <span class="va">groups_of_interest</span>, </span>
 <span>            cell_color_code <span class="op">=</span> <span class="va">group_colors</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F11-spatDimPlot2D.png"></p>
+<p><img src="images/seqfish_cortex/11-spatDimPlot2D.png"></p>
 </div>
 <div class="section level2" number="9">
 <h2 id="cell-type-marker-gene-detection">
@@ -949,7 +947,7 @@ Detection<a class="anchor" aria-label="anchor" href="#cell-type-marker-gene-dete
 <span>           strip_position <span class="op">=</span> <span class="st">"right"</span>, </span>
 <span>           cluster_custom_order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">topgenes_gini</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F12-violinPlot.png"></p>
+<p><img src="images/seqfish_cortex/12-violinPlot.png"></p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># cluster heatmap</span></span>
 <span><span class="va">topgenes_gini</span> <span class="op">&lt;-</span> <span class="va">markers_gini</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">6</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"cluster"</span><span class="op">]</span></span>
@@ -961,7 +959,7 @@ Detection<a class="anchor" aria-label="anchor" href="#cell-type-marker-gene-dete
 <span>                    metadata_cols <span class="op">=</span> <span class="st">"sub_leiden_clus_select"</span>, </span>
 <span>                    x_text_size <span class="op">=</span> <span class="fl">10</span>, y_text_size <span class="op">=</span> <span class="fl">10</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F13-plotMetaDataHeatmap.png"></p>
+<p><img src="images/seqfish_cortex/13-plotMetaDataHeatmap.png"></p>
 </div>
 <div class="section level2" number="10">
 <h2 id="cell-type-annotation">
@@ -1009,7 +1007,7 @@ Annotation<a class="anchor" aria-label="anchor" href="#cell-type-annotation"></a
 <span>           cluster_column <span class="op">=</span> <span class="st">"cell_types"</span>, </span>
 <span>           color_violin <span class="op">=</span> <span class="st">"cluster"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F14-violinPlot.png"></p>
+<p><img src="images/seqfish_cortex/14-violinPlot.png"></p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># co-visualization</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatDimPlot.html" class="external-link">spatDimPlot</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">SS_seqfish</span>, </span>
@@ -1019,7 +1017,7 @@ Annotation<a class="anchor" aria-label="anchor" href="#cell-type-annotation"></a
 <span>            dim_show_cluster_center <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>            dim_show_center_label <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F15-spatDimPlot2D.png"></p>
+<p><img src="images/seqfish_cortex/15-spatDimPlot2D.png"></p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## heatmap genes vs cells</span></span>
 <span><span class="va">markers_gini</span><span class="op">[</span>, <span class="va">cell_types</span> <span class="op">:=</span> <span class="va">clusters_cell_types</span><span class="op">[</span><span class="va">cluster</span><span class="op">]</span><span class="op">]</span></span>
@@ -1034,7 +1032,7 @@ Annotation<a class="anchor" aria-label="anchor" href="#cell-type-annotation"></a
 <span>            cluster_custom_order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">markers_gini</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">3</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"cell_types"</span><span class="op">]</span><span class="op">$</span><span class="va">cell_types</span><span class="op">)</span>,</span>
 <span>            legend_nrows <span class="op">=</span> <span class="fl">2</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F16-plotHeatmap.png"></p>
+<p><img src="images/seqfish_cortex/16-plotHeatmap.png"></p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotHeatmap.html" class="external-link">plotHeatmap</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">SS_seqfish</span>,</span>
 <span>            feats <span class="op">=</span> <span class="va">markers_gini</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">6</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"cell_types"</span><span class="op">]</span><span class="op">$</span><span class="va">feats</span>,</span>
@@ -1045,7 +1043,7 @@ Annotation<a class="anchor" aria-label="anchor" href="#cell-type-annotation"></a
 <span>            cluster_custom_order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">markers_gini</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">3</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"cell_types"</span><span class="op">]</span><span class="op">$</span><span class="va">cell_types</span><span class="op">)</span>,</span>
 <span>            legend_nrows <span class="op">=</span> <span class="fl">2</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F17-plotHeatmap.png"></p>
+<p><img src="images/seqfish_cortex/17-plotHeatmap.png"></p>
 </div>
 <div class="section level2" number="11">
 <h2 id="spatial-grid">
@@ -1061,7 +1059,7 @@ Annotation<a class="anchor" aria-label="anchor" href="#cell-type-annotation"></a
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">SS_seqfish</span>, </span>
 <span>         show_grid <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>         point_size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F18-spatPlot2D.png"></p>
+<p><img src="images/seqfish_cortex/18-spatPlot2D.png"></p>
 </div>
 <div class="section level2" number="12">
 <h2 id="spatial-network">
@@ -1071,7 +1069,7 @@ Annotation<a class="anchor" aria-label="anchor" href="#cell-type-annotation"></a
 <code class="sourceCode R"><span><span class="co">## delaunay network: stats + creation</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotStatDelaunayNetwork.html" class="external-link">plotStatDelaunayNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">SS_seqfish</span>, </span>
 <span>                        maximum_distance <span class="op">=</span> <span class="fl">400</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F19-plotStatDelaunayNetwork.png"></p>
+<p><img src="images/seqfish_cortex/19-plotStatDelaunayNetwork.png"></p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">SS_seqfish</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">SS_seqfish</span>,</span>
 <span>                                   minimum_k <span class="op">=</span> <span class="fl">2</span>, </span>
@@ -1110,7 +1108,7 @@ Annotation<a class="anchor" aria-label="anchor" href="#cell-type-annotation"></a
 <span>         point_size <span class="op">=</span> <span class="fl">2.5</span>, </span>
 <span>         cell_color <span class="op">=</span> <span class="st">"cell_types"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F20-spatPlot2D.png"></p>
+<p><img src="images/seqfish_cortex/20-spatPlot2D.png"></p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">subSS_seqfish</span>, </span>
 <span>         show_network <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -1119,7 +1117,7 @@ Annotation<a class="anchor" aria-label="anchor" href="#cell-type-annotation"></a
 <span>         point_size <span class="op">=</span> <span class="fl">2.5</span>, </span>
 <span>         cell_color <span class="op">=</span> <span class="st">"cell_types"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F21-spatPlot2D.png"></p>
+<p><img src="images/seqfish_cortex/21-spatPlot2D.png"></p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">subSS_seqfish</span>, </span>
 <span>         show_network <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -1128,7 +1126,7 @@ Annotation<a class="anchor" aria-label="anchor" href="#cell-type-annotation"></a
 <span>         point_size <span class="op">=</span> <span class="fl">2.5</span>, </span>
 <span>         cell_color <span class="op">=</span> <span class="st">"cell_types"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F22-spatPlot2D.png"></p>
+<p><img src="images/seqfish_cortex/22-spatPlot2D.png"></p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">subSS_seqfish</span>, </span>
 <span>         show_network <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -1137,7 +1135,7 @@ Annotation<a class="anchor" aria-label="anchor" href="#cell-type-annotation"></a
 <span>         point_size <span class="op">=</span> <span class="fl">2.5</span>, </span>
 <span>         cell_color <span class="op">=</span> <span class="st">"cell_types"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F23-spatPlot2D.png"></p>
+<p><img src="images/seqfish_cortex/23-spatPlot2D.png"></p>
 </div>
 <div class="section level2" number="13">
 <h2 id="spatial-genes">
@@ -1162,7 +1160,7 @@ genes<a class="anchor" aria-label="anchor" href="#individual-spatial-genes"></a>
 <span>               point_size <span class="op">=</span> <span class="fl">2.5</span>,</span>
 <span>               cow_n_col <span class="op">=</span> <span class="fl">2</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F24-spatFeatPlot2D.png"></p>
+<p><img src="images/seqfish_cortex/24-spatFeatPlot2D.png"></p>
 </div>
 <div class="section level3" number="13.2">
 <h3 id="spatial-genes-co-expression-modules">
@@ -1192,7 +1190,7 @@ Co-Expression Modules<a class="anchor" aria-label="anchor" href="#spatial-genes-
 <span>                     use_clus_name <span class="op">=</span> <span class="st">"spat_netw_clus"</span>,</span>
 <span>                     heatmap_legend_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>title <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F25-heatmSpatialCorFeats.png"></p>
+<p><img src="images/seqfish_cortex/25-heatmSpatialCorFeats.png"></p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 3. rank spatial correlated clusters and show genes for selected clusters</span></span>
 <span><span class="va">netw_ranks</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rankSpatialCorGroups.html">rankSpatialCorGroups</a></span><span class="op">(</span><span class="va">SS_seqfish</span>,</span>
@@ -1205,7 +1203,7 @@ Co-Expression Modules<a class="anchor" aria-label="anchor" href="#spatial-genes-
 <span>                                             selected_clusters <span class="op">=</span> <span class="fl">6</span>,</span>
 <span>                                             show_top_feats <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F26-rankSpatialCorGroups.png"></p>
+<p><img src="images/seqfish_cortex/26-rankSpatialCorGroups.png"></p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 4. create metagene enrichment score for clusters</span></span>
 <span><span class="va">cluster_genes_DT</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/showSpatialCorFeats.html">showSpatialCorFeats</a></span><span class="op">(</span><span class="va">spat_cor_netw_DT</span>,</span>
@@ -1227,7 +1225,7 @@ Co-Expression Modules<a class="anchor" aria-label="anchor" href="#spatial-genes-
 <span>             point_size <span class="op">=</span> <span class="fl">1.5</span>, </span>
 <span>             cow_n_col <span class="op">=</span> <span class="fl">3</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F27-spatCellPlot2D.png"></p>
+<p><img src="images/seqfish_cortex/27-spatCellPlot2D.png"></p>
 </div>
 </div>
 <div class="section level2" number="14">
@@ -1280,7 +1278,7 @@ Domains<a class="anchor" aria-label="anchor" href="#hmrf-spatial-domains"></a>
 <span>    point_size <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>    coord_fix_ratio <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F28-spatPlot2D.png"></p>
+<p><img src="images/seqfish_cortex/28-spatPlot2D.png"></p>
 </div>
 <div class="section level2" number="15">
 <h2 id="cell-neighborhood-cell-typecell-type-interactions">
@@ -1301,7 +1299,7 @@ Cell-Type/Cell-Type Interactions<a class="anchor" aria-label="anchor" href="#cel
 <span>                     min_orig_ints <span class="op">=</span> <span class="fl">5</span>, </span>
 <span>                     min_sim_ints <span class="op">=</span> <span class="fl">5</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F29-cellProximityBarplot.png"></p>
+<p><img src="images/seqfish_cortex/29-cellProximityBarplot.png"></p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## heatmap</span></span>
 <span><span class="fu"><a href="../reference/cellProximityHeatmap.html">cellProximityHeatmap</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">SS_seqfish</span>,</span>
@@ -1311,7 +1309,7 @@ Cell-Type/Cell-Type Interactions<a class="anchor" aria-label="anchor" href="#cel
 <span>                     color_breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.5</span>, <span class="fl">0</span>, <span class="fl">1.5</span><span class="op">)</span>,</span>
 <span>                     color_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="st">"white"</span>, <span class="st">"red"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F30-cellProximityHeatmap.png"></p>
+<p><img src="images/seqfish_cortex/30-cellProximityHeatmap.png"></p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## network</span></span>
 <span><span class="fu"><a href="../reference/cellProximityNetwork.html">cellProximityNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">SS_seqfish</span>,</span>
@@ -1319,7 +1317,7 @@ Cell-Type/Cell-Type Interactions<a class="anchor" aria-label="anchor" href="#cel
 <span>                     remove_self_edges <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                     only_show_enrichment_edges <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F31-cellProximityNetwork.png"></p>
+<p><img src="images/seqfish_cortex/31-cellProximityNetwork.png"></p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## network with self-edges</span></span>
 <span><span class="fu"><a href="../reference/cellProximityNetwork.html">cellProximityNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">SS_seqfish</span>, </span>
@@ -1332,7 +1330,7 @@ Cell-Type/Cell-Type Interactions<a class="anchor" aria-label="anchor" href="#cel
 <span>                     edge_weight_range_depletion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span>
 <span>                     edge_weight_range_enrichment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F32-cellProximityNetwork.png"></p>
+<p><img src="images/seqfish_cortex/32-cellProximityNetwork.png"></p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## visualization of specific cell types</span></span>
 <span><span class="co"># Option 1</span></span>
@@ -1347,7 +1345,7 @@ Cell-Type/Cell-Type Interactions<a class="anchor" aria-label="anchor" href="#cel
 <span>                        point_size_select <span class="op">=</span> <span class="fl">4</span>, </span>
 <span>                        point_size_other <span class="op">=</span> <span class="fl">2</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F33-cellProximitySpatPlot2D.png"></p>
+<p><img src="images/seqfish_cortex/33-cellProximitySpatPlot2D.png"></p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Option 2: create additional metadata</span></span>
 <span><span class="va">SS_seqfish</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addCellIntMetadata.html">addCellIntMetadata</a></span><span class="op">(</span><span class="va">SS_seqfish</span>,</span>
@@ -1362,7 +1360,7 @@ Cell-Type/Cell-Type Interactions<a class="anchor" aria-label="anchor" href="#cel
 <span>         select_cell_groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"other_astrocytes"</span>, <span class="st">"other_Olig"</span>, <span class="st">"select_astrocytes"</span>, <span class="st">"select_Olig"</span><span class="op">)</span>,</span>
 <span>         legend_symbol_size <span class="op">=</span> <span class="fl">3</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F34-spatPlot2D.png"></p>
+<p><img src="images/seqfish_cortex/34-spatPlot2D.png"></p>
 </div>
 <div class="section level2" number="16">
 <h2 id="cell-neighborhood-interaction-changed-features">
@@ -1473,7 +1471,7 @@ Ligand-Receptor Cell-Cell Communication<a class="anchor" aria-label="anchor" hre
 <span>                 selected_cell_LR <span class="op">=</span> <span class="va">top_LR_cell_ints</span>,</span>
 <span>                 cluster_on <span class="op">=</span> <span class="st">"PI"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F37-plotCCcomDotplot.png"></p>
+<p><img src="images/seqfish_cortex/37-plotCCcomDotplot.png"></p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## spatial vs rank ####</span></span>
 <span><span class="va">comb_comm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/combCCcom.html">combCCcom</a></span><span class="op">(</span></span>
@@ -1489,7 +1487,7 @@ Ligand-Receptor Cell-Cell Communication<a class="anchor" aria-label="anchor" hre
 <span>                   spat_rnk_column <span class="op">=</span> <span class="st">"LR_spat_rnk"</span>,</span>
 <span>                   gradient_midpoint <span class="op">=</span> <span class="fl">10</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F38-plotRankSpatvsExpr.png"></p>
+<p><img src="images/seqfish_cortex/38-plotRankSpatvsExpr.png"></p>
 <div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## recovery</span></span>
 <span><span class="fu"><a href="../reference/plotRecovery.html">plotRecovery</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">SS_seqfish</span>,</span>
@@ -1498,7 +1496,7 @@ Ligand-Receptor Cell-Cell Communication<a class="anchor" aria-label="anchor" hre
 <span>             spat_rnk_column <span class="op">=</span> <span class="st">"LR_spat_rnk"</span>,</span>
 <span>             ground_truth <span class="op">=</span> <span class="st">"spatial"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fseqfish_cortex%2F39-plotRecovery.png"></p>
+<p><img src="images/seqfish_cortex/39-plotRecovery.png"></p>
 </div>
 <div class="section level2" number="18">
 <h2 id="session-info">
@@ -1614,7 +1612,7 @@ Ligand-Receptor Cell-Cell Communication<a class="anchor" aria-label="anchor" hre
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
       </footer>

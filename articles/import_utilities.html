@@ -165,6 +165,14 @@
         </li>
       </ul>
 </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Spatial ATAC-Seq</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/multiomics_rna_atac_me13.html">Multi-omics spatial RNA-ATAC seq Mouse Embryo</a>
+        </li>
+      </ul>
+</li>
     <li class="divider">
     </li>
 <li class="dropdown-submenu">
@@ -530,16 +538,6 @@
         </li>
       </ul>
 </li>
-    <li class="divider">
-    </li>
-<li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Scalability</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../articles/dbMatrix.html">Using dbMatrix with Giotto</a>
-        </li>
-      </ul>
-</li>
   </ul>
 </li>
 <li class="dropdown">
@@ -727,7 +725,7 @@ get an idea of the available FOVs. The numbers are where the
 <strong>upper left</strong> corners of the FOV are positioned.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cosmx</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fimport_utilities%2Fcosmx_plot.png" width="70%" style="display: block; margin: auto;"></p>
+<p><img src="images/import_utilities/cosmx_plot.png" width="70%" style="display: block; margin: auto;"></p>
 <p>If the offsets are innaccurate or cannot be auto detected (or you
 would like to manually spatially re-arrange FOV placements), they can
 also be set. Input must be a <code>data.table</code> with cols
@@ -745,7 +743,7 @@ can set it like this:</p>
 <span><span class="va">polys</span> <span class="op">&lt;-</span> <span class="va">cosmx</span><span class="op">$</span><span class="fu">load_polys</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">polys</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fimport_utilities%2Fcosmx_poly.png" width="50%" style="display: block; margin: auto;"></p>
+<p><img src="images/import_utilities/cosmx_poly.png" width="50%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tx</span> <span class="op">&lt;-</span> <span class="va">cosmx</span><span class="op">$</span><span class="fu">load_transcripts</span><span class="op">(</span></span>
 <span>  feat_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rna"</span>, <span class="st">"negprobes"</span>, <span class="st">"syscontrolcodes"</span><span class="op">)</span>,</span>
@@ -753,18 +751,18 @@ can set it like this:</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">tx</span><span class="op">$</span><span class="va">rna</span>, dens <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fimport_utilities%2Fcosmx_tx.png" width="50%" style="display: block; margin: auto;"></p>
+<p><img src="images/import_utilities/cosmx_tx.png" width="50%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># tx vs poly overlap</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">polys</span>, border <span class="op">=</span> <span class="st">"red"</span>, lwd <span class="op">=</span> <span class="fl">0.3</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fimport_utilities%2Fcosmx_tx_poly.png" width="50%" style="display: block; margin: auto;"></p>
+<p><img src="images/import_utilities/cosmx_tx_poly.png" width="50%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">imgs</span> <span class="op">&lt;-</span> <span class="va">cosmx</span><span class="op">$</span><span class="fu">load_images</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">imgs_ext</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">imgs</span>, <span class="va">ext</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/funprog.html" class="external-link">Reduce</a></span><span class="op">(</span>f <span class="op">=</span> <span class="va">`+`</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">imgs_ext</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">imgs</span>, <span class="va">plot</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, ext <span class="op">=</span> <span class="va">imgs_ext</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fimport_utilities%2Fcosmx_imgs.png" width="50%" style="display: block; margin: auto;"></p>
+<p><img src="images/import_utilities/cosmx_imgs.png" width="50%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cx</span> <span class="op">&lt;-</span> <span class="va">cosmx</span><span class="op">$</span><span class="fu">load_cellmeta</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/force.html" class="external-link">force</a></span><span class="op">(</span><span class="va">cx</span><span class="op">)</span></span></code></pre></div>
@@ -979,7 +977,7 @@ pipeline to generate the expression matrix.</p>
 <span>  polygon_line_size <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  use_overlap <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># since none exist (skipped)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fimport_utilities%2Fcosmx_sisp.png" width="50%" style="display: block; margin: auto;"></p>
+<p><img src="images/import_utilities/cosmx_sisp.png" width="50%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>  show_image <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -990,7 +988,7 @@ pipeline to generate the expression matrix.</p>
 <span>  polygon_color <span class="op">=</span> <span class="st">"grey"</span>,</span>
 <span>  polygon_line_size <span class="op">=</span> <span class="fl">0.05</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fimport_utilities%2Fcosmx_sisp_cd45.png" width="50%" style="display: block; margin: auto;"></p>
+<p><img src="images/import_utilities/cosmx_sisp_cd45.png" width="50%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2">
@@ -1053,26 +1051,26 @@ funs      : load_transcripts()
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tx</span> <span class="op">&lt;-</span> <span class="va">xenium</span><span class="op">$</span><span class="fu">load_transcripts</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># plot(tx$rna, dens = TRUE) # this would take ~30sec</span></span></code></pre></div>
-<p><img src="images%2Fimport_utilities%2Fxenium_tx.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/import_utilities/xenium_tx.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># a much faster preview can be done by sampling and decreasing the rasterization size</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">tx</span><span class="op">$</span><span class="va">rna</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">tx</span><span class="op">$</span><span class="va">rna</span><span class="op">)</span>, <span class="fl">5e5</span><span class="op">)</span><span class="op">]</span>, dens <span class="op">=</span> <span class="cn">TRUE</span>, raster_size <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fimport_utilities%2Fxenium_tx2.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/import_utilities/xenium_tx2.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">tx</span><span class="op">$</span><span class="va">NegControlCodeword</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fimport_utilities%2Fxenium_ncc.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/import_utilities/xenium_ncc.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a>polys <span class="ot">&lt;-</span> xenium<span class="sc">$</span><span class="fu">load_polys</span>()<span class="er">}</span></span>
 <span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a><span class="fu">plot</span>(polys[<span class="fu">sample</span>(<span class="fu">nrow</span>(polys), <span class="dv">50000</span>)]) <span class="co"># plot a subset</span></span></code></pre></div>
-<p><img src="images%2Fimport_utilities%2Fxenium_polys.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/import_utilities/xenium_polys.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">tx</span><span class="op">$</span><span class="va">rna</span>, ext <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2000</span>, <span class="fl">3000</span>, <span class="op">-</span><span class="fl">4000</span>, <span class="op">-</span><span class="fl">3000</span><span class="op">)</span>, dens <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">polys</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, border <span class="op">=</span> <span class="st">"red"</span>, lwd <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fimport_utilities%2Fxenium_tx_poly.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/import_utilities/xenium_tx_poly.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># loads the staining images taken during the run (at least DAPI should be available)</span></span>
 <span><span class="va">imgs</span> <span class="op">&lt;-</span> <span class="va">xenium</span><span class="op">$</span><span class="fu">load_image</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">imgs</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, max_intensity <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fimport_utilities%2Fxenium_image.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/import_utilities/xenium_image.png" width="80%" style="display: block; margin: auto;"></p>
 <p><code>xenium$load_aligned_image()</code> can be used to load in
 affine aligned images (such as those produced from Xenium Explorer)</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
@@ -1263,7 +1261,7 @@ data is simple.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
       </footer>

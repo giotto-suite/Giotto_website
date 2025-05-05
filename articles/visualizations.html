@@ -165,6 +165,14 @@
         </li>
       </ul>
 </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Spatial ATAC-Seq</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/multiomics_rna_atac_me13.html">Multi-omics spatial RNA-ATAC seq Mouse Embryo</a>
+        </li>
+      </ul>
+</li>
     <li class="divider">
     </li>
 <li class="dropdown-submenu">
@@ -530,16 +538,6 @@
         </li>
       </ul>
 </li>
-    <li class="divider">
-    </li>
-<li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Scalability</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../articles/dbMatrix.html">Using dbMatrix with Giotto</a>
-        </li>
-      </ul>
-</li>
   </ul>
 </li>
 <li class="dropdown">
@@ -745,13 +743,13 @@ visualized both in 2D and 3D.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testobj</span>, </span>
 <span>         point_size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisualizations%2F0-spatPlot2D.png" width="60%"></p>
+<p><img src="images/visualizations/0-spatPlot2D.png" width="60%"></p>
 <p>In 3D:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testobj</span>, </span>
 <span>           point_size <span class="op">=</span> <span class="fl">1</span>, </span>
 <span>           axis_scale <span class="op">=</span> <span class="st">"real"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisualizations%2Fnewplot.png" width="60%"></p>
+<p><img src="images/visualizations/newplot.png" width="60%"></p>
 </div>
 <div class="section level2" number="5">
 <h2 id="create-and-visualize-clusters">
@@ -779,12 +777,12 @@ UMAP may also be plotted in 2D and 3D.</p>
 <span><span class="co"># Plot UMAP in 2D</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP_2D.html" class="external-link">plotUMAP_2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testobj</span>, </span>
 <span>            point_size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="images%2Fvisualizations%2F2-UMAP_2D.png" width="60%"></p>
+<p><img src="images/visualizations/2-UMAP_2D.png" width="60%"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot UMAP 3D</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP_3D.html" class="external-link">plotUMAP_3D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testobj</span>, </span>
 <span>            point_size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="images%2Fvisualizations%2Fnewplot1.png" width="60%"></p>
+<p><img src="images/visualizations/newplot1.png" width="60%"></p>
 <p>Now, the data may be clustered. Create a nearest network, and then
 create Leiden clusters. The clusters may be visualized in 2D or 3D, as
 well as upon the UMAP and within the tissue.</p>
@@ -806,7 +804,7 @@ well as upon the UMAP and within the tissue.</p>
 <span>            point_size <span class="op">=</span> <span class="fl">1.5</span>,</span>
 <span>            show_center_label <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>            save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"leiden_0.25.200_UMAP_3D"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisualizations%2Fnewplot2.png" width="60%"></p>
+<p><img src="images/visualizations/newplot2.png" width="60%"></p>
 <p>Visualize Leiden clusters within the tissue by creating a Spatial
 Plot, grouping by layer_ID.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
@@ -816,7 +814,7 @@ Plot, grouping by layer_ID.</p>
 <span>           group_by <span class="op">=</span> <span class="st">"layer_ID"</span>, </span>
 <span>           cow_n_col <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>           group_by_subset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">260</span>, <span class="fl">160</span>, <span class="fl">60</span>, <span class="op">-</span><span class="fl">40</span>, <span class="op">-</span><span class="fl">140</span>, <span class="op">-</span><span class="fl">240</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisualizations%2F4-spatPlot2D.png" width="60%"></p>
+<p><img src="images/visualizations/4-spatPlot2D.png" width="60%"></p>
 <p>Visualize expression levels within the tissue by creating a Spatial
 Plot, grouping by layer_ID, and specifying <em>cell_color</em> as the
 number of features detected per cell.</p>
@@ -829,7 +827,7 @@ number of features detected per cell.</p>
 <span>           group_by <span class="op">=</span> <span class="st">"layer_ID"</span>, </span>
 <span>           cow_n_col <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>           group_by_subset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">260</span>, <span class="fl">160</span>, <span class="fl">60</span>, <span class="op">-</span><span class="fl">40</span>, <span class="op">-</span><span class="fl">140</span>, <span class="op">-</span><span class="fl">240</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisualizations%2F5-spatPlot2D.png" width="60%"></p>
+<p><img src="images/visualizations/5-spatPlot2D.png" width="60%"></p>
 </div>
 <div class="section level2" number="6">
 <h2 id="compare-clusters">
@@ -840,14 +838,14 @@ number of features detected per cell.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/showClusterHeatmap.html" class="external-link">showClusterHeatmap</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testobj</span>, </span>
 <span>                   cluster_column <span class="op">=</span> <span class="st">"leiden_0.25.200"</span>, </span>
 <span>                   save_plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisualizations%2F6-showClusterHeatmap.png" width="60%"></p>
+<p><img src="images/visualizations/6-showClusterHeatmap.png" width="60%"></p>
 <p>We can plot a dendogram to explore cluster similarity:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/showClusterDendrogram.html" class="external-link">showClusterDendrogram</a></span><span class="op">(</span><span class="va">testobj</span>, </span>
 <span>                      h <span class="op">=</span> <span class="fl">0.5</span>, </span>
 <span>                      rotate <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>                      cluster_column <span class="op">=</span> <span class="st">"leiden_0.25.200"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisualizations%2F7-showClusterDendrogram.png" width="60%"></p>
+<p><img src="images/visualizations/7-showClusterDendrogram.png" width="60%"></p>
 </div>
 <div class="section level2" number="7">
 <h2 id="visualize-cell-markers_gini">
@@ -875,14 +873,14 @@ is employed; details on the gini method may be found <a href="../docs/reference/
 <span>           feats <span class="op">=</span> <span class="va">topgenes_gini</span>, </span>
 <span>           cluster_column <span class="op">=</span> <span class="st">"leiden_0.25.200"</span>, </span>
 <span>           strip_position <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisualizations%2F8-violinPlot.png" width="60%"></p>
+<p><img src="images/visualizations/8-violinPlot.png" width="60%"></p>
 <p>Create a heatmap of top gini genes by cluster:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotMetaDataHeatmap.html" class="external-link">plotMetaDataHeatmap</a></span><span class="op">(</span><span class="va">testobj</span>, </span>
 <span>                    expression_values <span class="op">=</span> <span class="st">"scaled"</span>,</span>
 <span>                    metadata_cols <span class="op">=</span> <span class="st">"leiden_0.25.200"</span>,</span>
 <span>                    selected_feats <span class="op">=</span> <span class="va">topgenes_gini</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisualizations%2F9-plotMetaDataHeatmap.png" width="60%"></p>
+<p><img src="images/visualizations/9-plotMetaDataHeatmap.png" width="60%"></p>
 </div>
 <div class="section level2" number="8">
 <h2 id="visualize-cell-types-in-tissue">
@@ -904,7 +902,7 @@ assigned to a cell type, as will be done here.</p>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP_3D.html" class="external-link">plotUMAP_3D</a></span><span class="op">(</span><span class="va">testobj</span>, </span>
 <span>            cell_color <span class="op">=</span> <span class="st">"orig_cell_types"</span>, </span>
 <span>            save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"Original_Cell_Types_UMAP_3D"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisualizations%2Fnewplot3.png" width="70%"></p>
+<p><img src="images/visualizations/newplot3.png" width="70%"></p>
 <p>Manually assign cell types to clusters via inspection of UMAP plots.
 Specifically, the UMAP plots saved as <em>“leiden_0.25.200_UMAP3D”</em>
 and <em>“Original_Cell_Types_UMAP3D”</em> are being compared for
@@ -945,7 +943,7 @@ assignment.</p>
 <span>            point_size <span class="op">=</span> <span class="fl">1.5</span>, </span>
 <span>            cell_color_code <span class="op">=</span> <span class="va">giotto_colors</span>,</span>
 <span>            save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"clusters_cell_types_typing_UMAP_3D"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisualizations%2Fnewplot4.png" width="70%"></p>
+<p><img src="images/visualizations/newplot4.png" width="70%"></p>
 <p>Now that each Leiden cluster has an associated cell type, cell types
 may be viewed in tissue in 2D and in 3D within a Spatial Plot by
 specifying the <em>cell_color</em> parameter as the name of the
@@ -958,7 +956,7 @@ annotation, “cell_types”.</p>
 <span>           cell_color_code <span class="op">=</span> <span class="va">giotto_colors</span>, </span>
 <span>           cow_n_col <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>           group_by_subset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">260</span>, <span class="op">-</span><span class="fl">290</span>, <span class="op">-</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisualizations%2F10-spatPlot2D.png" width="70%"></p>
+<p><img src="images/visualizations/10-spatPlot2D.png" width="70%"></p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">testobj</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"cell_types"</span>, </span>
@@ -968,7 +966,7 @@ annotation, “cell_types”.</p>
 <span>           sdimz <span class="op">=</span> <span class="st">"sdimz"</span>,</span>
 <span>           show_grid <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>           cell_color_code <span class="op">=</span> <span class="va">giotto_colors</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisualizations%2Fnewplot5.png" width="70%"></p>
+<p><img src="images/visualizations/newplot5.png" width="70%"></p>
 <p>The plots may be subset by cell type in 2D and 3D.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testobj</span>, </span>
@@ -980,7 +978,7 @@ annotation, “cell_types”.</p>
 <span>           group_by <span class="op">=</span> <span class="st">"layer_ID"</span>, </span>
 <span>           cow_n_col <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>           group_by_subset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">260</span>, <span class="op">-</span><span class="fl">290</span>, <span class="op">-</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisualizations%2F12-spatPlot2D.png" width="70%"></p>
+<p><img src="images/visualizations/12-spatPlot2D.png" width="70%"></p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">testobj</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"cell_types"</span>, </span>
@@ -992,7 +990,7 @@ annotation, “cell_types”.</p>
 <span>           cell_color_code <span class="op">=</span> <span class="va">giotto_colors</span>,</span>
 <span>           select_cell_groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Microglia"</span>, <span class="st">"Ependymal"</span>, <span class="st">"Endothelial"</span><span class="op">)</span>, </span>
 <span>           show_other_cells <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisualizations%2Fnewplot6.png" width="70%"></p>
+<p><img src="images/visualizations/newplot6.png" width="70%"></p>
 </div>
 <div class="section level2" number="9">
 <h2 id="visualize-cell-networks">
@@ -1014,7 +1012,7 @@ k-nearest networks, will be shown.</p>
 <span>                        maximum_distance <span class="op">=</span> <span class="fl">50</span>, </span>
 <span>                        show_plot <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>                        save_plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisualizations%2Fdelaunay_network.png" width="80%"></p>
+<p><img src="images/visualizations/delaunay_network.png" width="80%"></p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create Spatial Network using Delaunay geometry</span></span>
 <span><span class="va">testobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testobj</span>, </span>
@@ -1063,7 +1061,7 @@ k-nearest networks, will be shown.</p>
 <span>         point_size <span class="op">=</span> <span class="fl">1.5</span>, </span>
 <span>         cell_color <span class="op">=</span> <span class="st">"cell_types"</span>,</span>
 <span>         save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"Delaunay_network_spatPlot"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisualizations%2FDelaunay_network_spatPlot.png" width="60%"></p>
+<p><img src="images/visualizations/Delaunay_network_spatPlot.png" width="60%"></p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">subtestobj</span>, </span>
 <span>         show_network <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -1072,7 +1070,7 @@ k-nearest networks, will be shown.</p>
 <span>         point_size <span class="op">=</span> <span class="fl">2.5</span>, </span>
 <span>         cell_color <span class="op">=</span> <span class="st">"cell_types"</span>,</span>
 <span>         save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"spatial_network_spatPlot"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisualizations%2Fspatial_network_spatPlot.png" width="60%"></p>
+<p><img src="images/visualizations/spatial_network_spatPlot.png" width="60%"></p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">subtestobj</span>, </span>
 <span>         show_network <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -1081,7 +1079,7 @@ k-nearest networks, will be shown.</p>
 <span>         point_size <span class="op">=</span> <span class="fl">2.5</span>, </span>
 <span>         cell_color <span class="op">=</span> <span class="st">"cell_types"</span>,</span>
 <span>         save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"large_network_spatPlot"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisualizations%2Flarge_network_spatPlot.png" width="60%"></p>
+<p><img src="images/visualizations/large_network_spatPlot.png" width="60%"></p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">subtestobj</span>, </span>
 <span>         show_network <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -1090,7 +1088,7 @@ k-nearest networks, will be shown.</p>
 <span>         point_size <span class="op">=</span> <span class="fl">2.5</span>, </span>
 <span>         cell_color <span class="op">=</span> <span class="st">"cell_types"</span>,</span>
 <span>         save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"distance_network_spatPlot"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fvisualizations%2Fdistance_network_spatPlot.png" width="60%"></p>
+<p><img src="images/visualizations/distance_network_spatPlot.png" width="60%"></p>
 </div>
 <div class="section level2" number="10">
 <h2 id="session-info">
@@ -1181,7 +1179,7 @@ k-nearest networks, will be shown.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
       </footer>

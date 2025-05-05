@@ -165,6 +165,14 @@
         </li>
       </ul>
 </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Spatial ATAC-Seq</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/multiomics_rna_atac_me13.html">Multi-omics spatial RNA-ATAC seq Mouse Embryo</a>
+        </li>
+      </ul>
+</li>
     <li class="divider">
     </li>
 <li class="dropdown-submenu">
@@ -530,16 +538,6 @@
         </li>
       </ul>
 </li>
-    <li class="divider">
-    </li>
-<li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Scalability</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../articles/dbMatrix.html">Using dbMatrix with Giotto</a>
-        </li>
-      </ul>
-</li>
   </ul>
 </li>
 <li class="dropdown">
@@ -721,17 +719,17 @@ Instructions &amp; Prepare Data<a class="anchor" aria-label="anchor" href="#crea
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/filterDistributions.html">filterDistributions</a></span><span class="op">(</span><span class="va">merFISH_gobject</span>, </span>
 <span>                    detection <span class="op">=</span> <span class="st">"feats"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fmerfish_mouse_hypothalamic%2F0-filterDistributions.png"></p>
+<p><img src="images/merfish_mouse_hypothalamic/0-filterDistributions.png"></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/filterDistributions.html">filterDistributions</a></span><span class="op">(</span><span class="va">merFISH_gobject</span>, </span>
 <span>                    detection <span class="op">=</span> <span class="st">"cells"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fmerfish_mouse_hypothalamic%2F1-filterDistributions.png"></p>
+<p><img src="images/merfish_mouse_hypothalamic/1-filterDistributions.png"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/filterCombinations.html">filterCombinations</a></span><span class="op">(</span><span class="va">merFISH_gobject</span>,</span>
 <span>                   expression_thresholds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1e-6</span>,<span class="fl">1e-5</span><span class="op">)</span>,</span>
 <span>                   feat_det_in_min_cells <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">1500</span><span class="op">)</span>,</span>
 <span>                   min_det_feats_per_cell <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fmerfish_mouse_hypothalamic%2F2-filterCombinations.png"></p>
+<p><img src="images/merfish_mouse_hypothalamic/2-filterCombinations.png"></p>
 </div>
 <div class="section level2" number="5">
 <h2 id="data-processing">
@@ -765,13 +763,13 @@ Instructions &amp; Prepare Data<a class="anchor" aria-label="anchor" href="#crea
 <code class="sourceCode R"><span><span class="co"># 2D</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">merFISH_gobject</span>, </span>
 <span>         point_size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fmerfish_mouse_hypothalamic%2F3-spatPlot2D.png"></p>
+<p><img src="images/merfish_mouse_hypothalamic/3-spatPlot2D.png"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 3D</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">merFISH_gobject</span>, </span>
 <span>           point_size <span class="op">=</span> <span class="fl">1.25</span>, </span>
 <span>           axis_scale <span class="op">=</span> <span class="st">"real"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fmerfish_mouse_hypothalamic%2F4-spat3D.png"></p>
+<p><img src="images/merfish_mouse_hypothalamic/4-spat3D.png"></p>
 </div>
 <div class="section level2" number="6">
 <h2 id="dimension-reduction">
@@ -788,7 +786,7 @@ within the dimension reduction.</p>
 <span></span>
 <span><span class="co"># View details about the principal components</span></span>
 <span><span class="fu"><a href="../reference/screePlot.html">screePlot</a></span><span class="op">(</span><span class="va">merFISH_gobject</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fmerfish_mouse_hypothalamic%2F5-screePlot.png"></p>
+<p><img src="images/merfish_mouse_hypothalamic/5-screePlot.png"></p>
 <p>After the PCA, a UMAP may be run. Run the UMAP so clusters may be
 visualized upon it.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -799,7 +797,7 @@ visualized upon it.</p>
 <span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP_3D.html" class="external-link">plotUMAP_3D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">merFISH_gobject</span>, </span>
 <span>            point_size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="images%2Fmerfish_mouse_hypothalamic%2F6-UMAP_3D.png"></p>
+<p><img src="images/merfish_mouse_hypothalamic/6-UMAP_3D.png"></p>
 </div>
 <div class="section level2" number="7">
 <h2 id="clustering">
@@ -824,7 +822,7 @@ clusters may be visualized on a UMAP.</p>
 <span>            cell_color <span class="op">=</span> <span class="st">"leiden_0.2_200"</span>, </span>
 <span>            point_size <span class="op">=</span> <span class="fl">1.5</span>, </span>
 <span>            show_center_label <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fmerfish_mouse_hypothalamic%2F7-UMAP_3D.png"></p>
+<p><img src="images/merfish_mouse_hypothalamic/7-UMAP_3D.png"></p>
 </div>
 <div class="section level2" number="8">
 <h2 id="co-visualize">
@@ -838,7 +836,7 @@ clusters may be visualized on a UMAP.</p>
 <span>           group_by <span class="op">=</span> <span class="st">"layer_ID"</span>, </span>
 <span>           cow_n_col <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>           group_by_subset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">260</span>, <span class="fl">160</span>, <span class="fl">60</span>, <span class="op">-</span><span class="fl">40</span>, <span class="op">-</span><span class="fl">140</span>, <span class="op">-</span><span class="fl">240</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fmerfish_mouse_hypothalamic%2F8-spatPlot2D.png"></p>
+<p><img src="images/merfish_mouse_hypothalamic/8-spatPlot2D.png"></p>
 </div>
 <div class="section level2" number="9">
 <h2 id="cell-type-marker-gene-detection">
@@ -868,7 +866,7 @@ across clusters within the violin plot.</p>
 <span>           feats <span class="op">=</span> <span class="va">topgenes_gini</span>, </span>
 <span>           cluster_column <span class="op">=</span> <span class="st">"leiden_0.2_200"</span>, </span>
 <span>           strip_position <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fmerfish_mouse_hypothalamic%2F9-violinPlot.png"></p>
+<p><img src="images/merfish_mouse_hypothalamic/9-violinPlot.png"></p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">topgenes_gini</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">markers_gini</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">6</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"cluster"</span><span class="op">]</span><span class="op">$</span><span class="va">feats</span><span class="op">)</span></span>
 <span></span>
@@ -876,7 +874,7 @@ across clusters within the violin plot.</p>
 <span>                    expression_values <span class="op">=</span> <span class="st">"scaled"</span>,</span>
 <span>                    metadata_cols <span class="op">=</span> <span class="st">"leiden_0.2_200"</span>,</span>
 <span>                    selected_feats <span class="op">=</span> <span class="va">topgenes_gini</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fmerfish_mouse_hypothalamic%2F10-plotMetaDataHeatmap.png"></p>
+<p><img src="images/merfish_mouse_hypothalamic/10-plotMetaDataHeatmap.png"></p>
 </div>
 <div class="section level2" number="10">
 <h2 id="cell-type-annotation">
@@ -900,7 +898,7 @@ identify cell type for each cluster.</p>
 <span>                    selected_feats <span class="op">=</span> <span class="va">selected_genes</span>,</span>
 <span>                    custom_feat_order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">selected_genes</span><span class="op">)</span>,</span>
 <span>                    custom_cluster_order <span class="op">=</span> <span class="va">cluster_order</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fmerfish_mouse_hypothalamic%2F11-plotMetaDataHeatmap.png"></p>
+<p><img src="images/merfish_mouse_hypothalamic/11-plotMetaDataHeatmap.png"></p>
 <p>Since there are more Leiden clusters than there are types of cells in
 this dataset, the same cell type may be assigned to different cluster
 numbers. This may be done only after verifying that particular clusters
@@ -930,7 +928,7 @@ these will appear in <em>cell_metadata</em> within the
 <span>                    selected_feats <span class="op">=</span> <span class="va">selected_genes</span>,</span>
 <span>                    custom_feat_order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">selected_genes</span><span class="op">)</span>,</span>
 <span>                    custom_cluster_order <span class="op">=</span> <span class="va">clusters_cell_types</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fmerfish_mouse_hypothalamic%2F12-plotMetaDataHeatmap.png"></p>
+<p><img src="images/merfish_mouse_hypothalamic/12-plotMetaDataHeatmap.png"></p>
 </div>
 <div class="section level2" number="11">
 <h2 id="visualize">
@@ -948,7 +946,7 @@ these will appear in <em>cell_metadata</em> within the
 <span>            cell_color <span class="op">=</span> <span class="st">"cell_types"</span>, </span>
 <span>            point_size <span class="op">=</span> <span class="fl">1.5</span>, </span>
 <span>            cell_color_code <span class="op">=</span> <span class="va">mycolorcode</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fmerfish_mouse_hypothalamic%2F13-UMAP_3D.png"></p>
+<p><img src="images/merfish_mouse_hypothalamic/13-UMAP_3D.png"></p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">merFISH_gobject</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"cell_types"</span>, </span>
@@ -958,7 +956,7 @@ these will appear in <em>cell_metadata</em> within the
 <span>           sdimz <span class="op">=</span> <span class="st">"sdimz"</span>,</span>
 <span>           show_grid <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>           cell_color_code <span class="op">=</span> <span class="va">mycolorcode</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fmerfish_mouse_hypothalamic%2F14-spat3D.png"></p>
+<p><img src="images/merfish_mouse_hypothalamic/14-spat3D.png"></p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">merFISH_gobject</span>, </span>
 <span>           point_size <span class="op">=</span> <span class="fl">1.0</span>,</span>
@@ -967,7 +965,7 @@ these will appear in <em>cell_metadata</em> within the
 <span>           group_by <span class="op">=</span> <span class="st">"layer_ID"</span>, </span>
 <span>           cow_n_col <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>           group_by_subset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">260</span>, <span class="op">-</span><span class="fl">290</span>, <span class="op">-</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fmerfish_mouse_hypothalamic%2F15-spatPlot2D.png"></p>
+<p><img src="images/merfish_mouse_hypothalamic/15-spatPlot2D.png"></p>
 <div class="section level3" number="11.1">
 <h3 id="excitatory-cells-only">
 <span class="header-section-number">11.1</span> Excitatory Cells
@@ -984,7 +982,7 @@ Only<a class="anchor" aria-label="anchor" href="#excitatory-cells-only"></a>
 <span>           cell_color_code <span class="op">=</span> <span class="va">mycolorcode</span>,</span>
 <span>           select_cell_groups <span class="op">=</span> <span class="st">"Excitatory"</span>,</span>
 <span>           show_other_cells <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fmerfish_mouse_hypothalamic%2F16-spat3D.png"></p>
+<p><img src="images/merfish_mouse_hypothalamic/16-spat3D.png"></p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">merFISH_gobject</span>, </span>
 <span>           point_size <span class="op">=</span> <span class="fl">1.0</span>, </span>
@@ -995,7 +993,7 @@ Only<a class="anchor" aria-label="anchor" href="#excitatory-cells-only"></a>
 <span>           group_by <span class="op">=</span> <span class="st">"layer_ID"</span>, </span>
 <span>           cow_n_col <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>           group_by_subset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">260</span>, <span class="op">-</span><span class="fl">290</span>, <span class="op">-</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fmerfish_mouse_hypothalamic%2F17-spatPlot2D.png"></p>
+<p><img src="images/merfish_mouse_hypothalamic/17-spatPlot2D.png"></p>
 </div>
 <div class="section level3" number="11.2">
 <h3 id="inhibitory-cells-only">
@@ -1013,7 +1011,7 @@ Only<a class="anchor" aria-label="anchor" href="#inhibitory-cells-only"></a>
 <span>           cell_color_code <span class="op">=</span> <span class="va">mycolorcode</span>,</span>
 <span>           select_cell_groups <span class="op">=</span> <span class="st">"Inhibitory"</span>, </span>
 <span>           show_other_cells <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fmerfish_mouse_hypothalamic%2F18-spat3D.png"></p>
+<p><img src="images/merfish_mouse_hypothalamic/18-spat3D.png"></p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">merFISH_gobject</span>, </span>
 <span>           point_size <span class="op">=</span> <span class="fl">1.0</span>, </span>
@@ -1024,7 +1022,7 @@ Only<a class="anchor" aria-label="anchor" href="#inhibitory-cells-only"></a>
 <span>           group_by <span class="op">=</span> <span class="st">"layer_ID"</span>, </span>
 <span>           cow_n_col <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>           group_by_subset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">260</span>, <span class="op">-</span><span class="fl">290</span>, <span class="op">-</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fmerfish_mouse_hypothalamic%2F19-spatPlot2D.png"></p>
+<p><img src="images/merfish_mouse_hypothalamic/19-spatPlot2D.png"></p>
 </div>
 <div class="section level3" number="11.3">
 <h3 id="od-and-astrocytes-only">
@@ -1042,7 +1040,7 @@ Only<a class="anchor" aria-label="anchor" href="#od-and-astrocytes-only"></a>
 <span>           cell_color_code <span class="op">=</span> <span class="va">mycolorcode</span>,</span>
 <span>           select_cell_groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Astrocyte"</span>, <span class="st">"OD Mature"</span>, <span class="st">"OD Immature"</span><span class="op">)</span>, </span>
 <span>           show_other_cells <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fmerfish_mouse_hypothalamic%2F20-spat3D.png"></p>
+<p><img src="images/merfish_mouse_hypothalamic/20-spat3D.png"></p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">merFISH_gobject</span>, </span>
 <span>           point_size <span class="op">=</span> <span class="fl">1.0</span>, </span>
@@ -1053,7 +1051,7 @@ Only<a class="anchor" aria-label="anchor" href="#od-and-astrocytes-only"></a>
 <span>           group_by <span class="op">=</span> <span class="st">"layer_ID"</span>, </span>
 <span>           cow_n_col <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>           group_by_subset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">260</span>, <span class="op">-</span><span class="fl">290</span>, <span class="op">-</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fmerfish_mouse_hypothalamic%2F21-spatPlot2D.png"></p>
+<p><img src="images/merfish_mouse_hypothalamic/21-spatPlot2D.png"></p>
 </div>
 <div class="section level3" number="11.4">
 <h3 id="other-cells-only">
@@ -1071,7 +1069,7 @@ Only<a class="anchor" aria-label="anchor" href="#other-cells-only"></a>
 <span>           cell_color_code <span class="op">=</span> <span class="va">mycolorcode</span>,</span>
 <span>           select_cell_groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Microglia"</span>, <span class="st">"Ependymal"</span>, <span class="st">"Endothelial"</span><span class="op">)</span>, </span>
 <span>           show_other_cells <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fmerfish_mouse_hypothalamic%2F22-spat3D.png"></p>
+<p><img src="images/merfish_mouse_hypothalamic/22-spat3D.png"></p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">merFISH_gobject</span>, </span>
 <span>           point_size <span class="op">=</span> <span class="fl">1.0</span>, </span>
@@ -1082,7 +1080,7 @@ Only<a class="anchor" aria-label="anchor" href="#other-cells-only"></a>
 <span>           group_by <span class="op">=</span> <span class="st">"layer_ID"</span>, </span>
 <span>           cow_n_col <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>           group_by_subset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">260</span>, <span class="op">-</span><span class="fl">290</span>, <span class="op">-</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images%2Fmerfish_mouse_hypothalamic%2F23-spatPlot2D.png"></p>
+<p><img src="images/merfish_mouse_hypothalamic/23-spatPlot2D.png"></p>
 </div>
 </div>
 <div class="section level2" number="12">
@@ -1167,7 +1165,7 @@ Only<a class="anchor" aria-label="anchor" href="#other-cells-only"></a>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
       </footer>
