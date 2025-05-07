@@ -239,8 +239,46 @@ knitr::include_graphics("images/harmony/4_splot_harmony.png")
 ```
 
 This clustering is much better and shows that there are many shared clusters
-between the two datasets for similar tissue/cell types. This also makes them
-much easier to compare across the two datasets.
+between the two datasets for similar tissue/cell types. Now the major separation
+seen in the UMAP is based on Normal vs Cancer tissue instead of by sample,
+a separation that is actually expected and biologically interesting.
+
+We can see this by looking at the H&E morphology where the upper right region
+is densely stained for nuclei, suggesting cancer.
+
+```{r, eval=FALSE}
+spatPlot2D(g,
+    point_alpha = 0,
+    show_image = TRUE,
+    image_name = c("NP-image", "CP-image")
+)
+```
+
+```{r, echo=FALSE, out.width="80%", fig.align="center"}
+knitr::include_graphics("images/harmony/5_he.png")
+```
+
+Plotting AMACR (Alpha-Methylacyl-CoA Racemase), a gene that shows strong overexpression
+in prostate cancer further confirms this region as being cancerous.
+
+```{r, eval=FALSE}
+spatFeatPlot2D(g,
+    feats = "AMACR",
+    point_size = 1.5,
+    gradient_style = "sequential",
+    scale_alpha_with_expression = TRUE,
+    show_image = TRUE,
+    image_name = c("NP-image", "CP-image")
+)
+```
+
+```{r, echo=FALSE, out.width="90%", fig.align="center"}
+knitr::include_graphics("images/harmony/6_amacr.png")
+```
+
+These show that morphological and molecular information support the clustering
+results and that the integration worked correctly, preserving the biological
+signal while removing batch effects.
 
 
 # Session Info
