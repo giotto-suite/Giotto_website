@@ -839,14 +839,41 @@ structure of the data (minimum is 0 for no diversity).</p>
 <p><img src="images/harmony/4_dplot_harmony.png" width="60%" style="display: block; margin: auto;"></p>
 <p><img src="images/harmony/4_splot_harmony.png" width="80%" style="display: block; margin: auto;"></p>
 <p>This clustering is much better and shows that there are many shared
-clusters between the two datasets for similar tissue/cell types. This
-also makes them much easier to compare across the two datasets.</p>
+clusters between the two datasets for similar tissue/cell types. Now the
+major separation seen in the UMAP is based on Normal vs Cancer tissue
+instead of by sample, a separation that is actually expected and
+biologically interesting.</p>
+<p>We can see this by looking at the H&amp;E morphology where the upper
+right region is densely stained for nuclei, suggesting cancer.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    point_alpha <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>    show_image <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    image_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NP-image"</span>, <span class="st">"CP-image"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/harmony/5_he.png" width="80%" style="display: block; margin: auto;"></p>
+<p>Plotting AMACR (Alpha-Methylacyl-CoA Racemase), a gene that shows
+strong overexpression in prostate cancer further confirms this region as
+being cancerous.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatFeatPlot2D.html" class="external-link">spatFeatPlot2D</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    feats <span class="op">=</span> <span class="st">"AMACR"</span>,</span>
+<span>    point_size <span class="op">=</span> <span class="fl">1.5</span>,</span>
+<span>    gradient_style <span class="op">=</span> <span class="st">"sequential"</span>,</span>
+<span>    scale_alpha_with_expression <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    show_image <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    image_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NP-image"</span>, <span class="st">"CP-image"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/harmony/6_amacr.png" width="90%" style="display: block; margin: auto;"></p>
+<p>These show that morphological and molecular information support the
+clustering results and that the integration worked correctly, preserving
+the biological signal while removing batch effects.</p>
 </div>
 <div class="section level2" number="7">
 <h2 id="session-info">
 <span class="header-section-number">7</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code>R version 4.4.1 (2024-06-14)
 Platform: aarch64-apple-darwin20
