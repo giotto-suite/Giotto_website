@@ -717,7 +717,7 @@ since.</p>
 </h3>
 <p>The data from the first tissue replicate will be worked with. The
 files to download are:</p>
-<details><summary><code>curl</code> lnks from 10x genomics
+<details><summary><code>curl</code> links from 10x genomics
 </summary><pre><code># Input Files
 
 curl -O https://cf.10xgenomics.com/samples/xenium/1.0.1/Xenium_FFPE_Human_Breast_Cancer_Rep1/Xenium_FFPE_Human_Breast_Cancer_Rep1_panel.tsv
@@ -1211,7 +1211,7 @@ affine matrices.</p>
 <p>The images used in this process are <code>ome.tif</code> images which
 Giotto is not fully compatible with, so we convert any images we will
 use to normal <code>tif</code> images using
-<code><a href="https://drieslab.github.io/GiottoClass/reference/ometif_to_tif.html" class="external-link">ometif_to_tif()</a></code>.</p>
+<code><a href="https://drieslab.github.io/GiottoClass/reference/to_simple_tif.html" class="external-link">ometif_to_tif()</a></code>.</p>
 <p>This image format conversion is a step that is automatically done
 with the morphology images.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
@@ -1221,16 +1221,16 @@ with the morphology images.</p>
 <span></span>
 <span><span class="co"># conversion `output_dir` can be specified</span></span>
 <span><span class="co"># default is a new subdirectory called `tif_exports`</span></span>
-<span><span class="va">conv_path_he</span> <span class="op">&lt;-</span> <span class="fu">GiottoClass</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/ometif_to_tif.html" class="external-link">ometif_to_tif</a></span><span class="op">(</span><span class="va">path_he</span><span class="op">)</span></span>
+<span><span class="va">conv_path_he</span> <span class="op">&lt;-</span> <span class="fu">GiottoClass</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/to_simple_tif.html" class="external-link">ometif_to_tif</a></span><span class="op">(</span><span class="va">path_he</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># IF staining is a 3 page .ome.tif</span></span>
 <span><span class="va">conv_path_if</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="kw">function</span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="fu">GiottoClass</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/ometif_to_tif.html" class="external-link">ometif_to_tif</a></span><span class="op">(</span><span class="va">path_if</span>, page <span class="op">=</span> <span class="va">p</span><span class="op">)</span></span>
+<span>    <span class="fu">GiottoClass</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/to_simple_tif.html" class="external-link">ometif_to_tif</a></span><span class="op">(</span><span class="va">path_if</span>, page <span class="op">=</span> <span class="va">p</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># with the following channel names</span></span>
 <span><span class="co"># 1. CD20, 2. HER2, 3. DAPI</span></span>
-<span><span class="va">if_channels</span> <span class="op">&lt;-</span> <span class="fu">GiottoClass</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/ometif_metadata.html" class="external-link">ometif_metadata</a></span><span class="op">(</span><span class="va">path_if</span>, node <span class="op">=</span> <span class="st">"Channel"</span><span class="op">)</span><span class="op">$</span><span class="va">Name</span></span>
+<span><span class="va">if_channels</span> <span class="op">&lt;-</span> <span class="fu">GiottoClass</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/tif_metadata.html" class="external-link">ometif_metadata</a></span><span class="op">(</span><span class="va">path_if</span>, node <span class="op">=</span> <span class="st">"Channel"</span><span class="op">)</span><span class="op">$</span><span class="va">Name</span></span>
 <span></span>
 <span><span class="co"># use the `importXenium()` custom loading utility</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importXenium.html">importXenium</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"outs"</span><span class="op">)</span><span class="op">)</span></span>
