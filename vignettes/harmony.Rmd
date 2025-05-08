@@ -217,10 +217,11 @@ and we would expect at least some tissue/celltype similarity between the two.
 knitr::include_graphics("images/harmony/harmony.jpg")
 ```
 
-{Harmony} is an algorithm for integrating multiple datasets that may contain
+{Harmony}, [Korsunsky et al. 2019](https://doi.org/10.1038/s41592-019-0619-0)
+is an algorithm and R package for integrating multiple datasets that may contain
 batch effects or other unwanted variations. It does not edit the raw expression
-values, but instead creates a new embedding space starting from the PCA coordinates
-of the two batches.
+values, but instead creates a corrected embedding space starting from an input
+PCA.
 
 It iteratively performs kmeans clustering and determines the probability that
 a particular data point belongs to cluster/batch combinations, with an optimization
