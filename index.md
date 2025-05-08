@@ -18,14 +18,13 @@ Giotto Suite is a major upgrade to the Giotto package that provides tools to pro
 
 ### Local installation
 
-To install Giotto suite use
-`pak::pkg_install("drieslab/Giotto")`.
+To install Giotto suite, please see our [installation page](articles/installation.html)
 
 Visit the Giotto [Discussions](https://github.com/drieslab/Giotto/discussions) page for more information.
 
 ### Containers
 
-If you prefer to skip the installation process, check the tutorials for using Giotto Suite with our [Docker](https://drieslab.github.io/Giotto_website/articles/docker.html) and [Singularity](https://drieslab.github.io/Giotto_website/articles/singularity.html) containers.
+If you prefer to skip the installation process, check the tutorials for using Giotto Suite with our [Docker](articles/docker.html) and [Singularity](https://drieslab.github.io/Giotto_website/articles/singularity.html) containers.
 
 ## Website Updates
 
