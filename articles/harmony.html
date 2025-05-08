@@ -811,6 +811,11 @@ tissue/celltype similarity between the two.</p>
 <span class="header-section-number">6</span> Harmony
 integration<a class="anchor" aria-label="anchor" href="#harmony-integration"></a>
 </h2>
+<div class="section level3" number="6.1">
+<h3 id="method-introduction">
+<span class="header-section-number">6.1</span> Method
+introduction<a class="anchor" aria-label="anchor" href="#method-introduction"></a>
+</h3>
 <p><img src="images/harmony/harmony.jpg" width="80%" style="display: block; margin: auto;"></p>
 <p>{Harmony} is an algorithm for integrating multiple datasets that may
 contain batch effects or other unwanted variations. It does not edit the
@@ -828,11 +833,15 @@ receives a personalized correction based on its probability of belonging
 to each cluster. These iterative corrections are performed until the
 distance shifted by data points falls below a threshold, after which the
 process has converged.</p>
+</div>
+<div class="section level3" number="6.2">
+<h3 id="using-harmony">
+<span class="header-section-number">6.2</span> Using harmony<a class="anchor" aria-label="anchor" href="#using-harmony"></a>
+</h3>
 <p>To run harmony, we use <code><a href="../reference/runGiottoHarmony.html">runGiottoHarmony()</a></code>. Under the
 hood, this function calls <code>?harmony::RunHarmony()</code>.
-Additional parameters can be passed through
-<code><a href="../reference/runGiottoHarmony.html">runGiottoHarmony()</a></code> to the underlying function to fine tune
-this process.</p>
+Additional parameters can be passed through to the underlying function
+to fine tune the integration process:</p>
 <ul>
 <li>
 <code>theta</code> - A param to encourage diversity. Default value
@@ -880,9 +889,10 @@ data point was from. We are running with the default params, but with
 <span>    plot_convergence <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/harmony/harmony_convergence.png" width="50%" style="display: block; margin: auto;"></p>
-<div class="section level3" number="6.1">
+</div>
+<div class="section level3" number="6.3">
 <h3 id="accessing-the-results">
-<span class="header-section-number">6.1</span> Accessing the
+<span class="header-section-number">6.3</span> Accessing the
 results<a class="anchor" aria-label="anchor" href="#accessing-the-results"></a>
 </h3>
 <p>Giotto’s functions are designed with a general pipeline that defaults
