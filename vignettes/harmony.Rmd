@@ -211,6 +211,8 @@ and we would expect at least some tissue/celltype similarity between the two.
 
 # Harmony integration
 
+## Method introduction
+
 ```{r, echo=FALSE, out.width="80%", fig.align="center"}
 knitr::include_graphics("images/harmony/harmony.jpg")
 ```
@@ -232,9 +234,11 @@ correction based on its probability of belonging to each cluster. These
 iterative corrections are performed until the distance shifted by data points
 falls below a threshold, after which the process has converged.
 
+## Using harmony
+
 To run harmony, we use `runGiottoHarmony()`. Under the hood, this function calls
-`?harmony::RunHarmony()`. Additional parameters can be passed through `runGiottoHarmony()`
-to the underlying function to fine tune this process.
+`?harmony::RunHarmony()`. Additional parameters can be passed through
+to the underlying function to fine tune the integration process:
 
 * `theta` - A param to encourage diversity. Default value is 2. Setting higher
  will push clusters to have more balanced compositions, while lower values will
