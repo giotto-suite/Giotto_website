@@ -633,11 +633,19 @@ explanation<a class="anchor" aria-label="anchor" href="#dataset-explanation"></a
 et al 2020</a> and downloaded from <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE137986" class="external-link uri">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE137986</a>.
 For running this tutorial, we will use the dataset E10 Whole (50 μm)
 2.</p>
+<p>For running this tutorial, we need to download the RNA expression
+matrix (GSE137986_RAW/GSM4189613_0702cL.tsv.gz) and the Protein counts
+matrix (GSE137986_RAW/GSM4202307_0702aL.tsv.gz), while the spatial
+coordinates will be taken from the cell_ids.</p>
 </div>
 <div class="section level2" number="2">
 <h2 id="start-giotto">
 <span class="header-section-number">2</span> Start Giotto<a class="anchor" aria-label="anchor" href="#start-giotto"></a>
 </h2>
+<p>Make sure you have the Giotto package and environment installed. If
+you have installation problems, visit the <a href="https://drieslab.github.io/Giotto_website/articles/installation.html">Installation
+guidelines</a> and <a href="https://drieslab.github.io/Giotto_website/articles/faqs.html">FAQ</a>
+section.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -652,11 +660,12 @@ For running this tutorial, we will use the dataset E10 Whole (50 μm)
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2" number="3">
-<h2 id="create-giotto-object">
-<span class="header-section-number">3</span> Create Giotto
-object<a class="anchor" aria-label="anchor" href="#create-giotto-object"></a>
+<h2 id="read-the-data">
+<span class="header-section-number">3</span> Read the data<a class="anchor" aria-label="anchor" href="#read-the-data"></a>
 </h2>
-<p>Read expression matrix 22846 genes, 22 proteins, 901 cells</p>
+<p>Read the RNA and Protein count matrices. You expect to have and RNA
+expression matrix with 22846 genes and 901 cells, and a Protein matrix
+with 22 proteins and 901 cells.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://drieslab.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span>
 <span></span>
@@ -673,11 +682,15 @@ object<a class="anchor" aria-label="anchor" href="#create-giotto-object"></a>
 <span>                                sep <span class="op">=</span> <span class="st">"\t"</span>,</span>
 <span>                                header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">protein_expression</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">protein_expression</span><span class="op">$</span><span class="va">X</span></span></code></pre></div>
-<p>Transpose matrix</p>
+<p>Transpose the matrices. DBiT-seq provides the counts matrices in a
+cell x gene format, but we need a gene x cell matrix for creating the
+Giotto object.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rna_expression</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">rna_expression</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">protein_expression</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">protein_expression</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<p>Get the spatial coordinates</p>
+<p>Extract the spatial coordinates. This dataset did not provide a
+separated spatial coordinates file, but we can get the spatial
+information from the cell ids.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spatial_coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>cell_ID <span class="op">=</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">rna_expression</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">spatial_coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">spatial_coords</span>, </span>
@@ -685,7 +698,17 @@ object<a class="anchor" aria-label="anchor" href="#create-giotto-object"></a>
 <span></span>
 <span><span class="va">spatial_coords</span><span class="op">$</span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">spatial_coords</span><span class="op">$</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="va">spatial_coords</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">spatial_coords</span><span class="op">$</span><span class="va">y</span><span class="op">)</span><span class="op">*</span><span class="op">-</span><span class="fl">1</span></span></code></pre></div>
-<p>Create the Giotto object</p>
+</div>
+<div class="section level2" number="4">
+<h2 id="create-the-giotto-object">
+<span class="header-section-number">4</span> Create the Giotto
+object<a class="anchor" aria-label="anchor" href="#create-the-giotto-object"></a>
+</h2>
+<p>Use the Giotto instructions to set the behavior of the Giotto object,
+such as whether you prefer to save the generated plots or only visualize
+them. This instructions will become the default for future plotting
+functions, but you can also use the functions arguments to change the
+saving options.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">results_folder</span> <span class="op">&lt;-</span> <span class="st">"/path/to/results/"</span></span>
 <span></span>
@@ -700,14 +723,24 @@ object<a class="anchor" aria-label="anchor" href="#create-giotto-object"></a>
 <span>                                   spatial_locs <span class="op">=</span> <span class="va">spatial_coords</span>,</span>
 <span>                                   instructions <span class="op">=</span> <span class="va">instructions</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2" number="4">
+<div class="section level2" number="5">
 <h2 id="processing">
-<span class="header-section-number">4</span> Processing<a class="anchor" aria-label="anchor" href="#processing"></a>
+<span class="header-section-number">5</span> Processing<a class="anchor" aria-label="anchor" href="#processing"></a>
 </h2>
-<div class="section level3" number="4.1">
+<div class="section level3" number="5.1">
 <h3 id="filtering">
-<span class="header-section-number">4.1</span> Filtering<a class="anchor" aria-label="anchor" href="#filtering"></a>
+<span class="header-section-number">5.1</span> Filtering<a class="anchor" aria-label="anchor" href="#filtering"></a>
 </h3>
+<p>We need to remove those spots that contain a very small number of
+features (genes or proteins), as well as features that are not expressed
+in enough spots across the sample.</p>
+<p>Use the argument min_det_feats_per_cell to set the minimal number of
+features (genes or proteins) expected per spot. Those spots with less
+genes or proteins than the provided number will be removed.</p>
+<p>Use the argument feat_det_in_min_cells to set the minimal number of
+spots where each gene or protein should be expressed to be considered in
+the dataset. Those genes or proteins expressed in less spots than the
+provided number will be removed.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## RNA</span></span>
 <span><span class="va">giottoObject</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/filterGiotto.html">filterGiotto</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giottoObject</span>,</span>
@@ -727,10 +760,14 @@ object<a class="anchor" aria-label="anchor" href="#create-giotto-object"></a>
 <span>                             expression_values <span class="op">=</span> <span class="st">"raw"</span>,</span>
 <span>                             verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3" number="4.2">
+<div class="section level3" number="5.2">
 <h3 id="normalization">
-<span class="header-section-number">4.2</span> Normalization<a class="anchor" aria-label="anchor" href="#normalization"></a>
+<span class="header-section-number">5.2</span> Normalization<a class="anchor" aria-label="anchor" href="#normalization"></a>
 </h3>
+<p>Normalize the gene or protein counts by cell, then use the argument
+scalefactor to set the scale factor to use after library size
+normalization. The default value is 6000, but you can use a different
+one.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## RNA</span></span>
 <span><span class="va">giottoObject</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/normalizeGiotto.html">normalizeGiotto</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giottoObject</span>, </span>
@@ -744,10 +781,14 @@ object<a class="anchor" aria-label="anchor" href="#create-giotto-object"></a>
 <span>                                scalefactor <span class="op">=</span> <span class="fl">6000</span>, </span>
 <span>                                verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3" number="4.3">
+<div class="section level3" number="5.3">
 <h3 id="statistics">
-<span class="header-section-number">4.3</span> Statistics<a class="anchor" aria-label="anchor" href="#statistics"></a>
+<span class="header-section-number">5.3</span> Statistics<a class="anchor" aria-label="anchor" href="#statistics"></a>
 </h3>
+<p>Add cell and feature statistics (optional). These values can be used
+as Quality control, you usually expect to have enough genes or proteins
+per spot, but the minimal number depends on the experiment design and
+technology used.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## RNA</span></span>
 <span><span class="va">giottoObject</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addStatistics.html">addStatistics</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giottoObject</span><span class="op">)</span></span>
@@ -779,24 +820,36 @@ object<a class="anchor" aria-label="anchor" href="#create-giotto-object"></a>
 <p><img src="images/mouse_embryo_dbitseq/2-spatPlot2D.png"></p>
 </div>
 </div>
-<div class="section level2" number="5">
+<div class="section level2" number="6">
 <h2 id="dimension-reduction">
-<span class="header-section-number">5</span> Dimension
+<span class="header-section-number">6</span> Dimension
 Reduction<a class="anchor" aria-label="anchor" href="#dimension-reduction"></a>
 </h2>
-<div class="section level3" number="5.1">
+<div class="section level3" number="6.1">
 <h3 id="identify-highly-variable-features-hvf">
-<span class="header-section-number">5.1</span> Identify highly
+<span class="header-section-number">6.1</span> Identify highly
 variable features (HVF)<a class="anchor" aria-label="anchor" href="#identify-highly-variable-features-hvf"></a>
 </h3>
+<p>When having whole transcriptome RNA information, you may want to
+identify the genes with highest variability and use them for the
+Principal Components Analysis. This step is not needed for the Protein
+modality, since the number of proteins is very limited.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">giottoObject</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculateHVF.html">calculateHVF</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giottoObject</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/mouse_embryo_dbitseq/3-HVFplot.png"></p>
 </div>
-<div class="section level3" number="5.2">
+<div class="section level3" number="6.2">
 <h3 id="pca">
-<span class="header-section-number">5.2</span> PCA<a class="anchor" aria-label="anchor" href="#pca"></a>
+<span class="header-section-number">6.2</span> PCA<a class="anchor" aria-label="anchor" href="#pca"></a>
 </h3>
+<p>The Principal component Analysis will help to reduce the number of
+dimensions in the dataset. For the RNA modality, we will use the
+previously calculated HVFs, but for the protein modality we will use all
+the proteins available in the dataset.</p>
+<p>The screeplot will show how much of the variance of your dataset is
+explain by each Principal Component. Usually this helps to estimate the
+number of Principal Components that you should consider for downstream
+steps.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># RNA</span></span>
 <span><span class="va">giottoObject</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPCA.html">runPCA</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giottoObject</span><span class="op">)</span></span></code></pre></div>
@@ -825,14 +878,17 @@ variable features (HVF)<a class="anchor" aria-label="anchor" href="#identify-hig
 <p><img src="images/mouse_embryo_dbitseq/7-PCA.png"></p>
 </div>
 </div>
-<div class="section level2" number="6">
+<div class="section level2" number="7">
 <h2 id="clustering">
-<span class="header-section-number">6</span> Clustering<a class="anchor" aria-label="anchor" href="#clustering"></a>
+<span class="header-section-number">7</span> Clustering<a class="anchor" aria-label="anchor" href="#clustering"></a>
 </h2>
-<div class="section level3" number="6.1">
+<div class="section level3" number="7.1">
 <h3 id="umap">
-<span class="header-section-number">6.1</span> UMAP<a class="anchor" aria-label="anchor" href="#umap"></a>
+<span class="header-section-number">7.1</span> UMAP<a class="anchor" aria-label="anchor" href="#umap"></a>
 </h3>
+<p>Unlike PCA, Uniform Manifold Approximation and Projection (UMAP) do
+not assume linearity. After running the PCA, UMAP allows you to
+visualize the dataset in 2D.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># RNA</span></span>
 <span><span class="va">giottoObject</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span><span class="va">giottoObject</span>, </span>
@@ -852,11 +908,22 @@ variable features (HVF)<a class="anchor" aria-label="anchor" href="#identify-hig
 <span>         feat_type <span class="op">=</span> <span class="st">"protein"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/mouse_embryo_dbitseq/9-UMAP.png"></p>
 </div>
-<div class="section level3" number="6.2">
+<div class="section level3" number="7.2">
 <h3 id="create-shared-nearest-network-snn-and-perform-leiden-clustering">
-<span class="header-section-number">6.2</span> Create shared nearest
-network (sNN) and perform leiden clustering<a class="anchor" aria-label="anchor" href="#create-shared-nearest-network-snn-and-perform-leiden-clustering"></a>
+<span class="header-section-number">7.2</span> Create shared nearest
+network (sNN) and perform Leiden clustering<a class="anchor" aria-label="anchor" href="#create-shared-nearest-network-snn-and-perform-leiden-clustering"></a>
 </h3>
+<p>createNearestNetwork() calculates the nearest neighbors to each spot
+based on their gene or protein expression. There are two methods
+available for the calculation, sNN (default) and kNN, You can also use
+the parameters dimensions_to_use to set how many dimensions from the PCA
+will be used for the network calculation and how many neighbors (k) to
+calculate.</p>
+<p>Once you have calculated the spots network, we can cluster the spots
+based on their similarity. By default, doLeidenCluster uses a resolution
+of 1, but you can change this value, which usually ranges from 0 (lowest
+resolution) to 1, but can go further if a higher resolution is
+needed.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># RNA</span></span>
 <span><span class="va">giottoObject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giottoObject</span>, </span>
@@ -880,9 +947,9 @@ network (sNN) and perform leiden clustering<a class="anchor" aria-label="anchor"
 <span>                                resolution <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>                                n_iterations <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3" number="6.3">
+<div class="section level3" number="7.3">
 <h3 id="visualize-umap-cluster-results">
-<span class="header-section-number">6.3</span> Visualize UMAP
+<span class="header-section-number">7.3</span> Visualize UMAP
 cluster results<a class="anchor" aria-label="anchor" href="#visualize-umap-cluster-results"></a>
 </h3>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
@@ -910,9 +977,9 @@ cluster results<a class="anchor" aria-label="anchor" href="#visualize-umap-clust
 <span>         legend_text <span class="op">=</span> <span class="fl">14</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/mouse_embryo_dbitseq/11-UMAP.png"></p>
 </div>
-<div class="section level3" number="6.4">
+<div class="section level3" number="7.4">
 <h3 id="visualize-spatial-results">
-<span class="header-section-number">6.4</span> Visualize spatial
+<span class="header-section-number">7.4</span> Visualize spatial
 results<a class="anchor" aria-label="anchor" href="#visualize-spatial-results"></a>
 </h3>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
@@ -941,11 +1008,23 @@ results<a class="anchor" aria-label="anchor" href="#visualize-spatial-results"><
 <p><img src="images/mouse_embryo_dbitseq/13-spatPlot2D.png"></p>
 </div>
 </div>
-<div class="section level2" number="7">
+<div class="section level2" number="8">
 <h2 id="multi-omics-integration">
-<span class="header-section-number">7</span> Multi-omics
+<span class="header-section-number">8</span> Multi-omics
 integration<a class="anchor" aria-label="anchor" href="#multi-omics-integration"></a>
 </h2>
+<p>The Weighted Nearest Neighbors allows to integrate the modalities
+acquired from the same sample. WNN will re-calculate the clustering to
+provide an integrated umap and leiden clustering. For running WNN, the
+Giotto object must contain the results of running PCA calculation for
+each modality.</p>
+<div class="section level3" number="8.1">
+<h3 id="calculate-knn">
+<span class="header-section-number">8.1</span> Calculate kNN<a class="anchor" aria-label="anchor" href="#calculate-knn"></a>
+</h3>
+<p>First, we need a nearest network using the kNN method; if you used
+this method in the clustering step instead of sNN, you can skip this
+step.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># RNA</span></span>
 <span><span class="va">giottoObject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giottoObject</span>, </span>
@@ -960,6 +1039,14 @@ integration<a class="anchor" aria-label="anchor" href="#multi-omics-integration"
 <span>                                     type <span class="op">=</span> <span class="st">"kNN"</span>,</span>
 <span>                                     dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, </span>
 <span>                                     k <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3" number="8.2">
+<h3 id="run-wnn">
+<span class="header-section-number">8.2</span> Run WNN<a class="anchor" aria-label="anchor" href="#run-wnn"></a>
+</h3>
+<p>runWNN will calculate the weight of each modality for each spot and
+will store the result in the Giotto object under the multiomics
+slot.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">giottoObject</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runWNN.html">runWNN</a></span><span class="op">(</span><span class="va">giottoObject</span>,</span>
 <span>                       spat_unit <span class="op">=</span> <span class="st">"cell"</span>,</span>
@@ -969,6 +1056,15 @@ integration<a class="anchor" aria-label="anchor" href="#multi-omics-integration"
 <span>                       pca_name_modality_2 <span class="op">=</span> <span class="st">"protein.pca"</span>,</span>
 <span>                       k <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>                       verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3" number="8.3">
+<h3 id="run-integrated-umap">
+<span class="header-section-number">8.3</span> Run Integrated
+umap<a class="anchor" aria-label="anchor" href="#run-integrated-umap"></a>
+</h3>
+<p>Using the weights matrix from the previous step, an integrated kNN
+and UMAP will be calculated, which reflects the integration of the two
+omics.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">giottoObject</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runIntegratedUMAP.html">runIntegratedUMAP</a></span><span class="op">(</span><span class="va">giottoObject</span>,</span>
 <span>                                  modality1 <span class="op">=</span> <span class="st">"rna"</span>,</span>
@@ -976,6 +1072,15 @@ integration<a class="anchor" aria-label="anchor" href="#multi-omics-integration"
 <span>                                  spread <span class="op">=</span> <span class="fl">7</span>,</span>
 <span>                                  min_dist <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>                                  force <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3" number="8.4">
+<h3 id="calculate-integrated-clusters">
+<span class="header-section-number">8.4</span> Calculate integrated
+clusters<a class="anchor" aria-label="anchor" href="#calculate-integrated-clusters"></a>
+</h3>
+<p>The final step is calculating the Leiden clusters again, using the
+integrated information from the previous step. These clusters consider
+the weight of each modality per spot.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">giottoObject</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/doLeidenCluster.html">doLeidenCluster</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giottoObject</span>,</span>
 <span>                                spat_unit <span class="op">=</span> <span class="st">"cell"</span>,</span>
@@ -1009,9 +1114,10 @@ integration<a class="anchor" aria-label="anchor" href="#multi-omics-integration"
 <span>           legend_text <span class="op">=</span> <span class="fl">14</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/mouse_embryo_dbitseq/15-spatPlot2D.png"></p>
 </div>
-<div class="section level2" number="8">
+</div>
+<div class="section level2" number="9">
 <h2 id="deconvolution">
-<span class="header-section-number">8</span> Deconvolution<a class="anchor" aria-label="anchor" href="#deconvolution"></a>
+<span class="header-section-number">9</span> Deconvolution<a class="anchor" aria-label="anchor" href="#deconvolution"></a>
 </h2>
 <p>We used the scRNAseq from <a href="https://www.nature.com/articles/s41586-019-0969-x" class="external-link">Cao et al.,
 2019</a> as reference. J. Cao, M. Spielmann, X. Qiu, X. Huang, D.M.
@@ -1019,13 +1125,15 @@ Ibrahim, A.J. Hill, F. Zhang, S. Mundlos, L. Christiansen, F.J.
 Steemers, et al. The single-cell transcriptional landscape of mammalian
 organogenesis. You can download the gene_count_cleaned_sampled_100k.RDS
 file from <a href="https://oncoscape.v3.sttrcancer.org/atlas.gs.washington.edu.mouse.rna/downloads" class="external-link">here.</a></p>
-<div class="section level3" number="8.1">
+<div class="section level3" number="9.1">
 <h3 id="preparation-of-the-scrnaseq">
-<span class="header-section-number">8.1</span> Preparation of the
+<span class="header-section-number">9.1</span> Preparation of the
 scRNAseq<a class="anchor" aria-label="anchor" href="#preparation-of-the-scrnaseq"></a>
 </h3>
+<p>Read the counts object and the metadata file with cell type
+annotation.</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># read single cell procesed object</span></span>
+<code class="sourceCode R"><span><span class="co"># read single cell processed object</span></span>
 <span><span class="va">gene_count_cleaned_sampled_100k</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"gene_count_cleaned_sampled_100k.RDS"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># download cell annotations</span></span>
@@ -1039,6 +1147,9 @@ scRNAseq<a class="anchor" aria-label="anchor" href="#preparation-of-the-scrnaseq
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">cell_annotation</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"cell_ID"</span></span>
 <span></span>
 <span><span class="va">cell_annotation</span> <span class="op">&lt;-</span> <span class="va">cell_annotation</span><span class="op">[</span><span class="va">cell_annotation</span><span class="op">$</span><span class="va">cell_ID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gene_count_cleaned_sampled_100k</span><span class="op">)</span>,<span class="op">]</span></span></code></pre></div>
+<p>Create the single-cell Giotto object and keep only the cells included
+in the metadata file. Then add the cell type annotation to the metadata
+of the Giotto object.</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sc_giotto</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span>expression <span class="op">=</span> <span class="va">gene_count_cleaned_sampled_100k</span><span class="op">)</span></span>
 <span></span>
@@ -1047,12 +1158,19 @@ scRNAseq<a class="anchor" aria-label="anchor" href="#preparation-of-the-scrnaseq
 <span></span>
 <span><span class="va">sc_giotto</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addCellMetadata.html" class="external-link">addCellMetadata</a></span><span class="op">(</span><span class="va">sc_giotto</span>,</span>
 <span>                             new_metadata <span class="op">=</span> <span class="va">cell_annotation</span><span class="op">)</span></span></code></pre></div>
+<p>For the deconvolution step, we need the normalized counts of the
+single-cell data. Use normalizeGiotto to perform the normalization step.
+Here we are setting the scaling options to FALSE because only the
+normalized counts are needed, but you can change them to TRUE if you
+prefer to also scale the object.</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sc_giotto</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/normalizeGiotto.html">normalizeGiotto</a></span><span class="op">(</span><span class="va">sc_giotto</span>, </span>
 <span>                             log_norm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                             scale_feats <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>                             scale_cells <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p>Find markergenes</p>
+<p>Use the cell type annotation to find their marker genes based on ther
+normalized expression. The list of marker genes will be used to create a
+signature matrix in the next step.</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">markers_scran</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/findMarkers_one_vs_all.html">findMarkers_one_vs_all</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">sc_giotto</span>,</span>
 <span>                                        method <span class="op">=</span> <span class="st">"scran"</span>,</span>
@@ -1061,7 +1179,9 @@ scRNAseq<a class="anchor" aria-label="anchor" href="#preparation-of-the-scrnaseq
 <span>                                        min_feats <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">topgenes_scran</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">markers_scran</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">30</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"cluster"</span><span class="op">]</span><span class="op">[[</span><span class="st">"feats"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<p>Create DWLS matrix</p>
+<p>Create DWLS matrix. The signature matrix takes into account the
+marker genes per cell type and their normalized expression in the
+single-cell object.</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DWLS_matrix_direct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/makeSignMatrixDWLSfromMatrix.html">makeSignMatrixDWLSfromMatrix</a></span><span class="op">(</span></span>
 <span>  matrix <span class="op">=</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/getExpression.html" class="external-link">getExpression</a></span><span class="op">(</span><span class="va">sc_giotto</span>,</span>
@@ -1069,7 +1189,9 @@ scRNAseq<a class="anchor" aria-label="anchor" href="#preparation-of-the-scrnaseq
 <span>                         output <span class="op">=</span> <span class="st">"matrix"</span><span class="op">)</span>,</span>
 <span>  cell_type <span class="op">=</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">sc_giotto</span><span class="op">)</span><span class="op">$</span><span class="va">Main_cell_type</span>,</span>
 <span>  sign_gene <span class="op">=</span> <span class="va">topgenes_scran</span><span class="op">)</span></span></code></pre></div>
-<p>Fix gene names</p>
+<p>Fix gene names. This dataset contains some ENSEMBL gene ids, we need
+to homogenize the ids to match the nomenclature of the RNA matrix in the
+spatial object.</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># download gene annotations</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"https://shendure-web.gs.washington.edu/content/members/cao1025/public/mouse_embryo_atlas/gene_annotate.csv"</span>,</span>
@@ -1082,17 +1204,21 @@ scRNAseq<a class="anchor" aria-label="anchor" href="#preparation-of-the-scrnaseq
 <span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">DWLS_matrix_direct</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">sc_gene_names</span><span class="op">$</span><span class="va">gene_short_name</span></span></code></pre></div>
 </div>
-<div class="section level3" number="8.2">
+<div class="section level3" number="9.2">
 <h3 id="run-deconvolution">
-<span class="header-section-number">8.2</span> Run
+<span class="header-section-number">9.2</span> Run
 deconvolution<a class="anchor" aria-label="anchor" href="#run-deconvolution"></a>
 </h3>
+<p>Use the single-cell signature matrix to perform the deconvolution of
+the spatial object.</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># run DWLS using integrated leiden clusters</span></span>
 <span><span class="va">giottoObject</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDWLSDeconv.html">runDWLSDeconv</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giottoObject</span>,</span>
 <span>                              sign_matrix <span class="op">=</span> <span class="va">DWLS_matrix_direct</span>,</span>
 <span>                              cluster_column <span class="op">=</span> <span class="st">"integrated_leiden_clus"</span><span class="op">)</span></span></code></pre></div>
-<p>Plot DWLS deconvolution result</p>
+<p>Plot DWLS deconvolution result. The DWLS method will retrieve as
+output a table with the proportion of each cell type by spot, you can
+use this information to create a pie plot per spot.</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot DWLS deconvolution result with Pie plots dataset 1</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatDeconvPlot.html" class="external-link">spatDeconvPlot</a></span><span class="op">(</span><span class="va">giottoObject</span>,</span>
@@ -1109,9 +1235,9 @@ deconvolution<a class="anchor" aria-label="anchor" href="#run-deconvolution"></a
 <p><img src="images/mouse_embryo_dbitseq/integrated_deconvolution.png"></p>
 </div>
 </div>
-<div class="section level2" number="9">
+<div class="section level2" number="10">
 <h2 id="session-info">
-<span class="header-section-number">9</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+<span class="header-section-number">10</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
