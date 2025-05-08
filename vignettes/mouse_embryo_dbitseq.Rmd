@@ -16,8 +16,11 @@ vignette: >
 
 The dataset was created by [Liu, et al 2020](https://www.sciencedirect.com/science/article/pii/S0092867420313908?via%3Dihub) and downloaded from https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE137986. For running this tutorial, we will use the dataset E10 Whole (50 μm) 2.
 
+For running this tutorial, we need to download the RNA expression matrix (GSE137986_RAW/GSM4189613_0702cL.tsv.gz) and the Protein counts matrix (GSE137986_RAW/GSM4202307_0702aL.tsv.gz), while the spatial coordinates will be taken from the cell_ids.
 
 # Start Giotto
+
+Make sure you have the Giotto package and environment installed. If you have installation problems, visit the [Installation guidelines](https://drieslab.github.io/Giotto_website/articles/installation.html) and [FAQ](https://drieslab.github.io/Giotto_website/articles/faqs.html) section.
 
 ```{r, eval=FALSE}
 # Ensure Giotto Suite is installed
@@ -33,9 +36,9 @@ if(!genv_exists){
 }
 ```
 
-# Create Giotto object
+# Read the data
 
-Read expression matrix 22846 genes, 22 proteins, 901 cells
+Read the RNA and Protein count matrices. You expect to have and RNA expression matrix with 22846 genes and 901 cells, and a Protein matrix with 22 proteins and 901 cells. 
 
 ```{r, eval = FALSE}
 library(Giotto)
@@ -57,14 +60,14 @@ protein_expression <- read.table(paste0(data_path, "GSE137986_RAW/GSM4202307_070
 rownames(protein_expression) <- protein_expression$X
 ```
 
-Transpose matrix
+Transpose the matrices. DBiT-seq provides the counts matrices in a cell x gene format, but we need a gene x cell matrix for creating the Giotto object.
 
 ```{r, eval = FALSE}
 rna_expression <- t(rna_expression[-1])
 protein_expression <- t(protein_expression[-1])
 ```
 
-Get the spatial coordinates
+Extract the spatial coordinates. This dataset did not provide a separated spatial coordinates file, but we can get the spatial information from the cell ids.
 
 ```{r, eval = FALSE}
 spatial_coords <- data.frame(cell_ID = colnames(rna_expression))
@@ -75,7 +78,9 @@ spatial_coords$x <- as.numeric(spatial_coords$x)
 spatial_coords$y <- as.numeric(spatial_coords$y)*-1
 ```
 
-Create the Giotto object
+# Create the Giotto object
+
+Use the Giotto instructions to set the behavior of the Giotto object, such as whether you prefer to save the generated plots or only visualize them. This instructions will become the default for future plotting functions, but you can also use the functions arguments to change the saving options.
 
 ```{r, eval = FALSE}
 results_folder <- "/path/to/results/"
@@ -95,6 +100,12 @@ giottoObject <- createGiottoObject(expression = list(raw = rna_expression,
 # Processing
 
 ## Filtering
+
+We need to remove those spots that contain a very small number of features (genes or proteins), as well as features that are not expressed in enough spots across the sample. 
+
+Use the argument min_det_feats_per_cell to set the minimal number of features (genes or proteins) expected per spot. Those spots with less genes or proteins than the provided number will be removed.
+
+Use the argument feat_det_in_min_cells to set the minimal number of spots where each gene or protein should be expressed to be considered in the dataset. Those genes or proteins expressed in less spots than the provided number will be removed.
 
 ```{r, eval = FALSE}
 ## RNA
@@ -118,6 +129,8 @@ giottoObject <- filterGiotto(gobject = giottoObject,
 
 ## Normalization
 
+Normalize the gene or protein counts by cell, then use the argument scalefactor to set the scale factor to use after library size normalization. The default value is 6000, but you can use a different one.
+
 ```{r, eval = FALSE}
 ## RNA
 giottoObject <- normalizeGiotto(gobject = giottoObject, 
@@ -133,6 +146,8 @@ giottoObject <- normalizeGiotto(gobject = giottoObject,
 ```
 
 ## Statistics
+
+Add cell and feature statistics (optional). These values can be used as Quality control, you usually expect to have enough genes or proteins per spot, but the minimal number depends on the experiment design and technology used. 
 
 ```{r, eval = FALSE}
 ## RNA
@@ -175,6 +190,8 @@ spatPlot2D(giottoObject,
 
 ## Identify highly variable features (HVF)
 
+When having whole transcriptome RNA information, you may want to identify the genes with highest variability and use them for the Principal Components Analysis. This step is not needed for the Protein modality, since the number of proteins is very limited. 
+
 ```{r, eval = FALSE}
 giottoObject <- calculateHVF(gobject = giottoObject)
 ```
@@ -183,6 +200,10 @@ giottoObject <- calculateHVF(gobject = giottoObject)
 
 
 ## PCA
+
+The Principal component Analysis will help to reduce the number of dimensions in the dataset. For the RNA modality, we will use the previously calculated HVFs, but for the protein modality we will use all the proteins available in the dataset.
+
+The screeplot will show how much of the variance of your dataset is explain by each Principal Component. Usually this helps to estimate the number of Principal Components that you should consider for downstream steps.
 
 ```{r, eval = FALSE}
 # RNA
@@ -230,6 +251,8 @@ plotPCA(gobject = giottoObject,
 
 ## UMAP
 
+Unlike PCA, Uniform Manifold Approximation and Projection (UMAP) do not assume linearity. After running the PCA, UMAP allows you to visualize the dataset in 2D.
+
 ```{r, eval = FALSE}
 # RNA
 giottoObject <- runUMAP(giottoObject, 
@@ -258,7 +281,11 @@ plotUMAP(gobject = giottoObject,
 
 ![](images/mouse_embryo_dbitseq/9-UMAP.png)
 
-## Create shared nearest network (sNN) and perform leiden clustering
+## Create shared nearest network (sNN) and perform Leiden clustering
+
+createNearestNetwork() calculates the nearest neighbors to each spot based on their gene or protein expression. There are two methods available for the calculation, sNN (default) and kNN, You can also use the parameters  dimensions_to_use to set how many dimensions from the PCA will be used for the network calculation and how many neighbors (k) to calculate.
+
+Once you have calculated the spots network, we can cluster the spots based on their similarity. By default, doLeidenCluster uses a resolution of 1, but you can change this value, which usually ranges from 0 (lowest resolution) to 1, but can go further if a higher resolution is needed.
 
 ```{r, eval = FALSE}
 # RNA
@@ -350,6 +377,12 @@ spatPlot2D(gobject = giottoObject,
 
 # Multi-omics integration
 
+The Weighted Nearest Neighbors allows to integrate the modalities acquired from the same sample. WNN will re-calculate the clustering to provide an integrated umap and leiden clustering. For running WNN, the Giotto object must contain the results of running PCA calculation for each modality.
+
+## Calculate kNN
+
+First, we need a nearest network using the kNN method; if you used this method in the clustering step instead of sNN, you can skip this step.
+
 ```{r, eval = FALSE}
 # RNA
 giottoObject <- createNearestNetwork(gobject = giottoObject, 
@@ -366,6 +399,10 @@ giottoObject <- createNearestNetwork(gobject = giottoObject,
                                      k = 20)
 ```
 
+## Run WNN
+
+runWNN will calculate the weight of each modality for each spot and will store the result in the Giotto object under the multiomics slot. 
+
 ```{r, eval = FALSE}
 giottoObject <- runWNN(giottoObject,
                        spat_unit = "cell",
@@ -377,6 +414,10 @@ giottoObject <- runWNN(giottoObject,
                        verbose = TRUE)
 ```
 
+## Run Integrated umap
+
+Using the weights matrix from the previous step, an integrated kNN and UMAP will be calculated, which reflects the integration of the two omics.
+
 ```{r, eval = FALSE}
 giottoObject <- runIntegratedUMAP(giottoObject,
                                   modality1 = "rna",
@@ -385,6 +426,10 @@ giottoObject <- runIntegratedUMAP(giottoObject,
                                   min_dist = 1,
                                   force = FALSE)
 ```
+
+## Calculate integrated clusters
+
+The final step is calculating the Leiden clusters again, using the integrated information from the previous step. These clusters consider the weight of each modality per spot.
 
 ```{r, eval = FALSE}
 giottoObject <- doLeidenCluster(gobject = giottoObject,
@@ -432,8 +477,10 @@ We used the scRNAseq from [Cao et al., 2019](https://www.nature.com/articles/s41
 
 ## Preparation of the scRNAseq
 
+Read the counts object and the metadata file with cell type annotation.
+
 ```{r, eval = FALSE}
-# read single cell procesed object
+# read single cell processed object
 gene_count_cleaned_sampled_100k <- readRDS(paste0(data_path, "gene_count_cleaned_sampled_100k.RDS"))
 
 # download cell annotations
@@ -449,6 +496,8 @@ colnames(cell_annotation)[1] <- "cell_ID"
 cell_annotation <- cell_annotation[cell_annotation$cell_ID %in% colnames(gene_count_cleaned_sampled_100k),]
 ```
 
+Create the single-cell Giotto object and keep only the cells included in the metadata file. Then add the cell type annotation to the metadata of the Giotto object.
+
 ```{r, eval = FALSE}
 sc_giotto <- createGiottoObject(expression = gene_count_cleaned_sampled_100k)
 
@@ -459,6 +508,8 @@ sc_giotto <- addCellMetadata(sc_giotto,
                              new_metadata = cell_annotation)
 ```
 
+For the deconvolution step, we need the normalized counts of the single-cell data. Use normalizeGiotto to perform the normalization step. Here we are setting the scaling options to FALSE because only the normalized counts are needed, but you can change them to TRUE if you prefer to also scale the object.
+
 ```{r, eval = FALSE}
 sc_giotto <- normalizeGiotto(sc_giotto, 
                              log_norm = FALSE,
@@ -466,7 +517,7 @@ sc_giotto <- normalizeGiotto(sc_giotto,
                              scale_cells = FALSE)
 ```
 
-Find markergenes
+Use the cell type annotation to find their marker genes based on ther normalized expression. The list of marker genes will be used to create a signature matrix in the next step.
 
 ```{r, eval = FALSE}
 markers_scran <- findMarkers_one_vs_all(gobject = sc_giotto,
@@ -478,7 +529,7 @@ markers_scran <- findMarkers_one_vs_all(gobject = sc_giotto,
 topgenes_scran <- unique(markers_scran[, head(.SD, 30), by = "cluster"][["feats"]])
 ```
 
-Create DWLS matrix
+Create DWLS matrix. The signature matrix takes into account the marker genes per cell type and their normalized expression in the single-cell object. 
 
 ```{r, eval=FALSE}
 DWLS_matrix_direct <- makeSignMatrixDWLSfromMatrix(
@@ -489,7 +540,7 @@ DWLS_matrix_direct <- makeSignMatrixDWLSfromMatrix(
   sign_gene = topgenes_scran)
 ```
 
-Fix gene names
+Fix gene names. This dataset contains some ENSEMBL gene ids, we need to homogenize the ids to match the nomenclature of the RNA matrix in the spatial object.
 
 ```{r, eval = FALSE}
 # download gene annotations
@@ -506,6 +557,8 @@ rownames(DWLS_matrix_direct) <- sc_gene_names$gene_short_name
 
 ## Run deconvolution
 
+Use the single-cell signature matrix to perform the deconvolution of the spatial object.
+
 ```{r, eval=FALSE}
 # run DWLS using integrated leiden clusters
 giottoObject <- runDWLSDeconv(gobject = giottoObject,
@@ -513,7 +566,7 @@ giottoObject <- runDWLSDeconv(gobject = giottoObject,
                               cluster_column = "integrated_leiden_clus")
 ```
 
-Plot DWLS deconvolution result
+Plot DWLS deconvolution result. The DWLS method will retrieve as output a table with the proportion of each cell type by spot, you can use this information to create a pie plot per spot.
 
 ```{r, eval = FALSE}
 # Plot DWLS deconvolution result with Pie plots dataset 1

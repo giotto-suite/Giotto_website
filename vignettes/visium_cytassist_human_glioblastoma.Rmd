@@ -20,6 +20,10 @@ More information about this dataset can be found [here](https://www.10xgenomics.
 
 # Download dataset
 
+For running this tutorial, we need to download the expression matrix that contains both the RNA and Protein counts, as well as the spatial folder with the tissue image and spatial coordinates.
+
+After downloading the compressed files, unzip them to access the folder structure.
+
 ```{r, eval=FALSE}
 dir.create("data")
 
@@ -37,6 +41,8 @@ untar("data/CytAssist_FFPE_Protein_Expression_Human_Glioblastoma_spatial.tar.gz"
 
 # Start Giotto
 
+Make sure you have the Giotto package and environment installed. If you have installation problems, visit the [Installation guidelines](https://drieslab.github.io/Giotto_website/articles/installation.html) and [FAQ](https://drieslab.github.io/Giotto_website/articles/faqs.html) section.
+
 ```{r, eval=FALSE}
 # Ensure Giotto Suite is installed
 if(!"Giotto" %in% installed.packages()) {
@@ -51,6 +57,8 @@ if(!genv_exists){
   Giotto::installGiottoEnvironment()
 }
 ```
+
+Use the Giotto instructions to set the behavior of the Giotto object, such as whether you prefer to save the generated plots or only visualize them. This instructions will become the default for future plotting functions, but you can also use the functions arguments to change the saving options.
 
 ```{r, eval=FALSE}
 library(Giotto)
@@ -78,7 +86,7 @@ The minimum requirements are
 -   matrix with expression information (or path to)
 -   x,y(,z) coordinates for cells or spots (or path to)
 
-createGiottoVisiumObject() will automatically detect both rna and protein modalities within the expression matrix creating a multi-omics Giotto object.
+createGiottoVisiumObject() will automatically detect both RNA and Protein modalities within the expression matrix creating a multi-omics Giotto object.
 
 ```{r, eval=FALSE}
 # Provide path to visium folder
@@ -92,24 +100,11 @@ visium <- createGiottoVisiumObject(visium_dir = data_path,
                                   instructions = instructions)
 ```
 
-How to work with Giotto instructions that are part of your Giotto object:
-
--   Show the instructions associated with your Giotto object with showGiottoInstructions()
--   Change one or more instructions with changeGiottoInstructions()
--   Replace all instructions at once with replaceGiottoInstructions()
--   Read or get a specific Giotto instruction with readGiottoInstructions()
-
-```{r, eval=FALSE}
-# show instructions associated with the giotto object
-showGiottoInstructions(visium)
-```
-
 # Processing
 
--   Filter features and cells based on detection frequencies
--   Normalize expression matrix (log transformation, scaling factor and/or z-scores)
--   Add cell and feature statistics (optional)
--   Adjust expression matrix for technical covariates or batches (optional).
+## Filtering
+
+The metadata of the CytAssist technology contains a column "in_tissue" that indicates whether a spot in on the tissue area (1) or not (0). We will use this column to remove all spots that don't correspond to the tissue area.
 
 ```{r, eval=FALSE}
 # Subset on spots that were covered by tissue
@@ -128,10 +123,14 @@ spatPlot2D(gobject = visium,
 knitr::include_graphics("images/visium_cytassist_human_glioblastoma/0-spatPlot2D.png")
 ```
 
-```{r, eval=FALSE}
-# Filtering, normalization, and statistics
+Now that we only have spots from the tissue area, we will remove those spots that contain a very small number of features (genes or proteins), as well as features that are not expressed in enough spots across the sample. 
 
-## RNA feature
+Use the argument min_det_feats_per_cell to set the minimal number of features (genes or proteins) expected per spot. Those spots with less genes or proteins than the provided number will be removed.
+
+Use the argument feat_det_in_min_cells to set the minimal number of spots where each gene or protein should be expressed to be considered in the dataset. Those genes or proteins expressed in less spots than the provided number will be removed.
+
+```{r, eval=FALSE}
+## RNA 
 visium <- filterGiotto(gobject = visium,
                        expression_threshold = 1,
                        feat_det_in_min_cells = 50,
@@ -139,10 +138,43 @@ visium <- filterGiotto(gobject = visium,
                        expression_values = "raw",
                        verbose = TRUE)
 
+## Protein  
+visium <- filterGiotto(gobject = visium, 
+                       spat_unit = "cell",
+                       feat_type = "protein",
+                       expression_threshold = 1,
+                       feat_det_in_min_cells = 50, 
+                       min_det_feats_per_cell = 1,
+                       expression_values = "raw", 
+                       verbose = TRUE)
+
+```
+
+
+## Normalization
+
+Normalize the gene or protein counts by cell, then use the argument scalefactor to set the scale factor to use after library size normalization. The default value is 6000, but you can use a different one.
+
+```{r, eval=FALSE}
+## RNA
 visium <- normalizeGiotto(gobject = visium,
                           scalefactor = 6000,
                           verbose = TRUE)
 
+## Protein
+visium <- normalizeGiotto(gobject = visium,
+                          spat_unit = "cell", 
+                          feat_type = "protein", 
+                          scalefactor = 6000, 
+                          verbose = TRUE)
+```
+
+## Statistics
+
+Add cell and feature statistics (optional). These values can be used as Quality control, you usually expect to have enough genes or proteins per spot, but the minimal number depends on the experiment design and technology used. 
+
+```{r, eval=FALSE}
+## RNA
 visium <- addStatistics(gobject = visium)
 
 ### Visualize number of features after processing
@@ -157,22 +189,7 @@ knitr::include_graphics("images/visium_cytassist_human_glioblastoma/1-spatPlot2D
 ```
 
 ```{r, eval=FALSE}
-## Protein feature 
-visium <- filterGiotto(gobject = visium, 
-                       spat_unit = "cell",
-                       feat_type = "protein",
-                       expression_threshold = 1,
-                       feat_det_in_min_cells = 50, 
-                       min_det_feats_per_cell = 1,
-                       expression_values = "raw", 
-                       verbose = TRUE)
-
-visium <- normalizeGiotto(gobject = visium,
-                          spat_unit = "cell", 
-                          feat_type = "protein", 
-                          scalefactor = 6000, 
-                          verbose = TRUE)
-
+## Protein
 visium <- addStatistics(gobject = visium,
                         spat_unit = "cell", 
                         feat_type = "protein")
@@ -192,14 +209,22 @@ knitr::include_graphics("images/visium_cytassist_human_glioblastoma/2-spatPlot2D
 
 # Dimension Reduction
 
+### Identify highly variable features (HVF)
+
+When having whole transcriptome RNA information, you may want to identify the genes with highest variability and use them for the Principal Components Analysis. This step is not needed for the Protein modality, since the number of proteins is very limited. 
+
 ```{r, eval=FALSE}
-# Identify highly variable features (HVF)
+## RNA
 visium <- calculateHVF(gobject = visium)
 ```
 
-```{r, eval=FALSE}
-# PCA
+## PCA
 
+The Principal component Analysis will help to reduce the number of dimensions in the dataset. For the RNA modality, we will use the previously calculated HVFs, but for the protein modality we will use all the proteins available in the dataset.
+
+The screeplot will show how much of the variance of your dataset is explain by each Principal Component. Usually this helps to estimate the number of Principal Components that you should consider for downstream steps.
+
+```{r, eval=FALSE}
 ## RNA
 visium <- runPCA(gobject = visium)
 
@@ -248,41 +273,56 @@ knitr::include_graphics("images/visium_cytassist_human_glioblastoma/6-PCA.png")
 
 # Clustering
 
-```{r, eval=FALSE}
-# cluster and run UMAP
-# sNN network (default)
+## UMAP
 
-## RNA feature
+Unlike PCA, Uniform Manifold Approximation and Projection (UMAP) do not assume linearity. After running the PCA, UMAP allows you to visualize the dataset in 2D.
+
+```{r, eval=FALSE}
+## RNA 
+visium <- runUMAP(visium,
+                  dimensions_to_use = 1:10)
+
+## Protein  
+visium <- runUMAP(visium,
+                  spat_unit = "cell", 
+                  feat_type = "protein", 
+                  dimensions_to_use = 1:10)
+```
+
+## sNN network (default)
+
+createNearestNetwork() calculates the nearest neighbors to each spot based on their gene or protein expression. There are two methods available for the calculation, sNN (default) and kNN, You can also use the parameters  dimensions_to_use to set how many dimensions from the PCA will be used for the network calculation and how many neighbors (k) to calculate.
+
+```{r, eval=FALSE}
+## RNA 
 visium <- createNearestNetwork(gobject = visium,
                                dimensions_to_use = 1:10,
                                k = 30)
 
-## Protein feature
+## Protein 
 visium <- createNearestNetwork(gobject = visium,
                                spat_unit = "cell",
                                feat_type = "protein",
                                dimensions_to_use = 1:10,
                                k = 30)
+```
 
-# Leiden clustering
+## Leiden clustering
 
-## RNA feature
+Once you have calculated the spots network, we can cluster the spots based on their similarity. By default, doLeidenCluster uses a resolution of 1, but you can change this value, which usually ranges from 0 (lowest resolution) to 1, but can go further if a higher resolution is needed.
+
+```{r, eval=FALSE}
+## RNA 
 visium <- doLeidenCluster(gobject = visium,
                           resolution = 1,
                           n_iterations = 1000)
 
-## Protein feature
+## Protein 
 visium <- doLeidenCluster(gobject = visium,
                           spat_unit = "cell",
                           feat_type = "protein",
                           resolution = 1,
                           n_iterations = 1000)
-
-# UMAP
-
-## RNA feature
-visium <- runUMAP(visium,
-                  dimensions_to_use = 1:10)
 
 plotUMAP(gobject = visium,
          cell_color = "leiden_clus",
@@ -294,13 +334,9 @@ plotUMAP(gobject = visium,
 knitr::include_graphics("images/visium_cytassist_human_glioblastoma/7-UMAP.png")
 ```
 
-```{r, eval=FALSE}
-## Protein feature 
-visium <- runUMAP(visium,
-                  spat_unit = "cell", 
-                  feat_type = "protein", 
-                  dimensions_to_use = 1:10)
+Now we can visualize the 2D UMAP and color the spots by Leiden Cluster.
 
+```{r, eval=FALSE}
 plotUMAP(gobject = visium,
          spat_unit = "cell", 
          feat_type = "protein", 
@@ -343,26 +379,33 @@ knitr::include_graphics("images/visium_cytassist_human_glioblastoma/10-spatPlot2
 
 # Multi-omics integration
 
-The Weighted Nearest Neighbors allows to integrate two or more modalities acquired from the same sample. WNN will re-calculate the clustering to provide an integrated umap and leiden clustering. For running WNN, the Giotto object must contain the results of running PCA calculation for each modality.
+The Weighted Nearest Neighbors allows to integrate the modalities acquired from the same sample. WNN will re-calculate the clustering to provide an integrated umap and leiden clustering. For running WNN, the Giotto object must contain the results of running PCA calculation for each modality.
+
+## Calculate kNN
+
+First, we need a nearest network using the kNN method; if you used this method in the clustering step instead of sNN, you can skip this step.
 
 ```{r, eval=FALSE}
-# Calculate kNN
-
-## RNA modality
+## RNA 
 visium <- createNearestNetwork(gobject = visium,
                                type = "kNN",
                                dimensions_to_use = 1:10,
                                k = 20)
 
-## Protein modality
+## Protein 
 visium <- createNearestNetwork(gobject = visium,
                                spat_unit = "cell",
                                feat_type = "protein",
                                type = "kNN",
                                dimensions_to_use = 1:10,
                                k = 20)
+```
 
-# Run WNN
+## Run WNN
+
+runWNN will calculate the weight of each modality for each spot and will store the result in the Giotto object under the multiomics slot. 
+
+```{r, eval=FALSE}
 visium <- runWNN(visium,
                  spat_unit = "cell",
                  feat_types = c("rna", "protein"),
@@ -370,13 +413,23 @@ visium <- runWNN(visium,
                  reduction_names = c("pca", "protein.pca"),
                  k = 20,
                  verbose = TRUE)
+```
 
-# Run Integrated umap
+## Run Integrated umap
+
+Using the weights matrix from the previous step, an integrated kNN and UMAP will be calculated, which reflects the integration of the two omics.
+
+```{r, eval=FALSE}
 visium <- runIntegratedUMAP(visium,
                             feat_types = c("rna", "protein"),
                             force = FALSE)
+```
 
-# Calculate integrated clusters
+## Calculate integrated clusters
+
+The final step is calculating the Leiden clusters again, using the integrated information from the previous step. These clusters consider the weight of each modality per spot.
+
+```{r, eval=FALSE}
 visium <- doLeidenCluster(gobject = visium,
                           spat_unit = "cell",
                           feat_type = "rna",
