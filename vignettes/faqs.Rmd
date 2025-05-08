@@ -2,7 +2,7 @@
 title: "Frequently Asked Questions"
 output: 
   html_document:
-    number_sections: true
+    number_sections: false
     toc: true
 pkgdown:
   as_is: true
@@ -12,11 +12,50 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+For troubleshooting help, see this [page](troubleshooting.html)
+
 # Installation
 
-- [How do I install an R package for the first time?](https://drieslab.github.io/Giotto/articles/installation.html)
+- [How do I install an R package for the first time?](installation.html)
+- [Can I install Python components manually?](configuration.html)
 
-- [Can I install Python components manually?](https://drieslab.github.io/Giotto/articles/configuration.html)
+# Usage
+
+- [What does a Giotto workflow look like?](general_workflow.html)
+- [How do I create a Giotto analysis object?](object_creation.html)
+- [Is there low-level tooling for importing from popular spatial technologies?](import_utilities.html)
+- [What are Giotto instructions?](instructions.html)
+- [How do I calculate a raw expression matrix from raw features and segementations?](feature_aggregation.html)
+- [How do I set up spatial bins to aggregate with?](tesslation.html)
+- [Is there a convenient workflow function for data processing?](process_giotto.html)
+- [How can I build a composable pipeline for processing my data?](normalization.html)
+- [What are spatial units and feature types?](object_creation.html)
+- [What are important Giotto functions to know?](core_functions.html)
+- [How do I spatially manipulate my data?](spatial_transformations.html)
+- [How do I extract data out of the Giotto Object?](getters_setters.html)
+- [How do I interactively select my data?](interactive_selection.html)
+- [What is the structure of the Giotto Object?](structure.html)
+- [How do I register spatial datasets together?](affine_registration.html)
+- [Are there any tools for TMA data?](tma.html)
+- [How do I perform data filtering?](filtering.html)
+- [How do I set up a spatial or nearest neighbor network?](networks.html)
+- [How do I find variable features?](hvf.html)
+- [How do I perform dimension reduction?](dimension_reduction.html)
+- [How can I detect spatially organized genes?](spatial_genes.html)
+- [How do I cluster features into modules with similar spatial expression patterns?](spatial_coexpression_modules.html)
+- [How can I check for enrichment of gene/feature signatures?](page_rank_enrichment.html)
+- [The biology I study is highly spatially organized. Can I improve my clustering?](spatial_informed_clusters.html)
+- [What can I find differentially expressed features?](find_degs.html)
+- [How do I use Harmony with Giotto to remove batch effects?](harmony.html)
+- [How do I use HMRF?](hmrf.html)
+- [How do I deconvolve my data?](deconvolution.html)
+- [How do I perform kriging to super-resolve my Visium data?](kriging.html)
+- [How do I save my object?](saving_object.html)
+- [How do I save/export my plots?](saving_plots.html)
+- [Is there a docker image?](docker.html)
+- [Can I use the docker image with singularity?](singularity.html)
+- [How do I contribute to Giotto?](creating_a_pull_request.html)
+- [How do I report a bug?](github_issues.html)
 
 # Data Availability
 
@@ -71,38 +110,6 @@ getSpatialDataset(dataset = 'merfish_preoptic',
                   directory = my_working_dir, 
                   method = 'wget', 
                   extra = '--no-check-certificate')
-```
-
-
-# Matrix error
-
-- Why am I getting the error `function 'as_cholmod_sparse' not provided by package 'Matrix'`?
-
-Matrix underwent a breaking change after versoin 1.6-2. Reinstalling _irlba_ from source will fix this.
-See this [issue](https://github.com/bwlewis/irlba/issues/70) for more info.
-
-```{r, eval=FALSE}
-install.packages("irlba", type = "source")
-```
-
-# Arrow and ZSTD
-
-- Why am I getting an error about arrow and ZSTD support when loading Xenium or VisiumHD data?
-
-*arrow* is a suggested package Giotto uses to open `parquet` files. The parquet files that 10X provides use ZSTD compression which the default *arrow* installation may not provide.
-The following code will check for whether arrow is installed with ZSTD support, and reinstall if it is not present.
-
-```{r, eval=FALSE}
-has_arrow <- requireNamespace("arrow", quietly = TRUE)
-zstd <- TRUE
-if (has_arrow) {
-    zstd <- arrow::arrow_info()$capabilities[["zstd"]]
-}
-if (!has_arrow || !zstd) {
-    Sys.setenv(ARROW_WITH_ZSTD = "ON") 
-    # this may take a while
-    install.packages("arrow", repos = c("https://apache.r-universe.dev"), type = "source")
-}
 ```
 
 
