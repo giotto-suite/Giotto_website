@@ -819,11 +819,16 @@ integration<a class="anchor" aria-label="anchor" href="#harmony-integration"></a
 <span class="header-section-number">6.1</span> Method
 introduction<a class="anchor" aria-label="anchor" href="#method-introduction"></a>
 </h3>
-<p><img src="images/harmony/harmony.jpg" width="80%" style="display: block; margin: auto;"></p>
-<p>{Harmony} is an algorithm for integrating multiple datasets that may
-contain batch effects or other unwanted variations. It does not edit the
-raw expression values, but instead creates a new embedding space
-starting from the PCA coordinates of the two batches.</p>
+<div class="figure" style="text-align: center">
+<img src="images/harmony/harmony.jpg" alt="Diagram of Harmony algorithm. From Korsunsky et al. 2019" width="80%"><p class="caption">
+Diagram of Harmony algorithm. From Korsunsky et al. 2019
+</p>
+</div>
+<p>{Harmony}, <a href="https://doi.org/10.1038/s41592-019-0619-0" class="external-link">Korsunsky et
+al. 2019</a> is an algorithm and R package for integrating multiple
+datasets that may contain batch effects or other unwanted variations. It
+does not edit the raw expression values, but instead creates a corrected
+embedding space starting from an input PCA.</p>
 <p>It iteratively performs kmeans clustering and determines the
 probability that a particular data point belongs to cluster/batch
 combinations, with an optimization to ensure that clusters contain a mix
