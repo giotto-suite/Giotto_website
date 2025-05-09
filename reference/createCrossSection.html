@@ -528,7 +528,7 @@
 
 
 <dt id="arg-spat-unit">spat_unit<a class="anchor" aria-label="anchor" href="#arg-spat-unit"></a></dt>
-<dd><p>spatial unit</p></dd>
+<dd><p>spatial unit (e.g. "cell")</p></dd>
 
 
 <dt id="arg-spat-loc-name">spat_loc_name<a class="anchor" aria-label="anchor" href="#arg-spat-loc-name"></a></dt>
@@ -567,7 +567,7 @@ ratio of extension compared to the borders of the vitural tissue section.
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
 <dd><p>method to define the cross section plane.
-If equation, the plane is defined by a four element numerical vector
+If `"equation"`, the plane is defined by a four element numerical vector
 (equation) in the form of c(A,B,C,D), corresponding to a plane with
 equation Ax+By+Cz=D.
 If 3 points, the plane is define by the coordinates of 3 points, as given by
@@ -582,8 +582,8 @@ one point (point1) in the plane and the coordinates of two vectors
 
 
 <dt id="arg-equation">equation<a class="anchor" aria-label="anchor" href="#arg-equation"></a></dt>
-<dd><p>equation required by method "equation".equations needs to be
-a numerical vector of length 4, in the form of c(A,B,C,D), which defines
+<dd><p>equation required by method `"equation"`. Equations needs to
+be a numerical vector of length 4, in the form of c(A,B,C,D), which defines
 plane Ax+By+Cz=D.</p></dd>
 
 
@@ -621,7 +621,8 @@ for the cross section plane.</p></dd>
 
 
 <dt id="arg-return-gobject">return_gobject<a class="anchor" aria-label="anchor" href="#arg-return-gobject"></a></dt>
-<dd><p>boolean: return giotto object (default = TRUE)</p></dd>
+<dd><p>logical. Whether to return giotto object
+(default = TRUE)</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
@@ -630,7 +631,8 @@ for the cross section plane.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>giotto object with updated spatial network slot</p>
+    <p>if `return_gobject = TRUE` `giotto` with updated spatial network
+containing cross section information. Otherwise returns the cross section.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
