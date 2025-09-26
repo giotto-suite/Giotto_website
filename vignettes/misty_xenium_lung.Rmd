@@ -1,6 +1,5 @@
 ---
 title: "MISTy Analysis of Xenium Lung Cancer"
-author: "Jueshan (Shan) Ji"
 output: 
   html_document:
     number_sections: true
@@ -12,11 +11,13 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-# 1. Introduction
-This tutorial demonstrates how MISTy, together with Giotto, can be applied to a Xenium-derived human lung cancer dataset to investigate how variations in cell-type composition and pathway activity shape spatial gene expression patterns.
 
-# 2. Environment Setup and Library Initialization
-**Setting up the working environment and loading necessary libraries.**
+
+# Introduction
+This tutorial demonstrates how MISTy with Giotto can be applied to a Xenium-derived human lung cancer dataset to reveal how variations in cell-type composition and pathway activity shape spatial gene expression patterns.
+
+# Environment Setup and Library Initialization
+Setting up the work environment and loading necessary libraries.
 
 ```{r, eval=FALSE}
 # Configure Python environment for Giotto
@@ -43,8 +44,8 @@ library(msigdbr)
 library(decoupleR)
 library(SummarizedExperiment)
 ```
-# 3. Data Setup
-## 3.1 Configure Paths and Download Data
+# Data Setup
+## Configure Paths and Download Data
 Setting up data paths and downloading the Xenium lung cancer dataset.
 ```{r, eval=FALSE}
 # Set up paths
@@ -73,15 +74,19 @@ unzip(file.path(save_dir, "workshop_xenium.zip"),
 # Mini: 6000,    7000,      -2200,     -1400    (xmin, xmax, ymin, ymax)
 ```
 
+```{r, echo=FALSE, out.width="50%", fig.align="center"}
+knitr::include_graphics("images/misty_xenium_lung/he.png")
+```
 
-![H&E Image](images/misty_xenium_lung/he.png)
-
-*Image from Section 10 of the [2024 Giotto Workshop](https://drieslab.github.io/giotto_workshop_2024/xenium-1.html#aggregate-analyses-workflow).*
 
 
-# 4. Giotto Object Creation 
-## 4.1 Creating and Setting Up the Giotto Object
-> **Note:** The following code demonstrates the setup of a Giotto object, including loading expression data, cell metadata, and morphology images. These preprocessing steps are adapted from [the Giotto 2024 Workshop tutorial (sections 10.1 to 10.7)](https://drieslab.github.io/giotto_workshop_2024/xenium-1.html#aggregate-analyses-workflow) and are included here for completeness.
+
+
+*Image from Section 10.1.2 of the [2024 Giotto Workshop](https://drieslab.github.io/giotto_workshop_2024/xenium-1.html#aggregate-analyses-workflow).*
+
+
+# Giotto Object Creation 
+**Note:** The following code demonstrates the setup of a Giotto object, including loading expression data, cell metadata, and morphology images. These preprocessing steps are adapted from [the Giotto 2024 Workshop tutorial (sections 10.1 to 10.7)](https://drieslab.github.io/giotto_workshop_2024/xenium-1.html#aggregate-analyses-workflow) and are included here for completeness.
 
 <details>
 <summary>Click to expand for details </summary>
@@ -236,8 +241,8 @@ unzip(file.path(save_dir, "workshop_xenium.zip"),
 </details>
 
 
-# 5. Marker Gene Analysis
-## 5.1 Finding Cluster Specific Marker Genes 
+# Marker Gene Analysis
+## Finding Cluster Specific Marker Genes 
 Following Giotto object creation, preprocessing, and clustering, the analysis moves to identifying cluster-specific marker genes. The Scran method is applied to detect genes enriched in each Leiden cluster, allowing likely cell types to be inferred. 
 
 ```{r, eval=FALSE}
@@ -252,7 +257,7 @@ res_scran <- findMarkers_one_vs_all(g,
 topgenes_scran <- res_scran[, head(.SD, 2), by = 'cluster']
 ```
 
-## 5.2 Visualizing Top Ranked Marker Genes
+## Visualizing Top Ranked Marker Genes
 The top two ranked marker genes per cluster are then visualized using violin plots, showing the normalized expression of these markers across all clusters.
 ```{r, eval = FALSE}
 violinPlot(g,
@@ -262,12 +267,15 @@ violinPlot(g,
 )
 
 ``` 
+```{r, echo=FALSE, out.width="50%", fig.align="center"}
+knitr::include_graphics("images/misty_xenium_lung/20_ViolinPlot.png")
+```
 
-![Violin Plot](20_ViolinPlot.png)
 
 
-# 6. Cell Type Annotation
-## 6.1 Manual Cell Type Assignment
+
+# Cell Type Annotation
+## Manual Cell Type Assignment
 
 Manual cell type assignment was guided by the identification of cluster-specific marker genes using the scran method. To ensure that these predicted assignments accurately reflected the underlying biology, expression patterns were validated using dot plots and UMAP-based visualizations.
 
@@ -312,8 +320,11 @@ GiottoVisuals::dotPlot(
   default_save_name = "dotPlot",
   save_param = list(base_height = 8,base_width = 12)
 )
-````
-![Dot Plot](images/misty_xenium_lung/21_Dotplot.png)
+```
+
+```{r, echo=FALSE, out.width="50%", fig.align="center"}
+knitr::include_graphics("images/misty_xenium_lung/21_Dotplot.png")
+```
 
 
 To complement the cluster-level overview from the dot plot, a smaller panel of representative marker genes (e.g., CD3E for T cells, SFTA2 for alveolar AT2 cells, PDGFRA for fibroblasts, CD68 for myeloid cells) was visualized using dimFeatPlot2D() on the UMAP. In these plots, the X and Y axes correspond to coordinates from the dimensional reduction (UMAP), each dot represents a single cell positioned based on transcriptional similarity, and the color scale (blue to green) indicates the expression level of the gene (0.0 to 10.0 normalized counts), with blue representing low or no expression and green representing high expression. Together, the dot plot and dimFeatPlot2D plots provide complementary perspectives that enabled manual annotation of clusters with their putative biological cell types.
@@ -345,8 +356,10 @@ dimFeatPlot2D(g,
 
 ```
 
+```{r, echo=FALSE, out.width="50%", fig.align="center"}
+knitr::include_graphics("images/misty_xenium_lung/10A_DimFeatPlot2D.png")
+```
 
-![Dimension Features Plot 2D](images/misty_xenium_lung/10A_DimFeatPlot2D.png)
 
 ```{r, eval=FALSE}
 # Define cell types based on marker gene analysis
@@ -378,8 +391,8 @@ g <- annotateGiotto(gobject = g,
 # Store annotated object
 xenium_lungcancer_test <- g
 ```
-# 7. Pathway Activity Analysis
-## 7.1 Prepare Data
+# Pathway Activity Analysis
+## Prepare Data
 ```{r, eval=FALSE}
 
 norm_matrix <- Giotto::getExpression(xenium_lungcancer_test, values = "normalized", output = "matrix")
@@ -393,7 +406,7 @@ geometry <- geometry[, c("sdimx", "sdimy")]
 setnames(geometry, c("sdimx", "sdimy"), c("row", "col"))
 
 ```
-## 7.2 Run PROGENy Pathway Analysis
+## Run PROGENy Pathway Analysis
 We use PROGENy to estimate pathway activity scores for each cell in the human lung cancer sample, capturing functional signaling rather than just gene expression. These activity scores are provided to MISTy later, which models how cells influence each other and contribute to the tumor microenvironment. By combining pathway activity with spatial coordinates, MISTy can estimate cell-cell interactions and functional contributions based on physical proximity and tissue context. 
 ```{r, eval=FALSE}
 # Get PROGENy model for human
@@ -415,11 +428,11 @@ colnames(est_path_act_wide) <- est_path_act_wide %>%
 
 # Add progeny results to object
 path_act_exprobj = createExprObj(t(est_path_act_wide), name = "progeny")
-xenium_lungcancer_test <- setExpression(xenium_lungcancer_test, path_act_exprobj, name = "progeny") #cell and rna are default
+xenium_lungcancer_test <- setExpression(xenium_lungcancer_test, path_act_exprobj, name = "progeny") 
 
 ```
 
-## 7.3 Prepare Cell Type Composition Matrix
+## Prepare Cell Type Composition Matrix
 
 ```{r, eval=FALSE}
 # Extract cell type metadata
@@ -444,45 +457,29 @@ colnames(cell_type_onehot) <- cell_type_onehot %>%
 # Convert to tibble for MISTy
 composition_xenium <- as_tibble(cell_type_onehot)
 ```
-# 8. MISTy Analysis
+# MISTy Analysis
 
-MISTy (Multiview Intercellular SpaTial modeling framework) is a computational framework designed to explore how different biological factors interact within spatially resolved transcriptomics data.
+MISTy, [Tanevski et al. 2022](https://doi.org/10.1186/s13059-022-02663-5), 
+is a computational framework designed to explore how different biological factors interact within spatially resolved transcriptomics data.
 
-#### Citation  
-
-> <sub><b>Tanevski, J., Flores, R.O.R., Gabor, A. et al.</b> (2022).  
-> <i>Explainable multiview framework for dissecting spatial relationships from highly multiplexed data</i>.  
-> <i>Genome Biology, 23</i>, 97.  
-> <a href="https://doi.org/10.1186/s13059-022-02663-5">https://doi.org/10.1186/s13059-022-02663-5</a></sub>  
-
-
-#### MISTy Tutorial Reference  
-
-> <sub>Workflow adapted from:  
-> <a href="https://saezlab.github.io/mistyR/articles/FunctionalAndStructuralPipeline.html">Functional and Structural Pipeline — mistyR documentation</a></sub>  
-
-
-
-## 8.1 Create MISTy Views
+## Create MISTy Views
 
 Spatial views for MISTy in this tutorial are set with:
 
-- Juxtaview: 10 µm (captures immediate neighbors)
+- **Juxtaview**
+  - 10 µm (captures immediate neighbors)
 
-- Paraview: 15 µm (captures broader regional context)
+- **Paraview**
+  - 15 µm (captures broader regional context)
 
-These views are combined to assess spatial variance in pathway activity:
+These views are combined to assess spatial variance in pathway activity.
 
-- intra.R2: variance explained by intrinsic features of each cell
 
-- gain.R2: additional variance explained when spatial context (juxtaview + paraview) is included
- 
+## Optional: Find Suitable Juxtaview and Paraview Radii for Your Dataset
 
-### 8.1.1 (Optional): Find Suitable Juxtaview and Paraview Radii for Your Dataset
----
 The goal of this section is to determine suitable radii for defining juxtaviews (immediate neighborhoods) and paraviews (broader tissue environments). The analysis proceeds in two steps: first, by summarizing nearest-neighbor distances to suggest candidate thresholds for the juxtaview, and second, by testing different paraview radii to evaluate how many cells contribute under a Gaussian weighting scheme. In MISTy, the neighbor.thr parameter in `add_juxtaview()` sets the maximum distance between two cells for them to be considered neighbors, while the `l` (radius) parameter in `add_paraview()` defines the effective radius of influence for broader tissue neighborhoods. 
 
-> **Note**: Experimenting with different radii (and other function parameters) is recommended, as this helps reveal how changes in neighborhood definitions influence the interpretation of the tissue. For additional details about the parameters, see the [MISTy documentation](https://saezlab.github.io/mistyR/reference/index.html).
+* Experimenting with different radii (and other function parameters) is recommended, as this helps reveal how changes in neighborhood definitions influence the interpretation of the tissue. For additional details about the parameters, see the [MISTy documentation](https://saezlab.github.io/mistyR/reference/index.html).
 
 
 
@@ -589,28 +586,28 @@ print(para_analysis)
 
 Based on this analysis, a paraview radius of 15 µm is chosen, as it captures a moderate number of neighbors—enough to model broader tissue interactions without including overly distant cells. This complements the juxtaview radius by balancing local vs. tissue-level spatial influence. 
 
-### 8.1.2 Creating Juxtaview and Paraview Spatial Views
----
+## Creating Juxtaview and Paraview Spatial Views
 
-In this section, we demonstrate how to construct juxtaview and paraview spatial views using both pathway activity and cell composition data. The resulting `final_misty_views` object integrates **five complementary spatial views**, enabling the simultaneous assessment of both intrinsic and contextual determinants of pathway activity. These views are defined as follows: 
 
-1. **intra**  
+In this section, we demonstrate how to construct juxtaview and paraview spatial views using both pathway activity and cell composition data. The resulting `final_misty_views` object integrates five complementary spatial views, enabling the simultaneous assessment of both intrinsic and contextual determinants of pathway activity. These views are defined as follows: 
+
+- **intra**  
    - Measures how well the intrinsic features of each cell (predictors) predict the corresponding target features of the same cell (self-prediction).
 
-2. **juxta.10**  
-   - Measures how well *pathway activity* within **10 μm neighborhoods** (predictors) predicts target features. 
+- **juxta.10**  
+   - Measures how well pathway activity within 10 μm neighborhoods (predictors) predicts target features. 
 
-3. **para.15**  
-   - Measures how well *pathway activity* within **15 μm neighborhoods** (predictors) predicts target features.
+- **para.15**  
+   - Measures how well pathway activity within 15 μm neighborhoods (predictors) predicts target features.
 
-4. **juxtaview.composition.10**  
-   - Measures how well *cell composition* within **10 μm neighborhoods** (predictors) predicts target features.
+- **juxtaview.composition.10**  
+   - Measures how well cell composition within 10 μm neighborhoods (predictors) predicts target features.
 
-5. **paraview.composition.15**  
-   - Measures how well *cell composition* within **15 μm neighborhoods** (predictors) predicts target features. 
+- **paraview.composition.15**  
+   - Measures how well cell composition within 15 μm neighborhoods (predictors) predicts target features. 
 
 
-Together, these spatial views provide a comprehensive framework for quantifying how both **cell-intrinsic states** and **spatially organized neighborhoods** influence cellular signaling and functional heterogeneity in the tissue microenvironment.  
+Together, these spatial views provide a comprehensive framework for quantifying how both cell-intrinsic states and spatially organized neighborhoods influence cellular signaling and functional heterogeneity in the tissue microenvironment.  
 
 
 ```{r, eval=FALSE}
@@ -637,7 +634,7 @@ final_misty_views <- path_act_views %>%
 
 
 
-## 8.2 Run MISTy Analysis
+## Run MISTy Analysis
 ```{r, eval=FALSE}
 
 # Standard MISTy analysis with random forest model (with intrinsic view)
@@ -658,7 +655,7 @@ run_misty(view = final_misty_views,
 
 ```
 
-## 8.3 Collect MISTy Results
+## Collect MISTy Results
 
 `misty_results_complete` is a MISTy result object containing aggregated model performance metrics and spatial interaction data from random forest models trained with intrinsic baseline comparisons (bypass.intra = FALSE). `misty_results_complete_linear` is a MISTy result object containing aggregated model performance metrics and spatial interaction data from linear models trained without intrinsic baseline interference (bypass.intra = TRUE).
 
@@ -671,13 +668,16 @@ misty_results_complete_linear <- collect_results(file.path(save_dir, "misty_resu
 
 ```
 
-## 8.4 Model Performance and Contributions
+## Model Performance and Contributions
 
 With `bypass.intra` (default = FALSE):
+
 - **intra.R²** → Variance explained by intrinsic features within the same cell.
-- **gain.R²** →  Additional variance explained by spatial context beyond intrinsic features.
+
+- **gain.R²** →  Additional variance explained by spatial context (beyond intrinsic features).
 
 With `bypass.intra` (default = TRUE):
+
 - **gain.R²** → Total variance explained by spatial context.
   
 ```{r, eval = FALSE}
@@ -688,9 +688,15 @@ misty_results_complete %>%
 ```
 
 
-![1_CompleteIntra](images/misty_xenium_lung/1_CompleteIntra.png)
+```{r, echo=FALSE, out.width="50%", fig.align="center"}
+knitr::include_graphics("images/misty_xenium_lung/1_CompleteIntra.png")
+```
+
+```{r, echo=FALSE, out.width="50%", fig.align="center"}
+knitr::include_graphics("images/misty_xenium_lung/2_CompleteGain.png")
+```
                                
-![2_CompleteGain](images/misty_xenium_lung/2_CompleteGain.png)
+
 
                                
 ```{r, eval = FALSE}
@@ -698,31 +704,39 @@ misty_results_complete %>%
 misty_results_complete_linear %>%
   plot_improvement_stats("gain.R2")
 ```
+```{r, echo=FALSE, out.width="50%", fig.align="center"}
+knitr::include_graphics("images/misty_xenium_lung/3_SpatialGain.png")
+```
+      
 
 
-![3_SpatialGain](images/misty_xenium_lung/3_SpatialGain.png)
 
 ```{r, eval= FALSE}
 #View contributions with intrinsic information (random forest model MISTy object)
 misty_results_complete %>% 
   plot_view_contributions() 
 ```
+```{r, echo=FALSE, out.width="50%", fig.align="center"}
+knitr::include_graphics("images/misty_xenium_lung/4_CompleteContributions.png")
+```
 
-![4_CompleteContributions](images/misty_xenium_lung/4_CompleteContributions.png)
                                
 ```{r, eval = FALSE}
 #View contributions without intrinsic information (linear model MISTy object with bypassed intraview)
 misty_results_complete_linear %>%
   plot_view_contributions()
 ```
+```{r, echo=FALSE, out.width="50%", fig.align="center"}
+knitr::include_graphics("images/misty_xenium_lung/5_SpatialContributions.png")
+```
 
-![5_SpatialContributions](images/misty_xenium_lung/5_SpatialContributions.png)
 
 
-## 8.5 Interaction Heatmaps
+
+## Interaction Heatmaps
 After evaluating model performance, MISTy interaction heatmaps then reveal the specific spatial relationships that drive predictive performance. These visualizations shows which spatial features (predictors) most strongly influence target expression patterns.
 
-### 8.5.1 Intrinsic-Adjusted Spatial Heatmaps
+### Intrinsic-Adjusted Spatial Heatmaps
 The following heatmaps are generated from MISTy object `misty_results_complete` that uses random forest model with `bypass.intra = FALSE`.
 
 ```{r, eval = FALSE}
@@ -731,7 +745,11 @@ The following heatmaps are generated from MISTy object `misty_results_complete` 
 misty_results_complete %>%
   plot_interaction_heatmap("juxta.10", clean = TRUE)
 ```
-![6_CompletePathwayJuxta](images/misty_xenium_lung/6_CompletePathwayJuxta.png)
+```{r, echo=FALSE, out.width="50%", fig.align="center"}
+knitr::include_graphics("images/misty_xenium_lung/6_CompletePathwayJuxta.png")
+```
+
+
 
 ```{r, eval = FALSE}
 
@@ -740,9 +758,12 @@ misty_results_complete %>%
 misty_results_complete %>%
   plot_interaction_heatmap("juxtaview.composition.10", clean = TRUE)
 ```
+```{r, echo=FALSE, out.width="50%", fig.align="center"}
+knitr::include_graphics("images/misty_xenium_lung/7_CompleteCompositionJuxta.png")
+```
 
 
-![7_CompleteCompositionJuxta](images/misty_xenium_lung/7_CompleteCompositionJuxta.png)
+
 
 ```{r, eval = FALSE}
 
@@ -751,8 +772,11 @@ misty_results_complete %>%
 misty_results_complete %>%
   plot_interaction_heatmap("para.15", clean = TRUE)
 ```
+```{r, echo=FALSE, out.width="50%", fig.align="center"}
+knitr::include_graphics("images/misty_xenium_lung/8_CompletePathwayPara.png")
+```
 
-![8_CompletePathwayPara](images/misty_xenium_lung/8_CompletePathwayPara.png)
+
 
                                
 ```{r, eval = FALSE}
@@ -762,12 +786,14 @@ misty_results_complete %>%
 misty_results_complete %>%
   plot_interaction_heatmap("paraview.composition.15", clean = TRUE)
 ```
+```{r, echo=FALSE, out.width="50%", fig.align="center"}
+knitr::include_graphics("images/misty_xenium_lung/9_CompleteCompositionPara.png")
+```
 
 
-![9_CompleteCompositionPara](images/misty_xenium_lung/9_CompleteCompositionPara.png)
 
 
-### 8.5.2 Pure Spatial Relationship Heatmaps
+### Pure Spatial Relationship Heatmaps
 The following are heatmaps generated from MISTy object `misty_results_complete_linear` that uses the linear model with `bypass.intra = TRUE`.
 
 ```{r, eval = FALSE}
@@ -776,8 +802,10 @@ The following are heatmaps generated from MISTy object `misty_results_complete_l
 misty_results_complete_linear %>%
   plot_interaction_heatmap("juxta.10", clean = TRUE) 
 ```
+```{r, echo=FALSE, out.width="50%", fig.align="center"}
+knitr::include_graphics("images/misty_xenium_lung/10_SpatialPathwayJuxta.png")
+```
 
-![10_SpatialPathwayJuxta](images/misty_xenium_lung/10_SpatialPathwayJuxta.png)
 
 ```{r, eval = FALSE}
 # Cell type-pathway interactions at close range (≤10μm) 
@@ -786,8 +814,11 @@ misty_results_complete_linear %>%
   plot_interaction_heatmap("juxtaview.composition.10", clean = TRUE)
 
 ```
+```{r, echo=FALSE, out.width="50%", fig.align="center"}
+knitr::include_graphics("images/misty_xenium_lung/11_SpatialCompositionJuxta.png")
+```
 
-![11_SpatialCompositionJuxta](images/misty_xenium_lung/11_SpatialCompositionJuxta.png)
+
 
 ```{r, eval= FALSE}
 # Pathway-pathway interactions at broader range (≤15μm)
@@ -795,8 +826,11 @@ misty_results_complete_linear %>%
 misty_results_complete_linear %>%
   plot_interaction_heatmap("para.15", clean = TRUE) 
 ```
+```{r, echo=FALSE, out.width="50%", fig.align="center"}
+knitr::include_graphics("images/misty_xenium_lung/12_SpatialPathwayPara.png")
+```
 
-![12_SpatialPathwayPara](images/misty_xenium_lung/12_SpatialPathwayPara.png)
+
 
 ```{r, eval= FALSE}
 # Cell type-pathway interactions at broader range (≤15μm)
@@ -805,15 +839,16 @@ misty_results_complete_linear %>%
   plot_interaction_heatmap("paraview.composition.15", clean = TRUE)
 
 ```
+```{r, echo=FALSE, out.width="50%", fig.align="center"}
+knitr::include_graphics("images/misty_xenium_lung/13_SpatialCompositionPara.png")
+```
 
-![13_SpatialCompositioPara](images/misty_xenium_lung/13_SpatialCompositionPara.png)
 
-
-## 8.6 Spatial Validation
-**Example 1:** Visualize B cells and TRAIL pathway activity. TRAIL is involved in immune-mediated apoptosis, and high activity is expected near immune cells.
-
+## Spatial Validation
 
 ```{r, eval = FALSE}
+#**Example 1: Visualize B cells and TRAIL pathway activity. TRAIL is involved in immune-mediated apoptosis, and high activity is expected near immune cells.
+
 # Visualize TRAIL pathway activity
 spatFeatPlot2D(xenium_lungcancer_test,
                spat_unit = "cell", 
@@ -837,8 +872,11 @@ spatFeatPlot2D(xenium_lungcancer_test,
 
 ```
 
+```{r, echo=FALSE, out.width="50%", fig.align="center"}
+knitr::include_graphics("images/misty_xenium_lung/14_TRAILPathway.png")
+```
 
-![14_TRAILPathway](images/misty_xenium_lung/14_TRAILPathway.png)
+
 
 ```{r, eval = FALSE}
 # Visualize B cell locations
@@ -863,12 +901,18 @@ spatPlot2D(xenium_lungcancer_test,
            ))
 
 ```
+```{r, echo=FALSE, out.width="50%", fig.align="center"}
+knitr::include_graphics("images/misty_xenium_lung/15_BCellLocations.png")
+```
 
-<img src="15_BCellLocations.png" width="600" height="400" style="object-fit: contain;">
 
-**Example 2:** Visualize LUAD cancer cells and EGFR pathway activity. EGFR is frequently dysregulated in lung adenocarcinoma, and high activity is expected in cancer regions.
+
+
+
 
 ```{r, eval = FALSE}
+#Example 2: Visualize LUAD cancer cells and EGFR pathway activity. EGFR is frequently dysregulated in lung adenocarcinoma, and high activity is expected in cancer regions.
+
 #Visualize EGFR pathway activity
 spatFeatPlot2D(xenium_lungcancer_test,
                spat_unit = "cell", 
@@ -890,11 +934,13 @@ spatFeatPlot2D(xenium_lungcancer_test,
                  save_dir = save_dir  
                ))
 
-
+```
+```{r, echo=FALSE, out.width="50%", fig.align="center"}
+knitr::include_graphics("images/misty_xenium_lung/16_EGFRPathway.png")
 ```
 
 
-![16_EGFRPathway](images/misty_xenium_lung/16_EGFRPathway.png)
+
 
 ```{r, eval = FALSE}
 # Visualize LUAD cancer cell locations
@@ -917,17 +963,21 @@ spatPlot2D(xenium_lungcancer_test,
              save_name = "17_LUADCancerLocations",
              save_dir = save_dir  
            ))
+
+```
+```{r, echo=FALSE, out.width="50%", fig.align="center"}
+knitr::include_graphics("images/misty_xenium_lung/17_LUADCancerLocations.png")
 ```
 
 
-![17_LUADCancerLocations](images/misty_xenium_lung/17_LUADCancerLocations.png)
                                
-**Example 3:** Visualize NK/T cells and NFκB pathway activity. NFκB plays a key role in immune activation, and high activity is expected in immune cell regions. In lung cancer, NK/T cells often cluster near tumor boundaries.
+
 
 
 ```{r, eval = FALSE}
-# Visualize NFκB pathway activity
+#Example 3: Visualize NK/T cells and NFκB pathway activity. NFκB plays a key role in immune activation, and high activity is expected in immune cell regions. In lung cancer, NK/T cells often cluster near tumor boundaries.
 
+# Visualize NFκB pathway activity
 spatFeatPlot2D(xenium_lungcancer_test,
                spat_unit = "cell", 
                show_image = TRUE, 
@@ -947,15 +997,16 @@ spatFeatPlot2D(xenium_lungcancer_test,
                  save_name = "18_NFKBPathway",
                  save_dir = save_dir  
                ))
+
+```
+
+```{r, echo=FALSE, out.width="50%", fig.align="center"}
+knitr::include_graphics("images/misty_xenium_lung/18_NFKBPathway.png")
 ```
 
 
-![18_NFKBPathway](images/misty_xenium_lung/18_NFKBPathway.png)
-
 ```{r, eval = FALSE}
-
 # Visualize NK/T cell locations
-
 spatPlot2D(xenium_lungcancer_test,
            spat_unit = "cell", 
            show_image = TRUE, 
@@ -975,10 +1026,11 @@ spatPlot2D(xenium_lungcancer_test,
              save_name = "19_NKTCellLocations",
              save_dir = save_dir  
            ))
-
 ```
 
-![19_NKTCellLocations](images/misty_xenium_lung/19_NKTCellLocations.png)
+```{r, echo=FALSE, out.width="50%", fig.align="center"}
+knitr::include_graphics("images/misty_xenium_lung/19_NKTCellLocations.png")
+```
 
 
 ```{r, eval=FALSE}
