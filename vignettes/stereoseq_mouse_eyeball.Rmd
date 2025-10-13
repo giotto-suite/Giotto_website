@@ -1,5 +1,5 @@
 ---
-title: "STOmics Mouse eyeball"
+title: "Stereo-seq Mouse eyeball"
 output: 
   html_document:
     number_sections: true
@@ -7,20 +7,21 @@ output:
 pkgdown:
   as_is: true
 vignette: >
-  %\VignetteIndexEntry{STOmics Mouse eyeball}
+  %\VignetteIndexEntry{Stereo-seq Mouse eyeball}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 # Dataset explanation
 
+This dataset was created using a fresh frozen eyeball issue sample from a mouse (Strain: C57BL/6; Sex: Male; Age: 6-8 week), using a Kit version Stereo-seq T FF V1.3 on a ship size : 0.5 cm × 0.5 cm with a section thickness of 10 μm and H&E staining. You can find more information [here](https://en.stomics.tech/col1251/index.html)
 
 # Download dataset
 
-Once you have downloaded the dataset, your folder should look similar to this:
+Download the dataset from the [STOmics website](https://en.stomics.tech/col1251/index.html). The demo data has a different file structure than data coming from a real sequencing experiment. Once you have downloaded the demo dataset, please re-arrange the files to use the Giotto reader, your folder should look similar to this:
 
-```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Dataset file structure"}
-knitr::include_graphics("images/mini_stomics/0_file_structure.png")
+```{r, echo=FALSE, out.width="40%", fig.align="center", fig.alt="Dataset file structure"}
+knitr::include_graphics("images/stereoseq_mouse_eyeball/0_file_structure.png")
 ```
 
 # Set up Giotto environment
@@ -67,7 +68,7 @@ instructions <- createGiottoInstructions(save_dir = results_folder,
 
 # Create the Giotto object 
 
-createGiottoSTOmicsObject() will look for the standardized files organization from the STOmics technology in the data folder and will automatically load the expression and spatial information to create the Giotto object.
+createGiottoStereoSeqObject() will look for the standardized files organization from the STOmics technology in the data folder and will automatically load the expression and spatial information to create the Giotto object.
 
 ```{r, eval=FALSE}
 ## provide path to data folder. It should point to the main folder, containing "outs", "pipeline-logs" and "STEREO_ANALYSIS_WORKFLOW_PROCESSING" sub folders.
@@ -80,22 +81,26 @@ When reading the expression information at the bin level, you can select from di
 
 ```{r, eval=FALSE}
 ## read the data
-g <- createGiottoSTOmicsObject(stomics_dir = data_path,
+g <- createGiottoStereoSeqObject(stereoseq_dir = data_path,
                                type = "squarebin",
                                bin_size = "bin100",
                                gene_column = "geneName",
                                instructions = instructions)
 ```
 
+At this bin size, this dataset has 1309 bins and 26535 genes.
+
 Visualize the Giotto object at the bin size = 100
 
 ```{r, eval=FALSE}
 spatPlot2D(g,
-           point_size = 4)
+           show_image = TRUE,
+           point_size = 4,
+           point_alpha = 0.5)
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial distribution of bins"}
-knitr::include_graphics("images/mini_stomics/0-spatPlot2D.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/0-spatPlot2D.png")
 ```
 
 ##  Create the Giotto object at the cell level
@@ -104,21 +109,25 @@ To read the expression information at the cell level, set the value of the param
 
 ```{r, eval=FALSE}
 ## read the data
-g <- createGiottoSTOmicsObject(stomics_dir = "C04687E314/",
+g <- createGiottoStereoSeqObject(stereoseq_dir = data_path,
                                type = "cellbin",
                                gene_column = "geneName",
                                instructions = instructions)
 ```
 
+At the cell size, this dataset has 7527 cells and 25646 genes.
+
 Visualize the Giotto object at the cell level.
 
 ```{r, eval=FALSE}
 spatPlot2D(g,
-           point_size = 2)
+           show_image = TRUE,
+           point_size = 2,
+           point_alpha = 0.5)
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial distribution of cells"}
-knitr::include_graphics("images/mini_stomics/1-spatPlot2D.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/1-spatPlot2D.png")
 ```
 
 ```{r, eval=FALSE}
@@ -142,7 +151,7 @@ spatPlot2D(gobject = g_statistics,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial distribution of features per cell."}
-knitr::include_graphics("images/mini_stomics/2-spatPlot2D.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/2-spatPlot2D.png")
 ```
 
 filterDistributions() creates a histogram to show the distribution of features per cell across the sample.
@@ -153,7 +162,7 @@ filterDistributions(gobject = g_statistics,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Distribution of features per cell."}
-knitr::include_graphics("images/mini_stomics/3-filterDistributions.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/3-filterDistributions.png")
 ```
 
 When setting the detection = "feats", the histogram shows the distribution of cells with certain number of features across the sample.
@@ -164,7 +173,7 @@ filterDistributions(gobject = g_statistics,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Distribution of cells with different features per cell."}
-knitr::include_graphics("images/mini_stomics/4-filterDistributions.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/4-filterDistributions.png")
 ```
 
 # Filtering
@@ -174,7 +183,7 @@ Use the arguments feat_det_in_min_cells and min_det_feats_per_cell to set the mi
 ```{r, eval=FALSE}
 g <- filterGiotto(gobject = g,
                   expression_threshold = 1,
-                  feat_det_in_min_cells = 10,
+                  feat_det_in_min_cells = 100,
                   min_det_feats_per_cell = 100,
                   expression_values = "raw",
                   verbose = TRUE)
@@ -205,7 +214,7 @@ spatPlot2D(gobject = g,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial distribution of the number of features per cell."}
-# knitr::include_graphics("images/mini_stomics/5-spatPlot2D.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/5-spatPlot2D.png")
 ```
 
 # Feature selection
@@ -218,9 +227,8 @@ g <- calculateHVF(gobject = g,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Covariance of HVFs using the binned method."}
-knitr::include_graphics("images/mini_stomics/6-HVFplot.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/6-HVFplot.png")
 ```
-
 
 # Dimension reduction
 
@@ -244,7 +252,7 @@ screePlot(gobject = g,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Screeplot showing the variance explained per principal component."}
-knitr::include_graphics("images/mini_stomics/7-screePlot.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/7-screePlot.png")
 ```
 
 - Visualize the PCA calculated using the HVFs.
@@ -254,7 +262,7 @@ plotPCA(gobject = g)
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="PCA plot using HVFs."}
-knitr::include_graphics("images/mini_stomics/8-PCA.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/8-PCA.png")
 ```
 
 
@@ -271,7 +279,7 @@ plotUMAP(gobject = g)
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="UMAP using the 10 first principal components."}
-knitr::include_graphics("images/mini_stomics/9-UMAP.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/9-UMAP.png")
 ```
 
 ## tSNE
@@ -284,7 +292,7 @@ plotTSNE(gobject = g)
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="tSNE using the 10 first principal components."}
-knitr::include_graphics("images/mini_stomics/10-tSNE.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/10-tSNE.png")
 ```
 
 # Clustering
@@ -299,8 +307,7 @@ The shared Nearest Neighbor algorithm defines the similarity between a pair of p
 
 ```{r, eval=FALSE}
 g <- createNearestNetwork(gobject = g, 
-                          dimensions_to_use = 1:10, 
-                          k = 15)
+                          dimensions_to_use = 1:10)
 ```
 
 - Create a kNN network
@@ -310,7 +317,6 @@ The K-Nearest Neighbors (kNN) algorithm operates on the principle of likelihood 
 ```{r, eval=FALSE}
 g <- createNearestNetwork(gobject = g, 
                           dimensions_to_use = 1:10, 
-                          k = 15,
                           type = "kNN")
 ```
 
@@ -322,8 +328,7 @@ This algorithm is more complicated than the Louvain algorithm and have an accura
 
 ```{r, eval=FALSE}
 g <- doLeidenCluster(gobject = g, 
-                     resolution = 0.5, 
-                     n_iterations = 1000)
+                     resolution = 1)
 ```
 
 - Plot dimension and spatial plots using the Leiden clusters information.
@@ -334,9 +339,8 @@ plotPCA(gobject = g,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="PCA plot, colors indicate the Leiden clusters."}
-knitr::include_graphics("images/mini_stomics/11-PCA.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/11-PCA.png")
 ```
-
 
 Set the argument "show_NN_network = TRUE" to visualize the connections between spots.
 
@@ -344,22 +348,32 @@ Set the argument "show_NN_network = TRUE" to visualize the connections between s
 plotUMAP(gobject = g,
          cell_color = "leiden_clus", 
          show_NN_network = TRUE, 
-         point_size = 1)
+         point_size = 1.5)
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="UMAP plot, colors indicate the Leiden clusters."}
-knitr::include_graphics("images/mini_stomics/12-UMAP.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/12-UMAP.png")
 ```
 
 ```{r, eval=FALSE}
-spatPlot2D(g, 
+plotTSNE(gobject = g,
+         cell_color = "leiden_clus")
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="UMAP plot, colors indicate the Leiden clusters."}
+knitr::include_graphics("images/stereoseq_mouse_eyeball/13-tSNE.png")
+```
+
+```{r, eval=FALSE}
+spatPlot2D(gobject = g, 
            point_size = 2,
-           cell_color = "leiden_clus",
-           coord_fix_ratio = 1)
+           show_image = TRUE, 
+           point_alpha = 0.7,
+           cell_color = "leiden_clus")
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial plot, colors indicate the Leiden clusters."}
-knitr::include_graphics("images/mini_stomics/13-spatPlot2D.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/14-spatPlot2D.png")
 ```
 
 # Session info
@@ -394,7 +408,7 @@ loaded via a namespace (and not attached):
   [3] rlang_1.1.6                 magrittr_2.0.4             
   [5] RcppAnnoy_0.0.22            GiottoUtils_0.2.5          
   [7] matrixStats_1.5.0           compiler_4.5.1             
-  [9] systemfonts_1.2.3           png_0.1-8                  
+  [9] systemfonts_1.3.1           png_0.1-8                  
  [11] vctrs_0.6.5                 pkgconfig_2.0.3            
  [13] SpatialExperiment_1.18.1    crayon_1.5.3               
  [15] fastmap_1.2.0               backports_1.5.0            
@@ -450,5 +464,5 @@ loaded via a namespace (and not attached):
 [115] farver_2.1.2                R.oo_1.27.1                
 [117] memoise_2.0.1               htmltools_0.5.8.1          
 [119] lifecycle_1.0.4             httr_1.4.7                 
-[121] MASS_7.3-65  
+[121] MASS_7.3-65 
 ```
