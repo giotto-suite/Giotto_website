@@ -103,6 +103,89 @@ spatPlot2D(g,
 knitr::include_graphics("images/stereoseq_mouse_eyeball/0-spatPlot2D.png")
 ```
 
+## Process the Giotto object at the bin level
+
+- Filtering
+
+```{r, eval=FALSE}
+g <- filterGiotto(gobject = g,
+                  expression_threshold = 1,
+                  feat_det_in_min_cells = 10,
+                  min_det_feats_per_cell = 50,
+                  expression_values = "raw",
+                  verbose = TRUE)
+```
+
+- Normalization
+
+```{r, eval=FALSE}
+g <- normalizeGiotto(gobject = g, 
+                     scalefactor = 6000, 
+                     verbose = TRUE)
+```
+
+- Feature selection
+
+```{r, eval=FALSE}
+g <- calculateHVF(gobject = g, 
+                  save_plot = TRUE)
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Covariance of HVFs using the binned method"}
+knitr::include_graphics("images/stereoseq_mouse_eyeball/1-HVFplot.png")
+```
+
+- Dimension reduction
+
+```{r, eval=FALSE}
+g <- runPCA(gobject = g,
+            ncp = 50)
+
+g <- runUMAP(g, 
+             dimensions_to_use = 1:10)
+
+g <- runtSNE(g, 
+             dimensions_to_use = 1:10)
+```
+
+- Create Nearest network
+
+```{r, eval=FALSE}
+g <- createNearestNetwork(gobject = g, 
+                          dimensions_to_use = 1:10)
+```
+
+- Run the Leiden clustering algorithm.
+
+```{r, eval=FALSE}
+g <- doLeidenCluster(gobject = g, 
+                     resolution = 1)
+```
+
+```{r, eval=FALSE}
+plotUMAP(gobject = g,
+         cell_color = "leiden_clus", 
+         show_NN_network = TRUE, 
+         point_size = 1.5)
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="UMAP using the 10 first principal components. Bin spots are colored by Leiden cluster"}
+knitr::include_graphics("images/stereoseq_mouse_eyeball/2-UMAP.png")
+```
+
+```{r, eval=FALSE}
+spatPlot2D(gobject = g, 
+           point_size = 4,
+           show_image = FALSE, 
+           point_alpha = 0.7,
+           background_color = "black",
+           cell_color = "leiden_clus")
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial plot, colors indicate the Leiden clusters"}
+knitr::include_graphics("images/stereoseq_mouse_eyeball/3-spatPlot2D.png")
+```
+
 ##  Create the Giotto object at the cell level
 
 To read the expression information at the cell level, set the value of the parameter "type" to "cellbin". You can also select what gene IDs format to use; by default, it would read the common gene name (gene_column = "geneName"), but you can choose to use the ENSEMBL names instead (gene_column = "geneID").
@@ -127,7 +210,7 @@ spatPlot2D(g,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial distribution of cells"}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/1-spatPlot2D.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/4-spatPlot2D.png")
 ```
 
 ```{r, eval=FALSE}
@@ -151,7 +234,7 @@ spatPlot2D(gobject = g_statistics,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial distribution of features per cell."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/2-spatPlot2D.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/5-spatPlot2D.png")
 ```
 
 filterDistributions() creates a histogram to show the distribution of features per cell across the sample.
@@ -162,7 +245,7 @@ filterDistributions(gobject = g_statistics,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Distribution of features per cell."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/3-filterDistributions.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/6-filterDistributions.png")
 ```
 
 When setting the detection = "feats", the histogram shows the distribution of cells with certain number of features across the sample.
@@ -173,7 +256,7 @@ filterDistributions(gobject = g_statistics,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Distribution of cells with different features per cell."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/4-filterDistributions.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/7-filterDistributions.png")
 ```
 
 # Filtering
@@ -181,9 +264,10 @@ knitr::include_graphics("images/stereoseq_mouse_eyeball/4-filterDistributions.pn
 Use the arguments feat_det_in_min_cells and min_det_feats_per_cell to set the minimal number of cells where an individual feature must be detected and the minimal number of features per cell, respectively, to filter the giotto object. All the features and cells under those thresholds will be removed from the sample.
 
 ```{r, eval=FALSE}
+# filter
 g <- filterGiotto(gobject = g,
                   expression_threshold = 1,
-                  feat_det_in_min_cells = 100,
+                  feat_det_in_min_cells = 10,
                   min_det_feats_per_cell = 100,
                   expression_values = "raw",
                   verbose = TRUE)
@@ -214,7 +298,22 @@ spatPlot2D(gobject = g,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial distribution of the number of features per cell."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/5-spatPlot2D.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/8-spatPlot2D.png")
+```
+
+You can also visualize the number of transcripts per cell.
+
+```{r, eval=FALSE}
+spatPlot2D(gobject = g, 
+           point_size = 2,
+           show_image = TRUE, 
+           point_alpha = 0.7,
+           cell_color = "total_expr", 
+           color_as_factor = FALSE)
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial distribution of the number of transcripts per cell."}
+knitr::include_graphics("images/stereoseq_mouse_eyeball/9-spatPlot2D.png")
 ```
 
 # Feature selection
@@ -227,7 +326,7 @@ g <- calculateHVF(gobject = g,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Covariance of HVFs using the binned method."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/6-HVFplot.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/10-HVFplot.png")
 ```
 
 # Dimension reduction
@@ -240,7 +339,6 @@ Principal Components Analysis (PCA) is applied to reduce the dimensionality of g
 
 ```{r, eval=FALSE}
 g <- runPCA(gobject = g,
-            feats_to_use = NULL,
             ncp = 50)
 ```
 
@@ -252,7 +350,7 @@ screePlot(gobject = g,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Screeplot showing the variance explained per principal component."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/7-screePlot.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/11-screePlot.png")
 ```
 
 - Visualize the PCA calculated using the HVFs.
@@ -262,9 +360,8 @@ plotPCA(gobject = g)
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="PCA plot using HVFs."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/8-PCA.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/12-PCA.png")
 ```
-
 
 ## UMAP
 
@@ -279,20 +376,21 @@ plotUMAP(gobject = g)
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="UMAP using the 10 first principal components."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/9-UMAP.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/13-UMAP.png")
 ```
 
 ## tSNE
 
 ```{r, eval=FALSE}
 g <- runtSNE(g, 
-             dimensions_to_use = 1:10)
+             dimensions_to_use = 1:10,
+             check_duplicates = FALSE)
 
 plotTSNE(gobject = g)
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="tSNE using the 10 first principal components."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/10-tSNE.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/14-tSNE.png")
 ```
 
 # Clustering
@@ -339,7 +437,7 @@ plotPCA(gobject = g,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="PCA plot, colors indicate the Leiden clusters."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/11-PCA.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/15-PCA.png")
 ```
 
 Set the argument "show_NN_network = TRUE" to visualize the connections between spots.
@@ -352,7 +450,7 @@ plotUMAP(gobject = g,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="UMAP plot, colors indicate the Leiden clusters."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/12-UMAP.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/16-UMAP.png")
 ```
 
 ```{r, eval=FALSE}
@@ -361,19 +459,20 @@ plotTSNE(gobject = g,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="UMAP plot, colors indicate the Leiden clusters."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/13-tSNE.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/17-tSNE.png")
 ```
 
 ```{r, eval=FALSE}
 spatPlot2D(gobject = g, 
            point_size = 2,
-           show_image = TRUE, 
+           show_image = FALSE, 
            point_alpha = 0.7,
+           background_color = "black",
            cell_color = "leiden_clus")
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial plot, colors indicate the Leiden clusters."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/14-spatPlot2D.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/18-spatPlot2D.png")
 ```
 
 # Session info
@@ -385,7 +484,7 @@ sessionInfo()
 ```{r, eval=FALSE}
 R version 4.5.1 (2025-06-13)
 Platform: x86_64-apple-darwin20
-Running under: macOS Sequoia 15.6.1
+Running under: macOS Tahoe 26.0.1
 
 Matrix products: default
 BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
@@ -429,40 +528,40 @@ loaded via a namespace (and not attached):
  [45] scattermore_1.2             Rcpp_1.1.0                 
  [47] SummarizedExperiment_1.38.1 knitr_1.50                 
  [49] future.apply_1.20.0         R.utils_2.13.0             
- [51] IRanges_2.42.0              Matrix_1.7-4               
- [53] igraph_2.1.4                tidyselect_1.2.1           
- [55] rstudioapi_0.17.1           abind_1.4-8                
- [57] yaml_2.3.10                 viridis_0.6.5              
- [59] codetools_0.2-20            listenv_0.9.1              
- [61] lattice_0.22-7              tibble_3.3.0               
- [63] Biobase_2.68.0              withr_3.0.2                
- [65] S7_0.2.0                    Rtsne_0.17                 
- [67] evaluate_1.0.5              future_1.67.0              
- [69] polyclip_1.10-7             pillar_1.11.1              
- [71] MatrixGenerics_1.20.0       checkmate_2.3.3            
- [73] stats4_4.5.1                dbscan_1.2.3               
- [75] plotly_4.11.0               generics_0.1.4             
- [77] S4Vectors_0.46.0            ggplot2_4.0.0              
- [79] scales_1.4.0                globals_0.18.0             
- [81] gtools_3.9.5                glue_1.8.0                 
- [83] lazyeval_0.2.2              tools_4.5.1                
- [85] GiottoVisuals_0.2.13        BiocNeighbors_2.2.0        
- [87] data.table_1.17.8           ScaledMatrix_1.16.0        
- [89] graphlayouts_1.2.2          tidygraph_1.3.1            
- [91] cowplot_1.2.0               rhdf5_2.52.1               
- [93] grid_4.5.1                  tidyr_1.3.1                
- [95] colorspace_2.1-2            SingleCellExperiment_1.30.1
- [97] GenomeInfoDbData_1.2.14     BiocSingular_1.24.0        
- [99] ggforce_0.5.0               rsvd_1.0.5                 
-[101] cli_3.6.5                   textshaping_1.0.3          
-[103] S4Arrays_1.8.1              viridisLite_0.4.2          
-[105] dplyr_1.1.4                 uwot_0.2.3                 
-[107] gtable_0.3.6                R.methodsS3_1.8.2          
-[109] digest_0.6.37               BiocGenerics_0.54.0        
-[111] SparseArray_1.8.1           ggrepel_0.9.6              
-[113] rjson_0.2.23                htmlwidgets_1.6.4          
-[115] farver_2.1.2                R.oo_1.27.1                
-[117] memoise_2.0.1               htmltools_0.5.8.1          
-[119] lifecycle_1.0.4             httr_1.4.7                 
-[121] MASS_7.3-65 
+ [51] FNN_1.1.4.1                 IRanges_2.42.0             
+ [53] Matrix_1.7-4                igraph_2.1.4               
+ [55] tidyselect_1.2.1            rstudioapi_0.17.1          
+ [57] abind_1.4-8                 yaml_2.3.10                
+ [59] viridis_0.6.5               codetools_0.2-20           
+ [61] listenv_0.9.1               lattice_0.22-7             
+ [63] tibble_3.3.0                Biobase_2.68.0             
+ [65] withr_3.0.2                 S7_0.2.0                   
+ [67] Rtsne_0.17                  evaluate_1.0.5             
+ [69] future_1.67.0               polyclip_1.10-7            
+ [71] pillar_1.11.1               MatrixGenerics_1.20.0      
+ [73] checkmate_2.3.3             stats4_4.5.1               
+ [75] dbscan_1.2.3                plotly_4.11.0              
+ [77] generics_0.1.4              S4Vectors_0.46.0           
+ [79] ggplot2_4.0.0               scales_1.4.0               
+ [81] globals_0.18.0              gtools_3.9.5               
+ [83] glue_1.8.0                  lazyeval_0.2.2             
+ [85] tools_4.5.1                 GiottoVisuals_0.2.13       
+ [87] BiocNeighbors_2.2.0         data.table_1.17.8          
+ [89] ScaledMatrix_1.16.0         graphlayouts_1.2.2         
+ [91] tidygraph_1.3.1             cowplot_1.2.0              
+ [93] rhdf5_2.52.1                grid_4.5.1                 
+ [95] tidyr_1.3.1                 colorspace_2.1-2           
+ [97] SingleCellExperiment_1.30.1 GenomeInfoDbData_1.2.14    
+ [99] BiocSingular_1.24.0         ggforce_0.5.0              
+[101] rsvd_1.0.5                  cli_3.6.5                  
+[103] textshaping_1.0.3           S4Arrays_1.8.1             
+[105] viridisLite_0.4.2           dplyr_1.1.4                
+[107] uwot_0.2.3                  gtable_0.3.6               
+[109] R.methodsS3_1.8.2           digest_0.6.37              
+[111] BiocGenerics_0.54.0         SparseArray_1.8.1          
+[113] ggrepel_0.9.6               rjson_0.2.23               
+[115] htmlwidgets_1.6.4           farver_2.1.2               
+[117] R.oo_1.27.1                 memoise_2.0.1              
+[119] htmltools_0.5.8.1           lifecycle_1.0.4            
+[121] httr_1.4.7                  MASS_7.3-65 
 ```
