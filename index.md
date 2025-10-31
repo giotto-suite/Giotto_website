@@ -45,7 +45,7 @@ This website (http://giottosuite.com) is for Giotto Suite v4.0 and greater. You 
 
 Take a look at our 3-day workshop recordings. The materials in bookdown format are available [here](https://drieslab.github.io/giotto_workshop_2024/)
 
-[![](images/presentations/giottoworkshop2024.png){.align-center}](https://www.youtube.com/playlist?list=PL48rCHQx71I1ZptEotKvvCYRliGrqVXLW)
+[![](articles/images/presentations/giottoworkshop2024.png){.align-center}](https://www.youtube.com/playlist?list=PL48rCHQx71I1ZptEotKvvCYRliGrqVXLW)
 
 
 ## References
