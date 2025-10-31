@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.2</span>
       </span>
     </div>
 
@@ -1100,6 +1100,16 @@ conjunction with <code>epsilon</code>) to avoid an inefficient exhaustive search
 of the data in <code>X</code>. This parameter only affects neighbor search when
 transforming new data with <code><a href="https://jlmelville.github.io/uwot/reference/umap_transform.html" class="external-link">umap_transform</a></code>.</p></li>
 </ul></dd>
+
+    <dt><code>rng_type</code></dt>
+<dd><p>The type of random number generator to use during
+optimization. One of:</p><ul><li><p><code>"pcg"</code>. Use the PCG random number generator (O'Neill, 2014).</p></li>
+<li><p><code>"tausworthe"</code>. Use the Tausworthe "taus88" generator.</p></li>
+<li><p><code>"deterministic"</code>. Use a deterministic number generator. This
+ isn't actually random, but may provide enough variation in the negative
+ sampling to give a good embedding and can provide a noticeable speed-up.</p></li>
+</ul><p>For backwards compatibility, by default this is unset and the choice of
+<code>pcg_rand</code> is used (making "pcg" the effective default).</p></dd>
 
 
 </dl></dd>

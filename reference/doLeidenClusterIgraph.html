@@ -24,7 +24,7 @@ detection algorithm as implemented in igraph"><!-- mathjax --><script src="https
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.2</span>
       </span>
     </div>
 
@@ -516,7 +516,6 @@ detection algorithm as implemented in igraph</p>
 <span>  objective_function <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"modularity"</span>, <span class="st">"CPM"</span><span class="op">)</span>,</span>
 <span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  resolution <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  resolution_parameter <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  beta <span class="op">=</span> <span class="fl">0.01</span>,</span>
 <span>  initial_membership <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n_iterations <span class="op">=</span> <span class="fl">1000</span>,</span>
@@ -568,10 +567,6 @@ detection algorithm as implemented in igraph</p>
 <dd><p>resolution, default = 1</p></dd>
 
 
-<dt id="arg-resolution-parameter">resolution_parameter<a class="anchor" aria-label="anchor" href="#arg-resolution-parameter"></a></dt>
-<dd><p>deprecated. Use `resolution` instead</p></dd>
-
-
 <dt id="arg-beta">beta<a class="anchor" aria-label="anchor" href="#arg-beta"></a></dt>
 <dd><p>leiden randomness</p></dd>
 
@@ -597,7 +592,10 @@ detection algorithm as implemented in igraph</p>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Arguments passed on to <code><a href="https://r.igraph.org/reference/cluster_leiden.html" class="external-link">igraph::cluster_leiden</a></code></p><dl><dt><code>vertex_weights</code></dt>
+<dd><p>Arguments passed on to <code><a href="https://r.igraph.org/reference/cluster_leiden.html" class="external-link">igraph::cluster_leiden</a></code></p><dl><dt><code>resolution_parameter</code></dt>
+<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#superseded" class="external-link"><img src="figures/lifecycle-superseded.svg" alt="[Superseded]"></a> Use <code>resolution</code> instead.</p></dd>
+
+    <dt><code>vertex_weights</code></dt>
 <dd><p>the vertex weights used in the Leiden algorithm.
 If this is not provided, it will be automatically determined on the basis
 of the <code>objective_function</code>. Please see the details of this function
@@ -637,7 +635,9 @@ Set <em>weights = NA</em> if you don't want to use vertices weights</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  python version : 3.12</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">doLeidenClusterIgraph</span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> leiden_clus  has already been used, will be overwritten</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> These column names were already used: leiden_clus</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  and will be overwritten</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An object of class giotto </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &gt;Active spat_unit:  cell </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &gt;Active feat_type:  rna </span>
