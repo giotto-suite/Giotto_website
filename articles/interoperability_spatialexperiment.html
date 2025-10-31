@@ -517,6 +517,9 @@
           <a href="../articles/ontrac.html">Integrate ONTraC Analysis</a>
         </li>
         <li>
+          <a href="../articles/integrate_misty_analysis.html">Integrate MISTy Analysis</a>
+        </li>
+        <li>
           <a href="../articles/interoperability_spatialexperiment.html">SpatialExperiment</a>
         </li>
         <li>
@@ -725,32 +728,32 @@ thresholds to remove low quality cells.</p>
 <span></span>
 <span><span class="co"># calculate per-spot QC metrics and store in colData</span></span>
 <span><span class="va">spe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scuttle/man/addPerCellQCMetrics.html" class="external-link">addPerCellQC</a></span><span class="op">(</span><span class="va">spe</span>, subsets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mito <span class="op">=</span> <span class="va">is_mito</span><span class="op">)</span>, assay.type <span class="op">=</span> <span class="st">"raw_rna_cell"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>We plot a histogram of library size and select a threshold of 50 to
 remove low quality cells.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># histogram of library sizes</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">$</span><span class="va">sum</span>, breaks <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">$</span><span class="va">sum</span>, breaks <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># select QC threshold</span></span>
-<span><span class="va">qc_lib_size</span> <span class="op">&lt;-</span> <span class="fu">colData</span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">$</span><span class="va">sum</span> <span class="op">&lt;</span> <span class="fl">50</span></span></code></pre></div>
+<span><span class="va">qc_lib_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">$</span><span class="va">sum</span> <span class="op">&lt;</span> <span class="fl">50</span></span></code></pre></div>
 <p><img src="images/interoperability_spatialexperiment/0-histogram.png"></p>
 <p>We select a threshold of 18 for number of features detected per cell
 and remove the low quality cells.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># histogram of numbers of expressed genes</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">$</span><span class="va">detected</span>, breaks <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">$</span><span class="va">detected</span>, breaks <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/interoperability_spatialexperiment/1-histogram.png"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># select QC threshold for number of expressed genes</span></span>
-<span><span class="va">qc_detected</span> <span class="op">&lt;-</span> <span class="fu">colData</span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">$</span><span class="va">detected</span> <span class="op">&lt;</span> <span class="fl">18</span></span>
+<span><span class="va">qc_detected</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">$</span><span class="va">detected</span> <span class="op">&lt;</span> <span class="fl">18</span></span>
 <span></span>
 <span><span class="co"># combined set of discarded spots</span></span>
 <span><span class="va">discard</span> <span class="op">&lt;-</span> <span class="va">qc_lib_size</span> <span class="op">|</span> <span class="va">qc_detected</span> </span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">discard</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">colData</span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">$</span><span class="va">discard</span> <span class="op">&lt;-</span> <span class="va">discard</span></span>
-<span><span class="va">spe</span> <span class="op">&lt;-</span> <span class="va">spe</span><span class="op">[</span>, <span class="op">!</span><span class="fu">colData</span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">$</span><span class="va">discard</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">$</span><span class="va">discard</span> <span class="op">&lt;-</span> <span class="va">discard</span></span>
+<span><span class="va">spe</span> <span class="op">&lt;-</span> <span class="va">spe</span><span class="op">[</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">$</span><span class="va">discard</span><span class="op">]</span></span>
 <span><span class="va">spe</span></span></code></pre></div>
 </div>
 <div class="section level4" number="2.3.2">
@@ -773,7 +776,7 @@ library size factors using the scran package from Bioconductor.</p>
 <span><span class="va">spe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scuttle/man/logNormCounts.html" class="external-link">logNormCounts</a></span><span class="op">(</span><span class="va">spe</span>, assay.type <span class="op">=</span> <span class="st">"raw_rna_cell"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># check</span></span>
-<span><span class="fu">assayNames</span><span class="op">(</span><span class="va">spe</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assayNames</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4" number="2.3.3">
 <h4 id="feature-selection">
@@ -836,7 +839,7 @@ clustering and plot the cluster labels over on the UMAP.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">clus</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># plot clusters in UMAP reduced dimensions</span></span>
-<span><span class="fu">colData</span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">$</span><span class="va">label</span> <span class="op">&lt;-</span> <span class="va">clus</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">$</span><span class="va">label</span> <span class="op">&lt;-</span> <span class="va">clus</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/ggspavis/man/plotDimRed.html" class="external-link">plotDimRed</a></span><span class="op">(</span><span class="va">spe</span>, </span>
 <span>           type <span class="op">=</span> <span class="st">"UMAP"</span>,</span>
