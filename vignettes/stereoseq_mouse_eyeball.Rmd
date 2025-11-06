@@ -66,8 +66,6 @@ instructions <- createGiottoInstructions(save_dir = results_folder,
                                          python_path = python_path)
 ```
 
-# Create the Giotto object 
-
 createGiottoStereoSeqObject() will look for the standardized files organization from the STOmics technology in the data folder and will automatically load the expression and spatial information to create the Giotto object.
 
 ```{r, eval=FALSE}
@@ -75,7 +73,7 @@ createGiottoStereoSeqObject() will look for the standardized files organization 
 data_path <- "/path/to/data/"
 ```
 
-##  Create the Giotto object at different bins size
+#  Create the Giotto object at different bins size
 
 When reading the expression information at the bin level, you can select from different resolutions ("bin1", "bin5", "bin10", "bin20", "bin50", "bin100", "bin150", or "bin200").
 
@@ -85,6 +83,7 @@ g <- createGiottoStereoSeqObject(stereoseq_dir = data_path,
                                type = "squarebin",
                                bin_size = "bin100",
                                gene_column = "geneName",
+                               negative_y = TRUE,
                                instructions = instructions)
 ```
 
@@ -186,16 +185,17 @@ spatPlot2D(gobject = g,
 knitr::include_graphics("images/stereoseq_mouse_eyeball/3-spatPlot2D.png")
 ```
 
-##  Create the Giotto object at the cell level
+#  Create the Giotto object at the cell level
 
 To read the expression information at the cell level, set the value of the parameter "type" to "cellbin". You can also select what gene IDs format to use; by default, it would read the common gene name (gene_column = "geneName"), but you can choose to use the ENSEMBL names instead (gene_column = "geneID").
 
 ```{r, eval=FALSE}
 ## read the data
 g <- createGiottoStereoSeqObject(stereoseq_dir = data_path,
-                               type = "cellbin",
-                               gene_column = "geneName",
-                               instructions = instructions)
+                                 type = "cellbin",
+                                 gene_column = "geneName",
+                                 negative_y = TRUE,
+                                 instructions = instructions)
 ```
 
 At the cell size, this dataset has 7527 cells and 25646 genes.
@@ -218,6 +218,85 @@ knitr::include_graphics("images/stereoseq_mouse_eyeball/4-spatPlot2D.png")
 showGiottoImageNames(g) # "image" is the default name
 ```
 
+# Create the Giotto object at the subcellular level
+
+```{r, eval=FALSE}
+## read the data
+g <- createGiottoStereoSeqObject(stereoseq_dir = data_path,
+                                 type = "subcellular",
+                                 gene_column = "geneName",
+                                 negative_y = FALSE,
+                                 instructions = instructions)
+```
+
+
+## Aggregate transcripts per polygon/cell
+
+Find the feature points overlapped by polygons. This overlap information is then returned to the relevant giottoPolygon object"s overlaps slot.
+
+```{r, eval=FALSE}
+g <- calculateOverlapRaster(g, feat_info = "rna")
+```
+
+Convert the overlap information into a cell by feature expression matrix which is then stored in the Giotto object's expression slot.
+
+```{r, eval=FALSE}
+g <- overlapToMatrix(g, feat_info = "rna")
+```
+
+## Plot transcripts and polygons
+
+You can select genes to plot their individual transcript location across the sample. spatInSituPlotPoints will also plot the segmentation cell boundaries stored as Giotto Polygons. 
+
+```{r, eval=FALSE}
+spatInSituPlotPoints(g,
+                     show_image = FALSE,
+                     feats = list("rna" = c("Slc4a11", "Myh7", "Mylk4")),
+                     feats_color_code = c("Slc4a11" = "yellow",
+                                          "Myh7" = "green",
+                                          "Mylk4" = "red"),
+                     spat_unit = "cell",
+                     point_size = 0.1,
+                     use_overlap = TRUE,
+                     polygon_alpha = 0.1,
+                     polygon_color = "white",
+                     polygon_line_size = 0.1,
+                     background_color = "black"
+)
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial locations of Gnai3 and Cdc45 transcripts"}
+knitr::include_graphics("images/stereoseq_mouse_eyeball/5-spatInSituPlotPoints.png")
+```
+
+Use subsetGiottoLocsSubcellular to subset a specific region of the sample and obtain a zoomed in visualization of the transcripts.
+
+```{r, eval=FALSE}
+g_subset <- subsetGiottoLocs(g,
+                             x_min = 2750,
+                             x_max = 3100,
+                             y_min = 5700,
+                             y_max = 6100)
+
+spatInSituPlotPoints(g_subset,
+                     show_image = FALSE,
+                     feats = list("rna" = c("Myh7", "Mylk4")),
+                     feats_color_code = c("Myh7" = "green",
+                                          "Mylk4" = "red"),
+                     spat_unit = "cell",
+                     point_size = 0.3,
+                     use_overlap = TRUE,
+                     polygon_color = "white",
+                     polygon_alpha = 0.1,
+                     polygon_line_size = 0.1,
+                     background_color = "black"
+)
+```
+
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial locations of Gnai3 and Cdc45 transcripts"}
+knitr::include_graphics("images/stereoseq_mouse_eyeball/6-spatInSituPlotPoints.png")
+```
+
 # Quality control
 
 Use the function addStatistics() to count the number of features per cell. The statistics information will be stored in the metadata table under the new column “nr_feats”. Then, use this column to visualize the number of features per cell across the sample.
@@ -234,7 +313,7 @@ spatPlot2D(gobject = g_statistics,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial distribution of features per cell."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/5-spatPlot2D.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/7-spatPlot2D.png")
 ```
 
 filterDistributions() creates a histogram to show the distribution of features per cell across the sample.
@@ -245,7 +324,7 @@ filterDistributions(gobject = g_statistics,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Distribution of features per cell."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/6-filterDistributions.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/8-filterDistributions.png")
 ```
 
 When setting the detection = "feats", the histogram shows the distribution of cells with certain number of features across the sample.
@@ -256,7 +335,7 @@ filterDistributions(gobject = g_statistics,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Distribution of cells with different features per cell."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/7-filterDistributions.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/9-filterDistributions.png")
 ```
 
 # Filtering
@@ -298,7 +377,7 @@ spatPlot2D(gobject = g,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial distribution of the number of features per cell."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/8-spatPlot2D.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/10-spatPlot2D.png")
 ```
 
 You can also visualize the number of transcripts per cell.
@@ -313,7 +392,7 @@ spatPlot2D(gobject = g,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial distribution of the number of transcripts per cell."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/9-spatPlot2D.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/11-spatPlot2D.png")
 ```
 
 # Feature selection
@@ -326,7 +405,7 @@ g <- calculateHVF(gobject = g,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Covariance of HVFs using the binned method."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/10-HVFplot.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/12-HVFplot.png")
 ```
 
 # Dimension reduction
@@ -350,7 +429,7 @@ screePlot(gobject = g,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Screeplot showing the variance explained per principal component."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/11-screePlot.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/13-screePlot.png")
 ```
 
 - Visualize the PCA calculated using the HVFs.
@@ -360,7 +439,7 @@ plotPCA(gobject = g)
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="PCA plot using HVFs."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/12-PCA.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/14-PCA.png")
 ```
 
 ## UMAP
@@ -376,7 +455,7 @@ plotUMAP(gobject = g)
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="UMAP using the 10 first principal components."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/13-UMAP.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/15-UMAP.png")
 ```
 
 ## tSNE
@@ -390,7 +469,7 @@ plotTSNE(gobject = g)
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="tSNE using the 10 first principal components."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/14-tSNE.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/16-tSNE.png")
 ```
 
 # Clustering
@@ -437,7 +516,7 @@ plotPCA(gobject = g,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="PCA plot, colors indicate the Leiden clusters."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/15-PCA.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/17-PCA.png")
 ```
 
 Set the argument "show_NN_network = TRUE" to visualize the connections between spots.
@@ -450,7 +529,7 @@ plotUMAP(gobject = g,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="UMAP plot, colors indicate the Leiden clusters."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/16-UMAP.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/18-UMAP.png")
 ```
 
 ```{r, eval=FALSE}
@@ -459,20 +538,19 @@ plotTSNE(gobject = g,
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="UMAP plot, colors indicate the Leiden clusters."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/17-tSNE.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/19-tSNE.png")
 ```
 
 ```{r, eval=FALSE}
 spatPlot2D(gobject = g, 
-           point_size = 2,
+           point_size = 1,
            show_image = FALSE, 
-           point_alpha = 0.7,
            background_color = "black",
            cell_color = "leiden_clus")
 ```
 
 ```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Spatial plot, colors indicate the Leiden clusters."}
-knitr::include_graphics("images/stereoseq_mouse_eyeball/18-spatPlot2D.png")
+knitr::include_graphics("images/stereoseq_mouse_eyeball/20-spatPlot2D.png")
 ```
 
 # Session info
