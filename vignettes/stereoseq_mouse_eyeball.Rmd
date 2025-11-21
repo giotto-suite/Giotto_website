@@ -229,10 +229,9 @@ g <- createGiottoStereoSeqObject(stereoseq_dir = data_path,
                                  instructions = instructions)
 ```
 
-
 ## Aggregate transcripts per polygon/cell
 
-Find the feature points overlapped by polygons. This overlap information is then returned to the relevant giottoPolygon object"s overlaps slot.
+Find the feature points overlapped by polygons. This overlap information is then returned to the relevant giottoPolygon object's overlaps slot.
 
 ```{r, eval=FALSE}
 g <- calculateOverlapRaster(g, feat_info = "rna")
@@ -250,12 +249,15 @@ You can select genes to plot their individual transcript location across the sam
 
 ```{r, eval=FALSE}
 spatInSituPlotPoints(g,
+                     spat_unit = "cell",
                      show_image = FALSE,
                      feats = list("rna" = c("Slc4a11", "Myh7", "Mylk4")),
                      feats_color_code = c("Slc4a11" = "yellow",
                                           "Myh7" = "green",
                                           "Mylk4" = "red"),
-                     spat_unit = "cell",
+                     # expand_counts = TRUE,
+                     # count_info_column = "count",
+                     # jitter = c(1, 1),
                      point_size = 0.1,
                      use_overlap = TRUE,
                      polygon_alpha = 0.1,
@@ -279,11 +281,14 @@ g_subset <- subsetGiottoLocs(g,
                              y_max = 6100)
 
 spatInSituPlotPoints(g_subset,
+                     spat_unit = "cell",
                      show_image = FALSE,
                      feats = list("rna" = c("Myh7", "Mylk4")),
                      feats_color_code = c("Myh7" = "green",
                                           "Mylk4" = "red"),
-                     spat_unit = "cell",
+                     expand_counts = TRUE,
+                     count_info_column = "count",
+                     jitter = c(1, 1),
                      point_size = 1,
                      use_overlap = TRUE,
                      polygon_color = "white",
