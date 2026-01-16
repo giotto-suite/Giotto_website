@@ -127,6 +127,9 @@
 <li>
           <a href="../articles/nanostring_cosmx_lung_cancer.html">Nanostring CosMx Subcellular Lung Cancer</a>
         </li>
+        <li>
+          <a href="../articles/cosmx_pancreas.html">Whole transcriptome CosMx Human Pancreas FFPE Dataset</a>
+        </li>
       </ul>
 </li>
     <li class="divider">
@@ -803,10 +806,10 @@ recorded in the cell metadata (<code><a href="https://drieslab.github.io/GiottoC
 differentiates which sample the spots are from in the joined object.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span><span class="va">g</span>, cell_color <span class="op">=</span> <span class="st">"list_ID"</span>, cell_color_code <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"orange"</span>, <span class="st">"dodgerblue"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/harmony/1_PCA.png" width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/harmony/1_PCA.png" alt="" width="60%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span><span class="va">g</span>, cell_color <span class="op">=</span> <span class="st">"list_ID"</span>, cell_color_code <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"orange"</span>, <span class="st">"dodgerblue"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/harmony/2_UMAP.png" width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/harmony/2_UMAP.png" alt="" width="60%" style="display: block; margin: auto;"></p>
 <p>From both of these dimension reductions, you can see that the spots
 corresponding to each of the two datasets generally cluster based on
 which sample they were from. This technical difference will overwhelm
@@ -819,10 +822,10 @@ clustering. These clusters can then be plotted in UMAP and spatial.</p>
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">g</span>, dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, k <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/doLeidenCluster.html">doLeidenCluster</a></span><span class="op">(</span><span class="va">g</span>, resolution <span class="op">=</span> <span class="fl">0.1</span>, n_iterations <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span><span class="va">g</span>, cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/harmony/3_dplot_batch.png" width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/harmony/3_dplot_batch.png" alt="" width="60%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g</span>, cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>, point_size <span class="op">=</span> <span class="fl">1.5</span>, background_color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/harmony/3_splot_batch.png" width="80%" style="display: block; margin: auto;">
+<p><img src="images/harmony/3_splot_batch.png" alt="" width="80%" style="display: block; margin: auto;">
 As shown, the spots have been clustered, but most clusters are not
 shared between the two samples. This is biologically unrealistic since
 this is the same tissue, and we would expect at least some
@@ -915,7 +918,7 @@ data point was from. We are running with the default params, but with
 <span>    dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,</span>
 <span>    plot_convergence <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/harmony/harmony_convergence.png" width="50%" style="display: block; margin: auto;"></p>
+<p><img src="images/harmony/harmony_convergence.png" alt="" width="50%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="6.3">
 <h3 id="accessing-the-results">
@@ -953,7 +956,7 @@ harmony results looks like.</p>
    10 dimensions for 6911 data points</code></pre>
 <p><code>dimObj</code> results can be plotted. Dimensions to plot in the
 embedding can be directly selected with the <code>dims</code> param.
-<img src="images/harmony/4_simple_plot.png" width="60%" style="display: block; margin: auto;"></p>
+<img src="images/harmony/4_simple_plot.png" alt="" width="60%" style="display: block; margin: auto;"></p>
 <p><code>[]</code> can be used to drop to the underlying data in
 <code>matrix</code> format.</p>
 <pre><code>                           Dim.1      Dim.2     Dim.3      Dim.4      Dim.5      Dim.6      Dim.7
@@ -998,14 +1001,14 @@ NP-AAACCGGAAATGTTAA-1 -4.360484 -1.8335872  -0.4195350</code></pre>
 <span>    dim_reduction_name <span class="op">=</span> <span class="st">"umap_harmony"</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"leiden_harmony"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/harmony/4_dplot_harmony.png" width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/harmony/4_dplot_harmony.png" alt="" width="60%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"leiden_harmony"</span>,</span>
 <span>    point_size <span class="op">=</span> <span class="fl">1.5</span>,</span>
 <span>    background <span class="op">=</span> <span class="st">"black"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/harmony/4_splot_harmony.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/harmony/4_splot_harmony.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 <p>We are now seeing that there are several shared clusters between the
 two datasets for similar tissue/cell types. The green and purple
 populations, however, are exclusive to the Cancer sample.</p>
@@ -1027,7 +1030,7 @@ nuclei, suggesting cancer.</p>
 <span>    show_image <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>    image_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NP-image"</span>, <span class="st">"CP-image"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/harmony/5_he.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/harmony/5_he.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 <p>Plotting some specific markers (AMACR, ERG, TMPRSS3, HOXC6), that are
 known to show overexpression in prostate cancer further confirms this
 region as being cancerous.</p>
@@ -1039,7 +1042,7 @@ region as being cancerous.</p>
 <span>    dim_reduction_name <span class="op">=</span> <span class="st">"umap_harmony"</span>,</span>
 <span>    background <span class="op">=</span> <span class="st">"black"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/harmony/6_dim_featplots.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/harmony/6_dim_featplots.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatFeatPlot2D.html" class="external-link">spatFeatPlot2D</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AMACR"</span>, <span class="st">"ERG"</span>, <span class="st">"TMPRSS2"</span>, <span class="st">"HOXC6"</span><span class="op">)</span>,</span>
@@ -1049,7 +1052,7 @@ region as being cancerous.</p>
 <span>    show_image <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>    image_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NP-image"</span>, <span class="st">"CP-image"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/harmony/6_spat_featplots.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="images/harmony/6_spat_featplots.png" alt="" width="100%" style="display: block; margin: auto;"></p>
 <p>These show that there is orthogonal support from the morphological
 and molecular information that the Harmony integration worked correctly,
 preserving the biological signal while removing batch effects.</p>

@@ -127,6 +127,9 @@
 <li>
           <a href="../articles/nanostring_cosmx_lung_cancer.html">Nanostring CosMx Subcellular Lung Cancer</a>
         </li>
+        <li>
+          <a href="../articles/cosmx_pancreas.html">Whole transcriptome CosMx Human Pancreas FFPE Dataset</a>
+        </li>
       </ul>
 </li>
     <li class="divider">
@@ -747,7 +750,7 @@ the Giotto object.</p>
 <span>           group_by <span class="op">=</span> <span class="st">"slice_id"</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"sample_id"</span>,</span>
 <span>           point_size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/0-spatPlot2D.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/0-spatPlot2D.png" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2" number="7">
 <h2 id="subset-data-to-keep-only-sample-1">
@@ -769,11 +772,11 @@ number of features per spot across the sample.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/filterDistributions.html">filterDistributions</a></span><span class="op">(</span><span class="va">g_s1</span>,</span>
 <span>                    detection <span class="op">=</span> <span class="st">"cells"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/1-filterDistributions.png" width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/1-filterDistributions.png" alt="" width="60%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/filterDistributions.html">filterDistributions</a></span><span class="op">(</span><span class="va">g_s1</span>,</span>
 <span>                    detection <span class="op">=</span> <span class="st">"feats"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/2-filterDistributions.png" width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/2-filterDistributions.png" alt="" width="60%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># add statistics</span></span>
 <span><span class="va">g_s1_stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addStatistics.html">addStatistics</a></span><span class="op">(</span><span class="va">g_s1</span>,</span>
@@ -783,7 +786,7 @@ number of features per spot across the sample.</p>
 <span>           cell_color <span class="op">=</span> <span class="st">"nr_feats"</span>,</span>
 <span>           color_as_factor <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>           point_size <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/3-spatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/3-spatPlot2D.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2" number="9">
 <h2 id="filtering">
@@ -838,10 +841,10 @@ explained by each component.</p>
 <code class="sourceCode R"><span><span class="va">g_s1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPCA.html">runPCA</a></span><span class="op">(</span><span class="va">g_s1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/screePlot.html">screePlot</a></span><span class="op">(</span><span class="va">g_s1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/4-screePlot.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/4-screePlot.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span><span class="va">g_s1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/5-PCA.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/5-PCA.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="11.2">
 <h3 id="umap">
@@ -855,7 +858,7 @@ running PCA, UMAP or t-SNE allows you to visualize the dataset in
 <code class="sourceCode R"><span><span class="va">g_s1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span><span class="va">g_s1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span><span class="va">g_s1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/6-UMAP.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/6-UMAP.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="11.3">
 <h3 id="tsne">
@@ -865,7 +868,7 @@ running PCA, UMAP or t-SNE allows you to visualize the dataset in
 <code class="sourceCode R"><span><span class="va">g_s1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runtSNE.html">runtSNE</a></span><span class="op">(</span><span class="va">g_s1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotTSNE.html" class="external-link">plotTSNE</a></span><span class="op">(</span><span class="va">g_s1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/7-tSNE.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/7-tSNE.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2" number="12">
@@ -925,20 +928,20 @@ more information about Louvain and Leiden clustering <a href="https://iopscience
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span><span class="va">g_s1</span>,</span>
 <span>        cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/8-PCA.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/8-PCA.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span><span class="va">g_s1</span>,</span>
 <span>         cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/9-UMAP.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/9-UMAP.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotTSNE.html" class="external-link">plotTSNE</a></span><span class="op">(</span><span class="va">g_s1</span>,</span>
 <span>         cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/10-tSNE.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/10-tSNE.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g_s1</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>           point_size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/11-spatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/11-spatPlot2D.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2" number="14">
 <h2 id="finding-differentially-expressed-genes">
@@ -966,14 +969,14 @@ expression of the top-expressed genes per cluster.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotMetaDataHeatmap.html" class="external-link">plotMetaDataHeatmap</a></span><span class="op">(</span><span class="va">g_s1</span>,</span>
 <span>                    selected_feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">topgenes_gini</span><span class="op">)</span>,</span>
 <span>                    metadata_cols <span class="op">=</span> <span class="st">"leiden_clus"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/12-plotMetaDataHeatmap.png" width="70%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/12-plotMetaDataHeatmap.png" alt="" width="70%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/violinPlot.html" class="external-link">violinPlot</a></span><span class="op">(</span><span class="va">g_s1</span>, </span>
 <span>           feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">topgenes_gini</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span>, </span>
 <span>           cluster_column <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>           strip_text <span class="op">=</span> <span class="fl">6</span>, </span>
 <span>           strip_position <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/13-violinPlot.png" width="70%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/13-violinPlot.png" alt="" width="70%" style="display: block; margin: auto;"></p>
 <p>Visualize the scaled expression spatial distribution of the
 top-expressed genes across the sample.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
@@ -982,7 +985,7 @@ top-expressed genes across the sample.</p>
 <span>              feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">topgenes_gini</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>,</span>
 <span>              cow_n_col <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>              point_size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/14-dimFeatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/14-dimFeatPlot2D.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 <ul>
 <li>The Scran method is preferred for robust differential expression
 analysis, especially when addressing technical variability or
@@ -1002,14 +1005,14 @@ expression of the top-expressed genes per cluster.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotMetaDataHeatmap.html" class="external-link">plotMetaDataHeatmap</a></span><span class="op">(</span><span class="va">g_s1</span>,</span>
 <span>                    selected_feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">topgenes_scran</span><span class="op">)</span>,</span>
 <span>                    metadata_cols <span class="op">=</span> <span class="st">"leiden_clus"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/15-plotMetaDataHeatmap.png" width="70%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/15-plotMetaDataHeatmap.png" alt="" width="70%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/violinPlot.html" class="external-link">violinPlot</a></span><span class="op">(</span><span class="va">g_s1</span>, </span>
 <span>           feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">topgenes_scran</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span>, </span>
 <span>           cluster_column <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>           strip_text <span class="op">=</span> <span class="fl">6</span>, </span>
 <span>           strip_position <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/16-violinPlot.png" width="70%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/16-violinPlot.png" alt="" width="70%" style="display: block; margin: auto;"></p>
 <p>Visualize the scaled expression spatial distribution of the
 top-expressed genes across the sample.</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
@@ -1018,7 +1021,7 @@ top-expressed genes across the sample.</p>
 <span>              feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">topgenes_scran</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>,</span>
 <span>              cow_n_col <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>              point_size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/17-dimFeatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/17-dimFeatPlot2D.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2" number="15">
 <h2 id="finding-spatial-genes">
@@ -1051,7 +1054,7 @@ setting a minimum k for each cell.</p>
 <span>           show_network <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>           network_color <span class="op">=</span> <span class="st">"blue"</span>, </span>
 <span>           spatial_network_name <span class="op">=</span> <span class="st">"spatial_network"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/18-spatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/18-spatPlot2D.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="15.2">
 <h3 id="find-spatial-genes">
@@ -1075,7 +1078,7 @@ being spatial genes.</p>
 <span>               feats <span class="op">=</span> <span class="va">ranktest</span><span class="op">$</span><span class="va">feats</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span>, </span>
 <span>               cow_n_col <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>               point_size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/19-spatFeatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/19-spatFeatPlot2D.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2" number="16">
@@ -1114,7 +1117,7 @@ clusters.</li>
 <code class="sourceCode R"><span><span class="va">netw_ranks</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rankSpatialCorGroups.html">rankSpatialCorGroups</a></span><span class="op">(</span><span class="va">g_s1</span>,</span>
 <span>                                   spatCorObject <span class="op">=</span> <span class="va">spat_cor_netw_DT</span>, </span>
 <span>                                   use_clus_name <span class="op">=</span> <span class="st">"spat_netw_clus"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/20-rankSpatialCorGroups.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/20-rankSpatialCorGroups.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 <ul>
 <li>Plot the correlation and number of spatial genes in each
 cluster.</li>
@@ -1148,7 +1151,7 @@ each spatial co-expression cluster.</li>
 <span>             cell_annotation_values <span class="op">=</span> <span class="va">netw_ranks</span><span class="op">$</span><span class="va">clusters</span>,</span>
 <span>             point_size <span class="op">=</span> <span class="fl">1</span>, </span>
 <span>             cow_n_col <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/21-spatCellPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/21-spatCellPlot2D.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2" number="17">
 <h2 id="spatially-informed-clusters">
@@ -1175,7 +1178,7 @@ umap, network and clustering.</p>
 <span></span>
 <span><span class="fu"><a href="../reference/screePlot.html">screePlot</a></span><span class="op">(</span><span class="va">g_s1</span>, </span>
 <span>          dim_reduction_name <span class="op">=</span> <span class="st">"custom_pca"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/22-screePlot.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/22-screePlot.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_s1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span><span class="va">g_s1</span>, </span>
 <span>                dim_reduction_name <span class="op">=</span> <span class="st">"custom_pca"</span>, </span>
@@ -1196,17 +1199,17 @@ umap, network and clustering.</p>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span><span class="va">g_s1</span>, </span>
 <span>        dim_reduction_name <span class="op">=</span> <span class="st">"custom_pca"</span>,</span>
 <span>        cell_color <span class="op">=</span> <span class="st">"custom_leiden"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/23-PCA.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/23-PCA.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span><span class="va">g_s1</span>, </span>
 <span>        dim_reduction_name <span class="op">=</span> <span class="st">"custom_umap"</span>,</span>
 <span>        cell_color <span class="op">=</span> <span class="st">"custom_leiden"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/24-UMAP.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/24-UMAP.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g_s1</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"custom_leiden"</span>,</span>
 <span>           point_size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/25-spatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/25-spatPlot2D.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2" number="18">
@@ -1295,11 +1298,11 @@ Object (Without Integration)<a class="anchor" aria-label="anchor" href="#process
 <span>        cell_color <span class="op">=</span> <span class="st">"list_ID"</span>,</span>
 <span>        point_border_stroke <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>        point_size <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/26-PCA.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/26-PCA.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/screePlot.html">screePlot</a></span><span class="op">(</span><span class="va">j</span>, </span>
 <span>          ncp <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/27-screePlot.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/27-screePlot.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">j</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span><span class="va">j</span>, </span>
 <span>             dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span>
@@ -1309,7 +1312,7 @@ Object (Without Integration)<a class="anchor" aria-label="anchor" href="#process
 <span>         point_size <span class="op">=</span> <span class="fl">0.5</span>, </span>
 <span>         point_border_stroke <span class="op">=</span> <span class="fl">0</span>, </span>
 <span>         cell_color_code <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/28-UMAP.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/28-UMAP.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="18.5">
 <h3 id="process-joined-object-with-harmony-integration">
@@ -1339,7 +1342,7 @@ better represents the biology of the datasets.</p>
 <span>         select_cells <span class="op">=</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/spatIDs-generic.html" class="external-link">spatIDs</a></span><span class="op">(</span><span class="va">j</span>, subset <span class="op">=</span> <span class="va">list_ID</span> <span class="op">==</span> <span class="st">"sc"</span><span class="op">)</span>,</span>
 <span>         point_border_stroke <span class="op">=</span> <span class="fl">0</span>, </span>
 <span>         other_point_size <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/29-UMAP.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/29-UMAP.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="18.6">
 <h3 id="label-transferring">
@@ -1364,7 +1367,7 @@ of the cells (merfish data cells) using kNN clustering.</p>
 <span>         dim_reduction_name <span class="op">=</span> <span class="st">"umap_harmony"</span>, </span>
 <span>         point_size <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>         point_border_stroke <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/30-UMAP.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/30-UMAP.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3" number="18.7">
 <h3 id="add-transferred-labels-to-the-original-merfish-object">
@@ -1385,7 +1388,7 @@ labels to the original merfish object<a class="anchor" aria-label="anchor" href=
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g_s1</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"trnsfr_Class"</span>,</span>
 <span>           point_size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merfish_mouse_sagittal_bil/31-spatPlot2D.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="images/merfish_mouse_sagittal_bil/31-spatPlot2D.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2" number="19">
