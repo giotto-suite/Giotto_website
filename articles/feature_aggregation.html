@@ -449,7 +449,7 @@
           <a href="../articles/spatial_transformations.html">Spatial transformations</a>
         </li>
         <li>
-          <a href="https://drieslab.github.io/GiottoClass/articles/spatial_geometries.html" class="external-link">Spatial geometries</a>
+          <a href="https://giotto-suite.github.io/GiottoClass/articles/spatial_geometries.html" class="external-link">Spatial geometries</a>
         </li>
       </ul>
 </li>
@@ -618,7 +618,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/drieslab/Giotto/" class="external-link">
+  <a href="https://github.com/giotto-suite/Giotto/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
 
   </a>
@@ -660,14 +660,14 @@ this aggregation with sets of spatial unit annotations (represented as
 (<code>giottoLargeImage</code>):</p>
 <ul>
 <li>
-<a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap</a>
+<a href="https://giotto-suite.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap</a>
 Is used in order to find spatial overlaps between individual polygon IDs
 and raw feature detections or image values and return it as a
 table.</li>
 <li>
-<a href="https://drieslab.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a>
+<a href="https://giotto-suite.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a>
 Is used to take the table of relations calculated in
-<code><a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap()</a></code> and turn that into an expression
+<code><a href="https://rdrr.io/pkg/GiottoClass/man/calculateOverlap.html" class="external-link">calculateOverlap()</a></code> and turn that into an expression
 matrix.</li>
 </ul>
 <p>These are generic functions and they can either be performed directly
@@ -677,12 +677,12 @@ object.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed.</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"drieslab/Giotto"</span><span class="op">)</span></span>
+<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/Giotto"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Ensure GiottoData is installed.</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"GiottoData"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"drieslab/GiottoData"</span><span class="op">)</span></span>
+<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/GiottoData"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://drieslab.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span></code></pre></div>
@@ -694,14 +694,14 @@ annotations to raster masks and then extracting the overlapped points
 data. This is a slight approximation, but is a large speed
 improvement.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu">GiottoData</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoData/reference/loadGiottoMini.html" class="external-link">loadGiottoMini</a></span><span class="op">(</span><span class="st">"vizgen"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu">GiottoData</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoData/man/loadGiottoMini.html" class="external-link">loadGiottoMini</a></span><span class="op">(</span><span class="st">"vizgen"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># aggregate subobjects</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span><span class="va">g</span>, </span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span><span class="va">g</span>, </span>
 <span>    spatial_info <span class="op">=</span> <span class="st">"z0"</span>, </span>
 <span>    feat_info <span class="op">=</span> <span class="st">"rna"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span><span class="va">g</span>, </span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span><span class="va">g</span>, </span>
 <span>    type <span class="op">=</span> <span class="st">"point"</span>, </span>
 <span>    poly_info <span class="op">=</span> <span class="st">"z0"</span>,</span>
 <span>    feat_info <span class="op">=</span> <span class="st">"rna"</span>, </span>
@@ -725,7 +725,7 @@ from the Lung12 dataset.</p>
 <span></span>
 <span><span class="va">cosmx</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importCosMx.html">importCosMx</a></span><span class="op">(</span>cosmx_dir <span class="op">=</span> <span class="va">data_dir</span><span class="op">)</span></span>
 <span><span class="co"># fix offsets not being detected</span></span>
-<span><span class="va">cosmx</span><span class="op">$</span><span class="va">offsets</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"Lung12_fov_positions_file.csv"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">cosmx</span><span class="op">$</span><span class="va">offsets</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"Lung12_fov_positions_file.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">cosmx</span><span class="op">$</span><span class="va">offsets</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fov"</span>, <span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span></span>
 <span><span class="co"># set FOV to load</span></span>
 <span><span class="va">cosmx</span><span class="op">$</span><span class="va">fovs</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
@@ -740,19 +740,19 @@ from the Lung12 dataset.</p>
 <p><img src="images/feature_aggregation/1_overlap.png" alt="" width="50%" style="display: block; margin: auto;"></p>
 <p><strong>perform Giotto aggregation</strong></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">giotto_expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span><span class="va">polys</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">points</span><span class="op">$</span><span class="va">rna</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">giotto_expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span><span class="va">polys</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">points</span><span class="op">$</span><span class="va">rna</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><strong>expression matrix discrepancies</strong></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># No differences in features found</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setequal</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">giotto_expr</span><span class="op">)</span>, <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">nano_expr</span><span class="op">)</span><span class="op">)</span> <span class="co"># TRUE</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setequal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">giotto_expr</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">nano_expr</span><span class="op">)</span><span class="op">)</span> <span class="co"># TRUE</span></span>
 <span></span>
 <span><span class="co"># Differences in cells found</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">giotto_expr</span><span class="op">)</span><span class="op">)</span> <span class="co"># 2983</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">nano_expr</span><span class="op">)</span><span class="op">)</span> <span class="co"># 2985</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">giotto_expr</span><span class="op">)</span><span class="op">)</span> <span class="co"># 2983</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">nano_expr</span><span class="op">)</span><span class="op">)</span> <span class="co"># 2985</span></span>
 <span></span>
 <span><span class="co"># What accounts for this discrepancy?</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">nano_expr</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">nano_expr</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">giotto_expr</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">nano_expr</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">nano_expr</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">giotto_expr</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co"># "c_1_2_1796" "c_1_2_244"</span></span>
 <span><span class="co"># </span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">polys</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"c_1_2_1796"</span>, <span class="st">"c_1_2_244"</span><span class="op">)</span><span class="op">]</span>, col <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span>
@@ -764,16 +764,16 @@ ignored</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Align matrix ordering</span></span>
 <span><span class="co"># Match samples on giotto-found</span></span>
-<span><span class="va">giotto_expr</span> <span class="op">&lt;-</span> <span class="va">giotto_expr</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">giotto_expr</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">giotto_expr</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="va">nano_expr</span> <span class="op">&lt;-</span> <span class="va">nano_expr</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">nano_expr</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">giotto_expr</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">giotto_expr</span> <span class="op">&lt;-</span> <span class="va">giotto_expr</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">giotto_expr</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">giotto_expr</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">nano_expr</span> <span class="op">&lt;-</span> <span class="va">nano_expr</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">nano_expr</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">giotto_expr</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># Prepare matrix comparison</span></span>
 <span><span class="co"># Summarise sparse matrices (i and j are matrix indices, x is value)</span></span>
-<span><span class="va">g_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="fu">Matrix</span><span class="fu">::</span><span class="fu">summary</span><span class="op">(</span><span class="va">giotto_expr</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">g_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="fu">Matrix</span><span class="fu">::</span><span class="fu">summary</span><span class="op">(</span><span class="va">giotto_expr</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">g_dt</span><span class="op">[</span>, <span class="va">method</span> <span class="op">:=</span> <span class="st">"giotto"</span><span class="op">]</span></span>
-<span><span class="va">n_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="fu">Matrix</span><span class="fu">::</span><span class="fu">summary</span><span class="op">(</span><span class="va">nano_expr</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">n_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="fu">Matrix</span><span class="fu">::</span><span class="fu">summary</span><span class="op">(</span><span class="va">nano_expr</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">n_dt</span><span class="op">[</span>, <span class="va">method</span> <span class="op">:=</span> <span class="st">"nanostring"</span><span class="op">]</span></span>
-<span><span class="va">test_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/rbindlist.html" class="external-link">rbindlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">g_dt</span>, <span class="va">n_dt</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">test_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/rbindlist.html" class="external-link">rbindlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">g_dt</span>, <span class="va">n_dt</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Combine sparse matrix indices</span></span>
 <span><span class="va">test_dt</span><span class="op">[</span>, <span class="va">combo</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">i</span>,<span class="st">"-"</span>,<span class="va">j</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
@@ -806,7 +806,7 @@ ignored</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># directly compare differences in matrix values (counts assigned)</span></span>
 <span><span class="va">test_dt</span><span class="op">[</span>, <span class="va">diff</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, by <span class="op">=</span> <span class="fu">.</span><span class="op">(</span><span class="va">i</span>,<span class="va">j</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">test_dt</span>, <span class="va">var</span><span class="op">)</span></span>
+<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">test_dt</span>, <span class="va">var</span><span class="op">)</span></span>
 <span><span class="co"># plot difference in values</span></span>
 <span><span class="va">pl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">pl</span> <span class="op">&lt;-</span> <span class="va">pl</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_bar</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">test_dt</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">diff</span><span class="op">)</span><span class="op">)</span></span>
@@ -825,12 +825,12 @@ entries have the same values (difference of 0).</p>
 <h2 id="raster-intensities-aggregation">Raster intensities aggregation<a class="anchor" aria-label="anchor" href="#raster-intensities-aggregation"></a>
 </h2>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    name_overlap <span class="op">=</span> <span class="st">"dapi"</span>,</span>
 <span>    spatial_info <span class="op">=</span> <span class="st">"z0"</span>,</span>
 <span>    image_names <span class="op">=</span> <span class="st">"dapi_z0"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    poly_info <span class="op">=</span> <span class="st">"z0"</span>,</span>
 <span>    feat_info <span class="op">=</span> <span class="st">"dapi"</span>,</span>
 <span>    type <span class="op">=</span> <span class="st">"intensity"</span></span>

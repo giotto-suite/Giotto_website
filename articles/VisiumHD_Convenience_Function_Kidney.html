@@ -449,7 +449,7 @@
           <a href="../articles/spatial_transformations.html">Spatial transformations</a>
         </li>
         <li>
-          <a href="https://drieslab.github.io/GiottoClass/articles/spatial_geometries.html" class="external-link">Spatial geometries</a>
+          <a href="https://giotto-suite.github.io/GiottoClass/articles/spatial_geometries.html" class="external-link">Spatial geometries</a>
         </li>
       </ul>
 </li>
@@ -618,7 +618,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/drieslab/Giotto/" class="external-link">
+  <a href="https://github.com/giotto-suite/Giotto/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
 
   </a>
@@ -666,16 +666,16 @@ configured.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Verify that the Giotto Suite is installed.</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"drieslab/Giotto"</span><span class="op">)</span></span>
+<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/Giotto"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://drieslab.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># check if the Python environment for Giotto has been installed.</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="co"># The following command need only be run once to install the Giotto environment.</span></span>
-<span>  <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2" number="3">
@@ -704,7 +704,7 @@ viewer.</p>
 <span></span>
 <span><span class="va">python_path</span> <span class="op">&lt;-</span> <span class="cn">NULL</span> <span class="co"># alternatively, "/local/python/path/python" if desired.</span></span>
 <span></span>
-<span><span class="va">instructions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span></span>
+<span><span class="va">instructions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span></span>
 <span>    save_dir <span class="op">=</span> <span class="va">results_folder</span>,</span>
 <span>    save_plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>    show_plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -812,7 +812,7 @@ information<a class="anchor" aria-label="anchor" href="#optional-image-informati
 <p>The `hires.png` image is loaded in by default. If the fullres
 microscope image is available, then it can be loaded separately.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">img</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoLargeImage.html" class="external-link">createGiottoLargeImage</a></span><span class="op">(</span><span class="st">"/path/to/fullres"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">img</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createGiottoLargeImage.html" class="external-link">createGiottoLargeImage</a></span><span class="op">(</span><span class="st">"/path/to/fullres"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># for micron scaling:</span></span>
 <span><span class="va">reader</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importVisiumHD.html">importVisiumHD</a></span><span class="op">(</span><span class="va">data_path</span><span class="op">)</span> <span class="co"># load scalefactor with low level importer object</span></span>
@@ -820,7 +820,7 @@ microscope image is available, then it can be loaded separately.</p>
 <span><span class="va">img</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rescale.html" class="external-link">rescale</a></span><span class="op">(</span><span class="va">img</span>, <span class="va">px2um</span>, x0 <span class="op">=</span> <span class="fl">0</span>, y0 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># add to giotto object (if gobject is `g`)</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">img</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">img</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2" number="5">
@@ -868,11 +868,11 @@ for the subset.</p>
 <code class="sourceCode R"><span><span class="va">bounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="fl">5000</span>, <span class="fl">20000</span>, <span class="op">-</span><span class="fl">20000</span>, <span class="op">-</span><span class="fl">5000</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">bounds_poly</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/as.polygons.html" class="external-link">as.polygons</a></span><span class="op">(</span><span class="va">bounds</span><span class="op">)</span></span>
-<span><span class="va">giotto_bounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygon</a></span><span class="op">(</span><span class="va">bounds_poly</span>, name<span class="op">=</span><span class="st">"bounds"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">giotto_bounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createGiottoPolygon.html" class="external-link">createGiottoPolygon</a></span><span class="op">(</span><span class="va">bounds_poly</span>, name<span class="op">=</span><span class="st">"bounds"</span><span class="op">)</span></span></code></pre></div>
 <p>The arbitrary bound is represented as a black box in the Giotto image
 below.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">giotto_img</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/getGiottoImage.html" class="external-link">getGiottoImage</a></span><span class="op">(</span><span class="va">g</span>, name <span class="op">=</span> <span class="st">"image"</span><span class="op">)</span> </span>
+<code class="sourceCode R"><span><span class="va">giotto_img</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/getGiottoImage.html" class="external-link">getGiottoImage</a></span><span class="op">(</span><span class="va">g</span>, name <span class="op">=</span> <span class="st">"image"</span><span class="op">)</span> </span>
 <span><span class="va">r</span> <span class="op">&lt;-</span> <span class="va">giotto_img</span><span class="op">@</span><span class="va">raster_object</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
@@ -898,7 +898,7 @@ will also load the transcripts at this time, with
 to ensure the corresponding spatial locations are generated for the new
 hexagon400 bin.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addSpatialCentroidLocations.html" class="external-link">addSpatialCentroidLocations</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/addSpatialCentroidLocations.html" class="external-link">addSpatialCentroidLocations</a></span><span class="op">(</span></span>
 <span>  <span class="va">g</span>,</span>
 <span>  poly_info <span class="op">=</span> <span class="st">"hexagon400"</span>,</span>
 <span>  return_gobject <span class="op">=</span> <span class="cn">TRUE</span></span>
@@ -907,7 +907,7 @@ hexagon400 bin.</p>
 this showing the hexagon bins with spatial distribution of gene
 expression.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">feature_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">feature_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    show_image <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -948,11 +948,11 @@ matrix (genes-by-hexagons) that can be used in default spatial
 pipelines.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># calculate overlap between points and polygons</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>                      spatial_info <span class="op">=</span> <span class="st">"hexagon400"</span>,</span>
 <span>                      feat_info <span class="op">=</span> <span class="st">"rna"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/showGiottoSpatialInfo.html" class="external-link">showGiottoSpatialInfo</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/showGiottoSpatialInfo.html" class="external-link">showGiottoSpatialInfo</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3" number="6.2">
 <h3 id="convert-overlap-results-to-a-gene-by-hexagon-matrix">
@@ -961,13 +961,13 @@ results to a gene-by-hexagon-matrix<a class="anchor" aria-label="anchor" href="#
 </h3>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># convert overlap results to bin by gene matrix</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>                     poly_info <span class="op">=</span> <span class="st">"hexagon400"</span>,</span>
 <span>                     feat_info <span class="op">=</span> <span class="st">"rna"</span>,</span>
 <span>                     name <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Set the active spatial unit to be "hexagon400"</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/activeSpatUnit-generic.html" class="external-link">activeSpatUnit</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"hexagon400"</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/activeSpatUnit-generic.html" class="external-link">activeSpatUnit</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"hexagon400"</span></span></code></pre></div>
 </div>
 <div class="section level3" number="6.3">
 <h3 id="default-processing-steps">
@@ -1051,7 +1051,7 @@ reduction<a class="anchor" aria-label="anchor" href="#dimension-reduction"></a>
 <p><img src="images/VisiumHD_Convenience_Function_Kidney/6-UMAP.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># sNN network (default)</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>                          dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">14</span>,</span>
 <span>                          k <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
@@ -1106,7 +1106,7 @@ a gene-by-polygon matrix.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="fl">5000</span>, <span class="fl">20000</span>, <span class="op">-</span><span class="fl">20000</span>, <span class="op">-</span><span class="fl">5000</span><span class="op">)</span></span>
 <span><span class="va">bounds_poly</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/as.polygons.html" class="external-link">as.polygons</a></span><span class="op">(</span><span class="va">bounds</span><span class="op">)</span></span>
-<span><span class="va">giotto_bounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygon</a></span><span class="op">(</span><span class="va">bounds_poly</span>, name<span class="op">=</span><span class="st">"bounds"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">giotto_bounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createGiottoPolygon.html" class="external-link">createGiottoPolygon</a></span><span class="op">(</span><span class="va">bounds_poly</span>, name<span class="op">=</span><span class="st">"bounds"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createGiottoVisiumHDObject.html">createGiottoVisiumHDObject</a></span><span class="op">(</span></span>
 <span>    visiumhd_dir <span class="op">=</span> <span class="va">data_path</span>, </span>
@@ -1119,13 +1119,13 @@ a gene-by-polygon matrix.</p>
 <span>    instructions <span class="op">=</span> <span class="va">instructions</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addSpatialCentroidLocations.html" class="external-link">addSpatialCentroidLocations</a></span><span class="op">(</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/addSpatialCentroidLocations.html" class="external-link">addSpatialCentroidLocations</a></span><span class="op">(</span></span>
 <span>    <span class="va">g</span>,</span>
 <span>    poly_info <span class="op">=</span> <span class="st">"hexagon100"</span>,</span>
 <span>    return_gobject <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">feature_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">feature_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    show_image <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -1147,16 +1147,16 @@ a gene-by-polygon matrix.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/VisiumHD_Convenience_Function_Kidney/9-spatInSituPlotPoints.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>                      spatial_info <span class="op">=</span> <span class="st">"hexagon100"</span>,</span>
 <span>                      feat_info <span class="op">=</span> <span class="st">"rna"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>                     poly_info <span class="op">=</span> <span class="st">"hexagon100"</span>,</span>
 <span>                     feat_info <span class="op">=</span> <span class="st">"rna"</span>,</span>
 <span>                     name <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/activeSpatUnit-generic.html" class="external-link">activeSpatUnit</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"hexagon100"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/activeSpatUnit-generic.html" class="external-link">activeSpatUnit</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"hexagon100"</span></span>
 <span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/filterGiotto.html">filterGiotto</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>                  spat_unit <span class="op">=</span> <span class="st">"hexagon100"</span>,</span>
@@ -1197,7 +1197,7 @@ a gene-by-polygon matrix.</p>
 <p><img src="images/VisiumHD_Convenience_Function_Kidney/11-UMAP.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># sNN network (default)</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>                          spat_unit <span class="op">=</span> <span class="st">"hexagon100"</span>,</span>
 <span>                          dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">14</span>,</span>
 <span>                          k <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
@@ -1249,13 +1249,13 @@ a gene-by-polygon matrix.</p>
 <span>    instructions <span class="op">=</span> <span class="va">instructions</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addSpatialCentroidLocations.html" class="external-link">addSpatialCentroidLocations</a></span><span class="op">(</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/addSpatialCentroidLocations.html" class="external-link">addSpatialCentroidLocations</a></span><span class="op">(</span></span>
 <span>    <span class="va">g</span>,</span>
 <span>    poly_info <span class="op">=</span> <span class="st">"hexagon25"</span>,</span>
 <span>    return_gobject <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">feature_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
+<span><span class="va">feature_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    show_image <span class="op">=</span> <span class="cn">TRUE</span>,</span>

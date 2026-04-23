@@ -449,7 +449,7 @@
           <a href="../articles/spatial_transformations.html">Spatial transformations</a>
         </li>
         <li>
-          <a href="https://drieslab.github.io/GiottoClass/articles/spatial_geometries.html" class="external-link">Spatial geometries</a>
+          <a href="https://giotto-suite.github.io/GiottoClass/articles/spatial_geometries.html" class="external-link">Spatial geometries</a>
         </li>
       </ul>
 </li>
@@ -618,7 +618,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/drieslab/Giotto/" class="external-link">
+  <a href="https://github.com/giotto-suite/Giotto/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
 
   </a>
@@ -690,21 +690,21 @@ folder structure.</p>
 <span class="header-section-number">3</span> Start Giotto<a class="anchor" aria-label="anchor" href="#start-giotto"></a>
 </h2>
 <p>Make sure you have the Giotto package and environment installed. If
-you have installation problems, visit the <a href="https://drieslab.github.io/Giotto_website/articles/installation.html">Installation
-guidelines</a> and <a href="https://drieslab.github.io/Giotto_website/articles/faqs.html">FAQ</a>
+you have installation problems, visit the <a href="https://giotto-suite.github.io/Giotto_website/articles/installation.html">Installation
+guidelines</a> and <a href="https://giotto-suite.github.io/Giotto_website/articles/faqs.html">FAQ</a>
 section.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"drieslab/Giotto"</span><span class="op">)</span></span>
+<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/Giotto"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Ensure the Python environment for Giotto has been installed</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="co"># The following command need only be run once to install the Giotto environment</span></span>
-<span>  <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>Use the Giotto instructions to set the behavior of the Giotto object,
 such as whether you prefer to save the generated plots or only visualize
@@ -723,7 +723,7 @@ saving options.</p>
 <span><span class="va">python_path</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
 <span></span>
 <span><span class="co"># 3. create giotto instructions</span></span>
-<span><span class="va">instructions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span>save_dir <span class="op">=</span> <span class="va">results_folder</span>, </span>
+<span><span class="va">instructions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span>save_dir <span class="op">=</span> <span class="va">results_folder</span>, </span>
 <span>                                         save_plot <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>                                         show_plot <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>                                         return_plot <span class="op">=</span> <span class="cn">FALSE</span>, </span>
@@ -767,10 +767,10 @@ not (0). We will use this column to remove all spots that don’t
 correspond to the tissue area.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Subset on spots that were covered by tissue</span></span>
-<span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">visium</span><span class="op">)</span></span>
+<span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">visium</span><span class="op">)</span></span>
 <span><span class="va">in_tissue_barcodes</span> <span class="op">&lt;-</span> <span class="va">metadata</span><span class="op">[</span><span class="va">in_tissue</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span><span class="op">$</span><span class="va">cell_ID</span></span>
 <span></span>
-<span><span class="va">visium</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/subsetGiotto.html" class="external-link">subsetGiotto</a></span><span class="op">(</span><span class="va">visium</span>, </span>
+<span><span class="va">visium</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/subsetGiotto.html" class="external-link">subsetGiotto</a></span><span class="op">(</span><span class="va">visium</span>, </span>
 <span>                       cell_ids <span class="op">=</span> <span class="va">in_tissue_barcodes</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Visualize aligned tissue</span></span>
@@ -956,12 +956,12 @@ will be used for the network calculation and how many neighbors (k) to
 calculate.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## RNA </span></span>
-<span><span class="va">visium</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
+<span><span class="va">visium</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
 <span>                               dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,</span>
 <span>                               k <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Protein </span></span>
-<span><span class="va">visium</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
+<span><span class="va">visium</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
 <span>                               spat_unit <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>                               feat_type <span class="op">=</span> <span class="st">"protein"</span>,</span>
 <span>                               dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,</span>
@@ -1044,13 +1044,13 @@ this method in the clustering step instead of sNN, you can skip this
 step.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## RNA </span></span>
-<span><span class="va">visium</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
+<span><span class="va">visium</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
 <span>                               type <span class="op">=</span> <span class="st">"kNN"</span>,</span>
 <span>                               dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,</span>
 <span>                               k <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Protein </span></span>
-<span><span class="va">visium</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
+<span><span class="va">visium</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
 <span>                               spat_unit <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>                               feat_type <span class="op">=</span> <span class="st">"protein"</span>,</span>
 <span>                               type <span class="op">=</span> <span class="st">"kNN"</span>,</span>

@@ -449,7 +449,7 @@
           <a href="../articles/spatial_transformations.html">Spatial transformations</a>
         </li>
         <li>
-          <a href="https://drieslab.github.io/GiottoClass/articles/spatial_geometries.html" class="external-link">Spatial geometries</a>
+          <a href="https://giotto-suite.github.io/GiottoClass/articles/spatial_geometries.html" class="external-link">Spatial geometries</a>
         </li>
       </ul>
 </li>
@@ -618,7 +618,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/drieslab/Giotto/" class="external-link">
+  <a href="https://github.com/giotto-suite/Giotto/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
 
   </a>
@@ -652,7 +652,7 @@
 AnnData (squidpy-flavor)<a class="anchor" aria-label="anchor" href="#converting-to-and-from-anndata-squidpy-flavor"></a>
 </h2>
 <p>This tutorial details how to use the conversion functions
-<code><a href="https://drieslab.github.io/GiottoClass/reference/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code> and <code><a href="https://drieslab.github.io/GiottoClass/reference/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code>. A
+<code><a href="https://rdrr.io/pkg/GiottoClass/man/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code> and <code><a href="https://rdrr.io/pkg/GiottoClass/man/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code>. A
 mini Giotto object will be used for minimal computational requirements.
 Please note that these functions are inherently in active development,
 since changes to either squidpy or anndata are possible.</p>
@@ -664,23 +664,23 @@ since changes to either squidpy or anndata are possible.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"drieslab/Giotto"</span><span class="op">)</span></span>
+<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/Giotto"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://drieslab.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Ensure Giotto Data is installed</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"GiottoData"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"drieslab/GiottoData"</span><span class="op">)</span></span>
+<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/GiottoData"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://drieslab.github.io/GiottoData/" class="external-link">GiottoData</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Ensure the Python environment for Giotto has been installed</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="co"># The following command need only be run once to install the Giotto environment</span></span>
-<span>  <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2" number="3">
@@ -697,13 +697,13 @@ object<a class="anchor" aria-label="anchor" href="#create-a-giotto-object"></a>
 <span><span class="co"># installed Giotto environment will be used.</span></span>
 <span><span class="va">python_path</span> <span class="op">&lt;-</span> <span class="cn">NULL</span> <span class="co"># alternatively, "/local/python/path/python" if desired.</span></span>
 <span></span>
-<span><span class="va">mini_gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoData/reference/loadGiottoMini.html" class="external-link">loadGiottoMini</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"vizgen"</span>, </span>
+<span><span class="va">mini_gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoData/man/loadGiottoMini.html" class="external-link">loadGiottoMini</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"vizgen"</span>, </span>
 <span>                               python_path <span class="op">=</span> <span class="va">python_path</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">instructions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/showGiottoInstructions.html" class="external-link">showGiottoInstructions</a></span><span class="op">(</span><span class="va">mini_gobject</span><span class="op">)</span></span>
+<span><span class="va">instructions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/showGiottoInstructions.html" class="external-link">showGiottoInstructions</a></span><span class="op">(</span><span class="va">mini_gobject</span><span class="op">)</span></span>
 <span><span class="va">instructions</span><span class="op">$</span><span class="va">save_dir</span> <span class="op">&lt;-</span> <span class="va">results_directory</span></span>
 <span></span>
-<span><span class="va">mini_gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/replaceGiottoInstructions.html" class="external-link">replaceGiottoInstructions</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">mini_gobject</span>,</span>
+<span><span class="va">mini_gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/replaceGiottoInstructions.html" class="external-link">replaceGiottoInstructions</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">mini_gobject</span>,</span>
 <span>                                          instructions <span class="op">=</span> <span class="va">instructions</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="4">
@@ -722,7 +722,7 @@ neighbor network is a kNN for squidpy, while the default for Giotto is a
 sNN. We”ll create a kNN in addition to the sNN within this object
 already to show how it they are handled.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mini_gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">mini_gobject</span>,</span>
+<code class="sourceCode R"><span><span class="va">mini_gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">mini_gobject</span>,</span>
 <span>                                     spat_unit <span class="op">=</span> <span class="st">"aggregate"</span>,</span>
 <span>                                     feat_type <span class="op">=</span> <span class="st">"rna"</span>,</span>
 <span>                                     type <span class="op">=</span> <span class="st">"kNN"</span>,</span>
@@ -734,7 +734,7 @@ already to show how it they are handled.</p>
 parameters. We”ll change some and make a new network to show how the
 converter handles this.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mini_gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">mini_gobject</span>,</span>
+<code class="sourceCode R"><span><span class="va">mini_gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">mini_gobject</span>,</span>
 <span>                                     spat_unit <span class="op">=</span> <span class="st">"aggregate"</span>,</span>
 <span>                                     feat_type <span class="op">=</span> <span class="st">"rna"</span>,</span>
 <span>                                     type <span class="op">=</span> <span class="st">"kNN"</span>,</span>
@@ -749,7 +749,7 @@ non-anndata-default nearest network or spatial network name, the
 key_added terms will be recorded and saved in <code>.txt</code> files
 named accordingly. Please see the documentation for further details.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">anndata_conversions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giottoToAnnData.html" class="external-link">giottoToAnnData</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">mini_gobject</span>,</span>
+<code class="sourceCode R"><span><span class="va">anndata_conversions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giottoToAnnData.html" class="external-link">giottoToAnnData</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">mini_gobject</span>,</span>
 <span>                                       save_directory <span class="op">=</span> <span class="va">results_directory</span>,</span>
 <span>                                       python_path <span class="op">=</span> <span class="va">my_python_path</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -759,21 +759,21 @@ named accordingly. Please see the documentation for further details.</p>
 </h2>
 <p>To convert an AnnData Object back into a Giotto object, it must first
 be saved as a <code>.h5ad</code> file. The name of said file may then be
-provided to <code><a href="https://drieslab.github.io/GiottoClass/reference/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code> for conversion.</p>
+provided to <code><a href="https://rdrr.io/pkg/GiottoClass/man/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code> for conversion.</p>
 <p>If a nearest neighbor network or spatial network was created using
 the <code>key_added</code> argument, they may be provided to arguments
 n_key_added and/or spatial_n_key_added, respectively. If converting an
 anndata object that was originally a giotto object, the
-<code>.txt</code> files generated by <code><a href="https://drieslab.github.io/GiottoClass/reference/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code> may
+<code>.txt</code> files generated by <code><a href="https://rdrr.io/pkg/GiottoClass/man/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code> may
 be provided to these arguments as well.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">z0_rna_gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/anndataToGiotto.html" class="external-link">anndataToGiotto</a></span><span class="op">(</span>anndata_path <span class="op">=</span> <span class="st">"./giotto_anndata_conversion/z0_rna_converted_gobject.h5ad"</span>,</span>
+<code class="sourceCode R"><span><span class="va">z0_rna_gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/anndataToGiotto.html" class="external-link">anndataToGiotto</a></span><span class="op">(</span>anndata_path <span class="op">=</span> <span class="st">"./giotto_anndata_conversion/z0_rna_converted_gobject.h5ad"</span>,</span>
 <span>                                  python_path <span class="op">=</span> <span class="va">python_path</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">z1_rna_gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/anndataToGiotto.html" class="external-link">anndataToGiotto</a></span><span class="op">(</span>anndata_path <span class="op">=</span> <span class="st">"./giotto_anndata_conversion/z1_rna_converted_gobject.h5ad"</span>,</span>
+<span><span class="va">z1_rna_gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/anndataToGiotto.html" class="external-link">anndataToGiotto</a></span><span class="op">(</span>anndata_path <span class="op">=</span> <span class="st">"./giotto_anndata_conversion/z1_rna_converted_gobject.h5ad"</span>,</span>
 <span>                                  python_path <span class="op">=</span> <span class="va">python_path</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">aggregate_rna_gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/anndataToGiotto.html" class="external-link">anndataToGiotto</a></span><span class="op">(</span>anndata_path <span class="op">=</span> <span class="st">"./giotto_anndata_conversion/aggregate_rna_converted_gobject.h5ad"</span>,</span>
+<span><span class="va">aggregate_rna_gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/anndataToGiotto.html" class="external-link">anndataToGiotto</a></span><span class="op">(</span>anndata_path <span class="op">=</span> <span class="st">"./giotto_anndata_conversion/aggregate_rna_converted_gobject.h5ad"</span>,</span>
 <span>                                         python_path <span class="op">=</span> <span class="va">python_path</span>,</span>
 <span>                                         n_key_added <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"sNN.pca"</span>,<span class="st">"new_network"</span><span class="op">)</span>,</span>
 <span>                                         spatial_n_key_added <span class="op">=</span> <span class="st">"aggregate_rna_spatial_network_keys_added.txt"</span><span class="op">)</span></span></code></pre></div>

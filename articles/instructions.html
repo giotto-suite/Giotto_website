@@ -449,7 +449,7 @@
           <a href="../articles/spatial_transformations.html">Spatial transformations</a>
         </li>
         <li>
-          <a href="https://drieslab.github.io/GiottoClass/articles/spatial_geometries.html" class="external-link">Spatial geometries</a>
+          <a href="https://giotto-suite.github.io/GiottoClass/articles/spatial_geometries.html" class="external-link">Spatial geometries</a>
         </li>
       </ul>
 </li>
@@ -618,7 +618,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/drieslab/Giotto/" class="external-link">
+  <a href="https://github.com/giotto-suite/Giotto/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
 
   </a>
@@ -649,7 +649,7 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"drieslab/Giotto"</span><span class="op">)</span></span>
+<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/Giotto"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://drieslab.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
@@ -662,22 +662,22 @@ instructions to use. {Giotto} instructions are used to apply settings to
 can either be manually set or generated with defaults when the
 <code>giotto</code> object is first created via either
 <code>createGiotto*()</code> helpers or the S4 class constructor
-<code><a href="https://drieslab.github.io/GiottoClass/reference/giotto-class.html" class="external-link">giotto()</a></code>. Once added, these instructions are stored in the
+<code><a href="https://rdrr.io/pkg/GiottoClass/man/giotto-class.html" class="external-link">giotto()</a></code>. Once added, these instructions are stored in the
 <code>giotto</code> object <code>@instructions</code> slot.</p>
 <p>These instruction sets can be created via either the constructor</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>or the generic accessor/replacement function
-<code><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">instructions()</a></code> when no <code>giotto</code> object is
+<code><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">instructions()</a></code> when no <code>giotto</code> object is
 provided.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># named params can be provided (same as those in createGiottoInstructions())</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>These instruction sets are of S3 class
 <code>giottoInstructions</code>, extending <code>list</code>.</p>
 <p>Specific information about all behaviors that can be set in these
 instruction sets can be found in the
-<code><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">?GiottoClass::createGiottoInstructions</a></code> documentation.</p>
+<code><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">?GiottoClass::createGiottoInstructions</a></code> documentation.</p>
 </div>
 <div class="section level2">
 <h2 id="commonly-used-instructions">Commonly Used Instructions<a class="anchor" aria-label="anchor" href="#commonly-used-instructions"></a>
@@ -705,7 +705,7 @@ plotting function.</li>
 <code class="sourceCode R"><span><span class="va">results_folder</span> <span class="op">&lt;-</span> <span class="st">"path/to/results"</span></span>
 <span><span class="va">python_path</span> <span class="op">&lt;-</span> <span class="cn">NULL</span> <span class="co"># NULL will let {Giotto} autodetect</span></span>
 <span></span>
-<span><span class="va">intrs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span></span>
+<span><span class="va">intrs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span></span>
 <span>    save_dir <span class="op">=</span> <span class="va">results_folder</span>,</span>
 <span>    save_plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>    show_plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -740,12 +740,12 @@ section)</p>
 <code>giotto_env</code>).</p>
 <ul>
 <li>See <a href="configuration.html">Giotto python configuration</a>
-and/or <code><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">?GiottoClass::giotto_python</a></code> for more info on how to
+and/or <code><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">?GiottoClass::giotto_python</a></code> for more info on how to
 set up a {Giotto} miniconda python environment and how autodetection of
 an environment to use works.</li>
 </ul>
 <p>Creating a set of instructions will call
-<code><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">GiottoClass::set_giotto_python_path()</a></code> under the hood and
+<code><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">GiottoClass::set_giotto_python_path()</a></code> under the hood and
 activate a python environment.</p>
 <p><strong>Critically, only one {reticulate} python environment can be
 activated per session.</strong> If you would like to avoid activating a
@@ -768,9 +768,9 @@ directly at the <code>giotto</code> object creation step. Here we add in
 the <code>giottoInstructions</code> that we created in the previous
 section.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span>instructions <span class="op">=</span> <span class="va">instrs</span><span class="op">)</span> <span class="co"># object creation helper</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span>instructions <span class="op">=</span> <span class="va">instrs</span><span class="op">)</span> <span class="co"># object creation helper</span></span>
 <span><span class="co"># or</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto-class.html" class="external-link">giotto</a></span><span class="op">(</span>instructions <span class="op">=</span> <span class="va">instrs</span><span class="op">)</span> <span class="co"># class constructor</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto-class.html" class="external-link">giotto</a></span><span class="op">(</span>instructions <span class="op">=</span> <span class="va">instrs</span><span class="op">)</span> <span class="co"># class constructor</span></span></code></pre></div>
 <p><em>Of course the actual data can also be added via other params
 during these <code>giotto</code> object creation steps, they are just
 omitted for this demonstration</em></p>
@@ -779,27 +779,27 @@ omitted for this demonstration</em></p>
 <h3 id="getting-instructions">Getting instructions<a class="anchor" aria-label="anchor" href="#getting-instructions"></a>
 </h3>
 <p>You can extract the full set of instructions in a <code>giotto</code>
-object using the <code><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">instructions()</a></code> generic.</p>
+object using the <code><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">instructions()</a></code> generic.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto-class.html" class="external-link">giotto</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># will generate and attach a default set of instructions</span></span>
-<span><span class="va">i</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto-class.html" class="external-link">giotto</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># will generate and attach a default set of instructions</span></span>
+<span><span class="va">i</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/force.html" class="external-link">force</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span></code></pre></div>
 <p>You can also extract specific parameters of that instruction set</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="va">g</span>, <span class="st">"dpi"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="va">g</span>, <span class="st">"dpi"</span><span class="op">)</span></span></code></pre></div>
 <p>This will also work directly on the <code>giottoInstructions</code>
 object</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="va">i</span>, <span class="st">"dpi"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="va">i</span>, <span class="st">"dpi"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="setting-instructions">Setting instructions<a class="anchor" aria-label="anchor" href="#setting-instructions"></a>
 </h3>
 <p>Setting of <code>giottoInstructions</code> is also done with the
-<code><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">instructions()</a></code> generic.</p>
+<code><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">instructions()</a></code> generic.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">instrs</span> <span class="co"># `instrs` had `return_plot = FALSE`</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="va">g</span>, <span class="st">"return_plot"</span><span class="op">)</span> <span class="co"># this is now FALSE</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">instrs</span> <span class="co"># `instrs` had `return_plot = FALSE`</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="va">g</span>, <span class="st">"return_plot"</span><span class="op">)</span> <span class="co"># this is now FALSE</span></span></code></pre></div>
 <p>You can also update one or more specific instructions settings at
 once either directly on the <code>giottoInstructions</code> object or to
 the <code>giotto</code> object.</p>
@@ -809,11 +809,11 @@ the <code>giotto</code> object.</p>
 </h3>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># on the giottoInstructions object</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="va">i</span>, <span class="st">"dpi"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">600</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="va">i</span>, <span class="st">"dpi"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">600</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/force.html" class="external-link">force</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span>
 <span><span class="co"># on the giotto object</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="va">g</span>, <span class="st">"dpi"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">600</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/force.html" class="external-link">force</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="va">g</span>, <span class="st">"dpi"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">600</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/force.html" class="external-link">force</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="update-multiple-value">Update multiple value<a class="anchor" aria-label="anchor" href="#update-multiple-value"></a>
@@ -821,8 +821,8 @@ the <code>giotto</code> object.</p>
 <p>Multiple value replacement currently only works with the
 <code>giotto</code> object.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="va">g</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"plot_format"</span>, <span class="st">"height"</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"tiff"</span>, <span class="fl">15</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/force.html" class="external-link">force</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="va">g</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"plot_format"</span>, <span class="st">"height"</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"tiff"</span>, <span class="fl">15</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/force.html" class="external-link">force</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">

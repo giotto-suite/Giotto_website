@@ -449,7 +449,7 @@
           <a href="../articles/spatial_transformations.html">Spatial transformations</a>
         </li>
         <li>
-          <a href="https://drieslab.github.io/GiottoClass/articles/spatial_geometries.html" class="external-link">Spatial geometries</a>
+          <a href="https://giotto-suite.github.io/GiottoClass/articles/spatial_geometries.html" class="external-link">Spatial geometries</a>
         </li>
       </ul>
 </li>
@@ -618,7 +618,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/drieslab/Giotto/" class="external-link">
+  <a href="https://github.com/giotto-suite/Giotto/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
 
   </a>
@@ -658,7 +658,7 @@ to align two sets of data.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"drieslab/Giotto"</span><span class="op">)</span></span>
+<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/Giotto"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <div class="section level2" number="1">
 <h2 id="datasets">
@@ -851,14 +851,14 @@ the moving image (colorized green). Overlapping regions are colored
 become cyan.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># stationary (target): 1</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">images</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoUtils/reference/getMonochromeColors.html" class="external-link">getMonochromeColors</a></span><span class="op">(</span><span class="st">"blue"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">images</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoUtils/man/getMonochromeColors.html" class="external-link">getMonochromeColors</a></span><span class="op">(</span><span class="st">"blue"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># moving (source): 2</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span></span>
 <span>     <span class="co"># `pre_multiply` must be `TRUE` for affines from `calculateAffineMatrixFromLandmarks()`</span></span>
-<span>    <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/affine.html" class="external-link">affine</a></span><span class="op">(</span><span class="va">images</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="va">affine_mtx</span>, pre_multiply <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/affine.html" class="external-link">affine</a></span><span class="op">(</span><span class="va">images</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="va">affine_mtx</span>, pre_multiply <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    add <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>    alpha <span class="op">=</span> <span class="fl">0.5</span>, </span>
-<span>    col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoUtils/reference/getMonochromeColors.html" class="external-link">getMonochromeColors</a></span><span class="op">(</span><span class="st">"green"</span><span class="op">)</span><span class="op">)</span></span>
+<span>    col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoUtils/man/getMonochromeColors.html" class="external-link">getMonochromeColors</a></span><span class="op">(</span><span class="st">"green"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/affine_registration/05_overlap_preview.png" alt="" width="60%" style="display: block; margin: auto;"></p>
 </div>
@@ -867,8 +867,8 @@ become cyan.</p>
 <span class="header-section-number">2.5</span> Align datasets<a class="anchor" aria-label="anchor" href="#align-datasets"></a>
 </h3>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">slices</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/affine.html" class="external-link">affine</a></span><span class="op">(</span><span class="va">slices</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="va">affine_mtx</span>, pre_multiply <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">j</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects</a></span><span class="op">(</span><span class="va">slices</span>, </span>
+<code class="sourceCode R"><span><span class="va">slices</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/affine.html" class="external-link">affine</a></span><span class="op">(</span><span class="va">slices</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="va">affine_mtx</span>, pre_multiply <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">j</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/joinGiottoObjects.html" class="external-link">joinGiottoObjects</a></span><span class="op">(</span><span class="va">slices</span>, </span>
 <span>    gobject_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"slice1"</span>, <span class="st">"slice2"</span><span class="op">)</span>,</span>
 <span>    join_method <span class="op">=</span> <span class="st">"z_stack"</span>,</span>
 <span>    z_vals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">50</span><span class="op">)</span> <span class="co"># this is a guess</span></span>

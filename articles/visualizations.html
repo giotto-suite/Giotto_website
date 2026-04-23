@@ -449,7 +449,7 @@
           <a href="../articles/spatial_transformations.html">Spatial transformations</a>
         </li>
         <li>
-          <a href="https://drieslab.github.io/GiottoClass/articles/spatial_geometries.html" class="external-link">Spatial geometries</a>
+          <a href="https://giotto-suite.github.io/GiottoClass/articles/spatial_geometries.html" class="external-link">Spatial geometries</a>
         </li>
       </ul>
 </li>
@@ -618,7 +618,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/drieslab/Giotto/" class="external-link">
+  <a href="https://github.com/giotto-suite/Giotto/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
 
   </a>
@@ -673,20 +673,20 @@ locally.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"drieslab/Giotto"</span><span class="op">)</span></span>
+<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/Giotto"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Ensure Giotto Data is installed</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"GiottoData"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"drieslab/GiottoData"</span><span class="op">)</span></span>
+<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/GiottoData"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Ensure the Python environment for Giotto has been installed</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="co"># The following command need only be run once to install the Giotto environment</span></span>
-<span>  <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2" number="3">
@@ -709,12 +709,12 @@ object<a class="anchor" aria-label="anchor" href="#create-a-giotto-object"></a>
 <span><span class="va">python_path</span> <span class="op">&lt;-</span> <span class="cn">NULL</span> <span class="co"># alternatively, "/local/python/path/python" if desired.</span></span>
 <span></span>
 <span><span class="co"># Get the dataset</span></span>
-<span><span class="fu">GiottoData</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoData/reference/getSpatialDataset.html" class="external-link">getSpatialDataset</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"merfish_preoptic"</span>, </span>
+<span><span class="fu">GiottoData</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoData/man/getSpatialDataset.html" class="external-link">getSpatialDataset</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"merfish_preoptic"</span>, </span>
 <span>                              directory <span class="op">=</span> <span class="va">data_path</span>, </span>
 <span>                              method <span class="op">=</span> <span class="st">"wget"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">### Giotto instructions and data preparation</span></span>
-<span><span class="va">instructions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span>save_dir <span class="op">=</span> <span class="va">results_folder</span>, </span>
+<span><span class="va">instructions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span>save_dir <span class="op">=</span> <span class="va">results_folder</span>, </span>
 <span>                                         save_plot <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>                                         show_plot <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>                                         return_plot <span class="op">=</span> <span class="cn">FALSE</span>, </span>
@@ -726,18 +726,18 @@ object<a class="anchor" aria-label="anchor" href="#create-a-giotto-object"></a>
 <span><span class="va">meta_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"merFISH_3D_metadata.txt"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">### Create Giotto object</span></span>
-<span><span class="va">testobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span>expression <span class="op">=</span> <span class="va">expr_path</span>,</span>
+<span><span class="va">testobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span>expression <span class="op">=</span> <span class="va">expr_path</span>,</span>
 <span>                              spatial_locs <span class="op">=</span> <span class="va">loc_path</span>,</span>
 <span>                              instructions <span class="op">=</span> <span class="va">instructions</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Add additional metadata</span></span>
-<span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">meta_path</span><span class="op">)</span></span>
+<span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">meta_path</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">testobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addCellMetadata.html" class="external-link">addCellMetadata</a></span><span class="op">(</span><span class="va">testobj</span>, </span>
+<span><span class="va">testobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/addCellMetadata.html" class="external-link">addCellMetadata</a></span><span class="op">(</span><span class="va">testobj</span>, </span>
 <span>                           new_metadata <span class="op">=</span> <span class="va">metadata</span><span class="op">$</span><span class="va">layer_ID</span>, </span>
 <span>                           vector_name <span class="op">=</span> <span class="st">"layer_ID"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">testobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addCellMetadata.html" class="external-link">addCellMetadata</a></span><span class="op">(</span><span class="va">testobj</span>, </span>
+<span><span class="va">testobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/addCellMetadata.html" class="external-link">addCellMetadata</a></span><span class="op">(</span><span class="va">testobj</span>, </span>
 <span>                           new_metadata <span class="op">=</span> <span class="va">metadata</span><span class="op">$</span><span class="va">orig_cell_types</span>, </span>
 <span>                           vector_name <span class="op">=</span> <span class="st">"orig_cell_types"</span><span class="op">)</span></span>
 <span></span>
@@ -812,7 +812,7 @@ create Leiden clusters. The clusters may be visualized in 2D or 3D, as
 well as upon the UMAP and within the tissue.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a k Nearest Network for clustering</span></span>
-<span><span class="va">testobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testobj</span>, </span>
+<span><span class="va">testobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testobj</span>, </span>
 <span>                                dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">8</span>, </span>
 <span>                                k <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -946,7 +946,7 @@ assignment.</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">clusters_cell_types</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">cluster_range</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">testobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/annotateGiotto.html" class="external-link">annotateGiotto</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testobj</span>, </span>
+<span><span class="va">testobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/annotateGiotto.html" class="external-link">annotateGiotto</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testobj</span>, </span>
 <span>                          annotation_vector <span class="op">=</span> <span class="va">clusters_cell_types</span>,</span>
 <span>                          cluster_column <span class="op">=</span> <span class="st">"leiden_0.25.200"</span>, </span>
 <span>                          name <span class="op">=</span> <span class="st">"cell_types"</span><span class="op">)</span></span>
@@ -957,7 +957,7 @@ assignment.</p>
 <span></span>
 <span><span class="co"># This Giotto function will provide a distinct color palette. Colors </span></span>
 <span><span class="co"># may change each time the function is run. </span></span>
-<span><span class="va">giotto_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoUtils/reference/getDistinctColors.html" class="external-link">getDistinctColors</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">cell_types_in_plot</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">giotto_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoUtils/man/getDistinctColors.html" class="external-link">getDistinctColors</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">cell_types_in_plot</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">giotto_colors</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">cell_types_in_plot</span></span>
 <span></span>
@@ -1039,23 +1039,23 @@ k-nearest networks, will be shown.</p>
 <p><img src="images/visualizations/delaunay_network.png" alt="" width="80%"></p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create Spatial Network using Delaunay geometry</span></span>
-<span><span class="va">testobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testobj</span>, </span>
+<span><span class="va">testobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testobj</span>, </span>
 <span>                                delaunay_method <span class="op">=</span> <span class="st">"delaunayn_geometry"</span>, </span>
 <span>                                minimum_k <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>                                maximum_distance_delaunay <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create Spatial Networks using k-nearest neighbor with varying specifications</span></span>
-<span><span class="va">testobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testobj</span>, </span>
+<span><span class="va">testobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testobj</span>, </span>
 <span>                                method <span class="op">=</span> <span class="st">"kNN"</span>, </span>
 <span>                                k <span class="op">=</span> <span class="fl">5</span>, </span>
 <span>                                name <span class="op">=</span> <span class="st">"spatial_network"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">testobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testobj</span>, </span>
+<span><span class="va">testobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testobj</span>, </span>
 <span>                                method <span class="op">=</span> <span class="st">"kNN"</span>, </span>
 <span>                                k <span class="op">=</span> <span class="fl">10</span>, </span>
 <span>                                name <span class="op">=</span> <span class="st">"large_network"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">testobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testobj</span>, </span>
+<span><span class="va">testobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">testobj</span>, </span>
 <span>                                method <span class="op">=</span> <span class="st">"kNN"</span>, </span>
 <span>                                k <span class="op">=</span> <span class="fl">100</span>, </span>
 <span>                                maximum_distance_knn <span class="op">=</span> <span class="fl">200</span>, </span>
@@ -1064,16 +1064,16 @@ k-nearest networks, will be shown.</p>
 <span></span>
 <span><span class="co"># Now, visualize the different spatial networks in one layer of the dataset</span></span>
 <span><span class="co"># Here layer 260 is selected, and only high expressing cells are included</span></span>
-<span><span class="va">cell_metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/getCellMetadata.html" class="external-link">getCellMetadata</a></span><span class="op">(</span><span class="va">testobj</span>,</span>
+<span><span class="va">cell_metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/getCellMetadata.html" class="external-link">getCellMetadata</a></span><span class="op">(</span><span class="va">testobj</span>,</span>
 <span>                                 output <span class="op">=</span> <span class="st">"data.table"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">highexp_ids</span> <span class="op">&lt;-</span> <span class="va">cell_metadata</span><span class="op">[</span><span class="va">layer_ID</span> <span class="op">==</span> <span class="fl">260</span><span class="op">]</span><span class="op">[</span><span class="va">total_expr</span> <span class="op">&gt;=</span> <span class="fl">100</span><span class="op">]</span><span class="op">$</span><span class="va">cell_ID</span></span>
 <span></span>
-<span><span class="va">subtestobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/subsetGiotto.html" class="external-link">subsetGiotto</a></span><span class="op">(</span><span class="va">testobj</span>, </span>
+<span><span class="va">subtestobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/subsetGiotto.html" class="external-link">subsetGiotto</a></span><span class="op">(</span><span class="va">testobj</span>, </span>
 <span>                           cell_ids <span class="op">=</span> <span class="va">highexp_ids</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Re-annotate the subset Giotto Object</span></span>
-<span><span class="va">subtestobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/annotateGiotto.html" class="external-link">annotateGiotto</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">subtestobj</span>, </span>
+<span><span class="va">subtestobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/annotateGiotto.html" class="external-link">annotateGiotto</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">subtestobj</span>, </span>
 <span>                             annotation_vector <span class="op">=</span> <span class="va">clusters_cell_types</span>,</span>
 <span>                             cluster_column <span class="op">=</span> <span class="st">"leiden_0.25.200"</span>, </span>
 <span>                             name <span class="op">=</span> <span class="st">"cell_types"</span><span class="op">)</span></span></code></pre></div>

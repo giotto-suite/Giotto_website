@@ -449,7 +449,7 @@
           <a href="../articles/spatial_transformations.html">Spatial transformations</a>
         </li>
         <li>
-          <a href="https://drieslab.github.io/GiottoClass/articles/spatial_geometries.html" class="external-link">Spatial geometries</a>
+          <a href="https://giotto-suite.github.io/GiottoClass/articles/spatial_geometries.html" class="external-link">Spatial geometries</a>
         </li>
       </ul>
 </li>
@@ -618,7 +618,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/drieslab/Giotto/" class="external-link">
+  <a href="https://github.com/giotto-suite/Giotto/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
 
   </a>
@@ -665,17 +665,17 @@ Giotto<a class="anchor" aria-label="anchor" href="#setup-and-load-giotto"></a>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"drieslab/Giotto"</span><span class="op">)</span></span>
+<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/Giotto"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://drieslab.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Ensure the Python environment for Giotto has been installed</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="co"># The following command need only be run once to install the Giotto environment</span></span>
-<span>  <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2" number="2">
@@ -684,7 +684,7 @@ Giotto<a class="anchor" aria-label="anchor" href="#setup-and-load-giotto"></a>
 dataset<a class="anchor" aria-label="anchor" href="#download-the-dataset"></a>
 </h2>
 <p>Download the visium brain processed object. You can see more
-information and the step-by-step analysis in the <a href="https://drieslab.github.io/Giotto_website/articles/visium_mouse_brain.html">tutorial</a>.</p>
+information and the step-by-step analysis in the <a href="https://giotto-suite.github.io/Giotto_website/articles/visium_mouse_brain.html">tutorial</a>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>timeout <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span> <span class="co"># Needed to download large files</span></span>
 <span></span>
@@ -725,7 +725,7 @@ following commands:</p>
 data<a class="anchor" aria-label="anchor" href="#load-the-visium-data"></a>
 </h2>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/loadGiotto.html" class="external-link">loadGiotto</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"01_session5/visium_brain_object/"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/loadGiotto.html" class="external-link">loadGiotto</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"01_session5/visium_brain_object/"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="5">
 <h2 id="identifying-spatially-organized-features">
@@ -735,7 +735,7 @@ organized features<a class="anchor" aria-label="anchor" href="#identifying-spati
 <p>We need to identify genes to be used for interpolation. This works
 best with genes that are spatially distinct. The more genes used for
 interpolation the longer the analysis will take. See the tutorial for
-the <a href="https://drieslab.github.io/Giotto_website/articles/spatial_genes.html">Detection
+the <a href="https://giotto-suite.github.io/Giotto_website/articles/spatial_genes.html">Detection
 of spatial genes</a> for more information about this step.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ranktest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/binSpect.html">binSpect</a></span><span class="op">(</span><span class="va">g</span>, </span>
@@ -770,7 +770,7 @@ required.</p>
 the gene expression. You can see the list of new images added to the
 Giotto object running the following command:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/showGiottoImageNames.html" class="external-link">showGiottoImageNames</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/showGiottoImageNames.html" class="external-link">showGiottoImageNames</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="7">
 <h2 id="adding-cell-polygons-to-giotto-object">
@@ -791,7 +791,7 @@ object.</p>
 <code class="sourceCode R"><span><span class="co"># Read in the data</span></span>
 <span><span class="va">stardist_cell_poly_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"segmentations/stardist_only_cell_bounds.geojson"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">stardist_cell_gpoly</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygonsFromGeoJSON</a></span><span class="op">(</span>GeoJSON <span class="op">=</span> <span class="va">stardist_cell_poly_path</span>,</span>
+<span><span class="va">stardist_cell_gpoly</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createGiottoPolygon.html" class="external-link">createGiottoPolygonsFromGeoJSON</a></span><span class="op">(</span>GeoJSON <span class="op">=</span> <span class="va">stardist_cell_poly_path</span>,</span>
 <span>                                                       name <span class="op">=</span> <span class="st">"stardist_cell"</span>,</span>
 <span>                                                       calc_centroids <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
@@ -821,7 +821,7 @@ giotto object<a class="anchor" aria-label="anchor" href="#adding-polygons-to-gio
 <p>After we add the nuclei polygons we can see that a new polygon name,
 “stardist_cell” has been added to the gobject.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addGiottoPolygons.html" class="external-link">addGiottoPolygons</a></span><span class="op">(</span><span class="va">g</span>, </span>
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/addGiottoPolygons.html" class="external-link">addGiottoPolygons</a></span><span class="op">(</span><span class="va">g</span>, </span>
 <span>                       gpolygons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"stardist_cell"</span> <span class="op">=</span> <span class="va">stardist_cell_gpoly</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3" number="7.4">
@@ -835,7 +835,7 @@ shown below. Each polygon is also added into same space as the original
 visium spots, therefore line up with the same image as the visium
 spots.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/getPolygonInfo.html" class="external-link">getPolygonInfo</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/getPolygonInfo.html" class="external-link">getPolygonInfo</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>               polygon_name <span class="op">=</span> <span class="st">"stardist_cell"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
@@ -851,12 +851,12 @@ expression image to the polygons supplied earlier.</p>
 large datasets please allow up to multiple hours for these steps to
 run.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlapPolygonImages.html" class="external-link">calculateOverlapPolygonImages</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">g</span>,</span>
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/calculateOverlapPolygonImages.html" class="external-link">calculateOverlapPolygonImages</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">g</span>,</span>
 <span>                                   name_overlap <span class="op">=</span> <span class="st">"rna"</span>,</span>
 <span>                                   spatial_info <span class="op">=</span> <span class="st">"stardist_cell"</span>,</span>
 <span>                                   image_names <span class="op">=</span> <span class="va">ext_spatial_features</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">g</span>,</span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">g</span>,</span>
 <span>                     poly_info <span class="op">=</span> <span class="st">"stardist_cell"</span>,</span>
 <span>                     feat_info <span class="op">=</span> <span class="st">"rna"</span>,</span>
 <span>                     aggr_function <span class="op">=</span> <span class="st">"sum"</span>,</span>
