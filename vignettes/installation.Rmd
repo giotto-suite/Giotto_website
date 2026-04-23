@@ -12,7 +12,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-If you prefer to test Giotto Suite first without installing everything, check the tutorials for using Giotto Suite with our [Docker](https://drieslab.github.io/Giotto_website/articles/docker.html) and [Singularity](https://drieslab.github.io/Giotto_website/articles/singularity.html) containers.
+If you prefer to test Giotto Suite first without installing everything, check the tutorials for using Giotto Suite with our [Docker](https://giotto-suite.github.io/Giotto_website/articles/docker.html) and [Singularity](https://giotto-suite.github.io/Giotto_website/articles/singularity.html) containers.
 
 # 1. Prerequisite packages:
 
@@ -80,7 +80,7 @@ if(!"pak" %in% installed.packages()) {
   install.packages("pak")
 }
 
-pak::pkg_install("drieslab/Giotto")
+pak::pkg_install("giotto-suite/Giotto")
 ```
 
 This should automatically install all the Giotto dependencies and other Giotto module packages (main branch).
@@ -92,10 +92,10 @@ This should automatically install all the Giotto dependencies and other Giotto m
 First ensure that you have {devools} and {GiottoUtils} installed:
 
 ```{r, eval=FALSE}
-devtools::install_github("drieslab/GiottoUtils") # you can add the `@branch` desired tag here
+devtools::install_github("giotto-suite/GiottoUtils") # you can add the `@branch` desired tag here
 ```
 
-Then you can run `suite_install()` with `ref` param pointing to the desired version of the package. Please see [here](https://drieslab.github.io/GiottoUtils/reference/suite_install.html) for further info.
+Then you can run `suite_install()` with `ref` param pointing to the desired version of the package. Please see [here](https://giotto-suite.github.io/GiottoUtils/reference/suite_install.html) for further info.
 
 ```{r, eval=FALSE}
 GiottoUtils::suite_install(ref = ???)
@@ -105,16 +105,16 @@ GiottoUtils::suite_install(ref = ???)
 
 ## [**Option3**] Manual
 
-Giotto Suite is a set of [modular packages](https://drieslab.github.io/Giotto_website/articles/ecosystem.html) and {pak} tends to forcibly install the stable version despite dev versions with higher version numbers. This can make it difficult to install the dev branch.
+Giotto Suite is a set of [modular packages](https://giotto-suite.github.io/Giotto_website/articles/ecosystem.html) and {pak} tends to forcibly install the stable version despite dev versions with higher version numbers. This can make it difficult to install the dev branch.
 
 Instead, you can install dev branch versions by using `devtools::install_github()` alongside one of the following dev branch paths as shown below. Do not update other Giotto modules that should be installed from dev branch if prompted.
 
 Core module dev branchs:
 
-- `"drieslab/Giotto@suite_dev"`
-- `"drieslab/GiottoVisuals@dev"`
-- `"drieslab/GiottoClass@dev"`
-- `"drieslab/GiottoUtils@dev"`
+- `"giotto-suite/Giotto@suite_dev"`
+- `"giotto-suite/GiottoVisuals@dev"`
+- `"giotto-suite/GiottoClass@dev"`
+- `"giotto-suite/GiottoUtils@dev"`
 
 ```{r, eval=FALSE}
 if(!"devtools" %in% installed.packages()) {
@@ -136,11 +136,11 @@ installGiottoEnvironment()
 
 # Try Giotto in the cloud
 
-You can also run analyses in Giotto on Terra.bio. Take a look on the [Terra tutorial](https://drieslab.github.io/Giotto_website/articles/terra.html).
+You can also run analyses in Giotto on Terra.bio. Take a look on the [Terra tutorial](https://giotto-suite.github.io/Giotto_website/articles/terra.html).
 
 # Help
 
-Encountering errors? See our [Troubleshooting page](https://drieslab.github.io/Giotto_website/articles/troubleshooting.html) or post to an issue to the Giotto GitHub page [here](https://github.com/drieslab/Giotto). Please include the version numbers of R, Giotto, and the OS in use at the time of the issue.
+Encountering errors? See our [Troubleshooting page](https://giotto-suite.github.io/Giotto_website/articles/troubleshooting.html) or post to an issue to the Giotto GitHub page [here](https://github.com/giotto-suite/Giotto). Please include the version numbers of R, Giotto, and the OS in use at the time of the issue.
 
 
 

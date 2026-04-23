@@ -21,7 +21,7 @@ Kriging is a spatial interpolation technique that estimates unknown values at sp
 ```{r, eval=FALSE}
 # Ensure Giotto Suite is installed
 if(!"Giotto" %in% installed.packages()) {
-  pak::pkg_install("drieslab/Giotto")
+  pak::pkg_install("giotto-suite/Giotto")
 }
 
 library(Giotto)
@@ -37,7 +37,7 @@ if(!genv_exists){
 
 # Download the dataset
 
-Download the visium brain processed object. You can see more information and the step-by-step analysis in the [tutorial](https://drieslab.github.io/Giotto_website/articles/visium_mouse_brain.html). 
+Download the visium brain processed object. You can see more information and the step-by-step analysis in the [tutorial](https://giotto-suite.github.io/Giotto_website/articles/visium_mouse_brain.html). 
 
 ```{r, eval=FALSE}
 options(timeout = Inf) # Needed to download large files
@@ -75,7 +75,7 @@ g <- loadGiotto(file.path(data_path, "01_session5/visium_brain_object/"))
 
 # Identifying spatially organized features
 
-We need to identify genes to be used for interpolation. This works best with genes that are spatially distinct. The more genes used for interpolation the longer the analysis will take. See the tutorial for the [Detection of spatial genes](https://drieslab.github.io/Giotto_website/articles/spatial_genes.html) for more information about this step.
+We need to identify genes to be used for interpolation. This works best with genes that are spatially distinct. The more genes used for interpolation the longer the analysis will take. See the tutorial for the [Detection of spatial genes](https://giotto-suite.github.io/Giotto_website/articles/spatial_genes.html) for more information about this step.
 
 ```{r, eval=FALSE}
 ranktest <- binSpect(g, 
