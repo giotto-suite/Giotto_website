@@ -4,21 +4,21 @@
 We welcome contributions or suggestions from other developers. Please contact 
 us if you have questions or would like to discuss an addition or major 
 modifications to the Giotto main code. The source code for Giotto Suite may be 
-found on our [GitHub repository](https://github.com/drieslab/Giotto/).
+found on our [GitHub repository](https://github.com/giotto-suite/Giotto/).
 
 <br>
 
 # Pull request process
 
-The *Giotto* packages exist at the drieslab repository on GitHub. Some
+The *Giotto* packages exist at the giotto-suite repository on GitHub. Some
 guidelines for pull requests (PRs) are the following:
 
 -   Edits to code should start on a new and purpose-made branch based on
     the packages's dev branch (one of the following).
-    -   `drieslab/Giotto@suite_dev`
-    -   `drieslab/GiottoVisuals@dev`
-    -   `drieslab/GiottoClass@dev`
-    -   `drieslab/GiottoUtils@dev`
+    -   `giotto-suite/Giotto@suite_dev`
+    -   `giotto-suite/GiottoVisuals@dev`
+    -   `giotto-suite/GiottoClass@dev`
+    -   `giotto-suite/GiottoUtils@dev`
 -   PRs when ready, should then be made to dev branches of the *Giotto*
     modules.
 -   PRs will be reviewed by a core dev member after which a decision is
@@ -182,10 +182,10 @@ module.
 # Getters and Setters
 
 *Giotto* stores information in different
-[slots](https://drieslab.github.io/Giotto_website/articles/articles/structure.html#giotto-object-structure),
+[slots](https://giotto-suite.github.io/Giotto_website/articles/articles/structure.html#giotto-object-structure),
 which can be accessed through these getters and setters functions. They
 can be found in the
-[`accessors.R`](https://github.com/drieslab/Giotto/blob/suite/R/accessors.R)
+[`accessors.R`](https://github.com/giotto-suite/Giotto/blob/suite/R/accessors.R)
 file.
 
 `setGiotto()`: Sets any *Giotto* subobject
@@ -294,10 +294,10 @@ so that it does not get flagged by `devtools::check()`
 
 # Contributing tutorials to the website
 
-To add a new example to the website <https://drieslab.github.io/Giotto_website/>, please follow these steps:
+To add a new example to the website <https://giotto-suite.github.io/Giotto_website/>, please follow these steps:
 
 
-- **0.** Clone the Giotto_website repository from <https://github.com/drieslab/Giotto_website> 
+- **0.** Clone the Giotto_website repository from <https://github.com/giotto-suite/Giotto_website> 
    and switch to the "suite" branch.
 
 - **1.** Create a new .Rmd (R markdown) file under the folder "vignettes".
