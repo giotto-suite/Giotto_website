@@ -1,8 +1,5 @@
 name: Mirror from Upstream
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-  
 on:
   schedule:
     - cron: '0 0 * * *'  # Run daily at midnight
@@ -16,6 +13,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
+        node-version: '24'
         fetch-depth: 0  # Fetch all history for all branches and tags
 
     - name: Set up Git
