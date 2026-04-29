@@ -5,6 +5,10 @@ on:
     - cron: '0 0 * * *'  # Run daily at midnight
   workflow_dispatch:    # Allow manual trigger
 
+runs:
+  using: 'node24'
+  main: 'main.js'
+  
 jobs:
   mirror-from-upstream:
     runs-on: ubuntu-latest
