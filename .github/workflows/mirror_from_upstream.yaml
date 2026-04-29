@@ -1,5 +1,8 @@
 name: Mirror from Upstream
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  
 on:
   schedule:
     - cron: '0 0 * * *'  # Run daily at midnight
@@ -8,10 +11,6 @@ on:
 jobs:
   mirror-from-upstream:
     runs-on: ubuntu-latest
-    
-    runs:
-      using: 'node24'
-      main: 'main.js'
 
     steps:
     - name: Checkout repository
