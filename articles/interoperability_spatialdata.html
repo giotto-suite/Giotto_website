@@ -244,6 +244,9 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Stereo-seq</a>
       <ul class="dropdown-menu" role="menu">
 <li>
+          <a href="../articles/stereoseq_importer.html">Stereo-seq data importer</a>
+        </li>
+        <li>
           <a href="../articles/stereoseq_mouse_eyeball.html">Stereo-seq Mouse eyeball</a>
         </li>
       </ul>
@@ -646,8 +649,9 @@
 
     
     
-<div class="section level2">
-<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+<div class="section level2" number="1">
+<h2 id="introduction">
+<span class="header-section-number">1</span> Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>SpatialData is a versatile data framework for processing spatial
 omics data in python. This tutorial demonstrates how to convert Giotto
@@ -655,8 +659,10 @@ objects to and from SpatialData object using
 <code><a href="https://rdrr.io/pkg/GiottoClass/man/giottoToSpatialData.html" class="external-link">giottoToSpatialData()</a></code> and
 <code><a href="https://rdrr.io/pkg/GiottoClass/man/spatialdataToGiotto.html" class="external-link">spatialdataToGiotto()</a></code>.</p>
 </div>
-<div class="section level2">
-<h2 id="set-up-giotto-environment">Set up Giotto Environment<a class="anchor" aria-label="anchor" href="#set-up-giotto-environment"></a>
+<div class="section level2" number="2">
+<h2 id="set-up-giotto-environment">
+<span class="header-section-number">2</span> Set up Giotto
+Environment<a class="anchor" aria-label="anchor" href="#set-up-giotto-environment"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed.</span></span>
@@ -686,8 +692,10 @@ objects to and from SpatialData object using
 <span><span class="co"># environment. If set to NULL (default), the Python executable within the previously</span></span>
 <span><span class="co"># installed Giotto environment will be used.</span></span>
 <span><span class="va">python_path</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></code></pre></div>
-<div class="section level3">
-<h3 id="create-a-mini-giotto-object">Create a mini Giotto object<a class="anchor" aria-label="anchor" href="#create-a-mini-giotto-object"></a>
+<div class="section level3" number="2.1">
+<h3 id="create-a-mini-giotto-object">
+<span class="header-section-number">2.1</span> Create a mini Giotto
+object<a class="anchor" aria-label="anchor" href="#create-a-mini-giotto-object"></a>
 </h3>
 <p>For the purpose of this demonstration, the pre-processed and analyzed
 10X Visium Giotto mini object will be used. To test on different
@@ -704,8 +712,10 @@ datasets, you can choose from ‘visium’, ‘vizgen’, ‘cosmx’,
 <span><span class="co"># Replace saving directory</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="va">mini_gobject</span>, <span class="st">"save_dir"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">results_folder</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="giottotospatialdata">giottoToSpatialData()<a class="anchor" aria-label="anchor" href="#giottotospatialdata"></a>
+<div class="section level3" number="2.2">
+<h3 id="giottotospatialdata">
+<span class="header-section-number">2.2</span>
+giottoToSpatialData()<a class="anchor" aria-label="anchor" href="#giottotospatialdata"></a>
 </h3>
 <p>When converting a Giotto object to a SpatialData object, please note
 that you must supply a known spot radius for your corresponding dataset
@@ -724,8 +734,10 @@ SpatialData object in Python like this:</p>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>converted_spatialdata <span class="op">=</span> SpatialData.read(r.results_folder)</span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="spatialdatatogiotto">spatialDataToGiotto()<a class="anchor" aria-label="anchor" href="#spatialdatatogiotto"></a>
+<div class="section level3" number="2.3">
+<h3 id="spatialdatatogiotto">
+<span class="header-section-number">2.3</span>
+spatialDataToGiotto()<a class="anchor" aria-label="anchor" href="#spatialdatatogiotto"></a>
 </h3>
 <p>If you have your own SpatialData object that you have been using on
 your analysis and would like to convert it to Giotto object, you must
@@ -746,8 +758,9 @@ file or a list of the names of the keys for these networks.</p>
 <span>                                         spatial_n_key_added <span class="op">=</span> <span class="st">"cell_rna_spatial_network_keys_added.txt"</span>,</span>
 <span>                                         python_path <span class="op">=</span> <span class="va">python_path</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+<div class="section level3" number="2.4">
+<h3 id="session-info">
+<span class="header-section-number">2.4</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -757,7 +770,9 @@ file or a list of the names of the keys for these networks.</p>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-      </div>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
+</div>
 
 </div>
 
