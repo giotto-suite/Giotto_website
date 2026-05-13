@@ -1,0 +1,380 @@
+---
+title: "Core Functions"
+output: 
+  html_document:
+    number_sections: true
+    toc: true
+pkgdown:
+  as_is: true
+vignette: >
+  %\VignetteIndexEntry{Core Functions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Load example dataset
+```{r, eval=FALSE}
+# Ensure Giotto Suite is installed.
+if(!"Giotto" %in% installed.packages()) {
+  pak::pkg_install("giotto-suite/Giotto")
+}
+
+# Ensure the Python environment for Giotto has been installed.
+genv_exists <- Giotto::checkGiottoEnvironment()
+if(!genv_exists){
+  # The following command need only be run once to install the Giotto environment.
+  Giotto::installGiottoEnvironment()
+}
+```
+
+```{r, eval=FALSE}
+library(Giotto)
+g <- GiottoData::loadGiottoMini("vizgen")
+
+# drop pre-computed information (these steps can be ignored)
+data_list <- c(g[["images"]], g[["spatial_info"]], g[["feat_info"]])
+g <- giotto()
+g <- setGiotto(g, data_list)
+```
+
+
+# Spatial Aggregation (subcellular data only)
+For use with raw subcellular data that has spatial boundaries/polygon annotations and spatial features. Find overlapped feature information and convert to a matrix.
+Other examples can be found in the [object creation](object_creation.html) tutorial.
+```{r, eval=FALSE}
+# overlap of feature points with polygons
+g <- calculateOverlap(g)
+g <- overlapToMatrix(g)
+
+# specifically use a polygon set & subset of points
+g <- calculateOverlap(g,
+    spatial_info = "z0", # use polygons from z0
+    feat_subset_column = "global_z",
+    feat_subset_ids = 0
+)
+g <- overlapToMatrix(g)
+
+# overlap of image intensity values with polygons
+g <- calculateOverlap(g, 
+    image_names = c("dapi_z0", "dapi_z1"),
+    name_overlap = "image" # default name would be "protein" for image overlaps
+)
+g <- overlapToMatrix(g,
+    type = "intensity", 
+    feat_info = "image"
+)
+
+# combine overlaps data from multiple spatial units (intended for z stack data)
+# also calculate z1
+g <- calculateOverlap(g,
+    spatial_info = "z1", # use polygons from z1
+    feat_subset_column = "global_z",
+    feat_subset_ids = 1
+)
+g <- overlapToMatrix(g, poly_info = "z1")
+g = aggregateStacks(g,
+    spat_units = c("z0", "z1"),
+    feat_type = "rna",
+    new_spat_unit = "aggregate",
+    values = "raw"
+)
+```
+
+# Set default Spatial Unit and Feature Type
+```{r, eval = FALSE}
+# setting active spatial unit and feature type
+activeSpatUnit(g) <- "aggregate"
+activeFeatType(g) <- "rna"
+```
+
+# Spatial Centroid Calculation (polygon annotations only)
+
+```{r, eval=FALSE}
+g <- addSpatialCentroidLocations(g, poly_info = "aggregate")
+``` 
+
+# Standard workflow
+
+For more detail, see the [standard workflow](general_workflow.html) vignette
+```{r, eval=FALSE}
+g <- filterGiotto(g,
+    expression_threshold = 1,
+    feat_det_in_min_cells = 3,
+    min_det_feats_per_cell = 5
+)
+g <- normalizeGiotto(g)
+g <- addStatistics(g)
+g <- runPCA(g)
+g <- runUMAP(g, dimensions_to_use = 1:20)
+g <- createNearestNetwork(g, dimensions_to_use = 1:20)
+g <- doLeidenCluster(g)
+dimPlot2D(g, cell_color = "leiden_clus")
+``` 
+
+
+# Data Access
+
+## Giotto Object Names and Dimensions
+*Available with dev version 0.4.0 of GiottoClass*
+```{r, eval = FALSE}
+# Feature IDs
+rownames(g)
+featIDs(g)
+
+# Spatial IDs (cells or spots)
+colnames(g)
+spatIDs(g)
+
+# both sets of IDs
+dimnames(g)
+
+# Select specific sets of IDs
+featIDs(g, subset = total_expr >= 500)
+spatIDs(g, subset = leiden_clus %in% c(4, 5))
+spatIDs(g, subset = leiden_clus %in% c(4, 5), negate = TRUE)
+
+# number of cells and features
+ncol(g)
+nrow(g)
+dim(g)
+```
+
+## Metadata
+```{r, eval=FALSE}
+# feature metadata
+fDataDT(g)
+
+# cell metadata
+pDataDT(g)
+
+# get specific values from cell metadata
+g$leiden_clus
+
+# set values directly into cell metadata
+# this is safest when directly using values from another metadata column
+# since cell_IDs and their ordering may not as expected.
+g$leiden_clus2 <- sprintf("clus_%s", g$leiden_clus)
+force(g$leiden_clus2)
+
+# annotate based on another column
+g <- annotateGiotto(g, 
+    name = "region",
+    cluster_column = "leiden_clus",
+    annotation_vector = c(
+        "1" = "a",
+        "2" = "b",
+        "3" = "c",
+        "4" = "a",
+        "5" = "d",
+        "6" = "b"
+    )
+)
+spatPlot2D(g, cell_color = "region")
+
+# merge in table of values to metadata
+ann <- data.frame(
+    cell_ID = spatIDs(g),
+    random = rnorm(ncol(g))
+)
+force(ann)
+g <- addCellMetadata(g,
+    new_metadata = ann,
+    by_column = TRUE,
+    column_cell_ID = "cell_ID"
+)
+pDataDT(g)
+```
+
+## Giotto Subobjects
+Giotto subobjects carry their own metadata about where they should be in
+the object. There are several specific getter and setter functions.
+GiottoClass 0.4.0 introduces some common APIs
+```{r, eval=FALSE}
+# also see ?subset_giotto_subobjects
+# get any of: “spatial_info”, “spatial_locs”, “spatial_network”, “feat_info”,
+#  “expression”, “cell_metadata”, “feat_metadata”, “spatial_enrichment”, 
+#  “nn_network”, “dimension_reduction”, “multiomics”, “images"
+#  Output is as a list of objects
+g[["expression"]]
+
+# be more specific with object name
+a <- g[["expression", "raw"]] # (4 items)
+# further filter by requested spatial unit. feat_type can also be used.
+b <- g[["expression", "raw", spat_unit = "aggregate"]] # (only 1 item)
+
+# any subobject can be set into the Giotto object using setGiotto
+g <- setGiotto(g, b)
+g <- setGiotto(g, a) # multiple objects can be set at once. 
+# Validity is only checked once all items are added.
+
+# pull out all the subobjects of a giotto object
+as.list(g)
+
+# Giotto subobjects are S4 structures. They usually wrap a core data object
+# This can be extracted using an empty call to `[`
+a[[1]][]
+```
+
+## Spatial Subobject Coordinates
+
+```{r, eval=FALSE}
+# Accessing terra object spatial values can be done either through as.data.table()
+gpoly <- g[["spatial_info", "aggregate"]][[1]]
+gpoints <- g[["feat_info", "rna"]][[1]]
+
+data.table::as.data.table(gpoly, geom = "XY")
+data.table::as.data.table(gpoints, geom = "XY")
+data.table::as.data.table(gpoly, geom = "WKT")
+data.table::as.data.table(gpoly, geom = "HEX")
+
+# or XY() (GiottoClass 0.4.0 or greater) which works for all spatial objects
+# and retrieves xy(z) coordinates as `matrix` and sets them
+sl <- g[["spatial_locs", "raw"]][[1]]
+
+# get
+m1 <- XY(sl)
+m2 <- XY(gpoly)
+m3 <- XY(gpoints)
+XY(gpoly[1]) # vertices from first polygon
+
+# set
+XY(sl) <- m1
+XY(gpoly) <- m2
+XY(gpoints) <- m3
+```
+
+## spatValues
+
+```{r, eval=FALSE}
+# See also ?spatValues
+# spatValues can pull data from any of: 
+# cell expression, cell metadata, spatial locations, spatial enrichment, 
+# dimension reduction, polygon info
+# The values will be provided as a data.table with the cell_IDs
+spatValues(g, feats = c("leiden_clus", "nr_feats"))
+# The first object found will be selected by default.
+# It is possible to be more specific by mentioning the name of the object to check
+spatValues(g, feats = c("Pdgfra", "Mlc1"), expression_values = "normalized")
+# Pulling values from multiple spatial units
+spatValues(g, feats = c("Pdgfra", "Mlc1"), spat_unit = c("aggregate", "z0", "z1"))
+```
+
+
+# Subset and Join
+
+## Subsetting objects
+GiottoClass 0.4.0 introduces `[` and `subset` generic subsetting
+```{r, eval=FALSE}
+# also see `subset_giotto`
+# subset by i (features) and j (observations)
+g[1:200, 1:300]
+
+subset(g, subset = leiden_clus %in% c(4, 5))
+subset(g, subset = leiden_clus %in% c(4, 5), negate = TRUE)
+
+# The older subsetGiotto() can also be used.
+subsetGiotto(g, cell_ids = spatIDs(g)[1:300], feat_ids = featIDs(g)[1:200])
+
+# subset by spatial locations centroids
+subsetGiottoLocs(g, y_max = -4900)
+
+# subset subcellular (used when no aggregate information has been calculated yet)
+subsetGiottoLocsSubcellular(g, y_max = -4900) # will not work now
+```
+
+
+## Joining objects
+
+```{r, eval=FALSE}
+# join objects (without integration) into a single object so that they can be
+# analyzed in a common spatial and expression space.
+
+# This updates the cell_IDs and image names, and adds a new `list_ID` column in cell metadata
+
+# dry run can be turned on to preview the spatial positioning of the objects after joining.
+joinGiottoObjects(list(g, g), gobject_names = c("a", "b"), dry_run = TRUE)
+
+j <- joinGiottoObjects(list(g, g), gobject_names = c("a", "b"))
+```
+
+For a more information, see the object [splitting and joining](split_join.html) tutorial
+
+
+## Splitting objects
+
+```{r, eval=FALSE}
+# split a Giotto object into a list of multiple smaller ones based on a cell metadata column
+splitGiotto(g, "leiden_clus")
+```
+
+## Slicing objects
+
+```{r, eval=FALSE}
+# slice the giotto object based on spatial unit and feature type
+z0 <- sliceGiotto(g, spat_unit = "z0")
+```
+
+# Session Info  
+```{r, eval=FALSE}
+sessionInfo()
+```
+```
+R version 4.4.1 (2024-06-14)
+Platform: aarch64-apple-darwin20
+Running under: macOS Sonoma 14.4
+
+Matrix products: default
+BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/New_York
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] Giotto_4.1.3      GiottoClass_0.4.0
+
+loaded via a namespace (and not attached):
+  [1] colorRamp2_0.1.0            DBI_1.2.3                   deldir_2.0-4               
+  [4] rlang_1.1.4                 magrittr_2.0.3              GiottoUtils_0.2.0          
+  [7] matrixStats_1.4.1           e1071_1.7-14                compiler_4.4.1             
+ [10] png_0.1-8                   vctrs_0.6.5                 pkgconfig_2.0.3            
+ [13] SpatialExperiment_1.14.0    crayon_1.5.3                fastmap_1.2.0              
+ [16] backports_1.5.0             magick_2.8.4                XVector_0.44.0             
+ [19] labeling_0.4.3              utf8_1.2.4                  rmarkdown_2.28             
+ [22] UCSC.utils_1.0.0            purrr_1.0.2                 xfun_0.47                  
+ [25] beachmat_2.20.0             zlibbioc_1.50.0             GenomeInfoDb_1.40.0        
+ [28] jsonlite_1.8.9              DelayedArray_0.30.0         BiocParallel_1.38.0        
+ [31] terra_1.7-78                irlba_2.3.5.1               parallel_4.4.1             
+ [34] R6_2.5.1                    RColorBrewer_1.1-3          reticulate_1.39.0          
+ [37] GenomicRanges_1.56.0        scattermore_1.2             Rcpp_1.0.13                
+ [40] SummarizedExperiment_1.34.0 knitr_1.48                  R.utils_2.12.3             
+ [43] FNN_1.1.4.1                 IRanges_2.38.0              Matrix_1.7-0               
+ [46] igraph_2.0.3                tidyselect_1.2.1            rstudioapi_0.16.0          
+ [49] abind_1.4-8                 codetools_0.2-20            lattice_0.22-6             
+ [52] tibble_3.2.1                Biobase_2.64.0              withr_3.0.1                
+ [55] evaluate_1.0.0              sf_1.0-16                   units_0.8-5                
+ [58] proxy_0.4-27                exactextractr_0.10.0        pillar_1.9.0               
+ [61] MatrixGenerics_1.16.0       KernSmooth_2.23-24          checkmate_2.3.2            
+ [64] stats4_4.4.1                plotly_4.10.4               generics_0.1.3             
+ [67] dbscan_1.2-0                sp_2.1-4                    S4Vectors_0.42.0           
+ [70] ggplot2_3.5.1               munsell_0.5.1               scales_1.3.0               
+ [73] GiottoData_0.2.15           gtools_3.9.5                class_7.3-22               
+ [76] glue_1.8.0                  lazyeval_0.2.2              tools_4.4.1                
+ [79] GiottoVisuals_0.2.5         data.table_1.16.0           ScaledMatrix_1.12.0        
+ [82] cowplot_1.1.3               grid_4.4.1                  tidyr_1.3.1                
+ [85] colorspace_2.1-1            SingleCellExperiment_1.26.0 GenomeInfoDbData_1.2.12    
+ [88] raster_3.6-26               BiocSingular_1.20.0         rsvd_1.0.5                 
+ [91] cli_3.6.3                   fansi_1.0.6                 S4Arrays_1.4.0             
+ [94] viridisLite_0.4.2           dplyr_1.1.4                 uwot_0.2.2                 
+ [97] gtable_0.3.5                R.methodsS3_1.8.2           digest_0.6.37              
+[100] BiocGenerics_0.50.0         classInt_0.4-10             SparseArray_1.4.1          
+[103] ggrepel_0.9.6               farver_2.1.2                rjson_0.2.21               
+[106] htmlwidgets_1.6.4           htmltools_0.5.8.1           R.oo_1.26.0                
+[109] lifecycle_1.0.4             httr_1.4.7     
+```
