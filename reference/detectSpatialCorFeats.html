@@ -25,7 +25,7 @@ pieces of data (detectSpatialCorFeatsMatrix()) are provided."><!-- mathjax --><s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.3</span>
       </span>
     </div>
 
@@ -626,7 +626,7 @@ pieces of data (<code>detectSpatialCorFeatsMatrix()</code>) are provided.</p>
     <p>For <code>method = network</code>, it expects a fully connected spatial network.
 You can make sure to create a
 fully connected network by setting minimal_k &gt; 0 in the
-<code><a href="https://rdrr.io/pkg/GiottoClass/man/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></code> function.</p><ol><li><p><strong>grid-averaging:</strong> average gene expression values within a predefined
+<code><a href="https://drieslab.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></code> function.</p><ol><li><p><strong>grid-averaging:</strong> average gene expression values within a predefined
 spatial grid</p></li>
 <li><p><strong>network-averaging:</strong> smoothens the gene expression matrix by
 averaging the expression within one cell by using the neighbours within
@@ -648,9 +648,6 @@ contribution from its own expression.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 1. read Giotto object</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 2. read Giotto feature information</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 3. read Giotto spatial information</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 3.1 read Giotto spatial shape information</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 3.2 read Giotto spatial centroid information</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 3.3 read Giotto spatial overlap information</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 4. read Giotto image information</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> python already initialized in this session</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  active environment : '/usr/bin/python3'</span>
@@ -858,12 +855,12 @@ contribution from its own expression.</p></li>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># This analysis can also be performed with data outside of the gobject</span></span></span>
 <span class="r-in"><span><span class="fu">detectSpatialCorFeatsMatrix</span><span class="op">(</span></span></span>
-<span class="r-in"><span>    expression_matrix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/getExpression.html" class="external-link">getExpression</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    expression_matrix <span class="op">=</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/getExpression.html" class="external-link">getExpression</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>        <span class="va">g</span>,</span></span>
 <span class="r-in"><span>        output <span class="op">=</span> <span class="st">"matrix"</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span>,</span></span>
 <span class="r-in"><span>    method <span class="op">=</span> <span class="st">"network"</span>,</span></span>
-<span class="r-in"><span>    spatial_network <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/getSpatialNetwork.html" class="external-link">getSpatialNetwork</a></span><span class="op">(</span><span class="va">g</span>, output <span class="op">=</span> <span class="st">"networkDT"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    spatial_network <span class="op">=</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/getSpatialNetwork.html" class="external-link">getSpatialNetwork</a></span><span class="op">(</span><span class="va">g</span>, output <span class="op">=</span> <span class="st">"networkDT"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $cor_DT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               feat_ID      variable   spat_cor    expr_cor     cordiff spatrank</span>

@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.3</span>
       </span>
     </div>
 
@@ -854,14 +854,14 @@ the moving image (colorized green). Overlapping regions are colored
 become cyan.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># stationary (target): 1</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">images</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoUtils/man/getMonochromeColors.html" class="external-link">getMonochromeColors</a></span><span class="op">(</span><span class="st">"blue"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">images</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoUtils/reference/getMonochromeColors.html" class="external-link">getMonochromeColors</a></span><span class="op">(</span><span class="st">"blue"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># moving (source): 2</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span></span>
 <span>     <span class="co"># `pre_multiply` must be `TRUE` for affines from `calculateAffineMatrixFromLandmarks()`</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/affine.html" class="external-link">affine</a></span><span class="op">(</span><span class="va">images</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="va">affine_mtx</span>, pre_multiply <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/affine.html" class="external-link">affine</a></span><span class="op">(</span><span class="va">images</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="va">affine_mtx</span>, pre_multiply <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    add <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>    alpha <span class="op">=</span> <span class="fl">0.5</span>, </span>
-<span>    col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoUtils/man/getMonochromeColors.html" class="external-link">getMonochromeColors</a></span><span class="op">(</span><span class="st">"green"</span><span class="op">)</span><span class="op">)</span></span>
+<span>    col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoUtils/reference/getMonochromeColors.html" class="external-link">getMonochromeColors</a></span><span class="op">(</span><span class="st">"green"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/affine_registration/05_overlap_preview.png" alt="" width="60%" style="display: block; margin: auto;"></p>
 </div>
@@ -870,17 +870,17 @@ become cyan.</p>
 <span class="header-section-number">2.5</span> Align datasets<a class="anchor" aria-label="anchor" href="#align-datasets"></a>
 </h3>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">slices</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/affine.html" class="external-link">affine</a></span><span class="op">(</span><span class="va">slices</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="va">affine_mtx</span>, pre_multiply <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">j</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/joinGiottoObjects.html" class="external-link">joinGiottoObjects</a></span><span class="op">(</span><span class="va">slices</span>, </span>
+<code class="sourceCode R"><span><span class="va">slices</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/affine.html" class="external-link">affine</a></span><span class="op">(</span><span class="va">slices</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="va">affine_mtx</span>, pre_multiply <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">j</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects</a></span><span class="op">(</span><span class="va">slices</span>, </span>
 <span>    gobject_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"slice1"</span>, <span class="st">"slice2"</span><span class="op">)</span>,</span>
 <span>    join_method <span class="op">=</span> <span class="st">"z_stack"</span>,</span>
 <span>    z_vals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">50</span><span class="op">)</span> <span class="co"># this is a guess</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">j</span>, point_size <span class="op">=</span> <span class="fl">1.2</span>, cell_color <span class="op">=</span> <span class="st">"in_tissue"</span>, background_color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">j</span>, point_size <span class="op">=</span> <span class="fl">1.2</span>, cell_color <span class="op">=</span> <span class="st">"in_tissue"</span>, background_color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/affine_registration/06_spatplot_overlap.png" alt="" width="60%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">j</span>, point_size <span class="op">=</span> <span class="fl">2</span>, cell_color <span class="op">=</span> <span class="st">"in_tissue"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">j</span>, point_size <span class="op">=</span> <span class="fl">2</span>, cell_color <span class="op">=</span> <span class="st">"in_tissue"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/affine_registration/07_spatplot3d.png" alt="" width="60%" style="display: block; margin: auto;"></p>
 </div>
 </div>

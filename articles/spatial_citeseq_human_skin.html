@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.3</span>
       </span>
     </div>
 
@@ -678,10 +678,10 @@ section.</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Ensure the Python environment for Giotto has been installed</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="co"># The following command need only be run once to install the Giotto environment</span></span>
-<span>  <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2" number="3">
@@ -700,7 +700,7 @@ spatial coordinates table. Here we will use the RNA matrix.</p>
 <span>                      <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_split.html" class="external-link">str_split_fixed</a></span><span class="op">(</span><span class="va">spatial_coords</span><span class="op">$</span><span class="va">cell_ID</span>, </span>
 <span>                                                pattern <span class="op">=</span> <span class="st">"x"</span>,</span>
 <span>                                                n <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">spatial_coords</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sdimx"</span>, <span class="st">"sdimy"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">spatial_coords</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sdimx"</span>, <span class="st">"sdimy"</span><span class="op">)</span></span>
 <span><span class="va">spatial_coords</span><span class="op">$</span><span class="va">sdimx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">spatial_coords</span><span class="op">$</span><span class="va">sdimx</span><span class="op">)</span></span>
 <span><span class="va">spatial_coords</span><span class="op">$</span><span class="va">sdimy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">spatial_coords</span><span class="op">$</span><span class="va">sdimy</span><span class="op">)</span></span>
 <span><span class="va">spatial_coords</span><span class="op">$</span><span class="va">sdimy</span> <span class="op">&lt;-</span> <span class="va">spatial_coords</span><span class="op">$</span><span class="va">sdimy</span><span class="op">*</span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
@@ -716,7 +716,7 @@ feature x cell matrix to create the Giotto object.</p>
 <span></span>
 <span><span class="va">rna_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">rna_matrix</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">rna_matrix</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">spatial_coords</span><span class="op">$</span><span class="va">cell_ID</span></span>
+<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">rna_matrix</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">spatial_coords</span><span class="op">$</span><span class="va">cell_ID</span></span>
 <span></span>
 <span><span class="va">protein_matrix</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"GSE213264_RAW/GSM6578074_humanskin_protein.tsv.gz"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -726,7 +726,7 @@ feature x cell matrix to create the Giotto object.</p>
 <span></span>
 <span><span class="va">protein_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">protein_matrix</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">protein_matrix</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">spatial_coords</span><span class="op">$</span><span class="va">cell_ID</span></span></code></pre></div>
+<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">protein_matrix</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">spatial_coords</span><span class="op">$</span><span class="va">cell_ID</span></span></code></pre></div>
 </div>
 <div class="section level2" number="4">
 <h2 id="create-the-giotto-object">
@@ -743,32 +743,32 @@ saving options.</p>
 <span></span>
 <span><span class="va">results_folder</span> <span class="op">&lt;-</span> <span class="st">"/path/to/results/"</span></span>
 <span></span>
-<span><span class="va">instructions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span>save_plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span><span class="va">instructions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span>save_plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                                         save_dir <span class="op">=</span> <span class="va">results_folder</span>,</span>
 <span>                                         show_plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                                         return_plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>Create Giotto object using the RNA and Protein expression, as well as
 spatial positions.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span>expression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rna <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>raw <span class="op">=</span> <span class="va">rna_matrix</span><span class="op">)</span>,</span>
+<code class="sourceCode R"><span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span>expression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rna <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>raw <span class="op">=</span> <span class="va">rna_matrix</span><span class="op">)</span>,</span>
 <span>                                                         protein <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>raw <span class="op">=</span> <span class="va">protein_matrix</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>                                       expression_feat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"rna"</span>, <span class="st">"protein"</span><span class="op">)</span>,</span>
 <span>                                       spatial_locs <span class="op">=</span> <span class="va">spatial_coords</span>,</span>
 <span>                                       instructions <span class="op">=</span> <span class="va">instructions</span><span class="op">)</span></span></code></pre></div>
 <p>Add the tissue image.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">my_giotto_image</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createGiottoImage.html" class="external-link">createGiottoImage</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
+<code class="sourceCode R"><span><span class="va">my_giotto_image</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoImage.html" class="external-link">createGiottoImage</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
 <span>                                     do_manual_adj <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                                     scale_factor <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>                                     mg_object <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"skin.jpg"</span><span class="op">)</span>,</span>
 <span>                                     negative_y <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/addGiottoImage.html" class="external-link">addGiottoImage</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
+<span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addGiottoImage.html" class="external-link">addGiottoImage</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
 <span>                                   images <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">my_giotto_image</span><span class="op">)</span>,</span>
 <span>                                   spat_loc_name <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span></code></pre></div>
 <p>Visualize the tissue image.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
 <span>           point_size <span class="op">=</span> <span class="fl">3.5</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/spatial_citeseq_human_skin/0-spatPlot2D.png"></p>
 </div>
@@ -931,7 +931,7 @@ will be used for the network calculation and how many neighbors (k) to
 calculate.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># RNA</span></span>
-<span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
+<span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
 <span>                                         spat_unit <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>                                         feat_type <span class="op">=</span> <span class="st">"rna"</span>,</span>
 <span>                                         type <span class="op">=</span> <span class="st">"sNN"</span>,</span>
@@ -941,7 +941,7 @@ calculate.</p>
 <span>                                         k <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Protein</span></span>
-<span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
+<span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
 <span>                                         spat_unit <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>                                         feat_type <span class="op">=</span> <span class="st">"protein"</span>,</span>
 <span>                                         type <span class="op">=</span> <span class="st">"sNN"</span>,</span>
@@ -983,7 +983,7 @@ needed.</p>
 </h3>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># RNA</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
 <span>        spat_unit <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>        feat_type <span class="op">=</span> <span class="st">"rna"</span>,</span>
 <span>        dim_reduction_name <span class="op">=</span> <span class="st">"rna.pca"</span>,</span>
@@ -992,7 +992,7 @@ needed.</p>
 <p><img src="images/spatial_citeseq_human_skin/1-PCA.png"></p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Protein</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
 <span>        spat_unit <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>        feat_type <span class="op">=</span> <span class="st">"protein"</span>,</span>
 <span>        dim_reduction_name <span class="op">=</span> <span class="st">"protein.pca"</span>,</span>
@@ -1006,7 +1006,7 @@ needed.</p>
 </h3>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># RNA</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
 <span>         spat_unit <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>         feat_type <span class="op">=</span> <span class="st">"rna"</span>,</span>
 <span>         cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
@@ -1017,7 +1017,7 @@ needed.</p>
 <p><img src="images/spatial_citeseq_human_skin/3-UMAP.png"></p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Protein</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
 <span>         spat_unit <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>         feat_type <span class="op">=</span> <span class="st">"protein"</span>,</span>
 <span>         cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
@@ -1035,7 +1035,7 @@ locations by cluster<a class="anchor" aria-label="anchor" href="#plot-spatial-lo
 </h3>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># RNA</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
 <span>           show_image <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>           point_size <span class="op">=</span> <span class="fl">3.5</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
@@ -1043,7 +1043,7 @@ locations by cluster<a class="anchor" aria-label="anchor" href="#plot-spatial-lo
 <p><img src="images/spatial_citeseq_human_skin/5-spatPlot2D.png"></p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Protein</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
 <span>           spat_unit <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>           feat_type <span class="op">=</span> <span class="st">"protein"</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
@@ -1072,7 +1072,7 @@ network<a class="anchor" aria-label="anchor" href="#create-nearest-network-1"></
 this method in the clustering step instead of sNN, you can skip this
 step.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
+<code class="sourceCode R"><span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
 <span>                                         spat_unit <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>                                         feat_type <span class="op">=</span> <span class="st">"rna"</span>,</span>
 <span>                                         type <span class="op">=</span> <span class="st">"kNN"</span>,</span>
@@ -1081,7 +1081,7 @@ step.</p>
 <span>                                         dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,</span>
 <span>                                         k <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
+<code class="sourceCode R"><span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
 <span>                                         spat_unit <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>                                         feat_type <span class="op">=</span> <span class="st">"protein"</span>,</span>
 <span>                                         type <span class="op">=</span> <span class="st">"kNN"</span>,</span>
@@ -1140,7 +1140,7 @@ the weight of each modality per spot.</p>
 UMAP<a class="anchor" aria-label="anchor" href="#plot-integrated-umap"></a>
 </h3>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
 <span>         spat_unit <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>         feat_type <span class="op">=</span> <span class="st">"rna"</span>,</span>
 <span>         cell_color <span class="op">=</span> <span class="st">"integrated_leiden_clus"</span>,</span>
@@ -1157,7 +1157,7 @@ UMAP<a class="anchor" aria-label="anchor" href="#plot-integrated-umap"></a>
 spatial locations by cluster<a class="anchor" aria-label="anchor" href="#plot-integrated-spatial-locations-by-cluster"></a>
 </h3>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
 <span>           spat_unit <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>           feat_type <span class="op">=</span> <span class="st">"rna"</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"integrated_leiden_clus"</span>,</span>
@@ -1173,7 +1173,7 @@ spatial locations by cluster<a class="anchor" aria-label="anchor" href="#plot-in
 variable genes<a class="anchor" aria-label="anchor" href="#calculate-spatially-variable-genes"></a>
 </h2>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
+<code class="sourceCode R"><span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
 <span>                                         method <span class="op">=</span> <span class="st">"kNN"</span>, </span>
 <span>                                         k <span class="op">=</span> <span class="fl">6</span>,</span>
 <span>                                         maximum_distance_knn <span class="op">=</span> <span class="fl">5</span>,</span>
@@ -1185,7 +1185,7 @@ variable genes<a class="anchor" aria-label="anchor" href="#calculate-spatially-v
 <span>                     hub_min_int <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>                     spatial_network_name <span class="op">=</span> <span class="st">"spatial_network"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatFeatPlot2D.html" class="external-link">spatFeatPlot2D</a></span><span class="op">(</span><span class="va">my_giotto_object</span>, </span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatFeatPlot2D.html" class="external-link">spatFeatPlot2D</a></span><span class="op">(</span><span class="va">my_giotto_object</span>, </span>
 <span>               expression_values <span class="op">=</span> <span class="st">"scaled"</span>,</span>
 <span>               feats <span class="op">=</span> <span class="va">rank_spatialfeats</span><span class="op">$</span><span class="va">feats</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span>, </span>
 <span>               cow_n_col <span class="op">=</span> <span class="fl">2</span>, </span>
@@ -1232,11 +1232,11 @@ Metagenes/co-expression modules<a class="anchor" aria-label="anchor" href="#meta
 <span><span class="va">cluster_genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getBalancedSpatCoexpressionFeats.html">getBalancedSpatCoexpressionFeats</a></span><span class="op">(</span><span class="va">spat_cor_netw_DT</span>, </span>
 <span>                                                  maximum <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createMetafeats.html" class="external-link">createMetafeats</a></span><span class="op">(</span><span class="va">my_giotto_object</span>, </span>
+<span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createMetafeats.html" class="external-link">createMetafeats</a></span><span class="op">(</span><span class="va">my_giotto_object</span>, </span>
 <span>                                    feat_clusters <span class="op">=</span> <span class="va">cluster_genes</span>, </span>
 <span>                                    name <span class="op">=</span> <span class="st">"cluster_metagene"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatCellPlot.html" class="external-link">spatCellPlot</a></span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatCellPlot.html" class="external-link">spatCellPlot</a></span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
 <span>             spat_enr_names <span class="op">=</span> <span class="st">"cluster_metagene"</span>,</span>
 <span>             cell_annotation_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>             point_size <span class="op">=</span> <span class="fl">1</span>, </span>
@@ -1260,7 +1260,7 @@ clustering<a class="anchor" aria-label="anchor" href="#spatially-informed-cluste
 <span>                            dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">20</span>,</span>
 <span>                            name <span class="op">=</span> <span class="st">"custom_umap"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
+<span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
 <span>                                         dim_reduction_name <span class="op">=</span> <span class="st">"custom_pca"</span>,</span>
 <span>                                         dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">20</span>, </span>
 <span>                                         k <span class="op">=</span> <span class="fl">3</span>,</span>
@@ -1272,7 +1272,7 @@ clustering<a class="anchor" aria-label="anchor" href="#spatially-informed-cluste
 <span>                                    n_iterations <span class="op">=</span> <span class="fl">1000</span>,</span>
 <span>                                    name <span class="op">=</span> <span class="st">"custom_leiden"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
 <span>           show_image <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"custom_leiden"</span>, </span>
 <span>           cell_color_code <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#eb4034"</span>,</span>

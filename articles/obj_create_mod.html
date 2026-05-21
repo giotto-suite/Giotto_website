@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.3</span>
       </span>
     </div>
 
@@ -655,10 +655,10 @@
 <span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/Giotto"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="co"># Ensure the Python environment for Giotto has been installed.</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="co"># The following command need only be run once to install the Giotto environment.</span></span>
-<span>  <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Ensure Giotto Suite is installed.</span></span>
@@ -690,10 +690,10 @@ loading steps<a class="anchor" aria-label="anchor" href="#abbreviated-data-loadi
 <span><span class="va">mini_viz_poly_path</span> <span class="op">&lt;-</span> <span class="fu">mini_viz_raw</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"cell_boundaries"</span>, <span class="st">"z0_polygons.gz"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">mini_viz_tx_path</span> <span class="op">&lt;-</span> <span class="fu">mini_viz_raw</span><span class="op">(</span><span class="st">"vizgen_transcripts.gz"</span><span class="op">)</span></span>
 <span><span class="va">poly_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">mini_viz_poly_path</span><span class="op">)</span></span>
-<span><span class="va">viz_gpoly</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createGiottoPolygon.html" class="external-link">createGiottoPolygon</a></span><span class="op">(</span><span class="va">poly_dt</span><span class="op">)</span></span>
+<span><span class="va">viz_gpoly</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygon</a></span><span class="op">(</span><span class="va">poly_dt</span><span class="op">)</span></span>
 <span><span class="va">tx_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">mini_viz_tx_path</span><span class="op">)</span></span>
 <span><span class="va">tx_dt</span><span class="op">[</span>, <span class="va">global_y</span> <span class="op">:=</span> <span class="op">-</span><span class="va">global_y</span><span class="op">]</span> <span class="co"># flip values to match polys </span></span>
-<span><span class="va">viz_gpoints</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createGiottoPoints.html" class="external-link">createGiottoPoints</a></span><span class="op">(</span><span class="va">tx_dt</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">viz_gpoints</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPoints.html" class="external-link">createGiottoPoints</a></span><span class="op">(</span><span class="va">tx_dt</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="2">
 <h2 id="create-a-giotto-object-through-appending-subobjects">
@@ -701,9 +701,9 @@ loading steps<a class="anchor" aria-label="anchor" href="#abbreviated-data-loadi
 <code>giotto</code> object through appending subobjects<a class="anchor" aria-label="anchor" href="#create-a-giotto-object-through-appending-subobjects"></a>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto-class.html" class="external-link">giotto</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># initialize empty gobject</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">viz_gpoly</span><span class="op">)</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">viz_gpoints</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto-class.html" class="external-link">giotto</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># initialize empty gobject</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">viz_gpoly</span><span class="op">)</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">viz_gpoints</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/force.html" class="external-link">force</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span></code></pre></div>
 <pre><code>An object of class giotto 
 &gt;Active spat_unit:  cell 
@@ -717,12 +717,12 @@ features      : rna
 
 Use objHistory() to see steps and params used</code></pre>
 <p>This is essentially the same object as the one created through
-<code><a href="https://rdrr.io/pkg/GiottoClass/man/create_giotto.html" class="external-link">createGiottoObjectSubcellular()</a></code> as shown in the previously
+<code><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObjectSubcellular()</a></code> as shown in the previously
 mentioned tutorial.</p>
 <p>Appending additional information in this manner can be used both when
-objects are created from scratch using <code><a href="https://rdrr.io/pkg/GiottoClass/man/giotto-class.html" class="external-link">giotto()</a></code> and when
+objects are created from scratch using <code><a href="https://drieslab.github.io/GiottoClass/reference/giotto-class.html" class="external-link">giotto()</a></code> and when
 they are created through more guided approaches such as
-<code><a href="https://rdrr.io/pkg/GiottoClass/man/create_giotto.html" class="external-link">createGiottoObject()</a></code> and technology-specific convenience
+<code><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject()</a></code> and technology-specific convenience
 functions. This method of object creation and modification can be
 helpful for editing the object, adding additional modalities, or setting
 up objects for custom workflows.</p>

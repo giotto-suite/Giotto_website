@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.3</span>
       </span>
     </div>
 
@@ -703,11 +703,11 @@ section.</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Ensure the Python environment for Giotto has been installed</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="co"># The following command need only be run once to install the Giotto environment</span></span>
-<span>  <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>Use the Giotto instructions to set the behavior of the Giotto object,
 such as whether you prefer to save the generated plots or only visualize
@@ -726,7 +726,7 @@ saving options.</p>
 <span><span class="va">python_path</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
 <span></span>
 <span><span class="co"># 3. create giotto instructions</span></span>
-<span><span class="va">instructions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span>save_dir <span class="op">=</span> <span class="va">results_folder</span>, </span>
+<span><span class="va">instructions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span>save_dir <span class="op">=</span> <span class="va">results_folder</span>, </span>
 <span>                                         save_plot <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>                                         show_plot <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>                                         return_plot <span class="op">=</span> <span class="cn">FALSE</span>, </span>
@@ -770,14 +770,14 @@ not (0). We will use this column to remove all spots that don’t
 correspond to the tissue area.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Subset on spots that were covered by tissue</span></span>
-<span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">visium</span><span class="op">)</span></span>
+<span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">visium</span><span class="op">)</span></span>
 <span><span class="va">in_tissue_barcodes</span> <span class="op">&lt;-</span> <span class="va">metadata</span><span class="op">[</span><span class="va">in_tissue</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span><span class="op">$</span><span class="va">cell_ID</span></span>
 <span></span>
-<span><span class="va">visium</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/subsetGiotto.html" class="external-link">subsetGiotto</a></span><span class="op">(</span><span class="va">visium</span>, </span>
+<span><span class="va">visium</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/subsetGiotto.html" class="external-link">subsetGiotto</a></span><span class="op">(</span><span class="va">visium</span>, </span>
 <span>                       cell_ids <span class="op">=</span> <span class="va">in_tissue_barcodes</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Visualize aligned tissue</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
 <span>           point_alpha <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/visium_cytassist_human_glioblastoma/0-spatPlot2D.png" alt="" width="60%" style="display: block; margin: auto;"></p>
 <p>Now that we only have spots from the tissue area, we will remove
@@ -844,7 +844,7 @@ technology used.</p>
 <span><span class="va">visium</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addStatistics.html">addStatistics</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">### Visualize number of features after processing</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
 <span>           point_alpha <span class="op">=</span> <span class="fl">0.7</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"nr_feats"</span>,</span>
 <span>           color_as_factor <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
@@ -856,7 +856,7 @@ technology used.</p>
 <span>                        feat_type <span class="op">=</span> <span class="st">"protein"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">### Visualize number of features after processing </span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
 <span>           spat_unit <span class="op">=</span> <span class="st">"cell"</span>, </span>
 <span>           feat_type <span class="op">=</span> <span class="st">"protein"</span>, </span>
 <span>           point_alpha <span class="op">=</span> <span class="fl">0.7</span>, </span>
@@ -903,7 +903,7 @@ steps.</p>
 <p><img src="images/visium_cytassist_human_glioblastoma/3-screePlot.png" alt="" width="60%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">### Visualize RNA PCA</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/visium_cytassist_human_glioblastoma/4-PCA.png" alt="" width="60%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Protein</span></span>
@@ -918,7 +918,7 @@ steps.</p>
 <p><img src="images/visium_cytassist_human_glioblastoma/5-screePlot.png" alt="" width="60%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">### Visualize Protein PCA</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
 <span>        spat_unit <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>        feat_type <span class="op">=</span> <span class="st">"protein"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/visium_cytassist_human_glioblastoma/6-PCA.png" alt="" width="60%" style="display: block; margin: auto;"></p>
@@ -959,12 +959,12 @@ will be used for the network calculation and how many neighbors (k) to
 calculate.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## RNA </span></span>
-<span><span class="va">visium</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
+<span><span class="va">visium</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
 <span>                               dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,</span>
 <span>                               k <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Protein </span></span>
-<span><span class="va">visium</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
+<span><span class="va">visium</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
 <span>                               spat_unit <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>                               feat_type <span class="op">=</span> <span class="st">"protein"</span>,</span>
 <span>                               dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,</span>
@@ -993,7 +993,7 @@ needed.</p>
 <span>                          resolution <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>                          n_iterations <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
 <span>         cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>         show_NN_network <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>         point_size <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
@@ -1001,7 +1001,7 @@ needed.</p>
 <p>Now we can visualize the 2D UMAP and color the spots by Leiden
 Cluster.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
 <span>         spat_unit <span class="op">=</span> <span class="st">"cell"</span>, </span>
 <span>         feat_type <span class="op">=</span> <span class="st">"protein"</span>, </span>
 <span>         cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>, </span>
@@ -1012,14 +1012,14 @@ Cluster.</p>
 <code class="sourceCode R"><span><span class="co"># Visualize spatial plot</span></span>
 <span></span>
 <span><span class="co">## RNA feature</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
 <span>           show_image <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>           point_size <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/visium_cytassist_human_glioblastoma/9-spatPlot2D.png" alt="" width="60%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Protein feature</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
 <span>           spat_unit <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>           feat_type <span class="op">=</span> <span class="st">"protein"</span>,</span>
 <span>           show_image <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -1047,13 +1047,13 @@ this method in the clustering step instead of sNN, you can skip this
 step.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## RNA </span></span>
-<span><span class="va">visium</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
+<span><span class="va">visium</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
 <span>                               type <span class="op">=</span> <span class="st">"kNN"</span>,</span>
 <span>                               dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,</span>
 <span>                               k <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Protein </span></span>
-<span><span class="va">visium</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
+<span><span class="va">visium</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
 <span>                               spat_unit <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>                               feat_type <span class="op">=</span> <span class="st">"protein"</span>,</span>
 <span>                               type <span class="op">=</span> <span class="st">"kNN"</span>,</span>
@@ -1107,7 +1107,7 @@ the weight of each modality per spot.</p>
 <span>                          resolution <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Visualize integrated umap</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium</span>,</span>
 <span>         spat_unit <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>         feat_type <span class="op">=</span> <span class="st">"rna"</span>,</span>
 <span>         cell_color <span class="op">=</span> <span class="st">"integrated_leiden_clus"</span>,</span>
@@ -1119,7 +1119,7 @@ the weight of each modality per spot.</p>
 <p><img src="images/visium_cytassist_human_glioblastoma/11-UMAP.png" alt="" width="60%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Visualize spatial plot with integrated clusters</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">visium</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">visium</span>,</span>
 <span>           spat_unit <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>           feat_type <span class="op">=</span> <span class="st">"rna"</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"integrated_leiden_clus"</span>,</span>

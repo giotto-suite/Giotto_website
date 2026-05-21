@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.3</span>
       </span>
     </div>
 
@@ -676,11 +676,11 @@ dataset<a class="anchor" aria-label="anchor" href="#setup-and-load-example-datas
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giotto-suite.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Ensure the Python environment for Giotto has been installed</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="co"># The following command need only be run once to install the Giotto environment</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load the object</span></span>
@@ -705,7 +705,7 @@ object and run the normalization step<a class="anchor" aria-label="anchor" href=
 <span></span>
 <span><span class="va">python_path</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
 <span></span>
-<span><span class="va">instructions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span></span>
+<span><span class="va">instructions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span></span>
 <span>    save_dir <span class="op">=</span> <span class="va">results_folder</span>,</span>
 <span>    save_plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>    show_plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -715,10 +715,10 @@ object and run the normalization step<a class="anchor" aria-label="anchor" href=
 <span><span class="va">sc_expression</span> <span class="op">&lt;-</span> <span class="st">"data/scRNA_mouse_brain/brain_sc_expression_matrix.txt.gz"</span></span>
 <span><span class="va">sc_metadata</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="st">"data/scRNA_mouse_brain/brain_sc_metadata.csv"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">giotto_SC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span>expression <span class="op">=</span> <span class="va">sc_expression</span>,</span>
+<span><span class="va">giotto_SC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span>expression <span class="op">=</span> <span class="va">sc_expression</span>,</span>
 <span>                                instructions <span class="op">=</span> <span class="va">instructions</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">giotto_SC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/addCellMetadata.html" class="external-link">addCellMetadata</a></span><span class="op">(</span><span class="va">giotto_SC</span>, </span>
+<span><span class="va">giotto_SC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addCellMetadata.html" class="external-link">addCellMetadata</a></span><span class="op">(</span><span class="va">giotto_SC</span>, </span>
 <span>                             new_metadata <span class="op">=</span> <span class="va">sc_metadata</span><span class="op">[</span>,<span class="fl">2</span><span class="op">:</span><span class="fl">129</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">giotto_SC</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/normalizeGiotto.html">normalizeGiotto</a></span><span class="op">(</span><span class="va">giotto_SC</span><span class="op">)</span></span></code></pre></div>
@@ -771,9 +771,9 @@ with PAGE<a class="anchor" aria-label="anchor" href="#run-the-enrichment-test-wi
 <p>Create a heatmap showing the enrichment of cell types (from the
 single-cell data annotation) in the spatial dataset clusters.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cell_types_PAGE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">sign_matrix</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">cell_types_PAGE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">sign_matrix</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotMetaDataCellsHeatmap.html" class="external-link">plotMetaDataCellsHeatmap</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">g</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/plotMetaDataCellsHeatmap.html" class="external-link">plotMetaDataCellsHeatmap</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">g</span>,</span>
 <span>                         metadata_cols <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>                         value_cols <span class="op">=</span> <span class="va">cell_types_PAGE</span>,</span>
 <span>                         spat_enr_names <span class="op">=</span> <span class="st">"PAGE"</span>,</span>
@@ -782,7 +782,7 @@ single-cell data annotation) in the spatial dataset clusters.</p>
 <p><img src="images/page_rank_enrichment/1-plotMetaDataCellsHeatmap.png" alt="" width="60%" style="display: block; margin: auto;"></p>
 <p>Plot the spatial distribution of the cell types.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatCellPlot.html" class="external-link">spatCellPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">g</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatCellPlot.html" class="external-link">spatCellPlot2D</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">g</span>,</span>
 <span>               spat_enr_names <span class="op">=</span> <span class="st">"PAGE"</span>,</span>
 <span>               cell_annotation_values <span class="op">=</span> <span class="va">cell_types_PAGE</span>,</span>
 <span>               cow_n_col <span class="op">=</span> <span class="fl">2</span>,</span>

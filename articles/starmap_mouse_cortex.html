@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.3</span>
       </span>
     </div>
 
@@ -658,17 +658,17 @@
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Ensure Giotto can access a python env</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="co"># The following command need only be run once to</span></span>
 <span>  <span class="co"># install a default Giotto environment</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># set specific python path to use or python environment name</span></span>
 <span><span class="co"># leaving NULL will use default (see ?set_giotto_python_path())</span></span>
 <span><span class="va">python_path</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">set_giotto_python_path</a></span><span class="op">(</span>python_path <span class="op">=</span> <span class="va">python_path</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">set_giotto_python_path</a></span><span class="op">(</span>python_path <span class="op">=</span> <span class="va">python_path</span><span class="op">)</span></span></code></pre></div>
 <div class="section level2" number="1">
 <h2 id="dataset-setup">
 <span class="header-section-number">1</span> Dataset Setup<a class="anchor" aria-label="anchor" href="#dataset-setup"></a>
@@ -782,7 +782,7 @@ instructions tutorial</a></p>
 <code class="sourceCode R"><span><span class="co"># ** SET WORKING DIRECTORY WHERE PROJECT OUTPUTS WILL SAVE TO **</span></span>
 <span><span class="va">results_folder</span> <span class="op">=</span> <span class="st">'/path/to/results/'</span></span>
 <span></span>
-<span><span class="va">instrs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span></span>
+<span><span class="va">instrs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span></span>
 <span>    save_dir <span class="op">=</span> <span class="va">results_folder</span>,</span>
 <span>    save_plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>    show_plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -802,8 +802,8 @@ What does the raw data to load look like?
 <code class="sourceCode R"><span><span class="va">star_expr_table</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">expr_path</span>, header <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">feature_names</span> <span class="op">&lt;-</span> <span class="va">star_expr_table</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span> <span class="co"># extract first table column of gene names</span></span>
 <span><span class="va">star_expr</span> <span class="op">&lt;-</span> <span class="va">star_expr_table</span><span class="op">[</span>, <span class="fl">2</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">star_expr_table</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/as.matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">star_expr</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">feature_names</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">star_expr</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">feature_names</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/force.html" class="external-link">force</a></span><span class="op">(</span><span class="va">star_expr</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span> <span class="co"># show subset</span></span></code></pre></div>
 <pre><code>        V2 V3 V4 V5 V6 V7 V8   V9 V10 V11
 Slc17a7  0  0  0  0  0  0  0  930   0   0
@@ -838,23 +838,23 @@ Rorb     0  0  0  0  0  0  0 3526   0   0</code></pre>
 Preview of STARmap 3D Coordinates
 </p>
 </div>
-</details><p>These data can be fed into <code><a href="https://rdrr.io/pkg/GiottoClass/man/create_giotto.html" class="external-link">createGiottoObject()</a></code> which
+</details><p>These data can be fed into <code><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject()</a></code> which
 will generate a simple identifier for each of the cells and map them to
 the expression and spatial information.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span></span>
 <span>    expression <span class="op">=</span> <span class="va">expr_path</span>,</span>
 <span>    spatial_locs <span class="op">=</span> <span class="va">loc_path</span>,</span>
 <span>    instructions <span class="op">=</span> <span class="va">instrs</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The default names created for each cell:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">star</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">star</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code>[1] "cell_1" "cell_2" "cell_3" "cell_4" "cell_5" "cell_6"</code></pre>
 <p>Preview of the feature names in the dataset, just to check that these
 are attached correctly.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">star</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">star</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code>[1] "Slc17a7" "Mgp"     "Gad1"    "Nov"     "Rasgrf2" "Rorb"</code></pre>
 <p>Lastly, we can check how many cells and features are available in
 this dataset by using <code><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim()</a></code></p>
@@ -955,7 +955,7 @@ the <code>total_expr</code> is 0.</p>
 <pre><code>[1] 753</code></pre>
 <p>There are 753 cells with 0 expression.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">star</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"no_expression"</span>,</span>
 <span>    color_as_factor <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>    save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"1_c_no_expression"</span><span class="op">)</span></span>
@@ -975,7 +975,7 @@ distributions are strange in biological data.</p>
 this further by viewing the number of feature species detected per cell
 as a categorical.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"nr_feats"</span>,</span>
 <span>    color_as_factor <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># make these values categorical</span></span>
 <span>    save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"1_d_nr_feats_categorical"</span><span class="op">)</span></span>
@@ -1106,7 +1106,7 @@ normalized values.</p>
 <span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addStatistics.html">addStatistics</a></span><span class="op">(</span><span class="va">star</span>, expression_values <span class="op">=</span> <span class="st">"normalized"</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Visualize the total raw expression</strong></p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    point_size <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"total_expr"</span>,</span>
 <span>    color_as_factor <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -1116,7 +1116,7 @@ normalized values.</p>
 <p>By default, this is displayed in 3D <code>"cube"</code> scaling. We
 can change this to <code>"real"</code> to get an undistorted view.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    point_size <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"total_expr"</span>,</span>
 <span>    color_as_factor <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -1136,7 +1136,7 @@ metadata. Of particular interest is the <code>"perc_cells"</code> column
 which describes the percentage of cells in which the feature is
 present.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">star</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">star</span><span class="op">)</span></span></code></pre></div>
 <details><summary>
 feature metadata table
 </summary><pre><code>    feat_ID nr_cells perc_cells total_expr mean_expr mean_expr_det
@@ -1175,7 +1175,7 @@ and some with low percentage to get an idea of whether all features
 (both high and low presence percentages) show a marked decrease in
 normalized expression on the z max and x min faces.</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatFeatPlot3D.html" class="external-link">spatFeatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatFeatPlot3D.html" class="external-link">spatFeatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>        <span class="st">"Slc17a7"</span>, <span class="co"># 100%</span></span>
 <span>        <span class="st">"Egr1"</span>, <span class="co"># 97.9%</span></span>
@@ -1217,13 +1217,13 @@ problematic using a cutoff on <code>nr_feats</code></p>
 <code class="sourceCode R"><span><span class="va">star</span><span class="op">$</span><span class="va">technical</span> <span class="op">&lt;-</span> <span class="va">star</span><span class="op">$</span><span class="va">nr_feats</span> <span class="op">&lt;</span> <span class="fl">27</span> <span class="co"># add a logical column "technical" to metadata</span></span>
 <span></span>
 <span><span class="va">limma</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/process_param.html">adjustParam</a></span><span class="op">(</span><span class="st">"limma"</span><span class="op">)</span></span>
-<span><span class="va">limma</span><span class="op">$</span><span class="va">covariate_columns</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/spatValues.html" class="external-link">svkey</a></span><span class="op">(</span>feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"technical"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">limma</span><span class="op">$</span><span class="va">covariate_columns</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/spatValues.html" class="external-link">svkey</a></span><span class="op">(</span>feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"technical"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/processExpression.html">processExpression</a></span><span class="op">(</span><span class="va">star</span>, <span class="va">limma</span>,</span>
 <span>    expression_values <span class="op">=</span> <span class="st">"normalized"</span>, </span>
 <span>    name <span class="op">=</span> <span class="st">"technical_regress"</span> <span class="co"># create as new matrix called "technical_regress"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatFeatPlot3D.html" class="external-link">spatFeatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatFeatPlot3D.html" class="external-link">spatFeatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>        <span class="st">"Slc17a7"</span>, <span class="co"># 100%</span></span>
 <span>        <span class="st">"Egr1"</span>, <span class="co"># 97.9%</span></span>
@@ -1256,7 +1256,7 @@ and scaling on the updated sample space.</p>
 <span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/processExpression.html">processExpression</a></span><span class="op">(</span><span class="va">star</span>, <span class="fu"><a href="../reference/process_param.html">scaleParam</a></span><span class="op">(</span><span class="st">"default"</span><span class="op">)</span>, expression_values <span class="op">=</span> <span class="st">"normalized"</span><span class="op">)</span></span>
 <span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addStatistics.html">addStatistics</a></span><span class="op">(</span><span class="va">star</span>, expression_values <span class="op">=</span> <span class="st">"normalized"</span><span class="op">)</span> <span class="co"># update stats</span></span>
 <span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatFeatPlot3D.html" class="external-link">spatFeatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatFeatPlot3D.html" class="external-link">spatFeatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>        <span class="st">"Slc17a7"</span>, <span class="co"># 100%</span></span>
 <span>        <span class="st">"Egr1"</span>, <span class="co"># 97.9%</span></span>
@@ -1335,7 +1335,7 @@ clustering separation of the high dimensional information.</p>
 <span>    n_components <span class="op">=</span> <span class="fl">3</span> <span class="co"># make 3D UMAP</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/dimPlot.html" class="external-link">dimPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/dimPlot.html" class="external-link">dimPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"5_umap_3d"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/starmap_mouse_brain/5_umap_3d.png" alt="" width="70%" style="display: block; margin: auto;"></p>
@@ -1361,7 +1361,7 @@ to build a network to perform the clustering on.</p>
 based on the PCA space.</p>
 <p>Note that we are using the first 15 dimensions of the PCA again.</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">star</span>, dimensions <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">15</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">star</span>, dimensions <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">15</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4" number="4.3.2">
 <h4 id="leiden-clustering">
@@ -1379,7 +1379,7 @@ clustering.</p>
 <span><span class="va">lname</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"leiden_%s"</span>, <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">lres</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/doLeidenCluster.html">doLeidenCluster</a></span><span class="op">(</span><span class="va">star</span>, resolution <span class="op">=</span> <span class="va">lres</span>, name <span class="op">=</span> <span class="va">lname</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotUMAP_3D.html" class="external-link">plotUMAP_3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/plotUMAP_3D.html" class="external-link">plotUMAP_3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="va">lname</span>, </span>
 <span>    show_center_label <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>    save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"6_a_umap_leiden"</span><span class="op">)</span></span>
@@ -1389,7 +1389,7 @@ clustering.</p>
 resolution. The calculated clusters map well to the observed clusters in
 the 3D UMAP.</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="va">lname</span>,</span>
 <span>    save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"6_b_splot_leiden"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -1425,11 +1425,11 @@ features per cluster.</p>
 <span><span class="co"># select the 2 highest ranked markers by leiden cluster</span></span>
 <span><span class="va">top_markers</span> <span class="op">&lt;-</span> <span class="va">markers</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">2</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"cluster"</span><span class="op">]</span></span></code></pre></div>
 <p>To get an idea of how specific these markers are, we can use
-<code><a href="https://drieslab.github.io/GiottoVisuals/reference/violinPlot.html" class="external-link">violinPlot()</a></code> to examine the distributions of these features
+<code><a href="https://giotto-suite.github.io/GiottoVisuals/reference/violinPlot.html" class="external-link">violinPlot()</a></code> to examine the distributions of these features
 across clusters.</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># violinplot</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/violinPlot.html" class="external-link">violinPlot</a></span><span class="op">(</span><span class="va">star</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/violinPlot.html" class="external-link">violinPlot</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">top_markers</span><span class="op">$</span><span class="va">feats</span><span class="op">)</span>,</span>
 <span>    cluster_column <span class="op">=</span> <span class="va">lname</span>,</span>
 <span>    strip_position <span class="op">=</span> <span class="st">"right"</span>, </span>
@@ -1438,10 +1438,10 @@ across clusters.</p>
 <p><img src="images/starmap_mouse_brain/7_vplot.png" alt="" width="70%" style="display: block; margin: auto;"></p>
 <p>Since there are not that many features in this dataset, we can also
 take a look at the overall expression of these features per cluster with
-<code><a href="https://drieslab.github.io/GiottoVisuals/reference/plotMetaDataHeatmap.html" class="external-link">plotMetaDataHeatmap()</a></code> without specifying any
+<code><a href="https://giotto-suite.github.io/GiottoVisuals/reference/plotMetaDataHeatmap.html" class="external-link">plotMetaDataHeatmap()</a></code> without specifying any
 <code>selected_feats</code>.</p>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/plotMetaDataHeatmap.html" class="external-link">plotMetaDataHeatmap</a></span><span class="op">(</span><span class="va">star</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/plotMetaDataHeatmap.html" class="external-link">plotMetaDataHeatmap</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    expression_values <span class="op">=</span> <span class="st">"scaled"</span>,</span>
 <span>    metadata_cols <span class="op">=</span> <span class="va">lname</span>,</span>
 <span>    save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"8_heatmap"</span><span class="op">)</span></span>
@@ -1521,31 +1521,31 @@ are in one single set of results.</p>
 <span>    feat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">excit_feats</span>, <span class="va">inhib_feats</span>, <span class="va">glial_feats</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createMetafeats.html" class="external-link">createMetafeats</a></span><span class="op">(</span><span class="va">star</span>,</span>
+<span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createMetafeats.html" class="external-link">createMetafeats</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    feat_clusters <span class="op">=</span> <span class="va">mfeat_table</span>,</span>
 <span>    name <span class="op">=</span> <span class="st">"neuro_sigs"</span> <span class="co"># what to name the metafeature results</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>This set of metafeatures are calculated and stored in the spatial
 enrichment information of the <code>giotto</code> object.</p>
-<p>We can plot the metafeatures in 3D using <code><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D()</a></code> by
+<p>We can plot the metafeatures in 3D using <code><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D()</a></code> by
 adding <code>spat_enr_names = "neuro_sigs</code> to make sure that the
 results are attached to the information that can be pulled.</p>
 <div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"excitatory"</span>,</span>
 <span>    spat_enr_names <span class="op">=</span> <span class="st">"neuro_sigs"</span>,</span>
 <span>    color_as_factor <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>    gradient_style <span class="op">=</span> <span class="st">"sequential"</span>,</span>
 <span>    save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"10_a_excit_metafeat"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"inhibitory"</span>,</span>
 <span>    spat_enr_names <span class="op">=</span> <span class="st">"neuro_sigs"</span>,</span>
 <span>    color_as_factor <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>    gradient_style <span class="op">=</span> <span class="st">"sequential"</span>,</span>
 <span>    save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"10_b_inhib_metafeat"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"glial"</span>,</span>
 <span>    spat_enr_names <span class="op">=</span> <span class="st">"neuro_sigs"</span>,</span>
 <span>    color_as_factor <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -1558,7 +1558,7 @@ excitatory (left), inhibitory (middle), glial (right)
 </p>
 </div>
 <p>This can also be looked at on the expression space with
-<code><a href="https://drieslab.github.io/GiottoVisuals/reference/dimPlot.html" class="external-link">dimPlot3D()</a></code></p>
+<code><a href="https://giotto-suite.github.io/GiottoVisuals/reference/dimPlot.html" class="external-link">dimPlot3D()</a></code></p>
 </div>
 <div class="section level2" number="6">
 <h2 id="cell-annotation">
@@ -1584,7 +1584,7 @@ of the clusters and the lack of specific markers to the hippocampus
 <span><span class="va">types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"L2-L4"</span>, <span class="st">"L5-L6"</span>, <span class="st">"CC"</span>, <span class="st">"interneuron"</span>, <span class="st">"L1"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">types</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq.int</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/annotateGiotto.html" class="external-link">annotateGiotto</a></span><span class="op">(</span><span class="va">star</span>,</span>
+<span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/annotateGiotto.html" class="external-link">annotateGiotto</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    annotation_vector <span class="op">=</span> <span class="va">types</span>,</span>
 <span>    cluster_column <span class="op">=</span> <span class="va">lname</span>,</span>
 <span>    name <span class="op">=</span> <span class="st">"cell_types"</span></span>
@@ -1611,7 +1611,7 @@ appropriate thickness based on the usual distance between cells. The
 generated cross section object is also currently attached to the spatial
 network once created.</p>
 <div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span><span class="va">star</span>, delaunay_method <span class="op">=</span> <span class="st">"delaunayn_geometry"</span><span class="op">)</span> <span class="co"># create 3D delaunay</span></span>
+<code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span><span class="va">star</span>, delaunay_method <span class="op">=</span> <span class="st">"delaunayn_geometry"</span><span class="op">)</span> <span class="co"># create 3D delaunay</span></span>
 <span></span>
 <span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCrossSection.html">createCrossSection</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    method <span class="op">=</span> <span class="st">"equation"</span>,</span>

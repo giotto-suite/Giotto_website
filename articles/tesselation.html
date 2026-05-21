@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.3</span>
       </span>
     </div>
 
@@ -673,11 +673,11 @@ into arbitrary bins.</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giotto-suite.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Ensure the Python environment for Giotto has been installed</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="co"># The following command need only be run once to install the Giotto environment</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2" number="2">
@@ -697,7 +697,7 @@ polygons<a class="anchor" aria-label="anchor" href="#create-giotto-polygons"></a
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span> <span class="co"># create giotto polygons, here we create hexagons</span></span>
-<span><span class="va">hexbin25</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/tessellate.html" class="external-link">tessellate</a></span><span class="op">(</span>extent <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">giotto_points</span><span class="op">)</span>, </span>
+<span><span class="va">hexbin25</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/tessellate.html" class="external-link">tessellate</a></span><span class="op">(</span>extent <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">giotto_points</span><span class="op">)</span>, </span>
 <span>                        shape <span class="op">=</span> <span class="st">"hexagon"</span>, </span>
 <span>                        shape_size <span class="op">=</span> <span class="fl">25</span>, </span>
 <span>                        name <span class="op">=</span> <span class="st">"hex100"</span><span class="op">)</span> </span>
@@ -715,7 +715,7 @@ and polygons to create Giotto object<a class="anchor" aria-label="anchor" href="
 <span></span>
 <span><span class="va">python_path</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
 <span></span>
-<span><span class="va">instructions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span>save_dir <span class="op">=</span> <span class="va">results_folder</span>,</span>
+<span><span class="va">instructions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span>save_dir <span class="op">=</span> <span class="va">results_folder</span>,</span>
 <span>                                         save_plot <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>                                         show_plot <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>                                         return_plot <span class="op">=</span> <span class="cn">FALSE</span>, </span>
@@ -723,12 +723,12 @@ and polygons to create Giotto object<a class="anchor" aria-label="anchor" href="
 <span></span>
 <span><span class="co"># gpoints provides spatial gene expression information</span></span>
 <span><span class="co"># gpolygons provides spatial unit information (here = hexagon tiles)</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/create_giotto.html" class="external-link">createGiottoObjectSubcellular</a></span><span class="op">(</span>gpoints <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"rna"</span> <span class="op">=</span> <span class="va">giotto_points</span><span class="op">)</span>,</span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObjectSubcellular</a></span><span class="op">(</span>gpoints <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"rna"</span> <span class="op">=</span> <span class="va">giotto_points</span><span class="op">)</span>,</span>
 <span>                                   gpolygons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"hex25"</span> <span class="op">=</span> <span class="va">hexbin25</span><span class="op">)</span>,</span>
 <span>                                   instructions <span class="op">=</span> <span class="va">instructions</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># create spatial centroids for each spatial unit (hexagon)</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/addSpatialCentroidLocations.html" class="external-link">addSpatialCentroidLocations</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">g</span>,</span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addSpatialCentroidLocations.html" class="external-link">addSpatialCentroidLocations</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">g</span>,</span>
 <span>                                 poly_info <span class="op">=</span> <span class="st">"hex25"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="5">
@@ -737,9 +737,9 @@ and polygons to create Giotto object<a class="anchor" aria-label="anchor" href="
 (transcripts) and polygons (hexagons) together<a class="anchor" aria-label="anchor" href="#show-the-giotto-points-transcripts-and-polygons-hexagons-together"></a>
 </h2>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">feature_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">feature_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>                     show_image <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                     feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"rna"</span> <span class="op">=</span> <span class="va">feature_data</span><span class="op">$</span><span class="va">feat_ID</span><span class="op">[</span><span class="fl">10</span><span class="op">:</span><span class="fl">20</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>                     show_legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>

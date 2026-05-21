@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.3</span>
       </span>
     </div>
 
@@ -511,6 +511,54 @@
     </div>
 
     <div class="section level2">
+<h2 class="page-header" data-toc-text="4.2.3" id="giotto-423-20260514">Giotto 4.2.3 (2026/05/14)<a class="anchor" aria-label="anchor" href="#giotto-423-20260514"></a></h2>
+<div class="section level3">
+<h3 id="changes-4-2-3">Changes<a class="anchor" aria-label="anchor" href="#changes-4-2-3"></a></h3>
+<ul><li>
+<code><a href="../reference/createGiottoVisiumHDObject.html">createGiottoVisiumHDObject()</a></code> deprecated, split into:
+<ul><li>
+<code><a href="../reference/createGiottoVisiumHDObjectBin.html">createGiottoVisiumHDObjectBin()</a></code> - binned outputs</li>
+<li>
+<code><a href="../reference/createGiottoVisiumHDObjectCell.html">createGiottoVisiumHDObjectCell()</a></code> - segmented outputs - support optional transcript loading from the 2 micron bin</li>
+</ul></li>
+<li>breaking changes to <code><a href="../reference/importVisiumHD.html">importVisiumHD()</a></code>
+</li>
+<li>
+<code><a href="../reference/doLeidenCluster.html">doLeidenCluster()</a></code> now uses the {igraph} method by default. Original python implementation still accessible as <code><a href="../reference/doLeidenClusterPython.html">doLeidenClusterPython()</a></code>
+</li>
+<li>Log normalization restricted to <code>log1p</code> for sparse-like matrices (<code>dgCMatrix</code>, <code>dbSparseMatrix</code>, <code>IterableMatrix</code>) to prevent OOM sparse-&gt;dense conversion</li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-4-2-3">New<a class="anchor" aria-label="anchor" href="#new-4-2-3"></a></h3>
+<ul><li>New StereoSeq reader functions:
+<ul><li>
+<code><a href="../reference/createGiottoStereoSeqObjectBin.html">createGiottoStereoSeqObjectBin()</a></code> - binned outputs</li>
+<li>
+<code><a href="../reference/createGiottoStereoSeqObjectCell.html">createGiottoStereoSeqObjectCell()</a></code> - segmented outputs</li>
+</ul></li>
+<li>StereoSeq importers: now uses <code><a href="../reference/importStereoSeq.html">importStereoSeq()</a></code> and <code>StereoSeqReader</code> object
+<ul><li>
+<code>gef_type</code> param for unified GEF type selection replacing the old auto-detection logic</li>
+</ul></li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-4-2-3">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-4-2-3"></a></h3>
+<ul><li>Update <code>giottoToAnndataZarr</code> to use basilisk environments required by basilisk v1.22.</li>
+<li>Replace outdated ggplot aes_string with local aes_string2 function.</li>
+<li>Fix usage of outdated parameter in <code>giottoToSeuratV5</code>.</li>
+<li>
+<code>binarize()</code> via <code><a href="../reference/processData.html">processData()</a></code> now correctly preserves sparsity for <code>allMatrix</code> and <code>dgCMatrix</code> inputs</li>
+</ul></div>
+<div class="section level3">
+<h3 id="enhancements-4-2-3">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-4-2-3"></a></h3>
+<ul><li>VisiumHD and StereoSeq memory efficiency improved</li>
+<li>
+<code><a href="../reference/calculateHVF.html">calculateHVF()</a></code> speedup via vectorized implementation</li>
+<li>
+<code><a href="../reference/calculateHVF.html">calculateHVF()</a></code> <code>calc_gini</code> now defaults to <code>FALSE</code> to avoid forced dense conversion for disk-backed workflows</li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="page-header" data-toc-text="4.2.2" id="giotto-422-20250617">Giotto 4.2.2 (2025/06/17)<a class="anchor" aria-label="anchor" href="#giotto-422-20250617"></a></h2>
 <div class="section level3">
 <h3 id="changes-4-2-2">Changes<a class="anchor" aria-label="anchor" href="#changes-4-2-2"></a></h3>
@@ -538,7 +586,7 @@
 </li>
 <li>fix convenience functions for {terra} <code>v1.8-21</code>
 </li>
-<li>fix <code>Giotto::</code> scoped calls for functions that call <code><a href="https://rdrr.io/pkg/GiottoClass/man/update_giotto_params.html" class="external-link">update_giotto_params()</a></code>
+<li>fix <code>Giotto::</code> scoped calls for functions that call <code><a href="https://drieslab.github.io/GiottoClass/reference/update_giotto_params.html" class="external-link">update_giotto_params()</a></code>
 </li>
 </ul></div>
 <div class="section level3">
@@ -622,7 +670,7 @@
 <code>.varexp()</code> internal for calculating SVD variance determined with support for partial SVDs</li>
 <li>
 <code>.cumvar()</code> internal for calculating cumulative variance explained</li>
-<li>re-export of <code><a href="https://drieslab.github.io/GiottoVisuals/reference/dotPlot.html" class="external-link">dotPlot()</a></code> from GiottoVisuals</li>
+<li>re-export of <code><a href="https://giotto-suite.github.io/GiottoVisuals/reference/dotPlot.html" class="external-link">dotPlot()</a></code> from GiottoVisuals</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-4-1-6">Changes<a class="anchor" aria-label="anchor" href="#changes-4-1-6"></a></h3>
@@ -661,7 +709,7 @@
 <ul><li>
 <code><a href="../reference/createGiottoVisiumObject.html">createGiottoVisiumObject()</a></code> apply a modifier of 0.8461538 to visium spot diameter to reflect actual spot size</li>
 <li>
-<code><a href="../reference/doLeidenClusterIgraph.html">doLeidenClusterIgraph()</a></code> deprecate param <code>resolution_parameter</code> in favor of <code>resolution</code>
+<code><a href="../reference/doLeidenCluster.html">doLeidenClusterIgraph()</a></code> deprecate param <code>resolution_parameter</code> in favor of <code>resolution</code>
 </li>
 </ul></div>
 <div class="section level3">
@@ -940,7 +988,7 @@
 <h2 class="page-header" data-toc-text="3.3.1" id="giotto-331-20230802">Giotto 3.3.1 (2023/08/02)<a class="anchor" aria-label="anchor" href="#giotto-331-20230802"></a></h2>
 <div class="section level3">
 <h3 id="breaking-changes-3-3-1">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-3-3-1"></a></h3>
-<ul><li>Change <code><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">checkGiottoEnvironment()</a></code>. Downgrade from error to message and return FALSE when a provided directory does not exist</li>
+<ul><li>Change <code><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment()</a></code>. Downgrade from error to message and return FALSE when a provided directory does not exist</li>
 </ul></div>
 <div class="section level3">
 <h3 id="added-3-3-1">Added<a class="anchor" aria-label="anchor" href="#added-3-3-1"></a></h3>
@@ -949,14 +997,14 @@
 <li>New function <code><a href="../reference/showPolygonSizeInfluence.html">showPolygonSizeInfluence()</a></code> within <code>poly_influence.R</code> to show if cells switch clusters when across resized polygon annotations</li>
 <li>New function <code><a href="../reference/showCellProportionSwitchedPie.html">showCellProportionSwitchedPie()</a></code> within <code>poly_influence.R</code> to visualize results from <code><a href="../reference/showPolygonSizeInfluence.html">showPolygonSizeInfluence()</a></code> in a pie chart</li>
 <li>New function <code>showCellProportionSwitchedSankey()</code> within <code>poly_influence.R</code> to visualize results from <code><a href="../reference/showPolygonSizeInfluence.html">showPolygonSizeInfluence()</a></code> in a Sankey diagram</li>
-<li>New function <code><a href="https://rdrr.io/pkg/GiottoClass/man/makePseudoVisium.html" class="external-link">makePseudoVisium()</a></code> within <code>giotto_structure.R</code> to generate a pseudo visium grid of circular spots</li>
-<li>New function <code><a href="https://rdrr.io/pkg/GiottoClass/man/tessellate.html" class="external-link">tessellate()</a></code> within <code>giotto_structure.R</code> to generate a grid of hexagons or squares for spatial binning</li>
+<li>New function <code><a href="https://drieslab.github.io/GiottoClass/reference/makePseudoVisium.html" class="external-link">makePseudoVisium()</a></code> within <code>giotto_structure.R</code> to generate a pseudo visium grid of circular spots</li>
+<li>New function <code><a href="https://drieslab.github.io/GiottoClass/reference/tessellate.html" class="external-link">tessellate()</a></code> within <code>giotto_structure.R</code> to generate a grid of hexagons or squares for spatial binning</li>
 <li>New file <code>feature_set_enrichment.R</code>
 </li>
 <li>New function <code><a href="../reference/doFeatureSetEnrichment.html">doFeatureSetEnrichment()</a></code> within <code>feature_set_enrichment.R</code> for GSEA analysis</li>
 <li>New function <code><a href="../reference/doGiottoClustree.html">doGiottoClustree()</a></code> within <code>clustering.R</code> for visualizations of leiden clusters at varying resolutions</li>
 <li>New <code><a href="../reference/createArchRProj.html">createArchRProj()</a></code> and <code>CreateGiottoObjectFromArchR()</code> functions to create a <code>giotto</code> object with ATAC or epigenetic features using the <em>ArchR</em> pipeline.</li>
-<li>New <code><a href="https://rdrr.io/pkg/GiottoClass/man/giottoMasterToSuite.html" class="external-link">giottoMasterToSuite()</a></code> function to convert a <code>giotto</code> object created with the master version to a Giotto suite object.</li>
+<li>New <code><a href="https://drieslab.github.io/GiottoClass/reference/giottoMasterToSuite.html" class="external-link">giottoMasterToSuite()</a></code> function to convert a <code>giotto</code> object created with the master version to a Giotto suite object.</li>
 <li>New <code><a href="../reference/readPolygonVizgenParquet.html">readPolygonVizgenParquet()</a></code> for updated parquet outputs</li>
 <li>Add <em>checkmate</em> to Imports for assertions checking</li>
 <li>Add exported <code>create</code> function for <code>exprObj</code> creation</li>
@@ -972,9 +1020,9 @@
 <h3 id="changes-3-3-1">Changes<a class="anchor" aria-label="anchor" href="#changes-3-3-1"></a></h3>
 <ul><li>Fix bug in <code>combine_matrices()</code>
 </li>
-<li>Fix bug in <code><a href="https://rdrr.io/pkg/GiottoClass/man/create_giotto.html" class="external-link">createGiottoObject()</a></code> that will not allow object creation without supplied expression information</li>
-<li>Updated <code><a href="https://rdrr.io/pkg/GiottoClass/man/polyStamp.html" class="external-link">polyStamp()</a></code> to replace an apply function with a crossjoin for better performance.</li>
-<li>Updated <code><a href="https://drieslab.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints()</a></code> with <code>plot_last</code> parameter. Default output now plots polygons above points for better visibility.</li>
+<li>Fix bug in <code><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject()</a></code> that will not allow object creation without supplied expression information</li>
+<li>Updated <code><a href="https://drieslab.github.io/GiottoClass/reference/polyStamp.html" class="external-link">polyStamp()</a></code> to replace an apply function with a crossjoin for better performance.</li>
+<li>Updated <code><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints()</a></code> with <code>plot_last</code> parameter. Default output now plots polygons above points for better visibility.</li>
 <li>Add check for spatLocsObj for spatlocs in polyStamp()</li>
 <li>Removed various print() and cat() statements throughout.</li>
 <li>Changed default verbose argument to FALSE for createGiottoObject</li>
@@ -993,9 +1041,9 @@
 <li>Update cell segmentation workflow to return grayscale mask images instead of RGB</li>
 <li>Update <code><a href="../reference/createGiottoVisiumObject.html">createGiottoVisiumObject()</a></code> image h5 scalefactors reading to use partial matching for whether hi or lowres image is supplied</li>
 <li>Update <code>giottoLargeImage</code> <code><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot()</a></code> method to use <code><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">terra::plot()</a></code> instead of <code><a href="https://rspatial.github.io/terra/reference/plotRGB.html" class="external-link">terra::plotRGB()</a></code> for grayscale images</li>
-<li>Remove unnecessary prints from <code><a href="https://rdrr.io/pkg/GiottoClass/man/subsetGiotto.html" class="external-link">subsetGiotto()</a></code>
+<li>Remove unnecessary prints from <code><a href="https://drieslab.github.io/GiottoClass/reference/subsetGiotto.html" class="external-link">subsetGiotto()</a></code>
 </li>
-<li>Fix bug in <code><a href="https://rdrr.io/pkg/GiottoClass/man/readCellMetadata.html" class="external-link">readCellMetadata()</a></code> and <code><a href="https://rdrr.io/pkg/GiottoClass/man/readFeatMetadata.html" class="external-link">readFeatMetadata()</a></code>
+<li>Fix bug in <code><a href="https://drieslab.github.io/GiottoClass/reference/readCellMetadata.html" class="external-link">readCellMetadata()</a></code> and <code><a href="https://drieslab.github.io/GiottoClass/reference/readFeatMetadata.html" class="external-link">readFeatMetadata()</a></code>
 </li>
 </ul></div>
 </div>
@@ -1007,28 +1055,28 @@
 <li>Removed all deprecated accessors from <code>accessors.R</code>
 </li>
 <li>
-<code><a href="https://rdrr.io/pkg/GiottoClass/man/set_default_feat_type.html" class="external-link">set_default_feat_type()</a></code> error downgraded to warning when no <code>feat_type</code>s exist for given <code>spat_unit</code>
+<code><a href="https://drieslab.github.io/GiottoClass/reference/set_default_feat_type.html" class="external-link">set_default_feat_type()</a></code> error downgraded to warning when no <code>feat_type</code>s exist for given <code>spat_unit</code>
 </li>
-<li>update <code><a href="https://rdrr.io/pkg/GiottoClass/man/loadGiotto.html" class="external-link">loadGiotto()</a></code> and <code><a href="https://rdrr.io/pkg/GiottoClass/man/saveGiotto.html" class="external-link">saveGiotto()</a></code> to allow using long strings as column names in the spatVector objects</li>
+<li>update <code><a href="https://drieslab.github.io/GiottoClass/reference/loadGiotto.html" class="external-link">loadGiotto()</a></code> and <code><a href="https://drieslab.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto()</a></code> to allow using long strings as column names in the spatVector objects</li>
 <li>
-<code>'active_spat_unit'</code> and <code>'active_feat_type'</code> params that can be set through <code><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">instructions()</a></code> are now used instead of ‘giotto.spat_unit’ and ‘giotto.feat_type’ global options</li>
-<li>removed duplicate <code>create_dimObject()</code> internal function. Keeping <code><a href="https://rdrr.io/pkg/GiottoClass/man/create_dim_obj.html" class="external-link">create_dim_obj()</a></code>
+<code>'active_spat_unit'</code> and <code>'active_feat_type'</code> params that can be set through <code><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">instructions()</a></code> are now used instead of ‘giotto.spat_unit’ and ‘giotto.feat_type’ global options</li>
+<li>removed duplicate <code>create_dimObject()</code> internal function. Keeping <code><a href="https://drieslab.github.io/GiottoClass/reference/create_dim_obj.html" class="external-link">create_dim_obj()</a></code>
 </li>
 </ul></div>
 <div class="section level3">
 <h3 id="added-3-3-0">Added<a class="anchor" aria-label="anchor" href="#added-3-3-0"></a></h3>
-<ul><li>New implementations of <code><a href="https://rdrr.io/pkg/GiottoClass/man/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code> and <code><a href="https://rdrr.io/pkg/GiottoClass/man/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code> for Nearest Neighbor and Spatial Networks</li>
-<li>New <code>check_py_for_scanpy()</code> function, shifting code around in <code><a href="https://rdrr.io/pkg/GiottoClass/man/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code>
+<ul><li>New implementations of <code><a href="https://drieslab.github.io/GiottoClass/reference/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code> and <code><a href="https://drieslab.github.io/GiottoClass/reference/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code> for Nearest Neighbor and Spatial Networks</li>
+<li>New <code>check_py_for_scanpy()</code> function, shifting code around in <code><a href="https://drieslab.github.io/GiottoClass/reference/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code>
 </li>
 <li>Add <code><a href="https://rdrr.io/r/methods/new.html" class="external-link">initialize()</a></code> method for <code>giotto</code>
 </li>
 <li>Add exported <code>create</code> constructor functions for Giotto S4 subobjects</li>
-<li>Add <code><a href="https://rdrr.io/pkg/GiottoClass/man/activeSpatUnit-generic.html" class="external-link">activeSpatUnit()</a></code> and <code><a href="https://rdrr.io/pkg/GiottoClass/man/activeFeatType-generic.html" class="external-link">activeFeatType()</a></code> for getting and setting active defaults on gobject</li>
+<li>Add <code><a href="https://drieslab.github.io/GiottoClass/reference/activeSpatUnit-generic.html" class="external-link">activeSpatUnit()</a></code> and <code><a href="https://drieslab.github.io/GiottoClass/reference/activeFeatType-generic.html" class="external-link">activeFeatType()</a></code> for getting and setting active defaults on gobject</li>
 <li>New <code>get_*_list()</code> internal functions for retrieving list of all objects of a particular class for a spat_unit and feat_type</li>
-<li>Add <code><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_instructions.html" class="external-link">instructions()</a></code> generic for <code>giotto</code> to access and edit <code>giottoInstructions</code>
+<li>Add <code><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">instructions()</a></code> generic for <code>giotto</code> to access and edit <code>giottoInstructions</code>
 </li>
 <li>Add <code><a href="https://rspatial.github.io/terra/reference/centroids.html" class="external-link">centroids()</a></code> method for <code>giottoPolygon</code> to get centroid info</li>
-<li>Add <code><a href="https://rdrr.io/pkg/GiottoClass/man/overlaps-generic.html" class="external-link">overlaps()</a></code> generic for accessing <code>overlaps</code> slot of <code>giottoPolygon</code>
+<li>Add <code><a href="https://drieslab.github.io/GiottoClass/reference/overlaps-generic.html" class="external-link">overlaps()</a></code> generic for accessing <code>overlaps</code> slot of <code>giottoPolygon</code>
 </li>
 <li>Add <code>[</code> and <code>[&lt;*</code> (empty) access generics to get the data from main slots of <code>giottoPolygon</code> and <code>giottoPoints</code>
 </li>
@@ -1036,7 +1084,7 @@
 <li>Add option to return as <code>giottoPoints</code> from <code>getFeatureInfo</code> (default is still <code>SpatVector</code>)</li>
 <li>Add <code>spatVector_to_dt2</code> internal as a barebones alternative to <code>spatVector_to_dt()</code>
 </li>
-<li>Add <code><a href="https://rdrr.io/pkg/GiottoUtils/man/getRainbowColors.html" class="external-link">getRainbowColors()</a></code> color palette</li>
+<li>Add <code><a href="https://drieslab.github.io/GiottoUtils/reference/getRainbowColors.html" class="external-link">getRainbowColors()</a></code> color palette</li>
 <li>New <code>assign_objnames_2_list()</code> and <code>assign_listnames_2_obj()</code> internals for passing list names to object <code>@name</code> slots and vice versa</li>
 <li>New test_that <code>test_createObject.R</code> script for <code>read</code> functions/S4 subobject creation</li>
 <li>New test_that <code>test_accessors.R</code> script for <code>accessor</code> functions</li>
@@ -1044,19 +1092,19 @@
 </ul></div>
 <div class="section level3">
 <h3 id="changes-3-3-0">Changes<a class="anchor" aria-label="anchor" href="#changes-3-3-0"></a></h3>
-<ul><li>Update <code><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">installGiottoEnvironment()</a></code> and downstream internal functions to allow custom python installation with a new argument, <code>mini_install_path</code>.</li>
-<li>Update <code><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">checkGiottoEnvironment()</a></code> to account for custom python installations with a new argument, <code>mini_install_path</code>.</li>
-<li>Update <code><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">removeGiottoEnvironment()</a></code> to account for custom python installations with a new argument, <code>mini_path</code>.</li>
-<li>Update <code><a href="https://rdrr.io/pkg/GiottoClass/man/create_giotto.html" class="external-link">createGiottoObject()</a></code> with new data ingestion pipeline</li>
+<ul><li>Update <code><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment()</a></code> and downstream internal functions to allow custom python installation with a new argument, <code>mini_install_path</code>.</li>
+<li>Update <code><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment()</a></code> to account for custom python installations with a new argument, <code>mini_install_path</code>.</li>
+<li>Update <code><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">removeGiottoEnvironment()</a></code> to account for custom python installations with a new argument, <code>mini_path</code>.</li>
+<li>Update <code><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject()</a></code> with new data ingestion pipeline</li>
 <li>Modify <code>cell_ID</code>, <code>feat_ID</code>, <code>cell_metadata</code>, <code>feat_metadata</code> slot initialization</li>
 <li>Update <code>read_expression_data()</code> and <code>evaluate_expr_matrix()</code> to be compatible with <code>exprObj</code>
 </li>
-<li>Change <code><a href="https://rdrr.io/pkg/GiottoClass/man/changeGiottoInstructions.html" class="external-link">changeGiottoInstructions()</a></code> to allow addition of new params and enforce logical class of known params</li>
+<li>Change <code><a href="https://drieslab.github.io/GiottoClass/reference/changeGiottoInstructions.html" class="external-link">changeGiottoInstructions()</a></code> to allow addition of new params and enforce logical class of known params</li>
 <li>Update and fix bugs in <code><a href="../reference/createGiottoCosMxObject.html">createGiottoCosMxObject()</a></code> associated with polygon placement and generation</li>
 <li>Update <code><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot()</a></code> for <code>giottoPoints</code> with faster rasterized plotting option. (Now used by default)</li>
 <li>Fix bug in <code><a href="../reference/doLouvainCluster.html">doLouvainCluster()</a></code> (sub)functions and made them compatible with new Giotto Suite framework.</li>
-<li>Fix bug in <code><a href="https://rdrr.io/pkg/GiottoClass/man/gefToGiotto.html" class="external-link">gefToGiotto()</a></code> bin_size arguments.</li>
-<li>Update <code><a href="https://rdrr.io/pkg/GiottoClass/man/loadGiotto.html" class="external-link">loadGiotto()</a></code> and <code><a href="https://rdrr.io/pkg/GiottoClass/man/saveGiotto.html" class="external-link">saveGiotto()</a></code> with path.expand to expand provided file/directory paths</li>
+<li>Fix bug in <code><a href="https://drieslab.github.io/GiottoClass/reference/gefToGiotto.html" class="external-link">gefToGiotto()</a></code> bin_size arguments.</li>
+<li>Update <code><a href="https://drieslab.github.io/GiottoClass/reference/loadGiotto.html" class="external-link">loadGiotto()</a></code> and <code><a href="https://drieslab.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto()</a></code> with path.expand to expand provided file/directory paths</li>
 <li>Organize new and refactored slot <code>check</code> functions in <code>giotto.R</code> for checking gobject consistency during <code><a href="https://rdrr.io/r/methods/new.html" class="external-link">initialize()</a></code>
 </li>
 <li>Organize new and refactored <code>evaluate</code> functions in <code>data_evaluation.R</code> for data wrangling of external data</li>
@@ -1072,39 +1120,39 @@
 <h3 id="breaking-changes-3-2-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-3-2-0"></a></h3>
 <ul><li>Removed support for deprecated nesting in <code>@nn_network</code> slot</li>
 <li>
-<code><a href="https://rdrr.io/pkg/GiottoClass/man/createSpatialNetwork.html" class="external-link">createSpatialNetwork()</a></code> will now output a <code>spatialNetworkObj</code> by default when <code>return_gobject = FALSE</code>. It is possible to change this back to the data.table output by setting <code>output = 'data.table'</code>
+<code><a href="https://drieslab.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork()</a></code> will now output a <code>spatialNetworkObj</code> by default when <code>return_gobject = FALSE</code>. It is possible to change this back to the data.table output by setting <code>output = 'data.table'</code>
 </li>
 <li>Set incomplete classes in classes.R as virtual to prevent their instantiation</li>
 <li>Removed <code><a href="../reference/createGiottoCosMxObject.html">createGiottoCosMxObject()</a></code> <code>aggregate</code> and <code>all</code> workflows until they are updated</li>
 </ul></div>
 <div class="section level3">
 <h3 id="added-3-2-0">Added<a class="anchor" aria-label="anchor" href="#added-3-2-0"></a></h3>
-<ul><li>New <code><a href="https://rdrr.io/pkg/GiottoClass/man/gefToGiotto.html" class="external-link">gefToGiotto()</a></code> interoperability function to convert gef object from Stereo*seq to giotto</li>
-<li>New <code><a href="https://rdrr.io/pkg/GiottoClass/man/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code> interoperability function to convert giotto object to squidpy flavor anndata .h5ad file(s)</li>
-<li>New <code><a href="https://rdrr.io/pkg/GiottoClass/man/giottoToSpatialExperiment.html" class="external-link">giottoToSpatialExperiment()</a></code> and <code><a href="https://rdrr.io/pkg/GiottoClass/man/spatialExperimentToGiotto.html" class="external-link">spatialExperimentToGiotto()</a></code> to convert between Giotto and SpatialExperiment</li>
+<ul><li>New <code><a href="https://drieslab.github.io/GiottoClass/reference/gefToGiotto.html" class="external-link">gefToGiotto()</a></code> interoperability function to convert gef object from Stereo*seq to giotto</li>
+<li>New <code><a href="https://drieslab.github.io/GiottoClass/reference/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code> interoperability function to convert giotto object to squidpy flavor anndata .h5ad file(s)</li>
+<li>New <code><a href="https://drieslab.github.io/GiottoClass/reference/giottoToSpatialExperiment.html" class="external-link">giottoToSpatialExperiment()</a></code> and <code><a href="https://drieslab.github.io/GiottoClass/reference/spatialExperimentToGiotto.html" class="external-link">spatialExperimentToGiotto()</a></code> to convert between Giotto and SpatialExperiment</li>
 <li>New <code><a href="../reference/spatialAutoCor.html">spatialAutoCorLocal()</a></code> and <code><a href="../reference/spatialAutoCor.html">spatialAutoCorGlobal()</a></code> functions to find spatial autocorrelations from expression and cell metadata information</li>
-<li>New <code><a href="https://rdrr.io/pkg/GiottoClass/man/createSpatialWeightMatrix.html" class="external-link">createSpatialWeightMatrix()</a></code> function to generate spatial weight matrix from spatial networks for autocorrelation</li>
+<li>New <code><a href="https://drieslab.github.io/GiottoClass/reference/createSpatialWeightMatrix.html" class="external-link">createSpatialWeightMatrix()</a></code> function to generate spatial weight matrix from spatial networks for autocorrelation</li>
 <li>Add spatial_interaction_spot.R with functions adapted from master branch for working with the Giotto suite object.</li>
 <li>New exported accessors for slots (experimental)</li>
 <li>New <code>multiomics</code> slot in <code>giotto</code>
 </li>
-<li>Add <code>coord_fix_ratio</code> param to <code><a href="https://drieslab.github.io/GiottoVisuals/reference/spatFeatPlot2D.html" class="external-link">spatFeatPlot2D()</a></code> and <code><a href="https://drieslab.github.io/GiottoVisuals/reference/spatFeatPlot2D_single.html" class="external-link">spatFeatPlot2D_single()</a></code>
+<li>Add <code>coord_fix_ratio</code> param to <code><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatFeatPlot2D.html" class="external-link">spatFeatPlot2D()</a></code> and <code><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatFeatPlot2D_single.html" class="external-link">spatFeatPlot2D_single()</a></code>
 </li>
 <li>Add <code>order</code> parameter to <code>dimFeatPlot2D</code> and <code>spatDimFeatPlot2d</code> to plot and order cells according to the levels of the selected feature (<a href="https://github.com/drieslab/Giotto/issues/477" class="external-link">#477</a>)</li>
 <li>Add <code><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot()</a></code> method for <code>spatialNetworkObj</code>
 </li>
 <li>New <code>set_row_order_dt()</code> internal for setting <code>data.table</code> to a specific row order by reference</li>
 <li>New <code>fread_colmatch()</code> internal for fread loading a subset of rows based on matches in a specified column</li>
-<li>Add missing <code><a href="https://rdrr.io/pkg/GiottoClass/man/create_nn_net_obj.html" class="external-link">create_nn_net_obj()</a></code> internal constructor function for S4 <code>nnNetObj</code>
+<li>Add missing <code><a href="https://drieslab.github.io/GiottoClass/reference/create_nn_net_obj.html" class="external-link">create_nn_net_obj()</a></code> internal constructor function for S4 <code>nnNetObj</code>
 </li>
-<li>Add <code>id_col</code>, <code>x_col</code>, <code>y_col</code> params to <code><a href="https://rdrr.io/pkg/GiottoClass/man/polyStamp.html" class="external-link">polyStamp()</a></code> to make stamp location input more flexible</li>
+<li>Add <code>id_col</code>, <code>x_col</code>, <code>y_col</code> params to <code><a href="https://drieslab.github.io/GiottoClass/reference/polyStamp.html" class="external-link">polyStamp()</a></code> to make stamp location input more flexible</li>
 <li>Add <code>optional</code> and <code>custom_msg</code> params to <code>package_check()</code>
 </li>
 <li>New <code><a href="https://rspatial.github.io/terra/reference/wrap.html" class="external-link">wrap()</a></code> and <code><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect()</a></code> generics for <code>giotto</code>, <code>giottoPoints</code>, and <code>giottoPolygons</code>
 </li>
 <li>New <code>rotate()</code>, <code><a href="https://rdrr.io/r/base/t.html" class="external-link">t()</a></code>, and <code>spatShift</code> generics for giotto subobject spatial manipulation</li>
-<li>New <code><a href="https://rdrr.io/pkg/GiottoClass/man/spatIDs-generic.html" class="external-link">spatIDs()</a></code> and <code><a href="https://rdrr.io/pkg/GiottoClass/man/spatIDs-generic.html" class="external-link">featIDs()</a></code> generics</li>
-<li>New <code><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_schema.html" class="external-link">objName()</a></code> and <code>objName</code> generics for setting the names of relevant S4 subobjects</li>
+<li>New <code><a href="https://drieslab.github.io/GiottoClass/reference/spatIDs-generic.html" class="external-link">spatIDs()</a></code> and <code><a href="https://drieslab.github.io/GiottoClass/reference/spatIDs-generic.html" class="external-link">featIDs()</a></code> generics</li>
+<li>New <code><a href="https://drieslab.github.io/GiottoClass/reference/giotto_schema.html" class="external-link">objName()</a></code> and <code>objName</code> generics for setting the names of relevant S4 subobjects</li>
 <li>New <code><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind()</a></code> generic to append <code>giottoPolygon</code> objects</li>
 <li>Add packages <code>exactextractr</code> and <code>sf</code> to “suggests” packages</li>
 <li>Add package <code>progressr</code> to “imports” packages</li>
@@ -1113,7 +1161,7 @@
 <h3 id="changes-3-2-0">Changes<a class="anchor" aria-label="anchor" href="#changes-3-2-0"></a></h3>
 <ul><li>Move giotto object method*specific creation functions from <code>giotto.R</code> to <code>convenience.R</code>
 </li>
-<li>Update <code><a href="https://rdrr.io/pkg/GiottoClass/man/addFeatMetadata.html" class="external-link">addFeatMetadata()</a></code> to handle replacement of existing columns</li>
+<li>Update <code><a href="https://drieslab.github.io/GiottoClass/reference/addFeatMetadata.html" class="external-link">addFeatMetadata()</a></code> to handle replacement of existing columns</li>
 <li>Update <code><a href="https://rdrr.io/r/methods/show.html" class="external-link">show()</a></code> method for <code>giotto</code>
 </li>
 <li>Update <code><a href="https://rdrr.io/r/methods/show.html" class="external-link">show()</a></code> method for <code>spatEnrObj</code>
@@ -1125,9 +1173,9 @@
 </li>
 <li>Optimize <code><a href="../reference/readPolygonFilesVizgen.html">readPolygonFilesVizgen()</a></code>
 </li>
-<li>Fix bug in <code><a href="https://rdrr.io/pkg/GiottoClass/man/replaceGiottoInstructions.html" class="external-link">replaceGiottoInstructions()</a></code> where instructions with more slots than previous are not allowed</li>
-<li>Fix bug in <code><a href="https://rdrr.io/pkg/GiottoClass/man/loadGiotto.html" class="external-link">loadGiotto()</a></code> that prevents proper parsing of filenames when spat_unit or feat_type contains ’_’ characters</li>
-<li>Fix <code><a href="https://rdrr.io/pkg/GiottoClass/man/loadGiotto.html" class="external-link">loadGiotto()</a></code> loss of over<em>allocation for data.tables</em>based objects after loading from disk</li>
+<li>Fix bug in <code><a href="https://drieslab.github.io/GiottoClass/reference/replaceGiottoInstructions.html" class="external-link">replaceGiottoInstructions()</a></code> where instructions with more slots than previous are not allowed</li>
+<li>Fix bug in <code><a href="https://drieslab.github.io/GiottoClass/reference/loadGiotto.html" class="external-link">loadGiotto()</a></code> that prevents proper parsing of filenames when spat_unit or feat_type contains ’_’ characters</li>
+<li>Fix <code><a href="https://drieslab.github.io/GiottoClass/reference/loadGiotto.html" class="external-link">loadGiotto()</a></code> loss of over<em>allocation for data.tables</em>based objects after loading from disk</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -1136,14 +1184,14 @@
 <h3 id="added-3-1-0">Added<a class="anchor" aria-label="anchor" href="#added-3-1-0"></a></h3>
 <ul><li>New <code><a href="https://rdrr.io/r/methods/new.html" class="external-link">initialize()</a></code> generic that calls <code><a href="https://rdrr.io/pkg/data.table/man/truelength.html" class="external-link">setalloccol()</a></code> for data.table*based S4 subobjects to allow setting by reference</li>
 <li>New <code>spatUnit</code>, <code>spatUnit&lt;*</code>, <code>featType</code>, and <code>featType&lt;*</code> feat type generics for S4 subobjects for setting the relevant slots</li>
-<li>Add <code><a href="https://rdrr.io/pkg/GiottoClass/man/hexVertices.html" class="external-link">hexVertices()</a></code> to polygon shape array generation functionality</li>
+<li>Add <code><a href="https://drieslab.github.io/GiottoClass/reference/hexVertices.html" class="external-link">hexVertices()</a></code> to polygon shape array generation functionality</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-3-1-0">Changes<a class="anchor" aria-label="anchor" href="#changes-3-1-0"></a></h3>
 <ul><li>Update <code><a href="../reference/createGiottoCosMxObject.html">createGiottoCosMxObject()</a></code> for 3.0 and modularization of functions. ‘subcellular’ workflow has been tested to work along with an updated tutorial.</li>
 <li>Update grid plotting behavior to set a default number columns to use based on number of elements to plot. Can be overridden by explicitly providing input to <code>cow_n_col</code> param</li>
-<li>Fix bug in <code><a href="https://rdrr.io/pkg/GiottoClass/man/annotateGiotto.html" class="external-link">annotateGiotto()</a></code> after 3.0 update (<a href="https://github.com/drieslab/Giotto/issues/433#issuecomment*1324211224" class="external-link">#433</a>)</li>
-<li>Fix bug in <code><a href="https://rdrr.io/pkg/GiottoClass/man/joinGiottoObjects.html" class="external-link">joinGiottoObjects()</a></code> metadata processing</li>
+<li>Fix bug in <code><a href="https://drieslab.github.io/GiottoClass/reference/annotateGiotto.html" class="external-link">annotateGiotto()</a></code> after 3.0 update (<a href="https://github.com/drieslab/Giotto/issues/433#issuecomment*1324211224" class="external-link">#433</a>)</li>
+<li>Fix bug in <code><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects()</a></code> metadata processing</li>
 <li>Update seed setting behavior in <a href="https://github.com/drieslab/Giotto/blob/suite/R/dimension_reduction.R" class="external-link">dimension_reduction.R</a> and <a href="https://github.com/drieslab/Giotto/blob/suite/R/clustering.R" class="external-link">clustering.R</a>
 </li>
 </ul></div>
@@ -1175,9 +1223,9 @@
 </li>
 <li>New basic generics for S4 subobjects. Mainly the use of <code>[]</code> and <code>[]&lt;*</code> to get or set information into the main data slot</li>
 <li>New <code>@provenance</code> slot in S4 subobjects to track provenance of aggregated information (z_layers used for example)</li>
-<li>New <code><a href="https://rdrr.io/pkg/GiottoClass/man/calculateOverlapPolygonImages.html" class="external-link">calculateOverlapPolygonImages()</a></code> for calculating overlapped intensities from image*based information (e.g. IMC, IF, MIBI, …) and polygon data (e.g. cell)</li>
-<li>New <code><a href="https://rdrr.io/pkg/GiottoClass/man/overlapImagesToMatrix.html" class="external-link">overlapImagesToMatrix()</a></code> converts intensity*polygon overlap info into an expression matrix (e.g. cell by protein)</li>
-<li>New <code><a href="https://rdrr.io/pkg/GiottoClass/man/aggregateStacks.html" class="external-link">aggregateStacks()</a></code> set of functions work with multiple subcellular layers when generating aggregated expression matrices</li>
+<li>New <code><a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlapPolygonImages.html" class="external-link">calculateOverlapPolygonImages()</a></code> for calculating overlapped intensities from image*based information (e.g. IMC, IF, MIBI, …) and polygon data (e.g. cell)</li>
+<li>New <code><a href="https://drieslab.github.io/GiottoClass/reference/overlapImagesToMatrix.html" class="external-link">overlapImagesToMatrix()</a></code> converts intensity*polygon overlap info into an expression matrix (e.g. cell by protein)</li>
+<li>New <code><a href="https://drieslab.github.io/GiottoClass/reference/aggregateStacks.html" class="external-link">aggregateStacks()</a></code> set of functions work with multiple subcellular layers when generating aggregated expression matrices</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-3-0-0">Changes<a class="anchor" aria-label="anchor" href="#changes-3-0-0"></a></h3>
@@ -1194,7 +1242,7 @@
 </ul></div>
 <div class="section level3">
 <h3 id="added-2-1-0">Added<a class="anchor" aria-label="anchor" href="#added-2-1-0"></a></h3>
-<ul><li>New <code><a href="https://rdrr.io/pkg/GiottoClass/man/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code> to convert scanpy anndata to Giotto</li>
+<ul><li>New <code><a href="https://drieslab.github.io/GiottoClass/reference/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code> to convert scanpy anndata to Giotto</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -1205,13 +1253,13 @@
 <ul><li>Stores the minidatasets: preprocessed giotto objects that are ready to be used in any function</li>
 <li>Moved: <code><a href="https://rdrr.io/pkg/GiottoData/man/getSpatialDataset.html" class="external-link">getSpatialDataset()</a></code> and <code><a href="https://rdrr.io/pkg/GiottoData/man/loadGiottoMini.html" class="external-link">loadGiottoMini()</a></code> functions to this package</li>
 </ul></li>
-<li>New <code><a href="https://rdrr.io/pkg/GiottoClass/man/saveGiotto.html" class="external-link">saveGiotto()</a></code> and <code><a href="https://rdrr.io/pkg/GiottoClass/man/loadGiotto.html" class="external-link">loadGiotto()</a></code> for preserving memory*pointer based objects. In <a href="https://github.com/drieslab/Giotto/blob/suite/R/general_help.R" class="external-link">general_help.R</a>
+<li>New <code><a href="https://drieslab.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto()</a></code> and <code><a href="https://drieslab.github.io/GiottoClass/reference/loadGiotto.html" class="external-link">loadGiotto()</a></code> for preserving memory*pointer based objects. In <a href="https://github.com/drieslab/Giotto/blob/suite/R/general_help.R" class="external-link">general_help.R</a>
 <ul><li>It saves a Giotto object into a folder using a specific structure. Essentially a wrapper around <code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code> that also works with spatVector and spatRaster pointers.</li>
 </ul></li>
 <li>New <code>plotInteractivePolygon()</code> for plot*interactive polygonal selection of points.</li>
-<li>New polygon shape array creation through <code><a href="https://rdrr.io/pkg/GiottoClass/man/polyStamp.html" class="external-link">polyStamp()</a></code>, <code>circleVertices</code>, <code>rectVertices</code>. In <a href="https://github.com/drieslab/Giotto/blob/suite/R/giotto_structures.R" class="external-link">giotto_structures.R</a>
+<li>New polygon shape array creation through <code><a href="https://drieslab.github.io/GiottoClass/reference/polyStamp.html" class="external-link">polyStamp()</a></code>, <code>circleVertices</code>, <code>rectVertices</code>. In <a href="https://github.com/drieslab/Giotto/blob/suite/R/giotto_structures.R" class="external-link">giotto_structures.R</a>
 </li>
-<li>Add accessor functions <code>get_CellMetadata</code> (alias of <code><a href="https://rdrr.io/pkg/GiottoClass/man/pDataDT.html" class="external-link">pDataDT()</a></code>), <code>set_CellMetadata</code>, <code>get_FeatMetadata</code> (alias of <code><a href="https://rdrr.io/pkg/GiottoClass/man/fDataDT.html" class="external-link">fDataDT()</a></code>), <code>set_FeatMetadata</code>. See <a href="https://github.com/drieslab/Giotto/blob/suite/R/accessors.R" class="external-link">accessors.R</a>
+<li>Add accessor functions <code>get_CellMetadata</code> (alias of <code><a href="https://drieslab.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT()</a></code>), <code>set_CellMetadata</code>, <code>get_FeatMetadata</code> (alias of <code><a href="https://drieslab.github.io/GiottoClass/reference/fDataDT.html" class="external-link">fDataDT()</a></code>), <code>set_FeatMetadata</code>. See <a href="https://github.com/drieslab/Giotto/blob/suite/R/accessors.R" class="external-link">accessors.R</a>
 </li>
 <li>New <code><a href="../reference/filterDistributions.html">filterDistributions()</a></code> to generate histogram plots from expression statistics</li>
 </ul></div>

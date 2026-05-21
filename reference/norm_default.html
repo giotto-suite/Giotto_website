@@ -29,7 +29,7 @@ Log transformation of data.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.3</span>
       </span>
     </div>
 
@@ -538,7 +538,9 @@ a custom scale-factor.</p></li>
 library size normalization</td></tr><tr><td><code>scalefactor</code></td><td>numeric (default = 6000). Scalefactor to use after
 library size normalization. (skipped if <code>library_size_norm = FALSE</code>)</td></tr><tr><td><code>log_norm</code></td><td>logical (default = <code>TRUE</code>). Whether to transform values to
 log-scale.</td></tr><tr><td><code>log_offset</code></td><td>numeric (default = 1). If <code>log_norm = TRUE</code>, offset
-value to add to expression values to avoid <code>log(0)</code></td></tr><tr><td><code>logbase</code></td><td>numeric (default = 2). If <code>log_norm = TRUE</code>, log base to
+value to add to expression values to avoid <code>log(0)</code>. Note: for sparse-like
+matrices (e.g. <code>dgCMatrix</code>, 'dbSparseMatrix'), only <code>log_offset = 1</code> is
+supported (log1p)</td></tr><tr><td><code>logbase</code></td><td>numeric (default = 2). If <code>log_norm = TRUE</code>, log base to
 use to log normalize expression values</td></tr></table></div>
     <div id="see-also">
     <h2>See also</h2>

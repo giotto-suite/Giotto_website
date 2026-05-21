@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.3</span>
       </span>
     </div>
 
@@ -568,9 +568,6 @@ graphics::polygon</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 1. read Giotto object</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 2. read Giotto feature information</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 3. read Giotto spatial information</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 3.1 read Giotto spatial shape information</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 3.2 read Giotto spatial centroid information</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 3.3 read Giotto spatial overlap information</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 4. read Giotto image information</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> python already initialized in this session</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  active environment : '/usr/bin/python3'</span>
@@ -581,12 +578,12 @@ graphics::polygon</p></dd>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Add polygon coordinates to Giotto object</span></span></span>
-<span class="r-in"><span><span class="va">my_giotto_polygons</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createGiottoPolygon.html" class="external-link">createGiottoPolygonsFromDfr</a></span><span class="op">(</span><span class="va">my_polygon_coords</span>,</span></span>
+<span class="r-in"><span><span class="va">my_giotto_polygons</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygonsFromDfr</a></span><span class="op">(</span><span class="va">my_polygon_coords</span>,</span></span>
 <span class="r-in"><span>    name <span class="op">=</span> <span class="st">"selections"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Selecting col "poly_ID" as poly_ID column</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Selecting cols "sdimx" and "sdimy" as x and y respectively</span>
-<span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/addGiottoPolygons.html" class="external-link">addGiottoPolygons</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addGiottoPolygons.html" class="external-link">addGiottoPolygons</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    gobject <span class="op">=</span> <span class="va">g</span>,</span></span>
 <span class="r-in"><span>    gpolygons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">my_giotto_polygons</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
@@ -599,7 +596,7 @@ graphics::polygon</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  and will be overwritten</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Create spatplot</span></span></span>
-<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g</span>, return_plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g</span>, return_plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plotPolygons-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">plotPolygons</span><span class="op">(</span><span class="va">g</span>, x <span class="op">=</span> <span class="va">x</span><span class="op">)</span></span></span>

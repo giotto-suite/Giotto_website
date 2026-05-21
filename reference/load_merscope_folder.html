@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.3</span>
       </span>
     </div>
 
@@ -519,8 +519,10 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.load_merscope_folder</span><span class="op">(</span></span>
 <span>  <span class="va">dir_items</span>,</span>
 <span>  <span class="va">data_to_use</span>,</span>
+<span>  <span class="va">polygon_format</span>,</span>
 <span>  fovs <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  poly_z_indices <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">1</span>, to <span class="op">=</span> <span class="fl">7</span><span class="op">)</span>,</span>
+<span>  poly_z_indices <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">6</span>,</span>
+<span>  version <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  cores <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
@@ -528,8 +530,10 @@
 <span><span class="fu">.load_merscope_folder_subcellular</span><span class="op">(</span></span>
 <span>  <span class="va">dir_items</span>,</span>
 <span>  <span class="va">data_to_use</span>,</span>
+<span>  <span class="va">polygon_format</span>,</span>
 <span>  cores <span class="op">=</span> <span class="cn">NA</span>,</span>
-<span>  poly_z_indices <span class="op">=</span> <span class="fl">1L</span><span class="op">:</span><span class="fl">7L</span>,</span>
+<span>  poly_z_indices <span class="op">=</span> <span class="fl">0L</span><span class="op">:</span><span class="fl">6L</span>,</span>
+<span>  version <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  fovs <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
@@ -554,6 +558,21 @@
 <dt id="arg-data-to-use">data_to_use<a class="anchor" aria-label="anchor" href="#arg-data-to-use"></a></dt>
 <dd><p>which of either the 'subcellular' or 'aggregate'
 information to use for object creation</p></dd>
+
+
+<dt id="arg-polygon-format">polygon_format<a class="anchor" aria-label="anchor" href="#arg-polygon-format"></a></dt>
+<dd><p>format of the boundary files, either 'parquet' or
+'hdf5' (v2 only)</p></dd>
+
+
+<dt id="arg-poly-z-indices">poly_z_indices<a class="anchor" aria-label="anchor" href="#arg-poly-z-indices"></a></dt>
+<dd><p>which z-indices to use for the polygons (Default 0:6
+for v2, 1:7 for v1)</p></dd>
+
+
+<dt id="arg-version">version<a class="anchor" aria-label="anchor" href="#arg-version"></a></dt>
+<dd><p>integer. Version of logic to use (1 = Legacy/Original,
+2 = New/Optimized)</p></dd>
 
 
 <dt id="arg-cores">cores<a class="anchor" aria-label="anchor" href="#arg-cores"></a></dt>

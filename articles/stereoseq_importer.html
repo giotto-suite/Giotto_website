@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.3</span>
       </span>
     </div>
 
@@ -784,11 +784,11 @@ resolution.</p>
 object<a class="anchor" aria-label="anchor" href="#loading-a-bin100-object"></a>
 </h3>
 <p>The simplest starting point is
-<code>createGiottoStereoSeqObjectBin()</code>. By default it reads
+<code><a href="../reference/createGiottoStereoSeqObjectBin.html">createGiottoStereoSeqObjectBin()</a></code>. By default it reads
 <code>tissue.gef</code> (tissue-filtered) at the bin size you
 specify.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_bin</span> <span class="op">&lt;-</span> <span class="fu">createGiottoStereoSeqObjectBin</span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">g_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createGiottoStereoSeqObjectBin.html">createGiottoStereoSeqObjectBin</a></span><span class="op">(</span></span>
 <span>  stereoseq_dir <span class="op">=</span> <span class="va">data_dir</span>,</span>
 <span>  bin_size      <span class="op">=</span> <span class="st">"bin100"</span>,</span>
 <span>  gef_type      <span class="op">=</span> <span class="st">"tissue"</span>,   <span class="co"># default: tissue-filtered</span></span>
@@ -821,7 +821,7 @@ full array<a class="anchor" aria-label="anchor" href="#tissue-filtered-vs-full-a
 overlap the detected tissue. If you need the full capture array
 (e.g. for background QC), set <code>gef_type = "full"</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_bin_full</span> <span class="op">&lt;-</span> <span class="fu">createGiottoStereoSeqObjectBin</span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">g_bin_full</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createGiottoStereoSeqObjectBin.html">createGiottoStereoSeqObjectBin</a></span><span class="op">(</span></span>
 <span>  stereoseq_dir <span class="op">=</span> <span class="va">data_dir</span>,</span>
 <span>  bin_size      <span class="op">=</span> <span class="st">"bin100"</span>,</span>
 <span>  gef_type      <span class="op">=</span> <span class="st">"full"</span></span>
@@ -838,10 +838,10 @@ off-tissue background.</p>
 <span class="header-section-number">4.3</span> Visualising bin
 positions<a class="anchor" aria-label="anchor" href="#visualising-bin-positions"></a>
 </h3>
-<p>Use <code><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D()</a></code> to overlay bin centroid positions on
+<p>Use <code><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D()</a></code> to overlay bin centroid positions on
 the H&amp;E image and confirm they sit on tissue:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span></span>
 <span>  gobject    <span class="op">=</span> <span class="va">g_bin</span>,</span>
 <span>  spat_unit  <span class="op">=</span> <span class="st">"bin100"</span>,</span>
 <span>  show_image <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -859,7 +859,7 @@ are <code>"bin20"</code>, <code>"bin50"</code>, <code>"bin100"</code>,
 <code>"bin200"</code>. Smaller bins give higher spatial resolution but
 sparser expression per spot:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_bin50</span> <span class="op">&lt;-</span> <span class="fu">createGiottoStereoSeqObjectBin</span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">g_bin50</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createGiottoStereoSeqObjectBin.html">createGiottoStereoSeqObjectBin</a></span><span class="op">(</span></span>
 <span>  stereoseq_dir <span class="op">=</span> <span class="va">data_dir</span>,</span>
 <span>  bin_size      <span class="op">=</span> <span class="st">"bin50"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -881,7 +881,7 @@ observation is one segmented cell rather than a fixed-size bin.</p>
 <p>The GEF file embeds polygon vertices for every cell (called
 “cellBorder”). Loading them is nearly instant:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_cell</span> <span class="op">&lt;-</span> <span class="fu">createGiottoStereoSeqObjectCell</span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">g_cell</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createGiottoStereoSeqObjectCell.html">createGiottoStereoSeqObjectCell</a></span><span class="op">(</span></span>
 <span>  stereoseq_dir <span class="op">=</span> <span class="va">data_dir</span>,</span>
 <span>  gef_type      <span class="op">=</span> <span class="st">"adjusted_cellbin"</span>,  <span class="co"># default</span></span>
 <span>  load_image    <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -891,7 +891,7 @@ observation is one segmented cell rather than a fixed-size bin.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">g_cell</span><span class="op">)</span></span></code></pre></div>
 <p>Visualize cell centroids on the H&amp;E image:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span></span>
 <span>  gobject    <span class="op">=</span> <span class="va">g_cell</span>,</span>
 <span>  spat_unit  <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>  show_image <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -902,7 +902,7 @@ observation is one segmented cell rather than a fixed-size bin.</p>
 <p>Overlay the cellBorder polygon outlines to verify they align with
 cell boundaries in the H&amp;E:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span></span>
 <span>  gobject           <span class="op">=</span> <span class="va">g_cell</span>,</span>
 <span>  show_image        <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  image_name        <span class="op">=</span> <span class="st">"image"</span>,</span>
@@ -925,7 +925,7 @@ cell boundaries in the H&amp;E:</p>
 by tracing the binary <code>HE_mask.tif</code>. These are often more
 accurate for irregularly shaped cells:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_cell_mask</span> <span class="op">&lt;-</span> <span class="fu">createGiottoStereoSeqObjectCell</span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">g_cell_mask</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createGiottoStereoSeqObjectCell.html">createGiottoStereoSeqObjectCell</a></span><span class="op">(</span></span>
 <span>  stereoseq_dir <span class="op">=</span> <span class="va">data_dir</span>,</span>
 <span>  gef_type      <span class="op">=</span> <span class="st">"adjusted_cellbin"</span>,</span>
 <span>  load_image    <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -934,7 +934,7 @@ accurate for irregularly shaped cells:</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">g_cell_mask</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span></span>
 <span>  gobject           <span class="op">=</span> <span class="va">g_cell_mask</span>,</span>
 <span>  show_image        <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  image_name        <span class="op">=</span> <span class="st">"image"</span>,</span>
@@ -978,7 +978,7 @@ produce a per-cell expression matrix.</p>
 data and mask polygons<a class="anchor" aria-label="anchor" href="#step-1-load-bin1-data-and-mask-polygons"></a>
 </h3>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_bin1</span> <span class="op">&lt;-</span> <span class="fu">createGiottoStereoSeqObjectBin</span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">g_bin1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createGiottoStereoSeqObjectBin.html">createGiottoStereoSeqObjectBin</a></span><span class="op">(</span></span>
 <span>  stereoseq_dir  <span class="op">=</span> <span class="va">data_dir</span>,</span>
 <span>  bin_size       <span class="op">=</span> <span class="st">"bin1"</span>,</span>
 <span>  load_binpoints <span class="op">=</span> <span class="cn">TRUE</span>,   <span class="co"># giottoBinPoints: DNB-level feature positions</span></span>
@@ -1003,10 +1003,10 @@ transcript positions (genes × positions)</li>
 <span class="header-section-number">6.2</span> Step 2 — Assign
 transcripts to polygons<a class="anchor" aria-label="anchor" href="#step-2-assign-transcripts-to-polygons"></a>
 </h3>
-<p><code><a href="https://rdrr.io/pkg/GiottoClass/man/calculateOverlap.html" class="external-link">calculateOverlap()</a></code> determines which polygon each DNB
+<p><code><a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap()</a></code> determines which polygon each DNB
 falls into:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_bin1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">g_bin1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span></span>
 <span>  <span class="va">g_bin1</span>,</span>
 <span>  spat_info <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>  feat_info <span class="op">=</span> <span class="st">"rna"</span></span>
@@ -1017,10 +1017,10 @@ falls into:</p>
 <span class="header-section-number">6.3</span> Step 3 — Build a
 per-cell expression matrix<a class="anchor" aria-label="anchor" href="#step-3-build-a-per-cell-expression-matrix"></a>
 </h3>
-<p><code><a href="https://rdrr.io/pkg/GiottoClass/man/overlapToMatrix.html" class="external-link">overlapToMatrix()</a></code> aggregates the overlapping DNBs into a
+<p><code><a href="https://drieslab.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix()</a></code> aggregates the overlapping DNBs into a
 genes × cells count matrix:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_bin1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">g_bin1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span></span>
 <span>  <span class="va">g_bin1</span>,</span>
 <span>  spat_info <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>  feat_info <span class="op">=</span> <span class="st">"rna"</span>,</span>
@@ -1045,9 +1045,9 @@ transcripts inside polygons<a class="anchor" aria-label="anchor" href="#visualis
 <p>The zoomed plot below shows individual DNBs coloured by gene falling
 inside cell polygon outlines:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">selected_feats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/spatIDs-generic.html" class="external-link">featIDs</a></span><span class="op">(</span><span class="va">g_bin1</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span></span>
+<code class="sourceCode R"><span><span class="va">selected_feats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/spatIDs-generic.html" class="external-link">featIDs</a></span><span class="op">(</span><span class="va">g_bin1</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span></span>
 <span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span></span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span></span>
 <span>  gobject           <span class="op">=</span> <span class="va">g_bin1</span>,</span>
 <span>  show_image        <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  image_name        <span class="op">=</span> <span class="st">"image"</span>,</span>
@@ -1074,7 +1074,7 @@ inside cell polygon outlines:</p>
 <code>importStereoSeq()</code><a class="anchor" aria-label="anchor" href="#piecewise-loading-with-importstereoseq"></a>
 </h2>
 <p>For full control over which components are loaded and how they are
-assembled, use the low-level <code>importStereoSeq()</code> reader. This
+assembled, use the low-level <code><a href="../reference/importStereoSeq.html">importStereoSeq()</a></code> reader. This
 is useful when:</p>
 <ul>
 <li>You only need a subset of components (e.g. expression + locations,
@@ -1084,7 +1084,7 @@ later</li>
 <li>You are building a custom workflow that assembles the object from
 multiple sources</li>
 </ul>
-<p><code>importStereoSeq()</code> returns a reader object with
+<p><code><a href="../reference/importStereoSeq.html">importStereoSeq()</a></code> returns a reader object with
 individual <code>$load_*()</code> functions — nothing is read until you
 call them.</p>
 <div class="section level3" number="7.1">
@@ -1092,7 +1092,7 @@ call them.</p>
 <span class="header-section-number">7.1</span> Create a reader<a class="anchor" aria-label="anchor" href="#create-a-reader"></a>
 </h3>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">reader</span> <span class="op">&lt;-</span> <span class="fu">importStereoSeq</span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">reader</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importStereoSeq.html">importStereoSeq</a></span><span class="op">(</span></span>
 <span>  stereoseq_dir <span class="op">=</span> <span class="va">data_dir</span>,</span>
 <span>  type          <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>  gef_type      <span class="op">=</span> <span class="st">"adjusted_cellbin"</span></span>
@@ -1118,18 +1118,18 @@ individually<a class="anchor" aria-label="anchor" href="#load-components-individ
 <span class="header-section-number">7.3</span> Assemble a custom
 giotto object<a class="anchor" aria-label="anchor" href="#assemble-a-custom-giotto-object"></a>
 </h3>
-<p>Use <code><a href="https://rdrr.io/pkg/GiottoClass/man/setGiotto.html" class="external-link">setGiotto()</a></code> to place each component into an empty
+<p>Use <code><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto()</a></code> to place each component into an empty
 object:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto-class.html" class="external-link">giotto</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">g_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g_custom</span>, <span class="va">expr</span><span class="op">)</span></span>
-<span><span class="va">g_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g_custom</span>, <span class="va">sl</span><span class="op">)</span></span>
-<span><span class="va">g_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g_custom</span>, <span class="va">poly</span><span class="op">)</span>  <span class="co"># choose cellBorder or mask, not both</span></span>
-<span><span class="va">g_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g_custom</span>, <span class="va">img</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">g_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto-class.html" class="external-link">giotto</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">g_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g_custom</span>, <span class="va">expr</span><span class="op">)</span></span>
+<span><span class="va">g_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g_custom</span>, <span class="va">sl</span><span class="op">)</span></span>
+<span><span class="va">g_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g_custom</span>, <span class="va">poly</span><span class="op">)</span>  <span class="co"># choose cellBorder or mask, not both</span></span>
+<span><span class="va">g_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g_custom</span>, <span class="va">img</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">g_custom</span><span class="op">)</span></span></code></pre></div>
 <p>Visualize the result to confirm everything is aligned:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span></span>
 <span>  gobject    <span class="op">=</span> <span class="va">g_custom</span>,</span>
 <span>  spat_unit  <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>  show_image <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -1146,7 +1146,7 @@ the fly<a class="anchor" aria-label="anchor" href="#switch-bin-size-on-the-fly">
 <p>Create a second reader for a different bin size without re-specifying
 all paths:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">reader_bin50</span> <span class="op">&lt;-</span> <span class="fu">importStereoSeq</span><span class="op">(</span><span class="va">data_dir</span>, type <span class="op">=</span> <span class="st">"bin"</span>, bin_size <span class="op">=</span> <span class="st">"bin50"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">reader_bin50</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importStereoSeq.html">importStereoSeq</a></span><span class="op">(</span><span class="va">data_dir</span>, type <span class="op">=</span> <span class="st">"bin"</span>, bin_size <span class="op">=</span> <span class="st">"bin50"</span><span class="op">)</span></span>
 <span><span class="va">expr_bin50</span>   <span class="op">&lt;-</span> <span class="va">reader_bin50</span><span class="op">$</span><span class="fu">load_expression</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
@@ -1170,12 +1170,12 @@ to use?<a class="anchor" aria-label="anchor" href="#summary-which-approach-to-us
 <tbody>
 <tr class="odd">
 <td><strong>Bin aggregation</strong></td>
-<td><code>createGiottoStereoSeqObjectBin()</code></td>
+<td><code><a href="../reference/createGiottoStereoSeqObjectBin.html">createGiottoStereoSeqObjectBin()</a></code></td>
 <td>Fast overview; no single-cell resolution needed</td>
 </tr>
 <tr class="even">
 <td><strong>Cell aggregation</strong></td>
-<td><code>createGiottoStereoSeqObjectCell()</code></td>
+<td><code><a href="../reference/createGiottoStereoSeqObjectCell.html">createGiottoStereoSeqObjectCell()</a></code></td>
 <td>Single-cell resolution; use pre-computed segmentation</td>
 </tr>
 <tr class="odd">
@@ -1185,13 +1185,13 @@ to use?<a class="anchor" aria-label="anchor" href="#summary-which-approach-to-us
 </tr>
 <tr class="even">
 <td><strong>Piecewise</strong></td>
-<td><code>importStereoSeq()</code></td>
+<td><code><a href="../reference/importStereoSeq.html">importStereoSeq()</a></code></td>
 <td>Advanced; load only what you need, assemble manually</td>
 </tr>
 </tbody>
 </table>
 <p>For most users starting out,
-<code>createGiottoStereoSeqObjectCell()</code> with
+<code><a href="../reference/createGiottoStereoSeqObjectCell.html">createGiottoStereoSeqObjectCell()</a></code> with
 <code>load_polygons = TRUE</code> (cellBorder) is the best default: it
 is fast, produces single-cell resolution, and gives you polygon
 boundaries out of the box.</p>

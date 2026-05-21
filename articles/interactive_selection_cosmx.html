@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.3</span>
       </span>
     </div>
 
@@ -670,10 +670,10 @@ enviroment<a class="anchor" aria-label="anchor" href="#set-up-the-giotto-envirom
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giotto-suite.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Ensure the Python environment for Giotto has been installed.</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="co"># The following command need only be run once to install the Giotto environment.</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2" number="2">
@@ -699,9 +699,9 @@ object<a class="anchor" aria-label="anchor" href="#load-the-giotto-object"></a>
 </h2>
 <p>If you have the object already in your R environment, you can skip
 this step. If you exported it to a folder using the
-<code><a href="https://rdrr.io/pkg/GiottoClass/man/saveGiotto.html" class="external-link">saveGiotto()</a></code> function, then run the following command:</p>
+<code><a href="https://drieslab.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto()</a></code> function, then run the following command:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/loadGiotto.html" class="external-link">loadGiotto</a></span><span class="op">(</span><span class="st">"cosmx_object/"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/loadGiotto.html" class="external-link">loadGiotto</a></span><span class="op">(</span><span class="st">"cosmx_object/"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="5">
 <h2 id="export-the-giotto-object-to-a-local-anndata-zarr-folder">
@@ -830,11 +830,11 @@ file<a class="anchor" aria-label="anchor" href="#read-the-selections-file"></a>
 </h3>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_selections</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"my_selections.csv"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">my_selections</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"cell_ID"</span></span></code></pre></div>
+<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">my_selections</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"cell_ID"</span></span></code></pre></div>
 <p><img src="images/interactive_selection_cosmx/06_selections_table.png" alt="" width="70%" style="display: block; margin: auto;"></p>
 <p>Use the cell_IDs to add their corresponding spatial coordinates.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">spatial_locs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/getSpatialLocations.html" class="external-link">getSpatialLocations</a></span><span class="op">(</span><span class="va">giotto_object</span>,</span>
+<code class="sourceCode R"><span><span class="va">spatial_locs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/getSpatialLocations.html" class="external-link">getSpatialLocations</a></span><span class="op">(</span><span class="va">giotto_object</span>,</span>
 <span>                                    output <span class="op">=</span> <span class="st">"data.table"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">my_selections</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">my_selections</span>, <span class="va">spatial_locs</span><span class="op">)</span></span>
@@ -848,11 +848,11 @@ polygon object<a class="anchor" aria-label="anchor" href="#create-a-giotto-polyg
 <p>We must transform the data.frame with coordinates into a Giotto
 polygon object.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">my_giotto_polygons</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/createGiottoPolygon.html" class="external-link">createGiottoPolygonsFromDfr</a></span><span class="op">(</span><span class="va">my_selections</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sdimx"</span>, <span class="st">"sdimy"</span>, <span class="st">"setName"</span><span class="op">)</span><span class="op">]</span>, </span>
+<code class="sourceCode R"><span><span class="va">my_giotto_polygons</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygonsFromDfr</a></span><span class="op">(</span><span class="va">my_selections</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sdimx"</span>, <span class="st">"sdimy"</span>, <span class="st">"setName"</span><span class="op">)</span><span class="op">]</span>, </span>
 <span>                                                  name <span class="op">=</span> <span class="st">"selections"</span>,</span>
 <span>                                                  calc_centroids <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/addGiottoPolygons.html" class="external-link">addGiottoPolygons</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giotto_object</span>,</span>
+<span><span class="va">giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addGiottoPolygons.html" class="external-link">addGiottoPolygons</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giotto_object</span>,</span>
 <span>                                   gpolygons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">my_giotto_polygons</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3" number="12.3">
@@ -865,7 +865,7 @@ the polygons to the Giotto object<a class="anchor" aria-label="anchor" href="#ad
 <span>                                 polygon_name <span class="op">=</span> <span class="st">"selections"</span><span class="op">)</span></span></code></pre></div>
 <p>Let’s see how it looks like now the cell_metadata</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/GiottoClass/man/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">giotto_object</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">giotto_object</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/interactive_selection_cosmx/07_new_metadata.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 </div>
 </div>
@@ -929,7 +929,7 @@ selected regions<a class="anchor" aria-label="anchor" href="#plot-again-the-sele
 <p>Use the ‘selections’ column in the metadata table to color the cells
 with their corresponding Selection ID.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">giotto_object</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">giotto_object</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"selections"</span>,</span>
 <span>           point_size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/interactive_selection_cosmx/12_plot_selections.png" alt="" width="100%"></p>

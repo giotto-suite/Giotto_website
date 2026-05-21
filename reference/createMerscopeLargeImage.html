@@ -25,7 +25,7 @@ points and polygon data."><!-- mathjax --><script src="https://cdnjs.cloudflare.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.3</span>
       </span>
     </div>
 
@@ -520,7 +520,12 @@ points and polygon data.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">createMerscopeLargeImage</span><span class="op">(</span><span class="va">image_file</span>, <span class="va">transforms_file</span>, name <span class="op">=</span> <span class="st">"image"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">createMerscopeLargeImage</span><span class="op">(</span></span>
+<span>  <span class="va">image_file</span>,</span>
+<span>  <span class="va">transforms_file</span>,</span>
+<span>  name <span class="op">=</span> <span class="st">"image"</span>,</span>
+<span>  flip_axis <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"y"</span>, <span class="st">"x"</span>, <span class="st">"both"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -540,6 +545,13 @@ in the same folder as the images and named
 <dt id="arg-name">name<a class="anchor" aria-label="anchor" href="#arg-name"></a></dt>
 <dd><p>character. name to assign the image. Multiple should be provided
 if image_file is a list.</p></dd>
+
+
+<dt id="arg-flip-axis">flip_axis<a class="anchor" aria-label="anchor" href="#arg-flip-axis"></a></dt>
+<dd><p>character. Axis along which to reflect the image after the
+spatial shift: <code>"none"</code> (default), <code>"y"</code>, <code>"x"</code>, or
+<code>"both"</code>. The reflection origin is the midpoint of the image extent in
+micron space.</p></dd>
 
 </dl></div>
     <div id="value">

@@ -27,7 +27,7 @@ specific implementations."><!-- mathjax --><script src="https://cdnjs.cloudflare
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Giotto</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.3</span>
       </span>
     </div>
 
@@ -689,11 +689,11 @@ input for PCA</p></dd>
 
 
 <dt id="arg-nn-param">nn_param<a class="anchor" aria-label="anchor" href="#arg-nn-param"></a></dt>
-<dd><p>list of parameters for <code><a href="https://rdrr.io/pkg/GiottoClass/man/createNearestNetwork.html" class="external-link">createNearestNetwork()</a></code></p></dd>
+<dd><p>list of parameters for <code><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork()</a></code></p></dd>
 
 
 <dt id="arg-k-neighbors">k_neighbors<a class="anchor" aria-label="anchor" href="#arg-k-neighbors"></a></dt>
-<dd><p>number of k for <code><a href="https://rdrr.io/pkg/GiottoClass/man/createNearestNetwork.html" class="external-link">createNearestNetwork()</a></code></p></dd>
+<dd><p>number of k for <code><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork()</a></code></p></dd>
 
 
 <dt id="arg-resolution">resolution<a class="anchor" aria-label="anchor" href="#arg-resolution"></a></dt>
@@ -773,9 +773,6 @@ Louvain algorithm</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 1. read Giotto object</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 2. read Giotto feature information</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 3. read Giotto spatial information</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 3.1 read Giotto spatial shape information</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 3.2 read Giotto spatial centroid information</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 3.3 read Giotto spatial overlap information</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 4. read Giotto image information</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> python already initialized in this session</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  active environment : '/usr/bin/python3'</span>
@@ -787,13 +784,16 @@ Louvain algorithm</p></li>
 <span class="r-in"><span><span class="co"># default method is leiden subclustering</span></span></span>
 <span class="r-in"><span><span class="fu">subClusterCells</span><span class="op">(</span><span class="va">g</span>, cluster_column <span class="op">=</span> <span class="st">"leiden_clus"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> start with cluster: 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 'as(&lt;dgeMatrix&gt;, "dgCMatrix")' is deprecated.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Use 'as(., "CsparseMatrix")' instead.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> See help("Deprecated") and help("Matrix-deprecated").</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 43 highly variable feats have been selected</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>ncp &gt;= minimum dimension of x, will be set to</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>                 minimum dimension of x - 1</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[runPCA] ncp (100) &gt;= minimum dimension of input (43), setting ncp = 42</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>You're computing too large a percentage of total singular values, use a standard svd instead.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>did not converge--results might be invalid!; try increasing work or maxit</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in py_run_file_impl(file, local, convert):</span> ModuleNotFoundError: No module named 'igraph'</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> Run `reticulate::py_last_error()` for details.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in igraph::cluster_leiden(graph = graph_object_undirected, objective_function = objective_function,     resolution = param$resolution, beta = param$beta, weights = param$weights,     initial_membership = param$initial_membership, n_iterations = param$n_iterations,     ...):</span> `...` must be empty.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> Problematic argument:</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> python_path = python_path</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># use louvain instead</span></span></span>
 <span class="r-in"><span><span class="fu">subClusterCells</span><span class="op">(</span><span class="va">g</span>,</span></span>
@@ -802,8 +802,7 @@ Louvain algorithm</p></li>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> start with cluster:  1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 43 highly variable features have been selected</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>ncp &gt;= minimum dimension of x, will be set to</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>                 minimum dimension of x - 1</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[runPCA] ncp (100) &gt;= minimum dimension of input (43), setting ncp = 42</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>You're computing too large a percentage of total singular values, use a standard svd instead.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>did not converge--results might be invalid!; try increasing work or maxit</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in py_run_file_impl(file, local, convert):</span> ModuleNotFoundError: No module named 'community'</span>
@@ -813,18 +812,17 @@ Louvain algorithm</p></li>
 <span class="r-in"><span><span class="fu">doLeidenSubCluster</span><span class="op">(</span><span class="va">g</span>, cluster_column <span class="op">=</span> <span class="st">"leiden_clus"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> start with cluster: 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 43 highly variable feats have been selected</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>ncp &gt;= minimum dimension of x, will be set to</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>                 minimum dimension of x - 1</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[runPCA] ncp (100) &gt;= minimum dimension of input (43), setting ncp = 42</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>You're computing too large a percentage of total singular values, use a standard svd instead.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>did not converge--results might be invalid!; try increasing work or maxit</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in py_run_file_impl(file, local, convert):</span> ModuleNotFoundError: No module named 'igraph'</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> Run `reticulate::py_last_error()` for details.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in igraph::cluster_leiden(graph = graph_object_undirected, objective_function = objective_function,     resolution = param$resolution, beta = param$beta, weights = param$weights,     initial_membership = param$initial_membership, n_iterations = param$n_iterations,     ...):</span> `...` must be empty.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> Problematic argument:</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> python_path = python_path</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">doLouvainSubCluster</span><span class="op">(</span><span class="va">g</span>, cluster_column <span class="op">=</span> <span class="st">"leiden_clus"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> start with cluster:  1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 43 highly variable features have been selected</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>ncp &gt;= minimum dimension of x, will be set to</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>                 minimum dimension of x - 1</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[runPCA] ncp (100) &gt;= minimum dimension of input (43), setting ncp = 42</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>You're computing too large a percentage of total singular values, use a standard svd instead.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>did not converge--results might be invalid!; try increasing work or maxit</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in py_run_file_impl(file, local, convert):</span> ModuleNotFoundError: No module named 'community'</span>
