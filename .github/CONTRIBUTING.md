@@ -56,9 +56,9 @@ styler::style_file(path = "[???]", transformers = b_style)
 styler::style_pkg(transformers = b_style)
 ```
 
--   setting your default indent size to be 4 spaces instead of 2 is
+-   Setting your default indent size to be 4 spaces instead of 2 is
     also recommended.
-
+    
 <!-- -->
 
 ## Function Types in Giotto Suite
@@ -103,7 +103,6 @@ styler::style_pkg(transformers = b_style)
   - For example: use `\u00F6` for `ö`.
 
 
-
 # Giotto-specific Dispatch Functions
 
 ## Stat functions  
@@ -125,7 +124,6 @@ flexible wrappers that dispatch to our preferred methods for these operations.
 -   `t_flex()`: analogous to `t()`
 
 -   `cor_flex()`: analogous to `cor()`
-
 
 
 ## Auxiliary functions  
@@ -184,9 +182,7 @@ module.
 *Giotto* stores information in different
 [slots](https://giotto-suite.github.io/Giotto_website/articles/articles/structure.html#giotto-object-structure),
 which can be accessed through these getters and setters functions. They
-can be found in the
-[`accessors.R`](https://github.com/giotto-suite/Giotto/blob/suite/R/accessors.R)
-file.
+can be found in the [`accessors.R`](https://github.com/giotto-suite/Giotto/blob/suite/R/accessors.R) file.
 
 `setGiotto()`: Sets any *Giotto* subobject
 

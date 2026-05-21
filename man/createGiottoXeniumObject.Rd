@@ -11,13 +11,15 @@ createGiottoXeniumObject(
   gene_panel_json_path = NULL,
   expression_path = NULL,
   cell_metadata_path = NULL,
-  feat_type = c("rna", "NegControlProbe", "UnassignedCodeword", "NegControlCodeword"),
-  split_keyword = list("NegControlProbe", "UnassignedCodeword", "NegControlCodeword"),
+  feat_type = c("rna", "NegControlProbe", "UnassignedCodeword", "NegControlCodeword",
+    "GenomicControl"),
+  split_keyword = list("NegControlProbe", "UnassignedCodeword", "NegControlCodeword",
+    "GenomicControl"),
   qv_threshold = 20,
   load_images = "focus",
   load_aligned_images = NULL,
   load_transcripts = TRUE,
-  load_expression = FALSE,
+  load_expression = TRUE,
   load_cellmeta = FALSE,
   instructions = NULL,
   verbose = NULL
@@ -59,7 +61,7 @@ as a subcellular transcript detection (default = 20)}
 \item{load_images}{Named list of filepaths to \code{.tif} images, usually the
 ones in the \code{morphology_focus} directory. These \code{ome.tif} images are not
 compatible and must be converted to \code{tif} using
-\verb{[GiottoClass::ometif_to_tif()]}.}
+\verb{[GiottoClass::to_simple_tif()]}.}
 
 \item{load_aligned_images}{Named list of filepaths. The list names are used
 as the image names when loaded. Two filepaths are expected per entry. The
