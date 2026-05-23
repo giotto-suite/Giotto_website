@@ -659,8 +659,8 @@ data that they reference or pull from. While this can help with lowering
 the amount of memory needed and decrease load times, pointer objects do
 not save and reload properly when using <code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code> and
 <code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS()</a></code>.</p>
-<p>Giotto instead implements the <code><a href="https://drieslab.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto()</a></code> and
-<code><a href="https://drieslab.github.io/GiottoClass/reference/loadGiotto.html" class="external-link">loadGiotto()</a></code> functions that collects all the data attached
+<p>Giotto instead implements the <code><a href="https://giotto-suite.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto()</a></code> and
+<code><a href="https://giotto-suite.github.io/GiottoClass/reference/loadGiotto.html" class="external-link">loadGiotto()</a></code> functions that collects all the data attached
 to the object and saves it in a standalone manner. These functions will
 be demonstrated using a small subset of the Vizgen mouse brain dataset
 that is easily available through the <strong>GiottoData</strong>
@@ -686,10 +686,10 @@ package.</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://drieslab.github.io/GiottoData/" class="external-link">GiottoData</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Ensure the Python environment for Giotto has been installed</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="co"># The following command need only be run once to install the Giotto environment</span></span>
-<span>  <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2" number="3">
@@ -705,7 +705,7 @@ object<a class="anchor" aria-label="anchor" href="#create-a-giotto-object"></a>
 <span class="header-section-number">4</span> Show Existing Info<a class="anchor" aria-label="anchor" href="#show-existing-info"></a>
 </h2>
 <p>Many analyses were first performed on this mini object to fill it out
-before it was saved using <code><a href="https://drieslab.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto()</a></code>. Returning the
+before it was saved using <code><a href="https://giotto-suite.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto()</a></code>. Returning the
 object gives an overview of its contents.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">vizgen</span></span></code></pre></div>
@@ -713,7 +713,7 @@ object gives an overview of its contents.</p>
 spatial unit as “aggregate” and then plot the saved leiden clustering
 results.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/activeSpatUnit-generic.html" class="external-link">activeSpatUnit</a></span><span class="op">(</span><span class="va">vizgen</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"aggregate"</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/activeSpatUnit-generic.html" class="external-link">activeSpatUnit</a></span><span class="op">(</span><span class="va">vizgen</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"aggregate"</span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">vizgen</span>,</span>
 <span>           show_image <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
@@ -731,7 +731,7 @@ within that directory to contain Giotto”s files.</p>
 <p>The dir param defaults to the working directory, but here I am
 specifying for the object to be saved to a temporary directory.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">vizgen</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">vizgen</span>,</span>
 <span>           dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>           foldername <span class="op">=</span> <span class="st">"vizgen"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -740,7 +740,7 @@ specifying for the object to be saved to a temporary directory.</p>
 <span class="header-section-number">6</span> Faster Saving with
 <code>qs</code><a class="anchor" aria-label="anchor" href="#faster-saving-with-qs"></a>
 </h2>
-<p><code><a href="https://drieslab.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto()</a></code> defaults to using <code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code>
+<p><code><a href="https://giotto-suite.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto()</a></code> defaults to using <code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code>
 for its main files, but <code>qs</code> implements faster read and write
 functions for serialization. Saving using <code>qs</code> is done by
 passing the param <code>method = "qs"</code>.</p>
@@ -766,11 +766,11 @@ those images have not been moved.</li>
 loading.</li>
 </ul>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">test_vizgen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/loadGiotto.html" class="external-link">loadGiotto</a></span><span class="op">(</span>path_to_folder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vizgen"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">test_vizgen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/loadGiotto.html" class="external-link">loadGiotto</a></span><span class="op">(</span>path_to_folder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vizgen"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">test_vizgen</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/activeSpatUnit-generic.html" class="external-link">activeSpatUnit</a></span><span class="op">(</span><span class="va">test_vizgen</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"aggregate"</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/activeSpatUnit-generic.html" class="external-link">activeSpatUnit</a></span><span class="op">(</span><span class="va">test_vizgen</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"aggregate"</span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">test_vizgen</span>,</span>
 <span>           show_image <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>

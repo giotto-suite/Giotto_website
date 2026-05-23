@@ -649,14 +649,14 @@
 
     
     
-<p><code><a href="https://drieslab.github.io/GiottoClass/reference/splitGiotto.html" class="external-link">splitGiotto()</a></code> and <code><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects()</a></code> are
+<p><code><a href="https://giotto-suite.github.io/GiottoClass/reference/splitGiotto.html" class="external-link">splitGiotto()</a></code> and <code><a href="https://giotto-suite.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects()</a></code> are
 how Giotto works with multiple samples.</p>
 <ul>
 <li>
-<code><a href="https://drieslab.github.io/GiottoClass/reference/splitGiotto.html" class="external-link">splitGiotto()</a></code> - separate a single <code>giotto</code>
+<code><a href="https://giotto-suite.github.io/GiottoClass/reference/splitGiotto.html" class="external-link">splitGiotto()</a></code> - separate a single <code>giotto</code>
 object into a list of several based on a cell metadata column</li>
 <li>
-<code><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects()</a></code> - combine a list of multiple
+<code><a href="https://giotto-suite.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects()</a></code> - combine a list of multiple
 <code>giotto</code> objects into a single <code>giotto</code>
 object.</li>
 </ul>
@@ -681,10 +681,10 @@ installation<a class="anchor" aria-label="anchor" href="#check-giotto-installati
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Ensure the Python environment for Giotto has been installed.</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="co"># The following command need only be run once to install the Giotto environment.</span></span>
-<span>  <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giotto-suite.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span></code></pre></div>
@@ -719,14 +719,14 @@ Load in <code>a</code> and <code>b</code> <code>giotto</code> objects
 <code class="sourceCode R"><span><span class="co"># load transcripts</span></span>
 <span><span class="va">tx_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">tx_path</span><span class="op">)</span></span>
 <span><span class="va">tx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">tx_dt</span>, <span class="va">tx_dt</span><span class="op">$</span><span class="va">fov</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">gpoints_a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPoints.html" class="external-link">createGiottoPoints</a></span><span class="op">(</span><span class="va">tx</span><span class="op">$</span><span class="va">a</span>, feat_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rna"</span>, <span class="st">"NegPrb"</span><span class="op">)</span>, split_keyword <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NegPrb"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">gpoints_b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPoints.html" class="external-link">createGiottoPoints</a></span><span class="op">(</span><span class="va">tx</span><span class="op">$</span><span class="va">b</span>, feat_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rna"</span>, <span class="st">"NegPrb"</span><span class="op">)</span>, split_keyword <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NegPrb"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">gpoints_a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createGiottoPoints.html" class="external-link">createGiottoPoints</a></span><span class="op">(</span><span class="va">tx</span><span class="op">$</span><span class="va">a</span>, feat_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rna"</span>, <span class="st">"NegPrb"</span><span class="op">)</span>, split_keyword <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NegPrb"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">gpoints_b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createGiottoPoints.html" class="external-link">createGiottoPoints</a></span><span class="op">(</span><span class="va">tx</span><span class="op">$</span><span class="va">b</span>, feat_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rna"</span>, <span class="st">"NegPrb"</span><span class="op">)</span>, split_keyword <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NegPrb"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># load polys from mask</span></span>
-<span><span class="va">gpoly_a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygon</a></span><span class="op">(</span><span class="va">bounds_paths</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span>, remove_background_polygon <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">gpoly_b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygon</a></span><span class="op">(</span><span class="va">bounds_paths</span><span class="op">[[</span><span class="fl">2L</span><span class="op">]</span><span class="op">]</span>, remove_background_polygon <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">gpoly_a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygon</a></span><span class="op">(</span><span class="va">bounds_paths</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span>, remove_background_polygon <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">gpoly_b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygon</a></span><span class="op">(</span><span class="va">bounds_paths</span><span class="op">[[</span><span class="fl">2L</span><span class="op">]</span><span class="op">]</span>, remove_background_polygon <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co"># load images</span></span>
-<span><span class="va">img_a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoLargeImage.html" class="external-link">createGiottoLargeImage</a></span><span class="op">(</span><span class="va">img_paths</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="va">img_b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoLargeImage.html" class="external-link">createGiottoLargeImage</a></span><span class="op">(</span><span class="va">img_paths</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">img_a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createGiottoLargeImage.html" class="external-link">createGiottoLargeImage</a></span><span class="op">(</span><span class="va">img_paths</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">img_b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createGiottoLargeImage.html" class="external-link">createGiottoLargeImage</a></span><span class="op">(</span><span class="va">img_paths</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># adjust polys and images to match points extent</span></span>
 <span><span class="co"># *********************************************************************************</span></span>
@@ -749,23 +749,23 @@ Load in <code>a</code> and <code>b</code> <code>giotto</code> objects
 <p><img src="images/split_join/2_align_b.png" alt="" width="60%" style="display: block; margin: auto auto auto 0;"></p>
 <p><strong>Objects Creation</strong></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto-class.html" class="external-link">giotto</a></span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto-class.html" class="external-link">giotto</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">a</span> <span class="op">&lt;-</span> <span class="va">a</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">gpoints_a</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">gpoly_a</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">img_a</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addSpatialCentroidLocations.html" class="external-link">addSpatialCentroidLocations</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">gpoints_a</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">gpoly_a</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">img_a</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/addSpatialCentroidLocations.html" class="external-link">addSpatialCentroidLocations</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">b</span> <span class="op">&lt;-</span> <span class="va">b</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">gpoints_b</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">gpoly_b</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">img_b</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addSpatialCentroidLocations.html" class="external-link">addSpatialCentroidLocations</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">gpoints_b</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">gpoly_b</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">img_b</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/addSpatialCentroidLocations.html" class="external-link">addSpatialCentroidLocations</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># filter and norm skipped since these objects will be joined anyways.</span></span></code></pre></div>
 <details></details></details>
 </div>
@@ -775,7 +775,7 @@ Load in <code>a</code> and <code>b</code> <code>giotto</code> objects
 Objects<a class="anchor" aria-label="anchor" href="#join-giotto-objects"></a>
 </h2>
 <p>Multiple <code>giotto</code> objects can be combined into a single
-one through <code><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects()</a></code>. This requires both the
+one through <code><a href="https://giotto-suite.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects()</a></code>. This requires both the
 list of <code>giotto</code> objects and a list of names to assign those
 objects in the joined object. The operation updates the cell IDs used
 throughout the object so that they are disambiguated from possibly
@@ -796,7 +796,7 @@ hard to tell apart between samples. <code>dry_run = TRUE</code> can be
 set in order to get a preview of how the datasets will be spatially
 positioned relative to each other in 2D join operations.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">g</span><span class="op">)</span>,</span>
 <span>    gobject_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"g1"</span>, <span class="st">"g2"</span><span class="op">)</span>,</span>
 <span>    dry_run <span class="op">=</span> <span class="cn">TRUE</span></span>
@@ -805,7 +805,7 @@ positioned relative to each other in 2D join operations.</p>
 <p>Alternative positionings can be set by supplying vectors of numerical
 values to <code>x_shift</code> and <code>y_shift</code> params.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">g</span><span class="op">)</span>,</span>
 <span>    gobject_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"g1"</span>, <span class="st">"g2"</span><span class="op">)</span>,</span>
 <span>    x_shift <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">3000</span><span class="op">)</span>,</span>
@@ -814,7 +814,7 @@ values to <code>x_shift</code> and <code>y_shift</code> params.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/split_join/4_join_dry_specific.png" alt="" width="60%" style="display: block; margin: auto auto auto 0;"></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">j_shift</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">j_shift</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">g</span><span class="op">)</span>,</span>
 <span>    gobject_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"g1"</span>, <span class="st">"g2"</span><span class="op">)</span>,</span>
 <span>    x_shift <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">3000</span><span class="op">)</span>,</span>
@@ -840,7 +840,7 @@ them on the Z axis to generate a 3D volume to analyze.</p>
 <p>This stacking can be performed during the object joining operation.
 Here we show an example of this with the example visium</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">j_stack</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">j_stack</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">g</span>, <span class="va">g</span>, <span class="va">g</span>, <span class="va">g</span><span class="op">)</span>,</span>
 <span>    gobject_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"obj_%d"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    join_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"z_stack"</span><span class="op">)</span>,</span>
@@ -870,7 +870,7 @@ change<a class="anchor" aria-label="anchor" href="#join-with-no-change"></a>
 relative to each other. For these cases, we can join the objects with
 <code>join_method = "no_change"</code></p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">join_nc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">join_nc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/joinGiottoObjects.html" class="external-link">joinGiottoObjects</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">)</span>,</span>
 <span>    gobject_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"fov_%d"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    join_method <span class="op">=</span> <span class="st">"no_change"</span></span>
@@ -906,7 +906,7 @@ categorical variable within a dataset such as cell type.</p>
 <p>Do note however, that this will not reverse the naming changes
 applied to the cell IDs.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">glist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/splitGiotto.html" class="external-link">splitGiotto</a></span><span class="op">(</span><span class="va">join_nc</span>, by <span class="op">=</span> <span class="st">"list_ID"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">glist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/splitGiotto.html" class="external-link">splitGiotto</a></span><span class="op">(</span><span class="va">join_nc</span>, by <span class="op">=</span> <span class="st">"list_ID"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/force.html" class="external-link">force</a></span><span class="op">(</span><span class="va">glist</span><span class="op">)</span></span></code></pre></div>
 <pre><code>$fov_1
 An object of class giotto 

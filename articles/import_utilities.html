@@ -918,7 +918,7 @@ Giotto normally calculates counts/cell (but should be very <a href="./feature_ag
 <h4 id="with-pre-made-aggregate-info">With pre-made aggregate info<a class="anchor" aria-label="anchor" href="#with-pre-made-aggregate-info"></a>
 </h4>
 <p>With Giotto’s aggregation workflow, you would usually run
-<code><a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap()</a></code> and <code><a href="https://drieslab.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix()</a></code> after
+<code><a href="https://giotto-suite.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap()</a></code> and <code><a href="https://giotto-suite.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix()</a></code> after
 creating the object in order to aggregate the transcript detections by
 polygon to create the count matrix, but if the NanoString pre-made
 expression was loaded, you would skip this step. Running the aggregation
@@ -959,7 +959,7 @@ invalid.</p>
 <div class="section level4">
 <h4 id="or-loading-only-raw-data-default-behavior">OR Loading only raw data (default behavior)<a class="anchor" aria-label="anchor" href="#or-loading-only-raw-data-default-behavior"></a>
 </h4>
-<p><code><a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap()</a></code> and <code><a href="https://drieslab.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix()</a></code>
+<p><code><a href="https://giotto-suite.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap()</a></code> and <code><a href="https://giotto-suite.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix()</a></code>
 should be run when only raw data is loaded to use Giotto’s aggregation
 pipeline to generate the expression matrix.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
@@ -968,7 +968,7 @@ pipeline to generate the expression matrix.</p>
 <span></span>
 <span><span class="co"># ! important !</span></span>
 <span><span class="co"># You should run `calculateOverlap()` and `overlapToMatrix()` with this.</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span></span>
 <span>  <span class="va">g</span>,</span>
 <span>  name_overlap <span class="op">=</span> <span class="st">"rna"</span>,</span>
 <span>  spatial_info <span class="op">=</span> <span class="st">"cell"</span>,</span>
@@ -977,7 +977,7 @@ pipeline to generate the expression matrix.</p>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span></span>
 <span>  <span class="va">g</span>,</span>
 <span>  name <span class="op">=</span> <span class="st">"raw"</span>,</span>
 <span>  poly_info <span class="op">=</span> <span class="st">"cell"</span>,</span>
@@ -1260,14 +1260,14 @@ Use objHistory() to see steps and params used</code></pre>
 data is simple.</p>
 <p>Start with an empty giotto object</p>
 <div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto-class.html" class="external-link">giotto</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto-class.html" class="external-link">giotto</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Data can then be added one by one.</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g2</span>, <span class="va">polys</span><span class="op">)</span></span>
-<span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g2</span>, <span class="va">tx</span><span class="op">)</span></span>
-<span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g2</span>, <span class="va">imgs</span><span class="op">)</span></span>
-<span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g2</span>, <span class="va">ex</span><span class="op">)</span></span>
-<span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g2</span>, <span class="va">cx</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g2</span>, <span class="va">polys</span><span class="op">)</span></span>
+<span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g2</span>, <span class="va">tx</span><span class="op">)</span></span>
+<span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g2</span>, <span class="va">imgs</span><span class="op">)</span></span>
+<span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g2</span>, <span class="va">ex</span><span class="op">)</span></span>
+<span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g2</span>, <span class="va">cx</span><span class="op">)</span></span></code></pre></div>
 </div>
   </div>
 

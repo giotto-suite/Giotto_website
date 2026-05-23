@@ -1003,10 +1003,10 @@ transcript positions (genes × positions)</li>
 <span class="header-section-number">6.2</span> Step 2 — Assign
 transcripts to polygons<a class="anchor" aria-label="anchor" href="#step-2-assign-transcripts-to-polygons"></a>
 </h3>
-<p><code><a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap()</a></code> determines which polygon each DNB
+<p><code><a href="https://giotto-suite.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap()</a></code> determines which polygon each DNB
 falls into:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_bin1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">g_bin1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span></span>
 <span>  <span class="va">g_bin1</span>,</span>
 <span>  spat_info <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>  feat_info <span class="op">=</span> <span class="st">"rna"</span></span>
@@ -1017,10 +1017,10 @@ falls into:</p>
 <span class="header-section-number">6.3</span> Step 3 — Build a
 per-cell expression matrix<a class="anchor" aria-label="anchor" href="#step-3-build-a-per-cell-expression-matrix"></a>
 </h3>
-<p><code><a href="https://drieslab.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix()</a></code> aggregates the overlapping DNBs into a
+<p><code><a href="https://giotto-suite.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix()</a></code> aggregates the overlapping DNBs into a
 genes × cells count matrix:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_bin1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">g_bin1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span></span>
 <span>  <span class="va">g_bin1</span>,</span>
 <span>  spat_info <span class="op">=</span> <span class="st">"cell"</span>,</span>
 <span>  feat_info <span class="op">=</span> <span class="st">"rna"</span>,</span>
@@ -1045,7 +1045,7 @@ transcripts inside polygons<a class="anchor" aria-label="anchor" href="#visualis
 <p>The zoomed plot below shows individual DNBs coloured by gene falling
 inside cell polygon outlines:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">selected_feats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/spatIDs-generic.html" class="external-link">featIDs</a></span><span class="op">(</span><span class="va">g_bin1</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span></span>
+<code class="sourceCode R"><span><span class="va">selected_feats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/spatIDs-generic.html" class="external-link">featIDs</a></span><span class="op">(</span><span class="va">g_bin1</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span></span>
 <span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span></span>
 <span>  gobject           <span class="op">=</span> <span class="va">g_bin1</span>,</span>
@@ -1118,14 +1118,14 @@ individually<a class="anchor" aria-label="anchor" href="#load-components-individ
 <span class="header-section-number">7.3</span> Assemble a custom
 giotto object<a class="anchor" aria-label="anchor" href="#assemble-a-custom-giotto-object"></a>
 </h3>
-<p>Use <code><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto()</a></code> to place each component into an empty
+<p>Use <code><a href="https://giotto-suite.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto()</a></code> to place each component into an empty
 object:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto-class.html" class="external-link">giotto</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">g_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g_custom</span>, <span class="va">expr</span><span class="op">)</span></span>
-<span><span class="va">g_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g_custom</span>, <span class="va">sl</span><span class="op">)</span></span>
-<span><span class="va">g_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g_custom</span>, <span class="va">poly</span><span class="op">)</span>  <span class="co"># choose cellBorder or mask, not both</span></span>
-<span><span class="va">g_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g_custom</span>, <span class="va">img</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">g_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto-class.html" class="external-link">giotto</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">g_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g_custom</span>, <span class="va">expr</span><span class="op">)</span></span>
+<span><span class="va">g_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g_custom</span>, <span class="va">sl</span><span class="op">)</span></span>
+<span><span class="va">g_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g_custom</span>, <span class="va">poly</span><span class="op">)</span>  <span class="co"># choose cellBorder or mask, not both</span></span>
+<span><span class="va">g_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g_custom</span>, <span class="va">img</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">g_custom</span><span class="op">)</span></span></code></pre></div>
 <p>Visualize the result to confirm everything is aligned:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">

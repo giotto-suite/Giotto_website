@@ -673,10 +673,10 @@ the output of running the spatPlot2D( ) function.</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giotto-suite.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Ensure the Python environment for Giotto has been installed.</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="co"># The following command need only be run once to install the Giotto environment.</span></span>
-<span>  <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2" number="2">
@@ -758,19 +758,19 @@ store the output using the assignment operator.</p>
 <p>Create a polygon object</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## We must transform the data.table or data.frame with coordinates into a Giotto polygon object</span></span>
-<span><span class="va">my_giotto_polygons</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygonsFromDfr</a></span><span class="op">(</span><span class="va">my_polygon_coordinates</span>, </span>
+<span><span class="va">my_giotto_polygons</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygonsFromDfr</a></span><span class="op">(</span><span class="va">my_polygon_coordinates</span>, </span>
 <span>                                                  name <span class="op">=</span> <span class="st">"selections"</span><span class="op">)</span></span></code></pre></div>
 <p>If you plan to save and load your Giotto object after adding the
 selected polygons, include the centroids of the polygon by using the
 following argument:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## We must transform the data.table or data.frame with coordinates into a Giotto polygon object</span></span>
-<span><span class="va">my_giotto_polygons</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygonsFromDfr</a></span><span class="op">(</span><span class="va">my_polygon_coordinates</span>, </span>
+<span><span class="va">my_giotto_polygons</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygonsFromDfr</a></span><span class="op">(</span><span class="va">my_polygon_coordinates</span>, </span>
 <span>                                                  name <span class="op">=</span> <span class="st">"selections"</span>,</span>
 <span>                                                  calc_centroids <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Then, add the polygons to the Giotto object</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">visium_brain</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addGiottoPolygons.html" class="external-link">addGiottoPolygons</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_brain</span>,</span>
+<code class="sourceCode R"><span><span class="va">visium_brain</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/addGiottoPolygons.html" class="external-link">addGiottoPolygons</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_brain</span>,</span>
 <span>                                  gpolygons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">my_giotto_polygons</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Finally, add the corresponding polygon ID to the cell Metadata. By
 default, the function will add a “no_polygon” label to cells outside
@@ -781,7 +781,7 @@ polygons, but you can customize it using the na.label argument.</p>
 <span>                                polygon_name <span class="op">=</span> <span class="st">"selections"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Let"s see how it looks like now the cell_metadata</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">visium_brain</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">visium_brain</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/interactive_selection/7-new_metadata.png"></p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Customize the NA label</span></span>

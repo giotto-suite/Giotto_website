@@ -673,18 +673,18 @@ dataset<a class="anchor" aria-label="anchor" href="#setup-and-load-example-datas
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giotto-suite.github.io/Giotto/" class="external-link">Giotto</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Ensure the Python environment for Giotto has been installed</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="co"># The following command need only be run once to install the Giotto environment</span></span>
-<span>  <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>This example uses the ‘vizgen’ (MERSCOPE) and ‘starmap’ mini datasets
 for 2D and 3D spatial information respectively.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load the object</span></span>
 <span><span class="va">mer</span> <span class="op">&lt;-</span> <span class="fu">GiottoData</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoData/man/loadGiottoMini.html" class="external-link">loadGiottoMini</a></span><span class="op">(</span><span class="st">"vizgen"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/activeSpatUnit-generic.html" class="external-link">activeSpatUnit</a></span><span class="op">(</span><span class="va">mer</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"aggregate"</span></span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/activeSpatUnit-generic.html" class="external-link">activeSpatUnit</a></span><span class="op">(</span><span class="va">mer</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"aggregate"</span></span>
 <span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu">GiottoData</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GiottoData/man/loadGiottoMini.html" class="external-link">loadGiottoMini</a></span><span class="op">(</span><span class="st">"starmap"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="2">
@@ -733,7 +733,7 @@ the <code><a href="https://rdrr.io/r/graphics/boxplot.html" class="external-link
 <span class="header-section-number">2.1.1</span> 2D Delaunay<a class="anchor" aria-label="anchor" href="#d-delaunay"></a>
 </h4>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mer</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createSpatialDelaunayNetwork.html" class="external-link">createSpatialDelaunayNetwork</a></span><span class="op">(</span><span class="va">mer</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">mer</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createSpatialDelaunayNetwork.html" class="external-link">createSpatialDelaunayNetwork</a></span><span class="op">(</span><span class="va">mer</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">mer</span>,</span>
 <span>    show_network <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>    point_size <span class="op">=</span> <span class="fl">1.2</span>, </span>
@@ -746,7 +746,7 @@ the <code><a href="https://rdrr.io/r/graphics/boxplot.html" class="external-link
 <span class="header-section-number">2.1.2</span> 3D Delaunay<a class="anchor" aria-label="anchor" href="#d-delaunay-1"></a>
 </h4>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createSpatialDelaunayNetwork.html" class="external-link">createSpatialDelaunayNetwork</a></span><span class="op">(</span><span class="va">star</span>, </span>
+<code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createSpatialDelaunayNetwork.html" class="external-link">createSpatialDelaunayNetwork</a></span><span class="op">(</span><span class="va">star</span>, </span>
 <span>    method <span class="op">=</span> <span class="st">"delaunayn_geometry"</span> <span class="co"># use geometry pkg implementation since only this one supports 3D</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">star</span>, </span>
@@ -778,7 +778,7 @@ Delaunay triangulation.</li>
 operate best with a fixed number of connections per node.</li>
 </ul>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mer</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createSpatialKNNnetwork.html" class="external-link">createSpatialKNNnetwork</a></span><span class="op">(</span><span class="va">mer</span>, k <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">mer</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createSpatialKNNnetwork.html" class="external-link">createSpatialKNNnetwork</a></span><span class="op">(</span><span class="va">mer</span>, k <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">mer</span>,</span>
 <span>    spatial_network_name <span class="op">=</span> <span class="st">"knn_network"</span>, </span>
 <span>    show_network <span class="op">=</span> <span class="cn">TRUE</span>, </span>
@@ -795,7 +795,7 @@ Networks<a class="anchor" aria-label="anchor" href="#spatial-feature-networks"><
 </h2>
 <p>KNN spatial networks can be created from the feature detections.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mer</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createSpatialFeaturesKNNnetwork.html" class="external-link">createSpatialFeaturesKNNnetwork</a></span><span class="op">(</span><span class="va">mer</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">mer</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createSpatialFeaturesKNNnetwork.html" class="external-link">createSpatialFeaturesKNNnetwork</a></span><span class="op">(</span><span class="va">mer</span><span class="op">)</span></span>
 <span><span class="co"># this appends the network to the giottoPoints object</span></span>
 <span><span class="va">mer</span><span class="op">[[</span><span class="st">"feat_info"</span>, <span class="st">"rna"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 </div>
@@ -831,7 +831,7 @@ connections per node can vary.</li>
 complex cluster shapes and hierarchical structures.</li>
 </ul>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mer</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">mer</span>, type <span class="op">=</span> <span class="st">"sNN"</span><span class="op">)</span> <span class="co"># builds sNN on top of PCA space by default</span></span>
+<code class="sourceCode R"><span><span class="va">mer</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">mer</span>, type <span class="op">=</span> <span class="st">"sNN"</span><span class="op">)</span> <span class="co"># builds sNN on top of PCA space by default</span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/dimPlot.html" class="external-link">dimPlot2D</a></span><span class="op">(</span><span class="va">mer</span>, show_NN_network <span class="op">=</span> <span class="cn">TRUE</span>, nn_network_to_use <span class="op">=</span> <span class="st">"sNN"</span>, network_name <span class="op">=</span> <span class="st">"sNN.pca"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/networks/4_sNN_dim.png" alt="" width="60%" style="display: block; margin: auto;"></p>
 </div>
@@ -848,7 +848,7 @@ closest points based on a distance metric</li>
 relationship isn’t always symmetric.</li>
 </ul>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mer</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">mer</span>, type <span class="op">=</span> <span class="st">"kNN"</span><span class="op">)</span> <span class="co"># builds kNN on top of PCA space by default</span></span>
+<code class="sourceCode R"><span><span class="va">mer</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">mer</span>, type <span class="op">=</span> <span class="st">"kNN"</span><span class="op">)</span> <span class="co"># builds kNN on top of PCA space by default</span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/dimPlot.html" class="external-link">dimPlot2D</a></span><span class="op">(</span><span class="va">mer</span>, show_NN_network <span class="op">=</span> <span class="cn">TRUE</span>, nn_network_to_use <span class="op">=</span> <span class="st">"kNN"</span>, network_name <span class="op">=</span> <span class="st">"kNN.pca"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/networks/5_kNN_dim.png" alt="" width="60%" style="display: block; margin: auto;"></p>
 </div>
@@ -857,7 +857,7 @@ relationship isn’t always symmetric.</li>
 <h2 id="api-function">
 <span class="header-section-number">5</span> API function<a class="anchor" aria-label="anchor" href="#api-function"></a>
 </h2>
-<p><code><a href="https://drieslab.github.io/GiottoClass/reference/createNetwork.html" class="external-link">createNetwork()</a></code> exported from <em>GiottoClass</em>
+<p><code><a href="https://giotto-suite.github.io/GiottoClass/reference/createNetwork.html" class="external-link">createNetwork()</a></code> exported from <em>GiottoClass</em>
 allows creation of any of the above network types, starting from a
 <code>matrix</code> of nodes. These nodes can be n-dimensional
 expression information, dimension reduction, or spatial coordinates. The
@@ -869,7 +869,7 @@ and <code>data.table</code> otherwise.</p>
 <span><span class="va">topo</span><span class="op">$</span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">volcano</span><span class="op">)</span></span>
 <span><span class="va">topo</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">topo</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNetwork.html" class="external-link">createNetwork</a></span><span class="op">(</span><span class="va">topo</span>, type <span class="op">=</span> <span class="st">"kNN"</span>, k <span class="op">=</span> <span class="fl">8</span><span class="op">)</span> <span class="co"># returns as igraph</span></span></code></pre></div>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createNetwork.html" class="external-link">createNetwork</a></span><span class="op">(</span><span class="va">topo</span>, type <span class="op">=</span> <span class="st">"kNN"</span>, k <span class="op">=</span> <span class="fl">8</span><span class="op">)</span> <span class="co"># returns as igraph</span></span></code></pre></div>
 <pre><code>IGRAPH 64720af DNW- 5307 42456 -- 
 + attr: name (v/c), weight (e/n), distance (e/n)
 + edges from 64720af (vertex names):
@@ -883,7 +883,7 @@ and <code>data.table</code> otherwise.</p>
 [78] 78-&gt;79  79-&gt;78  80-&gt;81  81-&gt;80  82-&gt;83  83-&gt;170 84-&gt;85  85-&gt;172 86-&gt;87  87-&gt;86  88-&gt;1  
 + ... omitted several edges</code></pre>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNetwork.html" class="external-link">createNetwork</a></span><span class="op">(</span><span class="va">topo</span>, type <span class="op">=</span> <span class="st">"kNN"</span>, k <span class="op">=</span> <span class="fl">8</span>, as.igraph <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co"># return as data.table</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createNetwork.html" class="external-link">createNetwork</a></span><span class="op">(</span><span class="va">topo</span>, type <span class="op">=</span> <span class="st">"kNN"</span>, k <span class="op">=</span> <span class="fl">8</span>, as.igraph <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co"># return as data.table</span></span></code></pre></div>
 <pre><code>        from    to    weight distance
        &lt;int&gt; &lt;int&gt;     &lt;num&gt;    &lt;num&gt;
     1:     1    88 0.5000000 1.000000
@@ -900,7 +900,7 @@ and <code>data.table</code> otherwise.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># default weight for kNN was 1 / (d + 1)</span></span>
 <span><span class="co"># use a custom weight function</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNetwork.html" class="external-link">createNetwork</a></span><span class="op">(</span><span class="va">topo</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createNetwork.html" class="external-link">createNetwork</a></span><span class="op">(</span><span class="va">topo</span>,</span>
 <span>    type <span class="op">=</span> <span class="st">"kNN"</span>, </span>
 <span>    k <span class="op">=</span> <span class="fl">8</span>, </span>
 <span>    as.igraph <span class="op">=</span> <span class="cn">FALSE</span>,</span>

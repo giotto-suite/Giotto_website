@@ -580,8 +580,125 @@ for resolution testing, i.e. (0.1, 0.6, 0.1)</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Arguments passed on to <code>clustree::clustree</code></p><dl><dt><code></code></dt>
-<dd></dd>
+<dd><p>Arguments passed on to <code>clustree::clustree</code></p><dl><dt><code>prefix</code></dt>
+<dd><p>string indicating columns containing clustering information</p></dd>
+
+    <dt><code>suffix</code></dt>
+<dd><p>string at the end of column names containing clustering
+information</p></dd>
+
+    <dt><code>metadata</code></dt>
+<dd><p>data.frame containing metadata on each sample that can be
+used as node aesthetics</p></dd>
+
+    <dt><code>count_filter</code></dt>
+<dd><p>count threshold for filtering edges in the clustering
+graph</p></dd>
+
+    <dt><code>prop_filter</code></dt>
+<dd><p>in proportion threshold for filtering edges in the
+clustering graph</p></dd>
+
+    <dt><code>layout</code></dt>
+<dd><p>string specifying the "tree" or "sugiyama" layout, see
+<code><a href="https://r.igraph.org/reference/layout_as_tree.html" class="external-link">igraph::layout_as_tree()</a></code> and <code><a href="https://r.igraph.org/reference/layout_with_sugiyama.html" class="external-link">igraph::layout_with_sugiyama()</a></code> for details</p></dd>
+
+    <dt><code>use_core_edges</code></dt>
+<dd><p>logical, whether to only use core tree (edges with
+maximum in proportion for a node) when creating the graph layout, all
+(unfiltered) edges will still be displayed</p></dd>
+
+    <dt><code>highlight_core</code></dt>
+<dd><p>logical, whether to increase the edge width of the core
+network to make it easier to see</p></dd>
+
+    <dt><code>node_colour</code></dt>
+<dd><p>either a value indicating a colour to use for all nodes or
+the name of a metadata column to colour nodes by</p></dd>
+
+    <dt><code>node_colour_aggr</code></dt>
+<dd><p>if <code>node_colour</code> is a column name than a string
+giving the name of a function to aggregate that column for samples in each
+cluster</p></dd>
+
+    <dt><code>node_size</code></dt>
+<dd><p>either a numeric value giving the size of all nodes or the
+name of a metadata column to use for node sizes</p></dd>
+
+    <dt><code>node_size_aggr</code></dt>
+<dd><p>if <code>node_size</code> is a column name than a string
+giving the name of a function to aggregate that column for samples in each
+cluster</p></dd>
+
+    <dt><code>node_size_range</code></dt>
+<dd><p>numeric vector of length two giving the maximum and
+minimum point size for plotting nodes</p></dd>
+
+    <dt><code>node_alpha</code></dt>
+<dd><p>either a numeric value giving the alpha of all nodes or the
+name of a metadata column to use for node transparency</p></dd>
+
+    <dt><code>node_alpha_aggr</code></dt>
+<dd><p>if <code>node_aggr</code> is a column name than a string
+giving the name of a function to aggregate that column for samples in each
+cluster</p></dd>
+
+    <dt><code>node_text_size</code></dt>
+<dd><p>numeric value giving the size of node text if
+<code>scale_node_text</code> is <code>FALSE</code></p></dd>
+
+    <dt><code>scale_node_text</code></dt>
+<dd><p>logical indicating whether to scale node text along
+with the node size</p></dd>
+
+    <dt><code>node_text_colour</code></dt>
+<dd><p>colour value for node text (and label)</p></dd>
+
+    <dt><code>node_text_angle</code></dt>
+<dd><p>the rotation of the node text</p></dd>
+
+    <dt><code>node_label</code></dt>
+<dd><p>additional label to add to nodes</p></dd>
+
+    <dt><code>node_label_aggr</code></dt>
+<dd><p>if <code>node_label</code> is a column name than a string
+giving the name of a function to aggregate that column for samples in each
+cluster</p></dd>
+
+    <dt><code>node_label_size</code></dt>
+<dd><p>numeric value giving the size of node label text</p></dd>
+
+    <dt><code>node_label_nudge</code></dt>
+<dd><p>numeric value giving nudge in y direction for node
+labels</p></dd>
+
+    <dt><code>edge_width</code></dt>
+<dd><p>numeric value giving the width of plotted edges</p></dd>
+
+    <dt><code>edge_arrow</code></dt>
+<dd><p>logical indicating whether to add an arrow to edges</p></dd>
+
+    <dt><code>edge_arrow_ends</code></dt>
+<dd><p>string indicating which ends of the line to draw arrow
+heads if <code>edge_arrow</code> is <code>TRUE</code>, one of "last", "first", or "both"</p></dd>
+
+    <dt><code>show_axis</code></dt>
+<dd><p>whether to show resolution axis</p></dd>
+
+    <dt><code>return</code></dt>
+<dd><p>string specifying what to return, either "plot" (a <code>ggplot</code>
+object), "graph" (a <code>tbl_graph</code> object) or "layout" (a <code>ggraph</code> layout
+object)</p></dd>
+
+    <dt><code>exprs</code></dt>
+<dd><p>source of gene expression information to use as node aesthetics,
+for <code>SingleCellExperiment</code> objects it must be a name in <code>assayNames(x)</code>, for
+a <code>seurat</code> object it must be one of <code>data</code>, <code>raw.data</code> or <code>scale.data</code> and
+for a <code>Seurat</code> object it must be one of <code>data</code>, <code>counts</code> or <code>scale.data</code></p></dd>
+
+    <dt><code>assay</code></dt>
+<dd><p>name of assay to pull expression and clustering data from for
+<code>Seurat</code> objects</p></dd>
 
 
 </dl></dd>

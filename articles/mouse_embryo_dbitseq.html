@@ -678,10 +678,10 @@ section.</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Ensure the Python environment for Giotto has been installed</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="co"># The following command need only be run once to install the Giotto environment</span></span>
-<span>  <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2" number="3">
@@ -700,13 +700,13 @@ with 22 proteins and 901 cells.</p>
 <span><span class="va">rna_expression</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"GSE137986_RAW/GSM4189613_0702cL.tsv.gz"</span><span class="op">)</span>, </span>
 <span>                            sep <span class="op">=</span> <span class="st">"\t"</span>,</span>
 <span>                            header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">rna_expression</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">rna_expression</span><span class="op">$</span><span class="va">X</span></span></code></pre></div>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">rna_expression</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">rna_expression</span><span class="op">$</span><span class="va">X</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Protein</span></span>
 <span><span class="va">protein_expression</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"GSE137986_RAW/GSM4202307_0702aL.tsv.gz"</span><span class="op">)</span>, </span>
 <span>                                sep <span class="op">=</span> <span class="st">"\t"</span>,</span>
 <span>                                header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">protein_expression</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">protein_expression</span><span class="op">$</span><span class="va">X</span></span></code></pre></div>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">protein_expression</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">protein_expression</span><span class="op">$</span><span class="va">X</span></span></code></pre></div>
 <p>Transpose the matrices. DBiT-seq provides the counts matrices in a
 cell x gene format, but we need a gene x cell matrix for creating the
 Giotto object.</p>
@@ -717,7 +717,7 @@ Giotto object.</p>
 separated spatial coordinates file, but we can get the spatial
 information from the cell ids.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">spatial_coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>cell_ID <span class="op">=</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">rna_expression</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">spatial_coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>cell_ID <span class="op">=</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">rna_expression</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">spatial_coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">spatial_coords</span>, </span>
 <span>                       <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate.html" class="external-link">separate</a></span><span class="op">(</span><span class="va">spatial_coords</span>, <span class="va">cell_ID</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>,<span class="st">"y"</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"x"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -737,12 +737,12 @@ saving options.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">results_folder</span> <span class="op">&lt;-</span> <span class="st">"/path/to/results/"</span></span>
 <span></span>
-<span><span class="va">instructions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span>results_folder <span class="op">=</span> <span class="va">results_folder</span>,</span>
+<span><span class="va">instructions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span>results_folder <span class="op">=</span> <span class="va">results_folder</span>,</span>
 <span>                                         save_plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                                         show_plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                                         return_plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">giottoObject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span>expression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>raw <span class="op">=</span> <span class="va">rna_expression</span>,</span>
+<span><span class="va">giottoObject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span>expression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>raw <span class="op">=</span> <span class="va">rna_expression</span>,</span>
 <span>                                                     raw <span class="op">=</span> <span class="va">protein_expression</span><span class="op">)</span>,</span>
 <span>                                   expression_feat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rna"</span>, <span class="st">"protein"</span><span class="op">)</span>,</span>
 <span>                                   spatial_locs <span class="op">=</span> <span class="va">spatial_coords</span>,</span>
@@ -951,7 +951,7 @@ resolution) to 1, but can go further if a higher resolution is
 needed.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># RNA</span></span>
-<span><span class="va">giottoObject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giottoObject</span>, </span>
+<span><span class="va">giottoObject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giottoObject</span>, </span>
 <span>                                     dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, </span>
 <span>                                     k <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
 <span></span>
@@ -960,7 +960,7 @@ needed.</p>
 <span>                                n_iterations <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Protein</span></span>
-<span><span class="va">giottoObject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giottoObject</span>, </span>
+<span><span class="va">giottoObject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giottoObject</span>, </span>
 <span>                                     spat_unit <span class="op">=</span> <span class="st">"cell"</span>, </span>
 <span>                                     feat_type <span class="op">=</span> <span class="st">"protein"</span>, </span>
 <span>                                     dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, </span>
@@ -1052,13 +1052,13 @@ this method in the clustering step instead of sNN, you can skip this
 step.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># RNA</span></span>
-<span><span class="va">giottoObject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giottoObject</span>, </span>
+<span><span class="va">giottoObject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giottoObject</span>, </span>
 <span>                                     type <span class="op">=</span> <span class="st">"kNN"</span>,</span>
 <span>                                     dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, </span>
 <span>                                     k <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Protein</span></span>
-<span><span class="va">giottoObject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giottoObject</span>, </span>
+<span><span class="va">giottoObject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">giottoObject</span>, </span>
 <span>                                     spat_unit <span class="op">=</span> <span class="st">"cell"</span>, </span>
 <span>                                     feat_type <span class="op">=</span> <span class="st">"protein"</span>, </span>
 <span>                                     type <span class="op">=</span> <span class="st">"kNN"</span>,</span>
@@ -1169,19 +1169,19 @@ annotation.</p>
 <span></span>
 <span><span class="va">cell_annotation</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"cell_annotate.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">cell_annotation</span> <span class="op">&lt;-</span> <span class="va">cell_annotation</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sample"</span>, <span class="st">"Total_mRNAs"</span>, <span class="st">"num_genes_expressed"</span>, <span class="st">"Main_cell_type"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">cell_annotation</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"cell_ID"</span></span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">cell_annotation</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"cell_ID"</span></span>
 <span></span>
-<span><span class="va">cell_annotation</span> <span class="op">&lt;-</span> <span class="va">cell_annotation</span><span class="op">[</span><span class="va">cell_annotation</span><span class="op">$</span><span class="va">cell_ID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gene_count_cleaned_sampled_100k</span><span class="op">)</span>,<span class="op">]</span></span></code></pre></div>
+<span><span class="va">cell_annotation</span> <span class="op">&lt;-</span> <span class="va">cell_annotation</span><span class="op">[</span><span class="va">cell_annotation</span><span class="op">$</span><span class="va">cell_ID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gene_count_cleaned_sampled_100k</span><span class="op">)</span>,<span class="op">]</span></span></code></pre></div>
 <p>Create the single-cell Giotto object and keep only the cells included
 in the metadata file. Then add the cell type annotation to the metadata
 of the Giotto object.</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sc_giotto</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span>expression <span class="op">=</span> <span class="va">gene_count_cleaned_sampled_100k</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">sc_giotto</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span>expression <span class="op">=</span> <span class="va">gene_count_cleaned_sampled_100k</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">sc_giotto</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/subsetGiotto.html" class="external-link">subsetGiotto</a></span><span class="op">(</span><span class="va">sc_giotto</span>,</span>
+<span><span class="va">sc_giotto</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/subsetGiotto.html" class="external-link">subsetGiotto</a></span><span class="op">(</span><span class="va">sc_giotto</span>,</span>
 <span>                          cell_ids <span class="op">=</span> <span class="va">cell_annotation</span><span class="op">$</span><span class="va">cell_ID</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">sc_giotto</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addCellMetadata.html" class="external-link">addCellMetadata</a></span><span class="op">(</span><span class="va">sc_giotto</span>,</span>
+<span><span class="va">sc_giotto</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/addCellMetadata.html" class="external-link">addCellMetadata</a></span><span class="op">(</span><span class="va">sc_giotto</span>,</span>
 <span>                             new_metadata <span class="op">=</span> <span class="va">cell_annotation</span><span class="op">)</span></span></code></pre></div>
 <p>For the deconvolution step, we need the normalized counts of the
 single-cell data. Use normalizeGiotto to perform the normalization step.
@@ -1209,10 +1209,10 @@ marker genes per cell type and their normalized expression in the
 single-cell object.</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DWLS_matrix_direct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/makeSignMatrixDWLSfromMatrix.html">makeSignMatrixDWLSfromMatrix</a></span><span class="op">(</span></span>
-<span>  matrix <span class="op">=</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/getExpression.html" class="external-link">getExpression</a></span><span class="op">(</span><span class="va">sc_giotto</span>,</span>
+<span>  matrix <span class="op">=</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/getExpression.html" class="external-link">getExpression</a></span><span class="op">(</span><span class="va">sc_giotto</span>,</span>
 <span>                         values <span class="op">=</span> <span class="st">"normalized"</span>,</span>
 <span>                         output <span class="op">=</span> <span class="st">"matrix"</span><span class="op">)</span>,</span>
-<span>  cell_type <span class="op">=</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">sc_giotto</span><span class="op">)</span><span class="op">$</span><span class="va">Main_cell_type</span>,</span>
+<span>  cell_type <span class="op">=</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">sc_giotto</span><span class="op">)</span><span class="op">$</span><span class="va">Main_cell_type</span>,</span>
 <span>  sign_gene <span class="op">=</span> <span class="va">topgenes_scran</span><span class="op">)</span></span></code></pre></div>
 <p>Fix gene names. This dataset contains some ENSEMBL gene ids, we need
 to homogenize the ids to match the nomenclature of the RNA matrix in the
@@ -1224,10 +1224,10 @@ spatial object.</p>
 <span></span>
 <span><span class="va">sc_gene_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"gene_annotate.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">ENSMUS_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">DWLS_matrix_direct</span><span class="op">)</span></span>
+<span><span class="va">ENSMUS_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">DWLS_matrix_direct</span><span class="op">)</span></span>
 <span><span class="va">sc_gene_names</span> <span class="op">&lt;-</span> <span class="va">sc_gene_names</span><span class="op">[</span><span class="va">sc_gene_names</span><span class="op">$</span><span class="va">gene_id</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">ENSMUS_names</span>,<span class="op">]</span></span>
 <span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">DWLS_matrix_direct</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">sc_gene_names</span><span class="op">$</span><span class="va">gene_short_name</span></span></code></pre></div>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">DWLS_matrix_direct</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">sc_gene_names</span><span class="op">$</span><span class="va">gene_short_name</span></span></code></pre></div>
 </div>
 <div class="section level3" number="9.2">
 <h3 id="run-deconvolution">

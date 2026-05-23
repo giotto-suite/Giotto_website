@@ -950,7 +950,7 @@ these will be written to new columns called <code>"tag"</code>.</p>
 also be added which can be used to set the name of the column in the
 cell or feature metadata to write the tags to.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span> <span class="co"># display cell metadata</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span> <span class="co"># display cell metadata</span></span></code></pre></div>
 <pre><code>                                    cell_ID   tag
                                       &lt;char&gt; &lt;num&gt;
   1:  40951783403982682273285375368232495429     1
@@ -965,7 +965,7 @@ cell or feature metadata to write the tags to.</p>
 497:  75286702783716447443887872812098770697     0
 498:   9677424102111816817518421117250891895     0</code></pre>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span> <span class="co"># display feature metadata</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span> <span class="co"># display feature metadata</span></span></code></pre></div>
 <pre><code>       feat_ID   tag
         &lt;char&gt; &lt;num&gt;
   1:      Mlc1     0
@@ -1000,7 +1000,7 @@ probes detected per cell in the merscope mini dataset and then filter on
 it.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get the names of blank probes used (note that normally, negative probes should be in a separate feature type from the main data to be analyzed)</span></span>
-<span><span class="va">blank_probes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"Blank_*"</span>, <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">merscope</span><span class="op">)</span>, value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">blank_probes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"Blank_*"</span>, <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">merscope</span><span class="op">)</span>, value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">merscope</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addFeatsPerc.html">addFeatsPerc</a></span><span class="op">(</span><span class="va">merscope</span>,</span>
 <span>    feats <span class="op">=</span> <span class="va">blank_probes</span>,</span>
 <span>    vector_name <span class="op">=</span> <span class="st">"neg_prbs"</span>,</span>

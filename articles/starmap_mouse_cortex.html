@@ -658,17 +658,17 @@
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Ensure Giotto can access a python env</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="co"># The following command need only be run once to</span></span>
 <span>  <span class="co"># install a default Giotto environment</span></span>
-<span>  <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># set specific python path to use or python environment name</span></span>
 <span><span class="co"># leaving NULL will use default (see ?set_giotto_python_path())</span></span>
 <span><span class="va">python_path</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">set_giotto_python_path</a></span><span class="op">(</span>python_path <span class="op">=</span> <span class="va">python_path</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">set_giotto_python_path</a></span><span class="op">(</span>python_path <span class="op">=</span> <span class="va">python_path</span><span class="op">)</span></span></code></pre></div>
 <div class="section level2" number="1">
 <h2 id="dataset-setup">
 <span class="header-section-number">1</span> Dataset Setup<a class="anchor" aria-label="anchor" href="#dataset-setup"></a>
@@ -782,7 +782,7 @@ instructions tutorial</a></p>
 <code class="sourceCode R"><span><span class="co"># ** SET WORKING DIRECTORY WHERE PROJECT OUTPUTS WILL SAVE TO **</span></span>
 <span><span class="va">results_folder</span> <span class="op">=</span> <span class="st">'/path/to/results/'</span></span>
 <span></span>
-<span><span class="va">instrs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span></span>
+<span><span class="va">instrs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span></span>
 <span>    save_dir <span class="op">=</span> <span class="va">results_folder</span>,</span>
 <span>    save_plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>    show_plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -803,7 +803,7 @@ What does the raw data to load look like?
 <span><span class="va">feature_names</span> <span class="op">&lt;-</span> <span class="va">star_expr_table</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span> <span class="co"># extract first table column of gene names</span></span>
 <span><span class="va">star_expr</span> <span class="op">&lt;-</span> <span class="va">star_expr_table</span><span class="op">[</span>, <span class="fl">2</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">star_expr_table</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">star_expr</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">feature_names</span></span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">star_expr</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">feature_names</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/force.html" class="external-link">force</a></span><span class="op">(</span><span class="va">star_expr</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span> <span class="co"># show subset</span></span></code></pre></div>
 <pre><code>        V2 V3 V4 V5 V6 V7 V8   V9 V10 V11
 Slc17a7  0  0  0  0  0  0  0  930   0   0
@@ -838,23 +838,23 @@ Rorb     0  0  0  0  0  0  0 3526   0   0</code></pre>
 Preview of STARmap 3D Coordinates
 </p>
 </div>
-</details><p>These data can be fed into <code><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject()</a></code> which
+</details><p>These data can be fed into <code><a href="https://giotto-suite.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject()</a></code> which
 will generate a simple identifier for each of the cells and map them to
 the expression and spatial information.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span></span>
 <span>    expression <span class="op">=</span> <span class="va">expr_path</span>,</span>
 <span>    spatial_locs <span class="op">=</span> <span class="va">loc_path</span>,</span>
 <span>    instructions <span class="op">=</span> <span class="va">instrs</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The default names created for each cell:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">star</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">star</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code>[1] "cell_1" "cell_2" "cell_3" "cell_4" "cell_5" "cell_6"</code></pre>
 <p>Preview of the feature names in the dataset, just to check that these
 are attached correctly.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">star</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">star</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code>[1] "Slc17a7" "Mgp"     "Gad1"    "Nov"     "Rasgrf2" "Rorb"</code></pre>
 <p>Lastly, we can check how many cells and features are available in
 this dataset by using <code><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim()</a></code></p>
@@ -1136,7 +1136,7 @@ metadata. Of particular interest is the <code>"perc_cells"</code> column
 which describes the percentage of cells in which the feature is
 present.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">star</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">star</span><span class="op">)</span></span></code></pre></div>
 <details><summary>
 feature metadata table
 </summary><pre><code>    feat_ID nr_cells perc_cells total_expr mean_expr mean_expr_det
@@ -1217,7 +1217,7 @@ problematic using a cutoff on <code>nr_feats</code></p>
 <code class="sourceCode R"><span><span class="va">star</span><span class="op">$</span><span class="va">technical</span> <span class="op">&lt;-</span> <span class="va">star</span><span class="op">$</span><span class="va">nr_feats</span> <span class="op">&lt;</span> <span class="fl">27</span> <span class="co"># add a logical column "technical" to metadata</span></span>
 <span></span>
 <span><span class="va">limma</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/process_param.html">adjustParam</a></span><span class="op">(</span><span class="st">"limma"</span><span class="op">)</span></span>
-<span><span class="va">limma</span><span class="op">$</span><span class="va">covariate_columns</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/spatValues.html" class="external-link">svkey</a></span><span class="op">(</span>feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"technical"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">limma</span><span class="op">$</span><span class="va">covariate_columns</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/spatValues.html" class="external-link">svkey</a></span><span class="op">(</span>feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"technical"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/processExpression.html">processExpression</a></span><span class="op">(</span><span class="va">star</span>, <span class="va">limma</span>,</span>
 <span>    expression_values <span class="op">=</span> <span class="st">"normalized"</span>, </span>
 <span>    name <span class="op">=</span> <span class="st">"technical_regress"</span> <span class="co"># create as new matrix called "technical_regress"</span></span>
@@ -1361,7 +1361,7 @@ to build a network to perform the clustering on.</p>
 based on the PCA space.</p>
 <p>Note that we are using the first 15 dimensions of the PCA again.</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">star</span>, dimensions <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">15</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">star</span>, dimensions <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">15</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4" number="4.3.2">
 <h4 id="leiden-clustering">
@@ -1521,7 +1521,7 @@ are in one single set of results.</p>
 <span>    feat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">excit_feats</span>, <span class="va">inhib_feats</span>, <span class="va">glial_feats</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createMetafeats.html" class="external-link">createMetafeats</a></span><span class="op">(</span><span class="va">star</span>,</span>
+<span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createMetafeats.html" class="external-link">createMetafeats</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    feat_clusters <span class="op">=</span> <span class="va">mfeat_table</span>,</span>
 <span>    name <span class="op">=</span> <span class="st">"neuro_sigs"</span> <span class="co"># what to name the metafeature results</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -1584,7 +1584,7 @@ of the clusters and the lack of specific markers to the hippocampus
 <span><span class="va">types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"L2-L4"</span>, <span class="st">"L5-L6"</span>, <span class="st">"CC"</span>, <span class="st">"interneuron"</span>, <span class="st">"L1"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">types</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq.int</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/annotateGiotto.html" class="external-link">annotateGiotto</a></span><span class="op">(</span><span class="va">star</span>,</span>
+<span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/annotateGiotto.html" class="external-link">annotateGiotto</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    annotation_vector <span class="op">=</span> <span class="va">types</span>,</span>
 <span>    cluster_column <span class="op">=</span> <span class="va">lname</span>,</span>
 <span>    name <span class="op">=</span> <span class="st">"cell_types"</span></span>
@@ -1611,7 +1611,7 @@ appropriate thickness based on the usual distance between cells. The
 generated cross section object is also currently attached to the spatial
 network once created.</p>
 <div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span><span class="va">star</span>, delaunay_method <span class="op">=</span> <span class="st">"delaunayn_geometry"</span><span class="op">)</span> <span class="co"># create 3D delaunay</span></span>
+<code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span><span class="va">star</span>, delaunay_method <span class="op">=</span> <span class="st">"delaunayn_geometry"</span><span class="op">)</span> <span class="co"># create 3D delaunay</span></span>
 <span></span>
 <span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCrossSection.html">createCrossSection</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    method <span class="op">=</span> <span class="st">"equation"</span>,</span>

@@ -655,10 +655,10 @@
 <span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/Giotto"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="co"># Ensure the Python environment for Giotto has been installed.</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="co"># The following command need only be run once to install the Giotto environment.</span></span>
-<span>  <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Ensure GiottoData is installed.</span></span>
@@ -693,7 +693,7 @@ GiottoData<a class="anchor" aria-label="anchor" href="#get-filepaths-from-giotto
 subobjects and assemble into giotto object<a class="anchor" aria-label="anchor" href="#read-into-giotto-subobjects-and-assemble-into-giotto-object"></a>
 </h2>
 <p>Polygons can be read into Giotto Suite in multiple ways.</p>
-<p>When using <code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygon()</a></code>:</p>
+<p>When using <code><a href="https://giotto-suite.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygon()</a></code>:</p>
 <ul>
 <li>If a <code>character</code> input is provided, it is assumed to be a
 filepath to a .GeoJSON or mask image file. Which it is is determined
@@ -707,13 +707,13 @@ ones are picked.</li>
 <p></p>
 <p>You can also be more explicit about the type of input provided by
 calling any of the following directly, instead of having
-<code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygon()</a></code> guess.</p>
+<code><a href="https://giotto-suite.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygon()</a></code> guess.</p>
 <ul>
-<li><code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygonsFromMask()</a></code></li>
-<li><code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygonsFromGeoJSON()</a></code></li>
-<li><code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygonsFromDfr()</a></code></li>
+<li><code><a href="https://giotto-suite.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygonsFromMask()</a></code></li>
+<li><code><a href="https://giotto-suite.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygonsFromGeoJSON()</a></code></li>
+<li><code><a href="https://giotto-suite.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygonsFromDfr()</a></code></li>
 </ul>
-<p>See also <code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">?GiottoClass::createGiottoPolygon</a></code></p>
+<p>See also <code><a href="https://giotto-suite.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">?GiottoClass::createGiottoPolygon</a></code></p>
 <p>For this example, a <code>data.frame</code> input will be used.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">poly_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">mini_viz_poly_path</span><span class="op">)</span></span>
@@ -732,7 +732,7 @@ calling any of the following directly, instead of having
 29103: 6848.029 -4716.075  9677424102111816817518421117250891895
 29104: 6848.138 -4715.476  9677424102111816817518421117250891895</code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">viz_gpoly</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygon</a></span><span class="op">(</span><span class="va">poly_dt</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">viz_gpoly</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygon</a></span><span class="op">(</span><span class="va">poly_dt</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/force.html" class="external-link">force</a></span><span class="op">(</span><span class="va">viz_gpoly</span><span class="op">)</span></span></code></pre></div>
 <pre><code>An object of class giottoPolygon
 spat_unit : "cell"
@@ -756,11 +756,11 @@ Spatial Information:
 <code>data.frame</code>-like object with points coordinates information
 (x, y, feat_ID). For most surety, the matching columns in the input
 <code>data.frame</code> should be named with the colnames x, y, and
-feat_ID, however <code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPoints.html" class="external-link">createGiottoPoints()</a></code> will attempt to guess
+feat_ID, however <code><a href="https://giotto-suite.github.io/GiottoClass/reference/createGiottoPoints.html" class="external-link">createGiottoPoints()</a></code> will attempt to guess
 which columns are which. Additional columns if provided, will be
 included as attributes information in the <code>giottoPoints</code>
 object.</p>
-<p>See also <code><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPoints.html" class="external-link">?GiottoClass::createGiottoPoints</a></code></p>
+<p>See also <code><a href="https://giotto-suite.github.io/GiottoClass/reference/createGiottoPoints.html" class="external-link">?GiottoClass::createGiottoPoints</a></code></p>
 <p>For this example, the following <code>data.table</code> will be
 used.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -782,7 +782,7 @@ used.</p>
 80342: 6900.026 -4924.840   Slc17a7        1
 80343: 6900.030 -4746.916     Cldn5        1</code></pre>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">viz_gpoints</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/createGiottoPoints.html" class="external-link">createGiottoPoints</a></span><span class="op">(</span><span class="va">tx_dt</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">viz_gpoints</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createGiottoPoints.html" class="external-link">createGiottoPoints</a></span><span class="op">(</span><span class="va">tx_dt</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/force.html" class="external-link">force</a></span><span class="op">(</span><span class="va">viz_gpoints</span><span class="op">)</span></span></code></pre></div>
 <pre><code>An object of class giottoPoints
@@ -833,9 +833,9 @@ using <code><a href="https://rspatial.github.io/terra/reference/ext.html" class=
 subcellular Giotto object<a class="anchor" aria-label="anchor" href="#creating-the-subcellular-giotto-object"></a>
 </h2>
 <p>Datasets with raw spatial features and polygon information are
-created using <code><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObjectSubcellular()</a></code>.</p>
+created using <code><a href="https://giotto-suite.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObjectSubcellular()</a></code>.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mini_viz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObjectSubcellular</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">mini_viz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObjectSubcellular</a></span><span class="op">(</span></span>
 <span>  gpolygons <span class="op">=</span> <span class="va">viz_gpoly</span>,</span>
 <span>  gpoints <span class="op">=</span> <span class="va">viz_gpoints</span></span>
 <span><span class="op">)</span></span>
@@ -859,10 +859,10 @@ values<a class="anchor" aria-label="anchor" href="#spatially-aggregate-values"><
 polygon annotations and then converts that into a raw counts matrix.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># calculate centroids</span></span>
-<span><span class="va">mini_viz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/addSpatialCentroidLocations.html" class="external-link">addSpatialCentroidLocations</a></span><span class="op">(</span><span class="va">mini_viz</span><span class="op">)</span></span>
+<span><span class="va">mini_viz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/addSpatialCentroidLocations.html" class="external-link">addSpatialCentroidLocations</a></span><span class="op">(</span><span class="va">mini_viz</span><span class="op">)</span></span>
 <span><span class="co"># create aggregated information</span></span>
-<span><span class="va">mini_viz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span><span class="va">mini_viz</span><span class="op">)</span></span>
-<span><span class="va">mini_viz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://drieslab.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span><span class="va">mini_viz</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">mini_viz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span><span class="va">mini_viz</span><span class="op">)</span></span>
+<span><span class="va">mini_viz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span><span class="va">mini_viz</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="6">
 <h2 id="example-plot">
