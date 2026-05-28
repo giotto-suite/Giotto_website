@@ -1,0 +1,54 @@
+name: Mirror from Upstream
+
+on:
+  schedule:
+    - cron: '0 0 * * *'   # Runs daily at midnight UTC
+  workflow_dispatch:        # Allows manual trigger from the Actions tab
+
+jobs:
+  mirror:
+    name: Sync from Upstream
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # Full history needed for accurate mirroring
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Add upstream remote
+        run: |
+          git remote add upstream ${{ vars.UPSTREAM_REPO_URL }}
+        # Set UPSTREAM_REPO_URL in your repo's Variables (Settings → Secrets and variables → Actions → Variables)
+        # Example: https://github.com/original-owner/original-repo.git
+
+      - name: Fetch upstream branch
+        run: |
+          git fetch upstream ${{ vars.UPSTREAM_BRANCH || 'suite' }}
+        # Set UPSTREAM_BRANCH variable if the upstream branch isn't 'main'
+
+      - name: Merge upstream into local branch
+        run: |
+          git checkout ${{ vars.TARGET_BRANCH || 'suite' }}
+          git merge upstream/${{ vars.UPSTREAM_BRANCH || 'suite' }} \
+            --no-edit \
+            --allow-unrelated-histories \
+            -m "chore: sync from upstream [${{ github.run_id }}]"
+        # Set TARGET_BRANCH variable if your local target branch differs from 'main'
+
+      - name: Push changes
+        run: |
+          git push origin ${{ vars.TARGET_BRANCH || 'suite' }}
+
+      - name: Summary
+        if: success()
+        run: |
+          echo "### ✅ Mirror complete" >> $GITHUB_STEP_SUMMARY
+          echo "Upstream \`${{ vars.UPSTREAM_BRANCH || 'main' }}\` → local \`${{ vars.TARGET_BRANCH || 'suite' }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "Run: [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
