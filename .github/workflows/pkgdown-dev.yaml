@@ -54,12 +54,14 @@ jobs:
       contents: write
 
     steps:
-      # 1. website content: vignettes, _pkgdown.yml, pkgdown/, index.md
+      # 1. website content -- checked out at the WORKSPACE ROOT, not a subpath.
+      #    The deploy action runs `git config` in GITHUB_WORKSPACE and has no
+      #    input to point it elsewhere, so the root must be a git repository.
+      #    Checking both repos into subdirectories leaves the root bare and the
+      #    deploy dies with "fatal: not in a git directory".
       - uses: actions/checkout@v4
-        with:
-          path: website
 
-      # 2. package source, at whichever ref we want documented
+      # 2. package source, at whichever ref we want documented, in a subdir
       - uses: actions/checkout@v4
         with:
           repository: giotto-suite/Giotto
@@ -78,9 +80,8 @@ jobs:
       - name: Assemble the site source
         run: |
           rm -rf pkgsrc/vignettes pkgsrc/pkgdown
-          cp -r website/vignettes  pkgsrc/
-          cp -r website/pkgdown    pkgsrc/
-          cp    website/_pkgdown.yml website/index.md pkgsrc/
+          cp -r vignettes pkgdown pkgsrc/
+          cp    _pkgdown.yml index.md pkgsrc/
           echo "documenting giotto-suite/Giotto@${{ inputs.giotto_ref || 'suite' }}"
           echo "vignettes assembled: $(ls pkgsrc/vignettes/*.Rmd pkgsrc/vignettes/*.rmd 2>/dev/null | wc -l)"
 
