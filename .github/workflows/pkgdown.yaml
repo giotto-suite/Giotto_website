@@ -45,7 +45,12 @@ jobs:
         shell: Rscript {0}
 
       - name: Deploy to GitHub pages 🚀
-        if: github.event_name != 'pull_request'
+        # The ref guard matters because of workflow_dispatch: the Actions UI
+        # lets you "Run workflow" against ANY branch, and the workflow file is
+        # taken from the branch you select. Without this, dispatching from
+        # `dev` would build dev content in RELEASE mode and publish it to the
+        # site root. Only `suite` may deploy to the root.
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/suite'
         uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
           clean: false

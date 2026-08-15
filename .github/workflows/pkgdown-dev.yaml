@@ -1,0 +1,125 @@
+# Builds the DEVELOPMENT website and publishes it to giottosuite.com/dev/
+#
+# The release site is built by pkgdown.yaml from the `suite` branch. This is its
+# dev counterpart, kept separate so a dev build can never touch the release
+# site. Three independent guarantees, each verified against the deploy action's
+# v4.4.1 source:
+#
+#   * PKGDOWN_DEV_MODE=devel makes pkgdown write ONLY to docs/dev/ -- nothing
+#     is produced at docs/ root.
+#   * the deploy uses target-folder: dev, and `clean: true` is scoped to it --
+#     rsync's destination is ${tmp}/dev and the worktree is a full non-orphan
+#     checkout, so the release site's files are re-committed untouched.
+#   * force: false, so a release deploy that lands mid-build is rebased onto,
+#     not overwritten.
+#
+# WHICH PACKAGE DOES THIS DOCUMENT?
+# The `giotto_ref` input below. This repository owns the website content --
+# vignettes, _pkgdown.yml, theme -- while the package source (R/, man/,
+# NAMESPACE, DESCRIPTION) is checked out from giotto-suite/Giotto at build time.
+# So pointing the dev site at a different package branch is one word, with no
+# merging of package code into this repository.
+#
+# Currently `suite`, i.e. the same package the release site documents, so the
+# dev site previews WEBSITE changes (theme, navigation, landing page). Switch to
+# `gsource` to preview unreleased API -- note that requires gsource to be
+# installable, which today it is not (it needs GiottoClass 0.6.0, which exists
+# only on a non-default branch).
+
+name: pkgdown (dev)
+
+on:
+  push:
+    branches: [dev]
+  workflow_dispatch:
+    inputs:
+      giotto_ref:
+        description: "Branch/tag of giotto-suite/Giotto to document"
+        default: suite
+        required: false
+
+jobs:
+  pkgdown-dev:
+    runs-on: ubuntu-latest
+    # SHARE the release workflow's concurrency group so a dev deploy and a
+    # release deploy can never overlap. This expression is deliberately
+    # identical to the one in pkgdown.yaml: for any non-PR run it evaluates to
+    # the constant "pkgdown-true", so all runs queue behind one another.
+    # A per-run group would be unique every time and serialise against NOTHING.
+    concurrency:
+      group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+
+    steps:
+      # 1. website content: vignettes, _pkgdown.yml, pkgdown/, index.md
+      - uses: actions/checkout@v4
+        with:
+          path: website
+
+      # 2. package source, at whichever ref we want documented
+      - uses: actions/checkout@v4
+        with:
+          repository: giotto-suite/Giotto
+          ref: ${{ inputs.giotto_ref || 'suite' }}
+          path: pkgsrc
+
+      # 3. lay the website over the package checkout. pkgdown expects the
+      #    config and vignettes to sit in the package root.
+      - name: Assemble the site source
+        run: |
+          cp -r website/vignettes  pkgsrc/
+          cp -r website/pkgdown    pkgsrc/
+          cp    website/_pkgdown.yml website/index.md pkgsrc/
+          echo "documenting giotto-suite/Giotto@${{ inputs.giotto_ref || 'suite' }}"
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          working-directory: pkgsrc
+          dependencies: '"hard"'
+          extra-packages: >
+            github::giotto-suite/GiottoData, any::pkgdown, local::.,
+            any::kableExtra, any::ggspavis, any::pheatmap, any::scater,
+            any::STexampleData, any::scran, any::ComplexHeatmap
+          needs: website
+
+      - name: Build dev site
+        working-directory: pkgsrc
+        env:
+          PKGDOWN_DEV_MODE: devel   # REQUIRED -- release and dev sources carry
+                                    # the same version, so pkgdown's `mode: auto`
+                                    # cannot tell them apart
+        run: |
+          Rscript -e '
+            banner <- paste(readLines("pkgdown/dev-banner.html"), collapse = "\n")
+            pkgdown::build_site(
+              install     = FALSE,
+              # Rd examples default to TRUE and add ~1h. Several build a Python
+              # environment, and that install log already leaks into the
+              # released docs as "example output".
+              examples    = FALSE,
+              # parity with the release job, which pins new_process = FALSE
+              new_process = FALSE,
+              override    = list(
+                # dev-only presentation lives HERE, never in _pkgdown.yml, so
+                # merging dev into suite cannot carry the banner into production
+                template = list(includes = list(before_body = banner))
+              )
+            )'
+
+      - name: Deploy to gh-pages /dev/
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        with:
+          branch: gh-pages
+          folder: pkgsrc/docs/dev
+          target-folder: dev
+          clean: true
+          force: false

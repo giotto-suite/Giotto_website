@@ -12,12 +12,17 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-To add a new example to the website <https://giotto-suite.github.io/Giotto_website/>, please follow these steps:
+To add a new example to the website <https://giottosuite.com>, please follow these steps:
 
 
-# Clone the Giotto_website repository 
+# Clone the Giotto_website repository
 
-Clone the Giotto_website repository from <https://github.com/giotto-suite/Giotto_website> and switch to the "suite" branch.
+Clone the Giotto_website repository from <https://github.com/giotto-suite/Giotto_website> and switch to the **"dev" branch**.
+
+New tutorials go to `dev` first, where they are published to
+<https://giottosuite.com/dev/> for review. They reach the live site when `dev`
+is promoted to `suite`. **Do not branch from `suite`** — that publishes straight
+to the released site with no review step.
 
 # Create a new R markdown file
 
@@ -70,23 +75,48 @@ Knit the document to check if the vignette looks how you like, and that it actua
 
 Optionally, you can run `pkgdown::build_site()`, but this may be hard to run locally.
 
-# Edit the pkgdown.yml file
+# Register the tutorial in `_pkgdown.yml`
 
-`pkgdown.yml` is a file at the repo toplevel and it details how the links are set up for the navbars and documentation in the website.
+Add your tutorial in **two** places in `_pkgdown.yml`. Missing the second one
+fails the build.
 
-For most new articles:
+**1. Under `articles:`** — find the section your tutorial belongs to and add the
+vignette name (the filename without `.Rmd`) to its `contents:` list:
 
-  - Under navbar:
-    - Determine which section your tutorial fits better between Get started, Examples, and Tutorials.
-    - Select or setup the subsection if needed.
-    - Add a **text** (what menu name it has) and **href** ("articles/VIGNETTE_NAME.html") field for your new article.
+```
+- title: Analysis
+  contents:
+  - hvf
+  - YOUR_VIGNETTE_NAME
+```
 
-  - Under articles:
-    - Find the appropriate title for your new vignette (should be the same to the previous navbar section).
-    - Add your new vignette, with the same name as the VIGNETTE_NAME used for the href section used in navbar (minus the `.html`).
+**2. Under `navbar:`** — add a menu entry so people can find it, with `href`
+pointing at `articles/YOUR_VIGNETTE_NAME.html`:
+
+```
+      - text: A short, descriptive title
+        href: articles/YOUR_VIGNETTE_NAME.html
+```
+
+Because you are on the `dev` branch, this only affects the development site.
+The change reaches <https://giottosuite.com> when `dev` is merged into `suite`.
+
+# Preview locally
+
+```
+Rscript pkgdown/preview-sites.R --dev --quick
+```
+
+This builds the site and opens it in a browser. `--quick` skips the other
+tutorials so it takes about a minute; drop it for a full build.
 
 # Push the changes to Github
 
-If you are an outside collaborator, you may need to create a Pull Request. Changes usually take roughly 30 min to build and deploy on the website.
+Push your branch and open a Pull Request **against `dev`**.
+
+Once it is merged, the development site rebuilds and your tutorial appears at
+<https://giottosuite.com/dev/>. The development build takes roughly 5–10
+minutes. (A full release build of the site takes considerably longer — 40–70
+minutes — because it also runs every documentation example.)
 
 

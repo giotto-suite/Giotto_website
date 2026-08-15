@@ -21,11 +21,23 @@ template:
 
          gtag('config', 'G-2V1K0KPLJC');
        </script>
-  bootstrap: 3
+  bootstrap: 5
+  bootswatch: cosmo
+  theme: arrow-light
+  # REQUIRED. The default (`mathml`) relies on pandoc, but Rd math from
+  # \deqn{}/\eqn{} never passes through pandoc, so 12 reference pages would
+  # print raw LaTeX. Bootstrap 3 got away with it by always loading MathJax;
+  # Bootstrap 5 only emits a renderer when asked.
+  math-rendering: katex
   bslib:
-    bg: "#FFFFFF"
-    fg: "#000000"
+    # These layer on top of the bootswatch preset. Note bg/fg were dropped:
+    # they were dead config under Bootstrap 3 and cosmo supplies its own.
     primary: "#7E69AE"
+    # Bootswatch names a font but ships no webfont; without these it silently
+    # falls back to the system stack. font_google() bundles at build time, so
+    # there is still no runtime CDN request.
+    base_font: {google: "Source Sans Pro"}
+    heading_font: {google: "Source Sans Pro"}
     code_font: {google: "JetBrains Mono"}
 
 
@@ -39,10 +51,12 @@ development:
   mode: release
 
 navbar:
-  bg: light
+  bg: primary
   structure:
     left:
-    - intro
+    # `intro` removed: it is dead config. pkgdown only renders it when a
+    # vignettes/Giotto.Rmd exists, which it does not -- 8 items were declared
+    # and 7 rendered.
     - get_started
     - reference
     - articles
@@ -79,265 +93,144 @@ navbar:
     tools:
       text: Tutorials
       menu:
-      - text: Giotto Object
-        menu:
-        - text: Object creation
-          href: articles/object_creation.html
-        - text: Create a simulated dataset object
-          href: articles/create_simulated_object.html
-        - text: Giotto instructions
-          href: articles/instructions.html
-        - text: Technology-specific importers
-          href: articles/import_utilities.html
+      # The analytical core stays as direct links, in the order someone
+      # actually works through it. The operational tail (interoperability,
+      # containers, cloud, saving, interactivity) collapses to one link per
+      # section on the articles index: 73 rows -> ~40.
+      - text: Giotto object
+      - text: Object creation
+        href: articles/object_creation.html
+      - text: Create a simulated dataset object
+        href: articles/create_simulated_object.html
+      - text: Giotto instructions
+        href: articles/instructions.html
+      - text: Technology-specific importers
+        href: articles/import_utilities.html
+      - text: Giotto configuration
+        href: articles/configuration.html
       - text: -------
-      - text: Giotto Configuration
-        menu:
-        - text: Giotto Configuration
-          href: articles/configuration.html
-      - text: -------
-      - text: Pre-Processing
-        menu:
-        - text: Feature Aggregation
-          href: articles/feature_aggregation.html
-        - text: Filtering
-          href: articles/filtering.html
-        - text: Normalization and Scaling
-          href: articles/normalization.html
-        - text: Process Giotto convenience function
-          href: articles/process_giotto.html
+      - text: Pre-processing
+      - text: Feature aggregation
+        href: articles/feature_aggregation.html
+      - text: Filtering
+        href: articles/filtering.html
+      - text: Normalization and scaling
+        href: articles/normalization.html
+      - text: Process Giotto convenience function
+        href: articles/process_giotto.html
       - text: -------
       - text: Analysis
-        menu:
-          - text: Detection of Highly Variable Features
-            href: articles/hvf.html
-          - text: Dimension reduction
-            href: articles/dimension_reduction.html
-          - text: Spatial and feature networks
-            href: articles/networks.html
-          - text: Finding Differential Expressed Genes
-            href: articles/find_degs.html
-          - text: Deconvolution
-            href: articles/deconvolution.html
-          - text: PAGE and Rank Enrichment
-            href: articles/page_rank_enrichment.html
-          - text: Kriging
-            href: articles/kriging.html
-          - text: Tesselation
-            href: articles/tesselation.html
+      - text: Detection of highly variable features
+        href: articles/hvf.html
+      - text: Dimension reduction
+        href: articles/dimension_reduction.html
+      - text: Spatial and feature networks
+        href: articles/networks.html
+      - text: Finding differentially expressed genes
+        href: articles/find_degs.html
+      - text: Deconvolution
+        href: articles/deconvolution.html
+      - text: PAGE and rank enrichment
+        href: articles/page_rank_enrichment.html
+      - text: Kriging
+        href: articles/kriging.html
+      - text: Tesselation
+        href: articles/tesselation.html
       - text: -------
-      - text: Spatial Patterns
-        menu:
-          - text: Detection of spatial genes
-            href: articles/spatial_genes.html
-          - text: Detection of spatial co-expression modules
-            href: articles/spatial_coexpression_modules.html
-          - text: Spatially Informed clusters
-            href: articles/spatial_informed_clusters.html
-          - text: Spatial domain analysis using HMRF
-            href: articles/hmrf.html
+      - text: Spatial patterns
+      - text: Detection of spatial genes
+        href: articles/spatial_genes.html
+      - text: Detection of spatial co-expression modules
+        href: articles/spatial_coexpression_modules.html
+      - text: Spatially informed clusters
+        href: articles/spatial_informed_clusters.html
+      - text: Spatial domain analysis using HMRF
+        href: articles/hmrf.html
       - text: -------
-      - text: Multiple samples
-        menu:
-        - text: Object splitting and joining
-          href: articles/split_join.html
-        - text: Batch effect removal with Harmony
-          href: articles/harmony.html
-        - text: Tissue Microarrays
-          href: articles/tma.html
-      - text: -------
-      - text: Spatial manipulation
-        menu:
-          - text: Spatial transformations
-            href: articles/spatial_transformations.html
-          - text: Spatial geometries
-            href: https://giotto-suite.github.io/GiottoClass/articles/spatial_geometries.html
-      - text: -------
-      - text: Spatial data alignment
-        menu:
-          - text: Spatial data alignment
-            href: articles/affine_registration.html
-      - text: -------
-      - text: Interactivity
-        menu:
-          - text: Interactive selection
-            href: articles/interactive_selection.html
-          - text: Interactive visualization with vitessceR
-            href: articles/interactive_giotto_vitessceR.html
-          - text: Interactive region selection on large datasets
-            href: articles/interactive_selection_cosmx.html
-      - text: -------
+      - text: Visualization
       - text: Visualizations
-        menu:
-          - text: Visualizations
-            href: articles/visualizations.html
-          - text: Metafeatures
-            href: articles/metafeatures.html
-          - text: Cross section
-            href: articles/cross_section.html
+        href: articles/visualizations.html
+      - text: Metafeatures
+        href: articles/metafeatures.html
+      - text: Cross section
+        href: articles/cross_section.html
       - text: -------
-      - text: Saving and Loading
-        menu:
-          - text: Saving a Giotto object
-            href: articles/saving_object.html
-          - text: Saving plots
-            href: articles/saving_plots.html
-      - text: -------
+      # Tail sections -- one link each into the articles index.
+      - text: More topics
+      - text: Multiple samples
+        href: articles/index.html#multiple-samples
+      - text: Spatial manipulation and alignment
+        href: articles/index.html#spatial-manipulation-and-alignment
+      - text: Interactivity
+        href: articles/index.html#interactivity
+      - text: Saving and loading
+        href: articles/index.html#saving-and-loading
       - text: Interoperability
-        menu:
-          - text: AnnData
-            href: articles/interoperability_anndata.html
-          - text: Integrate Bento Analysis
-            href: articles/bento.html
-          - text: Integrate ONTraC Analysis
-            href: articles/ontrac.html
-          - text: Integrate MISTy Analysis
-            href: articles/integrate_misty_analysis.html  
-          - text: SpatialExperiment
-            href: articles/interoperability_spatialexperiment.html
-          - text: Seurat
-            href: articles/interoperability_seurat.html
-          - text: SpatialData
-            href: articles/interoperability_spatialdata.html
+        href: articles/index.html#interoperability
+      - text: Containers and cloud
+        href: articles/index.html#containers-and-cloud
       - text: -------
-      - text: Try Giotto in the Cloud
-        menu:
-          - text: Giotto on Terra.bio
-            href: articles/terra.html
-          - text: NeMO Slide-seq on Terra.bio
-            href: articles/nemo_slideseq.html
-      - text: -------
-      - text: Containers
-        menu:
-          - text: Docker
-            href: articles/docker.html
-          - text: Singularity
-            href: articles/singularity.html
+      - text: All tutorials →
+        href: articles/index.html
     articles:
       text: Examples
       menu:
-      - text: CODEX
-        menu:
-        - text: Codex Mouse Spleen
-          href: articles/codex_mouse_spleen.html
+      # Ordered by how many people arrive with each platform, not
+      # alphabetically. The two popular tiers link straight to tutorials; the
+      # long tail links to its section on the articles index, which keeps this
+      # menu roughly half its previous length (71 rows -> ~33).
+      - text: In situ methods
+      - text: Xenium — Human breast cancer
+        href: articles/xenium_breast_cancer.html
+      - text: Atera — support in development
+        href: articles/atera.html
+      - text: Nanostring CosMx — Subcellular lung cancer
+        href: articles/nanostring_cosmx_lung_cancer.html
+      - text: Nanostring CosMx — Human pancreas FFPE
+        href: articles/cosmx_pancreas.html
+      - text: MERFISH — Mouse hypothalamic preoptic region
+        href: articles/merfish_mouse_hypothalamic.html
+      - text: MERFISH — Whole mouse brain (BIL)
+        href: articles/merfish_mouse_sagittal_bil.html
+      - text: Vizgen — Mouse brain receptor map
+        href: articles/vizgen_mouse_brain.html
       - text: -------
-      - text: DBiT-Seq
-        menu:
-        - text: Multi-omics Mouse Embryo DBiT-Seq
-          href: articles/mouse_embryo_dbitseq.html
+      - text: Sequencing-based methods
+      - text: Visium — Mouse kidney
+        href: articles/visium_mouse_kidney.html
+      - text: Visium — Mouse brain
+        href: articles/visium_mouse_brain.html
+      - text: Visium — Prostate integration
+        href: articles/visium_prostate_integration.html
+      - text: Visium CytAssist — Human lung cancer
+        href: articles/visium_cytassist_lungcancer.html
+      - text: Visium CytAssist — Human glioblastoma
+        href: articles/visium_cytassist_human_glioblastoma.html
+      - text: VisiumHD — Human colorectal cancer
+        href: articles/VisiumHD_Human_Colorectal_Cancer.html
+      - text: VisiumHD — Rhesus macaque kidney
+        href: articles/VisiumHD_Convenience_Function_Kidney.html
+      - text: Stereo-seq — Data importer
+        href: articles/stereoseq_importer.html
+      - text: Stereo-seq — Mouse eyeball
+        href: articles/stereoseq_mouse_eyeball.html
       - text: -------
-      - text: MERFISH
-        menu:
-        - text: MERFISH Mouse Hypothalamic Preoptic Region
-          href: articles/merfish_mouse_hypothalamic.html
-        - text: MERFISH whole mouse brain from BIL
-          href: articles/merfish_mouse_sagittal_bil.html
+      # One link per modality, pointing at the matching section of the
+      # articles index. The index ordering below mirrors this menu.
+      - text: More technologies
+      - text: Spatial in situ transcriptomics
+        href: articles/index.html#spatial-in-situ-transcriptomics
+      - text: Spatial sequencing transcriptomics
+        href: articles/index.html#spatial-sequencing-transcriptomics
+      - text: Spatial proteomics
+        href: articles/index.html#spatial-proteomics
+      - text: Spatial multi-omics
+        href: articles/index.html#spatial-multi-omics
+      - text: Single cell RNA sequencing (non-spatial)
+        href: articles/index.html#single-cell-rna-sequencing-non-spatial
       - text: -------
-      - text: Nanostring CosMx
-        menu:
-        - text: Nanostring CosMx Subcellular Lung Cancer
-          href: articles/nanostring_cosmx_lung_cancer.html
-        - text: Whole transcriptome CosMx Human Pancreas FFPE Dataset
-          href: articles/cosmx_pancreas.html
-      - text: -------
-      - text: Open-ST
-        menu:
-        - text: Open-ST Mouse Hippocampus
-          href: articles/openst_mouse_hippocampus.html
-      - text: -------
-      - text: osmFISH
-        menu:
-        - text: osmFISH Mouse SS Cortex
-          href: articles/osmfish_mouse_ss_cortex.html
-      - text: -------
-      - text: Resolve Bioscience
-        menu:
-        - text: Resolve Bioscience Breast Cancer Subcellular
-          href: articles/resolve_biosciences.html
-        - text: Resolve Bioscience Human lung
-          href: articles/resolve_biosciences_human_lung.html
-      - text: -------
-      - text: seqFISH
-        menu:
-        - text: mini seqFISH
-          href: articles/mini_seqfish.html
-        - text: SeqFish+ Mouse Cortex Example
-          href: articles/seqfish_cortex.html
-      - text: -------
-      - text: Seq-Scope
-        menu:
-        - text: Mouse liver
-          href: articles/seqscope_mouse_liver.html
-      - text: -------
-      - text: Slide-seq
-        menu:
-        - text: Slide-seq Mouse brain
-          href: articles/slideseq_mouse_brain.html
-      - text: -------
-      - text: Spatial ATAC-Seq
-        menu:
-        - text: Multi-omics spatial RNA-ATAC seq Mouse Embryo
-          href: articles/multiomics_rna_atac_me13.html
-      - text: -------
-      - text: Spatial CITE-Seq
-        menu:
-        - text: Multi-omics Spatial CITE-Seq Human skin
-          href: articles/spatial_citeseq_human_skin.html
-      - text: -------
-      - text: Spatial Genomics
-        menu:
-        - text: Mouse Kidney
-          href: articles/spatial_genomics_mouse_kidney.html
-      - text: -------
-      - text: STARmap
-        menu:
-        - text: STARmap Mouse Cortex
-          href: articles/starmap_mouse_cortex.html
-      - text: -------
-      - text: Stereo-seq
-        menu:
-        - text: Stereo-seq data importer
-          href: articles/stereoseq_importer.html
-        - text: Stereo-seq Mouse eyeball
-          href: articles/stereoseq_mouse_eyeball.html
-      - text: -------
-      - text: Visium
-        menu:
-        - text: Visium Mouse Kidney
-          href: articles/visium_mouse_kidney.html
-        - text: Visium Mouse Brain
-          href: articles/visium_mouse_brain.html
-        - text: Visium Prostate Integration
-          href: articles/visium_prostate_integration.html
-        - text: CytAssist Human Lung Cancer
-          href: articles/visium_cytassist_lungcancer.html
-        - text: CytAssist Multi-omics Human Glioblastoma
-          href: articles/visium_cytassist_human_glioblastoma.html
-      - text: -------
-      - text: VisiumHD
-        menu:
-        - text: VisiumHD Human Colorectal Cancer
-          href: articles/VisiumHD_Human_Colorectal_Cancer.html
-        - text: VisiumHD Rhesus Macaque Kidney
-          href: articles/VisiumHD_Convenience_Function_Kidney.html
-      - text: -------
-      - text: Vizgen
-        menu:
-        - text: Vizgen Mouse Brain Receptor Map
-          href: articles/vizgen_mouse_brain.html
-      - text: -------
-      - text: Xenium
-        menu:
-        - text: Xenium Human breast cancer
-          href: articles/xenium_breast_cancer.html
-      - text: -------
-      - text: Single Cell RNA Sequencing
-        menu:
-        - text: Prostate
-          href: articles/singlecell_prostate_standard.html
-        - text: Prostate Integration
-          href: articles/singlecell_prostate_integration.html
-        - text: Human Lung Adenocarcinoma
-          href: articles/singlecell_lung_adenocarcinoma.html
+      - text: All examples →
+        href: articles/index.html
     contributing:
       text: Contributing
       menu:
@@ -360,7 +253,7 @@ navbar:
       menu:
       - text: Changes
         href: news/index.html
-      - text: Workhops and Presentations
+      - text: Workshops and Presentations
         href: articles/presentations.html
       - text: Branches
         href: articles/branches.html
@@ -373,37 +266,28 @@ navbar:
       aria-label: github
 
 articles:
-- title: Team
-  navbar: ~
-  contents:
-  - team
-- title: Contributing
-  navbar: ~
-  contents:
-  - creating_a_pull_request
-  - coding_style
-  - dispatch_functions
-  - package_imports
-  - getters_setters
-  - python_code
-  - contributing_tutorials
-- title: News
-  navbar: ~
-  contents:
-  - presentations
-  - branches
+# Ordered to mirror the navbar. The Examples and Tutorials menus link into the
+# section anchors below, so if you reorder or rename a section here, update the
+# matching href in navbar: components: articles:/tools:.
+#
+# Order: onboarding -> tutorials (workflow order) -> examples (by platform
+# popularity, then modality) -> meta.
+
 - title: Get started
+  desc: <span id="get-started"></span>Install Giotto, understand the object, and run your first workflow.
   navbar: ~
   contents:
   - installation
   - ecosystem
   - structure
-  - faqs
-  - github_issues
   - general_workflow
   - core_functions
+  - faqs
+  - github_issues
   - troubleshooting
-- title: Giotto Object
+
+- title: Giotto object
+  desc: <span id="giotto-object"></span>Creating, configuring and inspecting the core Giotto object.
   navbar: ~
   contents:
   - object_creation
@@ -415,66 +299,19 @@ articles:
   - create_simulated_object
   - instructions
   - import_utilities
-- title: Giotto Configuration
-  navbar: ~
-  contents:
   - configuration
-- title: Multiple samples
-  navbar: ~
-  contents:
-  - split_join
-  - harmony
-  - tma
-- title: Try Giotto in the Cloud
-  navbar: ~
-  contents:
-  - terra
-  - docker
-  - singularity
-  - nemo_slideseq
-- title: Spatial Manipulation
-  navbar: ~
-  contents:
-  - spatial_transformations
-- title: Spatial Data Alignment
-  navbar: ~
-  contents:
-  - affine_registration
-- title: Interactivity
-  navbar: ~
-  contents:
-  - interactive_selection
-  - interactive_giotto_vitessceR
-  - interactive_selection_cosmx
-- title: Visualizations
-  navbar: ~
-  contents:
-  - visualizations
-  - metafeatures
-  - cross_section
-- title: Saving and Loading
-  navbar: ~
-  contents:
-  - saving_object
-  - saving_plots
-- title: Interoperability
-  navbar: ~
-  contents:
-  - interoperability_anndata
-  - bento
-  - ontrac
-  - integrate_misty_analysis
-  - interoperability_spatialexperiment
-  - interoperability_seurat
-  - interoperability_spatialdata
-- title: Pre-Processing
+
+- title: Pre-processing
+  desc: <span id="pre-processing"></span>Aggregation, filtering, normalization and scaling.
   navbar: ~
   contents:
   - feature_aggregation
   - filtering
   - normalization
   - process_giotto
+
 - title: Analysis
+  desc: <span id="analysis"></span>Feature selection, dimension reduction, clustering and enrichment.
   navbar: ~
   contents:
   - hvf
@@ -485,18 +322,91 @@ articles:
   - page_rank_enrichment
   - kriging
   - tesselation
-- title: Spatial Patterns
+
+- title: Spatial patterns
+  desc: <span id="spatial-patterns"></span>Spatial genes, co-expression modules and spatial domains.
   navbar: ~
   contents:
   - spatial_genes
   - spatial_coexpression_modules
   - spatial_informed_clusters
   - hmrf
-- title: Seq-Scope
+
+- title: Visualization
+  desc: <span id="visualization"></span>Plotting spatial and expression data.
   navbar: ~
   contents:
-  - seqscope_mouse_liver
-- title: Visium
+  - visualizations
+  - metafeatures
+  - cross_section
+
+- title: Multiple samples
+  desc: <span id="multiple-samples"></span>Joining, integrating and batch-correcting several datasets.
+  navbar: ~
+  contents:
+  - split_join
+  - harmony
+  - tma
+
+- title: Spatial manipulation and alignment
+  desc: <span id="spatial-manipulation-and-alignment"></span>Transforming and registering spatial coordinates and images.
+  navbar: ~
+  contents:
+  - spatial_transformations
+  - affine_registration
+
+- title: Interactivity
+  desc: <span id="interactivity"></span>Interactive selection and exploration.
+  navbar: ~
+  contents:
+  - interactive_selection
+  - interactive_giotto_vitessceR
+  - interactive_selection_cosmx
+
+- title: Saving and loading
+  desc: <span id="saving-and-loading"></span>Persisting Giotto objects and plots.
+  navbar: ~
+  contents:
+  - saving_object
+  - saving_plots
+
+- title: Interoperability
+  desc: <span id="interoperability"></span>Moving data between Giotto and other ecosystems.
+  navbar: ~
+  contents:
+  - interoperability_anndata
+  - bento
+  - ontrac
+  - integrate_misty_analysis
+  - interoperability_spatialexperiment
+  - interoperability_seurat
+  - interoperability_spatialdata
+
+- title: Containers and cloud
+  desc: <span id="containers-and-cloud"></span>Running Giotto in Docker, Singularity or the cloud.
+  navbar: ~
+  contents:
+  - docker
+  - singularity
+  - terra
+  - nemo_slideseq
+
+# ---- Examples, ordered by platform popularity -----------------------------
+
+- title: In situ methods
+  desc: <span id="in-situ-methods"></span>Imaging-based in situ platforms. Most users arrive with one of these.
+  navbar: ~
+  contents:
+  - xenium_breast_cancer
+  - atera
+  - nanostring_cosmx_lung_cancer
+  - cosmx_pancreas
+  - merfish_mouse_hypothalamic
+  - merfish_mouse_sagittal_bil
+  - vizgen_mouse_brain
+
+- title: Sequencing-based methods
+  desc: <span id="sequencing-based-methods"></span>Capture- and barcoding-based platforms read out by sequencing.
   navbar: ~
   contents:
   - visium_mouse_kidney
@@ -504,87 +414,77 @@ articles:
   - visium_prostate_integration
   - visium_cytassist_lungcancer
   - visium_cytassist_human_glioblastoma
-- title: VisiumHD
-  navbar: ~
-  contents:
   - VisiumHD_Human_Colorectal_Cancer
   - VisiumHD_Convenience_Function_Kidney
-- title: Slide-seq
-  navbar: ~
-  contents:
-  - slideseq_mouse_brain
-- title: Spatial Genomics
+  - stereoseq_importer
+  - stereoseq_mouse_eyeball
+
+- title: Spatial in situ transcriptomics
+  desc: <span id="spatial-in-situ-transcriptomics"></span>Further imaging-based transcriptomics methods.
   navbar: ~
   contents:
   - spatial_genomics_mouse_kidney
-- title: DBiT-Seq
-  navbar: ~
-  contents:
-  - mouse_embryo_dbitseq
-- title: Spatial CITE-Seq
-  navbar: ~
-  contents:
-  - spatial_citeseq_human_skin
-- title: Spatial ATAC-Seq
-  navbar: ~
-  contents:
-  - multiomics_rna_atac_me13
-- title: Xenium
-  navbar: ~
-  contents:
-  - xenium_breast_cancer
-- title: Nanostring CosMx
-  navbar: ~
-  contents:
-  - nanostring_cosmx_lung_cancer
-  - cosmx_pancreas
-- title: MERFISH
-  navbar: ~
-  contents:
-  - merfish_mouse_hypothalamic
-  - merfish_mouse_sagittal_bil
-- title: Vizgen
-  navbar: ~
-  contents:
-  - vizgen_mouse_brain
-- title: Open-ST
-  navbar: ~
-  contents:
-  - openst_mouse_hippocampus
-- title: seqFISH
-  navbar: ~
-  contents:
   - mini_seqfish
   - seqfish_cortex
-- title: osmFISH
-  navbar: ~
-  contents:
   - osmfish_mouse_ss_cortex
-- title: STARmap
-  navbar: ~
-  contents:
   - starmap_mouse_cortex
-- title: Stereo-seq
-  navbar: ~
-  contents:
-  - stereoseq_importer
-  - stereoseq_mouse_eyeball
-- title: Resolve Bioscience
-  navbar: ~
-  contents:
   - resolve_biosciences
   - resolve_biosciences_human_lung
-- title: CODEX
+
+- title: Spatial sequencing transcriptomics
+  desc: <span id="spatial-sequencing-transcriptomics"></span>Further sequencing-based spatial transcriptomics methods.
+  navbar: ~
+  contents:
+  - slideseq_mouse_brain
+  - openst_mouse_hippocampus
+  - seqscope_mouse_liver
+
+- title: Spatial proteomics
+  desc: <span id="spatial-proteomics"></span>Imaging-based protein profiling.
   navbar: ~
   contents:
   - codex_mouse_spleen
-- title: Single Cell RNA Sequencing
+
+- title: Spatial multi-omics
+  desc: <span id="spatial-multi-omics"></span>Assays combining transcriptome with protein or chromatin accessibility.
+  navbar: ~
+  contents:
+  - mouse_embryo_dbitseq
+  - spatial_citeseq_human_skin
+  - multiomics_rna_atac_me13
+
+- title: Single cell RNA sequencing (non-spatial)
+  desc: <span id="single-cell-rna-sequencing-non-spatial"></span>Non-spatial single cell workflows.
   navbar: ~
   contents:
   - singlecell_prostate_standard
   - singlecell_prostate_integration
   - singlecell_lung_adenocarcinoma
 
+# ---- Meta -----------------------------------------------------------------
+
+- title: Contributing
+  desc: <span id="contributing"></span>Pull requests, code style, and writing tutorials for this site.
+  navbar: ~
+  contents:
+  - creating_a_pull_request
+  - coding_style
+  - dispatch_functions
+  - package_imports
+  - getters_setters
+  - python_code
+  - contributing_tutorials
+
+- title: News
+  navbar: ~
+  contents:
+  - presentations
+  - branches
+
+- title: Team
+  navbar: ~
+  contents:
+  - team
 news:
   cran_dates: false
 

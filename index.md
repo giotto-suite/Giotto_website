@@ -13,6 +13,28 @@
 
 Giotto Suite is a major upgrade to the Giotto package that provides tools to process, analyze and visualize **spatial multi-omics data at all scales and multiple resolutions**. The underlying framework is generalizable to virtually all current and emerging spatial technologies. Our Giotto Suite prototype pipeline is generally applicable on various different datasets, such as those created by state-of-the-art spatial technologies, including *in situ* hybridization, sequencing, and imaging-based multiplexing/proteomics. These technologies differ in terms of resolution (subcellular, single cell or multiple cells), spatial dimension (2D vs 3D), molecular modality (protein, RNA, DNA, …), and throughput (number of cells and analytes).
 
+## Start here
+
+<div class="gallery">
+<a class="tile" href="articles/installation.html">
+<strong>1 · Install</strong>
+Set up Giotto Suite and its Python environment.
+</a>
+<a class="tile" href="articles/general_workflow.html">
+<strong>2 · Learn the workflow</strong>
+The end-to-end path from raw data to a spatial result.
+</a>
+<a class="tile" href="articles/index.html#in-situ-methods">
+<strong>3 · Find your platform</strong>
+Worked examples for Xenium, CosMx, Visium, Stereo-seq and more.
+</a>
+<a class="tile" href="reference/index.html">
+<strong>4 · Look up a function</strong>
+Every Giotto function, grouped by purpose.
+</a>
+</div>
+
+New to spatial omics? Start with the [Giotto object](articles/object_creation.html) — it is the structure everything else operates on.
 
 ## Installation
 
@@ -24,22 +46,16 @@ Visit the Giotto [Discussions](https://github.com/giotto-suite/Giotto/discussion
 
 ### Containers
 
-If you prefer to skip the installation process, check the tutorials for using Giotto Suite with our [Docker](articles/docker.html) and [Singularity](https://giotto-suite.github.io/Giotto_website/articles/singularity.html) containers.
+If you prefer to skip the installation process, check the tutorials for using Giotto Suite with our [Docker](articles/docker.html) and [Singularity](articles/singularity.html) containers.
 
-## Website Updates
+## Finding your way around
 
-### Location change
-
-This website (http://giottosuite.com) is for Giotto Suite v4.0 and greater. You can still find the previous website at https://giottosuite.readthedocs.io/en/latest/ (defunct)
-
-### Website description  
-
-- **Get started:** Here you can find more advanced information about the Giotto object, Giotto ecosystem, Giotto configuration, and installation FAQs.
-- **Documentation:** Here you will find all Giotto functions grouped by their purpose (Helpers, Getters & Setters, Visualization, ...)
-- **Examples:** Here you can find end-to-end  examples for different technologies and datasets.
-- **Tutorials:** Here you can find various tutorials on working with Giotto (analysis, visualizations, working on the cloud, ...)
-- **News:** Here you can find the changelog for every Giotto release and video recordings from previous presentations. 
-- **Contributing:** Here you can find guidelines for submitting a pull-request, creating code following the Giotto style, creation of tutorials for the website, and more.
+- **[Get started](articles/index.html#get-started):** the Giotto object, the Giotto ecosystem, configuration, and installation FAQs.
+- **[Documentation](reference/index.html):** all Giotto functions grouped by their purpose (helpers, getters & setters, visualization, …).
+- **[Examples](articles/index.html#in-situ-methods):** end-to-end examples for different technologies and datasets.
+- **[Tutorials](articles/index.html#pre-processing):** working with Giotto — analysis, visualization, running on the cloud, and more.
+- **[News](news/index.html):** the changelog for every Giotto release, plus recordings of previous presentations.
+- **[Contributing](articles/index.html#contributing):** submitting a pull request, the Giotto code style, writing tutorials for this website.
 
 ## Giotto Workshop 2024
 
