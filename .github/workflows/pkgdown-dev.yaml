@@ -68,12 +68,21 @@ jobs:
 
       # 3. lay the website over the package checkout. pkgdown expects the
       #    config and vignettes to sit in the package root.
+      #
+      #    REPLACE vignettes/, do not merge into it. The package repo ships its
+      #    own vignettes (currently dbMatrix.Rmd and intro_to_giotto.Rmd) which
+      #    are not in this repository's _pkgdown.yml. A plain `cp -r` merges the
+      #    two sets, and pkgdown then aborts with:
+      #      "In _pkgdown.yml, 2 vignettes missing from index"
+      #    This repository is the source of truth for tutorials.
       - name: Assemble the site source
         run: |
+          rm -rf pkgsrc/vignettes pkgsrc/pkgdown
           cp -r website/vignettes  pkgsrc/
           cp -r website/pkgdown    pkgsrc/
           cp    website/_pkgdown.yml website/index.md pkgsrc/
           echo "documenting giotto-suite/Giotto@${{ inputs.giotto_ref || 'suite' }}"
+          echo "vignettes assembled: $(ls pkgsrc/vignettes/*.Rmd pkgsrc/vignettes/*.rmd 2>/dev/null | wc -l)"
 
       - uses: r-lib/actions/setup-pandoc@v2
 
