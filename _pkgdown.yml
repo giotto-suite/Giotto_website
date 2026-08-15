@@ -1,4 +1,4 @@
-url: https://giotto-suite.github.io/Giotto_website/
+url: https://giottosuite.com
 
 authors:
   Ruben Dries:
@@ -21,7 +21,6 @@ template:
 
          gtag('config', 'G-2V1K0KPLJC');
        </script>
-       <link href="extra.css" type="text/css" rel="stylesheet">
   bootstrap: 3
   bslib:
     bg: "#FFFFFF"
@@ -31,7 +30,13 @@ template:
 
 
 development:
-  mode: auto
+  # Explicit, not `auto`. The package version is the same on the release and
+  # development sources, so version-based detection cannot tell them apart --
+  # and with `auto` a stray .9000 version reaching this branch would silently
+  # relocate the entire production site into /dev/.
+  # The dev site is produced by forcing PKGDOWN_DEV_MODE=devel in its workflow,
+  # which overrides this value.
+  mode: release
 
 navbar:
   bg: light
@@ -360,8 +365,8 @@ navbar:
       - text: Branches
         href: articles/branches.html
     team:
-      - text: Team
-        href: articles/team.html
+      text: Team
+      href: articles/team.html
     github:
       icon: fab fa-github fa-lg
       href: https://github.com/giotto-suite/Giotto/
