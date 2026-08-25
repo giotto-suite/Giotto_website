@@ -132,33 +132,41 @@ jobs:
         with:
           use-public-rspm: true
 
-      # Install the ecosystem at PINNED refs before pak gets a say. Order is a
-      # dependency order, not a preference: GiottoClass 0.6.0 needs GiottoUtils
-      # >= 0.2.5 present, GiottoVisuals needs GiottoClass, GiottoData needs all
-      # three.
+      # terra ships as an RSPM binary that dlopens libproj/libgdal/libgeos.
+      # setup-r-dependencies installs those system libraries via pak, but the
+      # pinned installs below run BEFORE it and remotes does not handle
+      # sysdeps -- without this, terra fails to load and every package that
+      # imports it fails to build.
+      - name: System libraries for terra
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            libgdal-dev libgeos-dev libproj-dev libsqlite3-dev libudunits2-dev
+
+      # Install the ecosystem at PINNED refs before pak gets a say.
       #
-      # GiottoData is installed HERE rather than via extra-packages because its
-      # DESCRIPTION also declares a bare `giotto-suite/GiottoClass`; letting pak
-      # fetch it from GitHub would re-resolve that to main (v0.5.1) and quietly
-      # undo the pin. Suggests are excluded so it cannot drag in Giotto@suite.
+      # GiottoClass goes LAST and with force. Every sibling declares a bare
+      # `giotto-suite/GiottoClass` in Remotes:, so installing any of them drags
+      # in GiottoClass@HEAD -- that is main, v0.5.1, and it overwrites whatever
+      # was pinned. Installing the pin last means nothing runs after it that
+      # could undo it. Safe in this order because gsource only adds exports
+      # relative to main, apart from ten legacy snake_case constructors that no
+      # sibling imports.
+      #
+      # GiottoData is installed here rather than via extra-packages for the
+      # same reason: letting pak fetch it from GitHub re-resolves that bare
+      # Remote. Suggests are excluded so it cannot drag in Giotto@suite.
       - name: Install pinned Giotto ecosystem
         run: |
           Rscript -e 'install.packages("remotes", repos = "https://cloud.r-project.org")'
           Rscript -e '
             hard <- c("Depends", "Imports", "LinkingTo")
-            gh <- function(spec) remotes::install_github(
-              spec, upgrade = "never", dependencies = hard, force = FALSE)
+            gh <- function(spec, force = FALSE) remotes::install_github(
+              spec, upgrade = "never", dependencies = hard, force = force)
             gh("giotto-suite/GiottoUtils@${{ inputs.giottoutils_ref   || 'main'    }}")
-            gh("giotto-suite/GiottoClass@${{ inputs.giottoclass_ref   || 'gsource' }}")
             gh("giotto-suite/GiottoVisuals@${{ inputs.giottovisuals_ref || 'gsource' }}")
             gh("giotto-suite/GiottoData")
-          '
-
-      - name: Report installed versions
-        run: |
-          Rscript -e '
-            for (p in c("GiottoUtils", "GiottoClass", "GiottoVisuals", "GiottoData"))
-              cat(sprintf("%-14s %s\n", p, as.character(utils::packageVersion(p))))
+            gh("giotto-suite/GiottoClass@${{ inputs.giottoclass_ref   || 'gsource' }}", force = TRUE)
           '
 
       - uses: r-lib/actions/setup-r-dependencies@v2
@@ -171,6 +179,22 @@ jobs:
             any::kableExtra, any::ggspavis, any::pheatmap, any::scater,
             any::STexampleData, any::scran, any::ComplexHeatmap
           needs: website
+
+      # Fail loudly rather than publish a site built against the wrong classes.
+      # This runs AFTER pak, which is the last thing that could swap a version.
+      - name: Verify the pinned versions survived
+        run: |
+          Rscript -e '
+            want <- c(GiottoClass = "0.6.0", Giotto = "4.2.4")
+            bad <- character()
+            for (p in c("Giotto", "GiottoClass", "GiottoVisuals", "GiottoUtils", "GiottoData")) {
+              v <- tryCatch(as.character(utils::packageVersion(p)), error = function(e) NA)
+              cat(sprintf("%-14s %s\n", p, v))
+              if (p %in% names(want) && !identical(v, want[[p]]))
+                bad <- c(bad, sprintf("%s is %s, expected %s", p, v, want[[p]]))
+            }
+            if (length(bad)) stop("wrong versions installed:\n  ", paste(bad, collapse = "\n  "))
+          '
 
       - name: Build dev site
         working-directory: pkgsrc
