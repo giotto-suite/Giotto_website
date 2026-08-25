@@ -17,7 +17,7 @@ page for more information.
 |  |  |
 |----|----|
 | `resolution` | numeric (default = 1). Clustering resolution. |
-| `n_iterations` | numeric (default = 1000). Number of iterations to run the Leiden algorithm. If the number of iterations is negative, the Leiden algorithm is run until an iteration in which there was no improvement. |
+| `n_iterations` | numeric (default = 20). Number of iterations to run the Leiden algorithm. If the number of iterations is negative, the Leiden algorithm is run until an iteration in which there was no improvement. |
 | `weight_col` | character. (default = `weight`). Weight column in network information to use for edge weights. |
 | `partition_type` | character (default = `"RBConfigurationVertexPartition"`). The type of partition to use for optimization. (one of `"RBConfigurationVertexPartition"` or `"ModularityVertexPartition"`) |
 | `initial_membership` | (default = `NULL`) initial membership of cells for the partition |

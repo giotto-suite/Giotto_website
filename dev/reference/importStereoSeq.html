@@ -73,7 +73,7 @@ flexibly modified to look in alternative directories or paths."><meta name="robo
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.2.3</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.2.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -225,7 +225,8 @@ flexibly modified to look in alternative directories or paths.</p>
 <span>  bin_size <span class="op">=</span> <span class="st">"bin100"</span>,</span>
 <span>  gene_column <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"geneName"</span>, <span class="st">"geneID"</span><span class="op">)</span>,</span>
 <span>  negative_y <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  gef_type <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  gef_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  backend <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'StereoSeqReader,missing'</span></span>
@@ -263,6 +264,12 @@ One of `"geneName"` (default) or `"geneID"`.</p></dd>
 `TRUE`). Origin is placed at the upper-left instead of lower-left.</p></dd>
 
 
+<dt id="arg-backend">backend<a class="anchor" aria-label="anchor" href="#arg-backend"></a></dt>
+<dd><p>(optional) a `gsource`-inheriting project backend (typically
+produced by `GiottoDisk::sourceCreate()`). When provided, creates the
+`giotto` object as a managed on-disk project.</p></dd>
+
+
 <dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>`StereoSeqReader`</p></dd>
 
@@ -273,7 +280,8 @@ One of `"geneName"` (default) or `"geneID"`.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>`StereoSeqReader` object</p>
+    <p>`StereoSeqReader` object, or `StereoSeqDiskReader` when `backend`
+is set</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

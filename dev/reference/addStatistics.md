@@ -13,7 +13,8 @@ addStatistics(
   expression_values = c("normalized", "scaled", "custom"),
   detection_threshold = 0,
   return_gobject = TRUE,
-  verbose = TRUE
+  verbose = TRUE,
+  ...
 )
 ```
 
@@ -51,6 +52,15 @@ addStatistics(
 - verbose:
 
   be verbose
+
+- ...:
+
+  additional params passed to
+  [`expanse()`](https://rspatial.github.io/terra/reference/expanse.html)
+  when `stats` includes `"area"`. Most useful is `engine`: on a
+  disk-backed polygon store, `engine = "sedona"` computes areas with a
+  single `ST_Area` query instead of tiling, which avoids a large fan-out
+  cost when a parallel `future` plan is set.
 
 ## Value
 

@@ -19,15 +19,18 @@ runUMAP(
   return_gobject = TRUE,
   n_neighbors = 40,
   n_components = 2,
-  n_epochs = 400,
-  min_dist = 0.01,
+  n_epochs = NULL,
+  min_dist = 0.05,
   n_threads = NA,
-  spread = 5,
+  spread = 1,
   set_seed = TRUE,
   seed_number = 1234L,
   verbose = TRUE,
   toplevel_params = deprecated(),
   toplevel = 1L,
+  method = c("umap2", "umap"),
+  init = NULL,
+  batch = TRUE,
   ...
 )
 ```
@@ -88,7 +91,9 @@ runUMAP(
 
 - n_epochs:
 
-  UMAP param: number of epochs
+  UMAP param: number of epochs. \`NULL\` (default) scales with the
+  number of observations embedded: \`200\` above 50,000, otherwise
+  uwot's own default (500 below 10,000 observations, 200 above).
 
 - min_dist:
 
@@ -122,10 +127,30 @@ runUMAP(
 
   relative stackframe where call was made from
 
+- method:
+
+  character. UMAP engine to use. One of \`"umap2"\` (default,
+  [`umap2`](https://jlmelville.github.io/uwot/reference/umap2.html)) or
+  \`"umap"\`
+  ([`umap`](https://jlmelville.github.io/uwot/reference/umap.html)). The
+  two take identical arguments; see details.
+
+- init:
+
+  UMAP param: initialization method for the embedding. \`NULL\`
+  (default) scales with the number of observations embedded: \`"pca"\`
+  above 50,000 and \`"spectral"\` otherwise.
+
+- batch:
+
+  UMAP param: use the batch optimizer. Default \`TRUE\`, which under
+  \`method = "umap2"\` also threads the stochastic gradient descent
+  across \`n_threads\`, deterministically.
+
 - ...:
 
   Arguments passed on to
-  [`uwot::umap`](https://jlmelville.github.io/uwot/reference/umap.html)
+  [`uwot::umap2`](https://jlmelville.github.io/uwot/reference/umap2.html)
 
   `metric`
 
@@ -227,59 +252,12 @@ runUMAP(
 
   :   Initial learning rate used in optimization of the coordinates.
 
-  `init`
-
-  :   Type of initialization for the coordinates. Options are:
-
-      - `"spectral"` Spectral embedding using the normalized Laplacian
-        of the fuzzy 1-skeleton, with Gaussian noise added.
-
-      - `"normlaplacian"`. Spectral embedding using the normalized
-        Laplacian of the fuzzy 1-skeleton, without noise.
-
-      - `"random"`. Coordinates assigned using a uniform random
-        distribution between -10 and 10.
-
-      - `"lvrandom"`. Coordinates assigned using a Gaussian distribution
-        with standard deviation 1e-4, as used in LargeVis (Tang et
-        al., 2016) and t-SNE.
-
-      - `"laplacian"`. Spectral embedding using the Laplacian Eigenmap
-        (Belkin and Niyogi, 2002).
-
-      - `"pca"`. The first two principal components from PCA of `X` if
-        `X` is a data frame, and from a 2-dimensional classical MDS if
-        `X` is of class `"dist"`.
-
-      - `"spca"`. Like `"pca"`, but each dimension is then scaled so the
-        standard deviation is 1e-4, to give a distribution similar to
-        that used in t-SNE. This is an alias for
-        `init = "pca", init_sdev = 1e-4`.
-
-      - `"agspectral"` An "approximate global" modification of
-        `"spectral"` which all edges in the graph to a value of 1, and
-        then sets a random number of edges (`negative_sample_rate` edges
-        per vertex) to 0.1, to approximate the effect of non-local
-        affinities.
-
-      - A matrix of initial coordinates.
-
-      For spectral initializations, (`"spectral"`, `"normlaplacian"`,
-      `"laplacian"`, `"agspectral"`), if more than one connected
-      component is identified, no spectral initialization is attempted.
-      Instead a PCA-based initialization is attempted. If
-      `verbose = TRUE` the number of connected components are logged to
-      the console. The existence of multiple connected components
-      implies that a global view of the data cannot be attained with
-      this initialization. Increasing the value of `n_neighbors` may
-      help.
-
   `init_sdev`
 
   :   If non-`NULL`, scales each dimension of the initialized
       coordinates (including any user-supplied matrix) to this standard
-      deviation. By default no scaling is carried out, except when
-      `init = "spca"`, in which case the value is `0.0001`. Scaling the
+      deviation. By default, (`init_sdev = "range"`), each column of the
+      initial coordinates are range scaled between 0-10. Scaling the
       input may help if the unscaled versions result in initial
       coordinates with large inter-point distances or outliers. This
       usually results in small gradients during optimization and very
@@ -289,13 +267,7 @@ runUMAP(
       `init = "spca"` as an alias for `init = "pca", init_sdev = 1e-4`
       but for the spectral initializations the scaled versions usually
       aren't necessary unless you are using a large value of
-      `n_neighbors` (e.g. `n_neighbors = 150` or higher). For
-      compatibility with recent versions of the Python UMAP package, if
-      you are using `init = "spectral"`, then you should also set
-      `init_sdev = "range"`, which will range scale each of the columns
-      containing the initial data between 0-10. This is not set by
-      default to maintain backwards compatibility with previous versions
-      of uwot.
+      `n_neighbors` (e.g. `n_neighbors = 150` or higher).
 
   `set_op_mix_ratio`
 
@@ -572,7 +544,8 @@ runUMAP(
       set to \> 1, then be aware that if `batch = FALSE`, results will
       *not* be reproducible, even if `set.seed` is called with a fixed
       seed before running. Set to `"auto"` to use the same value as
-      `n_threads`.
+      `n_threads`. Default is to use only one thread, unless
+      `batch = TRUE` in which case `"auto"` used.
 
   `grain_size`
 
@@ -591,17 +564,6 @@ runUMAP(
       [`tempdir`](https://rdrr.io/r/base/tempfile.html). The index is
       only written to disk if `n_threads > 1` and `nn_method = "annoy"`;
       otherwise, this parameter is ignored.
-
-  `batch`
-
-  :   If `TRUE`, then embedding coordinates are updated at the end of
-      each epoch rather than during the epoch. In batch mode, results
-      are reproducible with a fixed random seed even with
-      `n_sgd_threads > 1`, at the cost of a slightly higher memory use.
-      You may also have to modify `learning_rate` and increase
-      `n_epochs`, so whether this provides a speed increase over the
-      single-threaded optimization is likely to be dataset and
-      hardware-dependent.
 
   `opt_args`
 
@@ -647,6 +609,39 @@ runUMAP(
 
       - `coords` The embedded coordinates as of the end of the current
         epoch, as a matrix with dimensions (N, `n_components`).
+
+  `pca_method`
+
+  :   Method to carry out any PCA dimensionality reduction when the
+      `pca` parameter is specified. Allowed values are:
+
+      - `"irlba"`. Uses
+        [`prcomp_irlba`](https://rdrr.io/pkg/irlba/man/prcomp_irlba.html)
+        from the [irlba](https://cran.r-project.org/package=irlba)
+        package.
+
+      - `"rsvd"`. Uses 5 iterations of
+        [`svdr`](https://rdrr.io/pkg/irlba/man/svdr.html) from the
+        [irlba](https://cran.r-project.org/package=irlba) package. This
+        is likely to give much faster but potentially less accurate
+        results than using `"irlba"`. For the purposes of nearest
+        neighbor calculation and coordinates initialization, any loss of
+        accuracy doesn't seem to matter much.
+
+      - `"bigstatsr"`. Uses `big_randomSVD` from the
+        [bigstatsr](https://cran.r-project.org/package=bigstatsr)
+        package. The SVD methods used in `bigstatsr` may be faster on
+        systems without access to efficient linear algebra libraries
+        (e.g. Windows). **Note**: `bigstatsr` is *not* a dependency of
+        uwot: if you choose to use this package for PCA, you *must*
+        install it yourself.
+
+      - `"svd"`. Uses [`svd`](https://rdrr.io/r/base/svd.html) for the
+        SVD. This is likely to be slow for all but the smallest
+        datasets.
+
+      - `"auto"` (the default). Uses `"irlba"`, unless more than 50 case
+        `"svd"` is used.
 
   `binary_edge_weights`
 
@@ -771,8 +766,35 @@ giotto object with updated UMAP dimension reduction
 
 ## Details
 
-See [`umap`](https://jlmelville.github.io/uwot/reference/umap.html) for
-more information about these and other parameters.
+See [`umap2`](https://jlmelville.github.io/uwot/reference/umap2.html)
+for more information about these and other parameters.
+
+The default UMAP engine is
+[`umap2`](https://jlmelville.github.io/uwot/reference/umap2.html), which
+selects a faster approximate nearest-neighbor backend when one is
+available: RcppHNSW (HNSW) is preferred for dense input with a
+euclidean, cosine or correlation metric, and rnndescent
+(nearest-neighbor descent) is used for sparse input and for metrics HNSW
+does not support. With neither installed the search falls back to Annoy,
+and only the `batch` optimizer speedup remains. Note that sparse input –
+which is what `runUMAP()` passes when `dim_reduction_to_use = NULL` and
+the expression matrix is sparse – *requires* rnndescent.
+
+`method = "umap"` selects
+[`umap`](https://jlmelville.github.io/uwot/reference/umap.html) instead,
+which is the engine used before Giotto 4.2.4. `umap2()` is the same
+algorithm with a different backend selection and optimizer default
+rather than a different method, and the two have identical formals, so
+every other argument means the same thing under either.
+
+`min_dist` and `spread` are not independent: uwot fits the embedding's
+`a` / `b` curve parameters from the pair, so changing one without the
+other changes how tightly points pack. They are set together.
+
+`n_epochs` and `init` are left `NULL` and resolved from the number of
+observations being embedded: uwot's own `n_epochs` default and
+`"spectral"` below 50,000, `n_epochs = 200` and `init = "pca"` above it.
+Passing either explicitly overrides the adaptation.
 
 - Input for UMAP dimension reduction can be another dimension reduction
   (default = 'pca')

@@ -239,7 +239,7 @@ clusterData(
 - .n:
 
   integer. Used in recording object history (see
-  [`GiottoClass::update_giotto_params()`](https://giotto-suite.github.io/GiottoClass/reference/update_giotto_params.html)).
+  [`update_giotto_params()`](https://giotto-suite.github.io/GiottoClass/reference/update_giotto_params.html)).
   Number of stack frames back to record call of interest. Set to a large
   negative number (e.g. -1000) to avoid recording altogether (useful
   when there is another record call elsewhere in the stack you want to

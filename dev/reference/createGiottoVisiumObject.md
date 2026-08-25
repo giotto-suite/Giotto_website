@@ -22,7 +22,7 @@ createGiottoVisiumObject(
   ymax_adj = 0,
   ymin_adj = 0,
   instructions = NULL,
-  expression_matrix_class = c("dgCMatrix", "DelayedArray"),
+  expression_matrix_class = deprecated(),
   h5_file = NULL,
   cores = NA,
   verbose = NULL
@@ -95,7 +95,7 @@ createGiottoVisiumObject(
 
 - expression_matrix_class:
 
-  class of expression matrix to use (e.g. "dgCMatrix", "DelayedArray")
+  deprecated. See \[GiottoClass::createExprObj\] for details
 
 - h5_file:
 

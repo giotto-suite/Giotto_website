@@ -4,12 +4,32 @@ normalization, scaling, and adjustments. These operations can be selected
 via the factory functions normParam(), scaleParam(), and adjustParam(),
 respectively.
 Requested operations are generated as method-specific param classes that
-contain all the parameters needed to perform them, editable through $&amp;lt;-."><meta property="og:description" content="Data processing operations in Giotto Suite can be divided into
+contain all the parameters needed to perform them, editable through $&amp;lt;-.
+Construct a `filterParam` carrying the cell + feature filter thresholds
+used by [filterGiotto()]. `filterGiotto` builds this internally; direct
+use is only needed when computing masks on a standalone matrix.
+Returns a `list(feats_keep, cells_keep)` of character ID vectors when
+passed to [filterData()].
+Construct a `pcaParam` for use with [reduceData()]. `runPCA()` builds
+these internally; direct use is only needed when computing PCA on a
+standalone matrix.
+Returns a list with `u`, `d`, `v`, and `sdev` when passed to
+`reduceData()`."><meta property="og:description" content="Data processing operations in Giotto Suite can be divided into
 normalization, scaling, and adjustments. These operations can be selected
 via the factory functions normParam(), scaleParam(), and adjustParam(),
 respectively.
 Requested operations are generated as method-specific param classes that
-contain all the parameters needed to perform them, editable through $&amp;lt;-."><meta name="robots" content="noindex"><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=G-2V1K0KPLJC"></script><script>
+contain all the parameters needed to perform them, editable through $&amp;lt;-.
+Construct a `filterParam` carrying the cell + feature filter thresholds
+used by [filterGiotto()]. `filterGiotto` builds this internally; direct
+use is only needed when computing masks on a standalone matrix.
+Returns a `list(feats_keep, cells_keep)` of character ID vectors when
+passed to [filterData()].
+Construct a `pcaParam` for use with [reduceData()]. `runPCA()` builds
+these internally; direct use is only needed when computing PCA on a
+standalone matrix.
+Returns a list with `u`, `d`, `v`, and `sdev` when passed to
+`reduceData()`."><meta name="robots" content="noindex"><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=G-2V1K0KPLJC"></script><script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
@@ -71,7 +91,7 @@ contain all the parameters needed to perform them, editable through $&amp;lt;-."
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.2.3</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.2.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -201,7 +221,7 @@ contain all the parameters needed to perform them, editable through $&amp;lt;-."
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Data Processing Parameter Classes</h1>
-      <small class="dont-index">Source: <a href="https://github.com/giotto-suite/Giotto/blob/dev/R/normalize.R" class="external-link"><code>R/normalize.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/giotto-suite/Giotto/blob/dev/R/normalize.R" class="external-link"><code>R/normalize.R</code></a>, <a href="https://github.com/giotto-suite/Giotto/blob/dev/R/filter-param.R" class="external-link"><code>R/filter-param.R</code></a>, <a href="https://github.com/giotto-suite/Giotto/blob/dev/R/pca-param.R" class="external-link"><code>R/pca-param.R</code></a></small>
       <div class="d-none name"><code>process_param.Rd</code></div>
     </div>
 
@@ -212,6 +232,16 @@ via the factory functions <code>normParam()</code>, <code>scaleParam()</code>, a
 respectively.</p>
 <p>Requested operations are generated as method-specific param classes that
 contain all the parameters needed to perform them, editable through <code>$&lt;-</code>.</p>
+<p>Construct a `filterParam` carrying the cell + feature filter thresholds
+used by [filterGiotto()]. `filterGiotto` builds this internally; direct
+use is only needed when computing masks on a standalone matrix.</p>
+<p>Returns a `list(feats_keep, cells_keep)` of character ID vectors when
+passed to [filterData()].</p>
+<p>Construct a `pcaParam` for use with [reduceData()]. `runPCA()` builds
+these internally; direct use is only needed when computing PCA on a
+standalone matrix.</p>
+<p>Returns a list with `u`, `d`, `v`, and `sdev` when passed to
+`reduceData()`.</p>
     </div>
 
     <div class="section level2">
@@ -222,7 +252,29 @@ contain all the parameters needed to perform them, editable through <code>$&lt;-
 <span></span>
 <span><span class="fu">adjustParam</span><span class="op">(</span>method <span class="op">=</span> <span class="st">"limma"</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">thresholdParam</span><span class="op">(</span>method <span class="op">=</span> <span class="st">"binarize"</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">thresholdParam</span><span class="op">(</span>method <span class="op">=</span> <span class="st">"binarize"</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">filterParam</span><span class="op">(</span></span>
+<span>  method <span class="op">=</span> <span class="st">"default"</span>,</span>
+<span>  expression_threshold <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  feat_det_in_min_cells <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  min_det_feats_per_cell <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pcaParam</span><span class="op">(</span></span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"random"</span>, <span class="st">"irlba"</span>, <span class="st">"exact"</span><span class="op">)</span>,</span>
+<span>  ncp <span class="op">=</span> <span class="fl">50L</span>,</span>
+<span>  center <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  scale <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  feats_to_use <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  n_oversamples <span class="op">=</span> <span class="fl">10L</span>,</span>
+<span>  n_power_iter <span class="op">=</span> <span class="fl">2L</span>,</span>
+<span>  set_seed <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  seed_number <span class="op">=</span> <span class="fl">1234L</span>,</span>
+<span>  dry_run <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -230,14 +282,87 @@ contain all the parameters needed to perform them, editable through <code>$&lt;-
 
 
 <dl><dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
-<dd><p>character. Name of method to use. See details.</p></dd>
+<dd><p>one of `"auto"`, `"random"`, `"irlba"`, `"exact"`.
+`"auto"` defers the choice to the substrate: in-memory backends
+resolve to `"irlba"`; streaming backends (`parquetExprStore` in
+GiottoDisk) resolve to `"random"` / `"gram-eigen"` per their own
+heuristics.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>(optional) Additional named parameters relevant to the param
 class.</p></dd>
 
+
+<dt id="arg-expression-threshold">expression_threshold<a class="anchor" aria-label="anchor" href="#arg-expression-threshold"></a></dt>
+<dd><p>numeric. A value `&gt;= expression_threshold`
+counts as detected. Default `1`.</p></dd>
+
+
+<dt id="arg-feat-det-in-min-cells">feat_det_in_min_cells<a class="anchor" aria-label="anchor" href="#arg-feat-det-in-min-cells"></a></dt>
+<dd><p>integer. Keep features detected in at least
+this many cells. Default `100`.</p></dd>
+
+
+<dt id="arg-min-det-feats-per-cell">min_det_feats_per_cell<a class="anchor" aria-label="anchor" href="#arg-min-det-feats-per-cell"></a></dt>
+<dd><p>integer. Keep cells with at least this many
+detected features (counted only over kept features — Giotto's
+two-stage convention). Default `100`.</p></dd>
+
+
+<dt id="arg-ncp">ncp<a class="anchor" aria-label="anchor" href="#arg-ncp"></a></dt>
+<dd><p>number of components. Default `50`.</p></dd>
+
+
+<dt id="arg-center">center<a class="anchor" aria-label="anchor" href="#arg-center"></a></dt>
+<dd><p>logical. Center columns. Default `TRUE`.</p></dd>
+
+
+<dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
+<dd><p>logical. Scale columns by SD. Default `TRUE`. Streaming
+backends (parquetExprStore) ignore this — scaling densifies the
+matrix and is incompatible with O(N*k) streaming.</p></dd>
+
+
+<dt id="arg-feats-to-use">feats_to_use<a class="anchor" aria-label="anchor" href="#arg-feats-to-use"></a></dt>
+<dd><p>character vector of feature IDs to subset to before
+PCA. `NULL` means all features. Useful for HVG selection.</p></dd>
+
+
+<dt id="arg-n-oversamples">n_oversamples<a class="anchor" aria-label="anchor" href="#arg-n-oversamples"></a></dt>
+<dd><p>integer. Halko oversampling parameter for `random`.
+Default `10`.</p></dd>
+
+
+<dt id="arg-n-power-iter">n_power_iter<a class="anchor" aria-label="anchor" href="#arg-n-power-iter"></a></dt>
+<dd><p>integer. Halko power iterations for `random`.
+Default `2`.</p></dd>
+
+
+<dt id="arg-set-seed">set_seed<a class="anchor" aria-label="anchor" href="#arg-set-seed"></a></dt>
+<dd><p>logical. Default `TRUE`.</p></dd>
+
+
+<dt id="arg-seed-number">seed_number<a class="anchor" aria-label="anchor" href="#arg-seed-number"></a></dt>
+<dd><p>integer. Default `1234`.</p></dd>
+
+
+<dt id="arg-dry-run">dry_run<a class="anchor" aria-label="anchor" href="#arg-dry-run"></a></dt>
+<dd><p>logical. Only meaningful when `method = "auto"`. When
+`TRUE`, `reduceData(x, param)` returns the substrate-resolved
+concrete `pcaParam` instead of running PCA. Useful for inspecting
+or testing the substrate's method selection. Default `FALSE`.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>reserved.</p></dd>
+
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>A `defaultFilterParam` object.</p>
+<p>Concrete `pcaParam` subclass object.</p>
+    </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Generated params are S4 objects inheriting from <code>processParam</code> and one of
@@ -291,6 +416,16 @@ and rasters)</p></li>
 <code>giotto</code> object</p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">filterParam</span><span class="op">(</span>expression_threshold <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                  feat_det_in_min_cells <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>                  min_det_feats_per_cell <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">pcaParam</span><span class="op">(</span><span class="st">"random"</span>, ncp <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
+<span><span class="va">p_auto</span> <span class="op">&lt;-</span> <span class="fu">pcaParam</span><span class="op">(</span><span class="st">"auto"</span>, ncp <span class="op">=</span> <span class="fl">30</span><span class="op">)</span>  <span class="co"># substrate picks the flavor</span></span>
+<span><span class="co"># Inspect the substrate's choice without running PCA:</span></span>
+<span><span class="co"># reduceData(x, pcaParam("auto", dry_run = TRUE))</span></span></code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

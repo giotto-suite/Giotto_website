@@ -12,7 +12,7 @@ directories or paths
 ## Usage
 
 ``` r
-importXenium(xenium_dir = NULL, qv_threshold = 20)
+importXenium(xenium_dir = NULL, qv_threshold = 20, backend = NULL)
 ```
 
 ## Arguments
@@ -26,6 +26,12 @@ importXenium(xenium_dir = NULL, qv_threshold = 20)
   Minimum Phred-scaled quality score cutoff to be included as a
   subcellular transcript detection (default = 20)
 
+- backend:
+
+  (optional) a \`gsource\`-inheriting project backend (typically
+  produced by \`GiottoDisk::sourceCreate()\`). When provided, creates
+  the \`giotto\` object as a managed on-disk project.
+
 ## Value
 
-\`XeniumReader\` object
+\`XeniumReader\` object, or \`XeniumDiskReader\` when \`backend\` is set

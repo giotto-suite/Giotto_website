@@ -18,7 +18,8 @@ importStereoSeq(
   bin_size = "bin100",
   gene_column = c("geneName", "geneID"),
   negative_y = TRUE,
-  gef_type = NULL
+  gef_type = NULL,
+  backend = NULL
 )
 
 # S4 method for class 'StereoSeqReader,missing'
@@ -54,6 +55,12 @@ plot(x, y, ...)
   logical. Map data to negative y spatial values (default \`TRUE\`).
   Origin is placed at the upper-left instead of lower-left.
 
+- backend:
+
+  (optional) a \`gsource\`-inheriting project backend (typically
+  produced by \`GiottoDisk::sourceCreate()\`). When provided, creates
+  the \`giotto\` object as a managed on-disk project.
+
 - x:
 
   \`StereoSeqReader\`
@@ -64,7 +71,8 @@ plot(x, y, ...)
 
 ## Value
 
-\`StereoSeqReader\` object
+\`StereoSeqReader\` object, or \`StereoSeqDiskReader\` when \`backend\`
+is set
 
 ## Details
 

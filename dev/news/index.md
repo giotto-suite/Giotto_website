@@ -1,5 +1,233 @@
 # Changelog
 
+## Giotto 4.2.4 (in development)
+
+### Bug fixes
+
+- [`createGiottoXeniumObject()`](https://giottosuite.com/dev/reference/createGiottoXeniumObject.md)
+  no longer errors on Xenium-format directories that ship no panel json;
+  feature metadata is generated from the expression matrix when the
+  panel is absent.
+
+### Breaking changes
+
+- [`findScranMarkers_one_vs_all()`](https://giottosuite.com/dev/reference/findScranMarkers_one_vs_all.md)
+  returns `cluster` as **character**. All
+  [`findMarkers_one_vs_all()`](https://giottosuite.com/dev/reference/findMarkers_one_vs_all.md)
+  methods now agree on the type, so their results can be joined or
+  stacked on `cluster` regardless of `method`; previously scran
+  disagreed with gini. Code comparing against a numeric literal needs
+  `"3"` rather than `3`. Note that `method = "mast"` labels the
+  comparison (`"3_vs_others"`) rather than the bare cluster id, so joins
+  across mast and the others still need a translation step.
+- `calculateHVF(method = "var_p_resid")` now computes analytic Pearson
+  residuals itself, from **raw counts**, instead of taking the plain
+  variance of whatever matrix it was handed. **Selected features will
+  differ from previous releases.** Previously the residual criterion
+  required running `normalizeGiotto(norm_methods = "pearson_resid")`
+  first *and* passing `expression_values = "scaled"` (the slot that
+  normalization writes to, not the `"normalized"` default) — a three-way
+  agreement nothing verified, and which silently returned the variance
+  of library-normalized values whenever it was not met.
+  `expression_values` is now ignored for this method, with a warning if
+  it was set explicitly.
+  `normalizeGiotto(norm_methods = "pearson_resid")` is unaffected and
+  remains available for producing residuals as a stored matrix.
+- `analyzeData(x, varParam)` correspondingly returns the residual
+  variance, and gained a `mean_expr` column. It gains a `theta`
+  parameter (default `100`, following Lause/Kobak and matching
+  [`normalizeGiotto()`](https://giottosuite.com/dev/reference/normalizeGiotto.md));
+  [`calculateHVF()`](https://giottosuite.com/dev/reference/calculateHVF.md)
+  exposes the same argument. `IterableMatrix` (BPCells) input now errors
+  rather than silently returning a different statistic.
+- [`calculateHVF()`](https://giottosuite.com/dev/reference/calculateHVF.md)
+  gains `n_top_feats` (default `2000`), a top-N cut that applies to
+  **all three** methods, combined with each method’s own threshold so
+  the more restrictive one decides. `var_number` is deprecated in favour
+  of it — the old name implied variance and the cut is now
+  method-agnostic. Each method ranks on its own score: residual
+  variance, within-bin COV z-score, or COV above the LOESS fit. For
+  `cov_groups` the z-score is standardised within expression bins, so a
+  global ranking stays balanced across expression levels (a top-2000 cut
+  on a Stereo-seq transcriptome drew 9.6-12.4% from each of 19 of 20
+  bins; the highest-expression bin is under-represented because COV is
+  compressed there by construction). In practice only `cov_loess`
+  changes at the default — 6,043 features selected before, 2,000 now —
+  since `cov_groups`’s `zscore_threshold` is already stricter than the
+  count.
+- `calculateHVF(method = "var_p_resid")` selection defaults change to
+  `n_top_feats = 2000` (was no count) and `var_threshold = 1` (was
+  `1.5`), and the two are now applied **together** rather than the count
+  overriding the threshold. The more restrictive constraint decides;
+  passing `NULL` to either falls back to the other. The old defaults
+  selected on variance alone at a cut that sits essentially at the
+  median of the corrected distribution — measured 1.496 on a Stereo-seq
+  cellbin sample, where `1.5` took 9,696 of 19,558 features.
+  `var_threshold = 1` is now a noise floor (under Pearson residuals
+  variance 1 is the no-signal expectation) rather than a selector, and
+  `var_number` sets the size. On a targeted panel, where `var_number`
+  cannot bind — Xenium’s 528 features — the floor is what applies,
+  keeping the 433 above noise.
+- [`findScranMarkers_one_vs_all()`](https://giottosuite.com/dev/reference/findScranMarkers_one_vs_all.md)’s
+  `logFC` threshold now takes effect. The filter read `logFC >= logFC`,
+  where both sides resolved to the result column rather than the
+  argument, so the comparison was always `TRUE` and the threshold was
+  silently ignored — features were kept on `pval` and `min_feats` alone.
+  **Fewer features will be returned than in previous releases**; pass
+  `logFC = -Inf` to restore the old behaviour exactly (`logFC = 0` is
+  *not* equivalent — it still drops down-regulated features, which the
+  broken comparison kept).
+- All Leiden entry points now default to `n_iterations = 20`:
+  [`doLeidenCluster()`](https://giottosuite.com/dev/reference/doLeidenCluster.md),
+  [`doLeidenClusterIgraph()`](https://giottosuite.com/dev/reference/doLeidenCluster.md),
+  [`doLeidenClusterPython()`](https://giottosuite.com/dev/reference/doLeidenClusterPython.md),
+  [`subClusterCells()`](https://giottosuite.com/dev/reference/subClusterCells.md)
+  (was `1000`) and
+  [`doLeidenSubCluster()`](https://giottosuite.com/dev/reference/subClusterCells.md)
+  (was `500`). Measured ARI 0.97 against the 1000-iteration partition on
+  a 159k-cell Xenium dataset, at ~50x the speed. **Cluster IDs will
+  differ from previous releases**; pass `n_iterations = 1000` to restore
+  the old behaviour.
+- [`runUMAP()`](https://giottosuite.com/dev/reference/runUMAP.md) gained
+  size-adaptive `n_epochs` and `init`, both now defaulting to `NULL`.
+  Above 50,000 observations they resolve to `200` and `"pca"`; below it
+  to uwot’s own `n_epochs` default and `"spectral"`. A PCA init
+  benchmarked both tighter and faster than a random or spectral init at
+  that scale. Passing either explicitly overrides the adaptation.
+  `n_epochs` was previously a fixed `400`. **Embeddings above 50,000
+  observations will differ from previous releases.**
+  [`runUMAPprojection()`](https://giottosuite.com/dev/reference/runUMAPprojection.md)
+  and
+  [`runIntegratedUMAP()`](https://giottosuite.com/dev/reference/runIntegratedUMAP.md)
+  are unchanged and still use `spread = 5, min_dist = 0.01`.
+- [`runUMAP()`](https://giottosuite.com/dev/reference/runUMAP.md) now
+  uses
+  [`uwot::umap2()`](https://jlmelville.github.io/uwot/reference/umap2.html)
+  instead of
+  [`uwot::umap()`](https://jlmelville.github.io/uwot/reference/umap.html).
+  `umap2()` is the same algorithm with a faster approximate
+  nearest-neighbor backend selected automatically, and it threads the
+  optimizer when `batch = TRUE`. Pass `method = "umap"` to restore the
+  previous engine.
+- [`runUMAP()`](https://giottosuite.com/dev/reference/runUMAP.md)
+  defaults retuned to match the benchmarked streaming pipeline:
+  `min_dist` `0.01` -\> `0.05`, `spread` `5` -\> `1`, and a new
+  `batch = TRUE` argument (was `FALSE`). `min_dist` and `spread` are
+  changed together because uwot fits the embedding’s `a`/`b` curve from
+  the pair. `batch = TRUE` is also what lets `umap2()` thread the
+  optimizer. **Embeddings will differ from previous releases**;
+  `min_dist = 0.01, spread = 5, init = "spectral", n_epochs = 400, batch = FALSE`
+  restores the old shape. `n_neighbors` is unchanged at `40`.
+
+### Changes
+
+- gini `min_expr_gini_score` and `min_det_gini_score` renamed
+  `min_expression` and `min_detection` — they gate mean expression and
+  detection fraction, not the gini coefficients. Old names deprecated.
+  [\#1238](https://github.com/drieslab/Giotto/pull/1238) by eryuluts
+
+### New
+
+- `importAtera()` and `createGiottoAteraObject()` read Atera output.
+  `AteraReader` subclasses `XeniumReader` — the layouts are identical
+  today, so it overrides only the platform label and inherits the rest,
+  including `backend =`.
+- [`importStereoSeq()`](https://giottosuite.com/dev/reference/importStereoSeq.md),
+  [`createGiottoStereoSeqObjectBin()`](https://giottosuite.com/dev/reference/createGiottoStereoSeqObjectBin.md)
+  and
+  [`createGiottoStereoSeqObjectCell()`](https://giottosuite.com/dev/reference/createGiottoStereoSeqObjectCell.md)
+  gained a `backend =` argument. When set to a `gsource` project backend
+  it routes to `GiottoDisk::importStereoSeqDisk()`, so a Stereo-seq
+  object can be created as a managed on-disk project with expression
+  held in a `parquetExprStore` instead of memory — mirroring what
+  [`createGiottoXeniumObject()`](https://giottosuite.com/dev/reference/createGiottoXeniumObject.md)
+  already did. `backend = NULL` (the default) is a no-op and leaves the
+  in-memory path byte-identical. Requires a GiottoDisk carrying the
+  matching GEF reader fixes.
+- `.stereoseq_build_polygons_from_border()` now populates
+  `giottoPolygon@unique_ID_cache`, as every other polygon constructor
+  does. This is the one change visible on the in-memory path; the cached
+  value equals `unique(poly_ID)` and
+  [`spatIDs()`](https://giotto-suite.github.io/GiottoClass/reference/spatIDs-generic.html)
+  is unaffected. Left unset, adding cellBorder polygons to a
+  backend-managed `giotto` failed, because
+  [`setGiotto()`](https://giotto-suite.github.io/GiottoClass/reference/setGiotto.html)
+  has by then swapped the `SpatVector` for a `parquetGeomStore` and the
+  ID recompute calls [`unique()`](https://rdrr.io/r/base/unique.html) on
+  it.
+- The `method = "var_p_resid"` diagnostic plot is now decision-support
+  rather than a bare scatter: a reference line at `var = 1` (the
+  no-signal expectation for Pearson residuals, so the value the
+  threshold is relative to), a line at the active `var_threshold`, a
+  log10 y-axis so the elbow in a heavy-tailed distribution is visible,
+  and a second panel of mean expression against residual variance. That
+  panel is the check that selection is not tracking expression level,
+  which is what Pearson residuals exist to avoid. The second panel needs
+  ; without it the rank view is returned alone.
+- `RcppHNSW` and `rnndescent` added to `Suggests`. Either one
+  accelerates the
+  [`runUMAP()`](https://giottosuite.com/dev/reference/runUMAP.md)
+  neighbor search; without them uwot falls back to Annoy. `RcppHNSW` is
+  preferred for dense input with a euclidean, cosine or correlation
+  metric (the usual
+  [`runUMAP()`](https://giottosuite.com/dev/reference/runUMAP.md) case),
+  while `rnndescent` covers sparse input and metrics HNSW does not
+  support. Installing `rnndescent` is **required** to run
+  `runUMAP(dim_reduction_to_use = NULL)` on a sparse expression matrix.
+- gini `min_expression_gini` and `min_detection_gini` gate the gini
+  coefficients themselves, defaulting to `-Inf`.
+  [\#1238](https://github.com/drieslab/Giotto/pull/1238) by eryuluts
+- gini `min_length` pads the per-cluster vector so coefficients compare
+  across runs with different cluster counts. Defaults to `0`, no
+  padding. Replaces the unused `extended_gini_fun()`.
+- `analyzeData(x, featStatsParam)` gained `groups` and `stats`, giving
+  per-(feature, group) statistics from one pass. Group means are a
+  pseudobulk matrix and mean plus percent-detected is dot plot input.
+  `groups` may be named or factored by `cell_ID`, which is the only form
+  that cannot be misaligned; an unnamed vector is still positional, with
+  a warning.
+- gini coefficients are taken over all features in one vectorized pass
+  instead of one call per feature — 32x faster at 4000 features x 20
+  groups, cutting the scoring step 0.31s -\> 0.18s. Results are
+  bit-identical. Gini marker detection now errors on fewer than 2
+  groups, where it previously failed inside
+  [`mygini_fun()`](https://giottosuite.com/dev/reference/mygini_fun.md).
+- `markersParam(method = "gini")` and `analyzeData(x, giniMarkersParam)`
+  expose gini marker detection as a verb, and now hold the machinery —
+  [`findGiniMarkers()`](https://giottosuite.com/dev/reference/findGiniMarkers.md)
+  and
+  [`findGiniMarkers_one_vs_all()`](https://giottosuite.com/dev/reference/findGiniMarkers_one_vs_all.md)
+  are thin wrappers that fetch expression and a grouping. Dispatches on
+  `ANY` because it is derived entirely from `featStatsParam`, so any
+  backend implementing that statistic supplies gini markers with no code
+  of its own.
+- gini markers and ligand-receptor scoring now run on that verb, so both
+  work on disk-backed expression.
+  [`findGiniMarkers_one_vs_all()`](https://giottosuite.com/dev/reference/findGiniMarkers_one_vs_all.md)
+  takes one grouped pass instead of one per cluster (8.9s -\> 4.2s at
+  4000 features x 12000 cells x 20 clusters).
+
+### Bug fixes
+
+- gini markers,
+  [`findScranMarkers()`](https://giottosuite.com/dev/reference/findScranMarkers.md),
+  [`findScranMarkers_one_vs_all()`](https://giottosuite.com/dev/reference/findScranMarkers_one_vs_all.md)
+  and ligand-receptor scoring now match cluster labels to expression
+  columns by `cell_ID`. Expression and cell metadata are fetched
+  independently and are not guaranteed to share a cell order, so
+  statistics were taken over mislabelled cells — none of the 624 cells
+  of `GiottoData::loadGiottoMini("visium")` are in matching position,
+  and only 1 of 70 top-10 scran markers agreed with the correctly
+  labelled run. **Results will change for affected objects**; they were
+  wrong before.
+- gini `rank_score` now takes effect. It compared against a rescaled
+  rank capped at 1, and
+  [`findMarkers_one_vs_all()`](https://giottosuite.com/dev/reference/findMarkers_one_vs_all.md)
+  never forwarded it. Default `1` -\> `Inf` keeps results unchanged.
+- gini `expression_rank` and `detection_rank` now hold ranks, not the
+  `[1, 0.1]` weight behind `comb_score`. Row counts and `comb_score`
+  unchanged.
+
 ## Giotto 4.2.3 (2026/05/14)
 
 ### Changes
@@ -737,7 +965,7 @@
   are now used instead of ‘giotto.spat_unit’ and ‘giotto.feat_type’
   global options
 - removed duplicate `create_dimObject()` internal function. Keeping
-  [`create_dim_obj()`](https://giotto-suite.github.io/GiottoClass/reference/create_dim_obj.html)
+  `create_dim_obj()`
 
 ### Added
 
@@ -776,7 +1004,7 @@
 - Add `spatVector_to_dt2` internal as a barebones alternative to
   `spatVector_to_dt()`
 - Add
-  [`getRainbowColors()`](https://drieslab.github.io/GiottoUtils/reference/getRainbowColors.html)
+  [`getRainbowColors()`](https://giotto-suite.github.io/GiottoUtils/reference/getRainbowColors.html)
   color palette
 - New `assign_objnames_2_list()` and `assign_listnames_2_obj()`
   internals for passing list names to object `@name` slots and vice
@@ -900,9 +1128,8 @@
   specific row order by reference
 - New `fread_colmatch()` internal for fread loading a subset of rows
   based on matches in a specified column
-- Add missing
-  [`create_nn_net_obj()`](https://giotto-suite.github.io/GiottoClass/reference/create_nn_net_obj.html)
-  internal constructor function for S4 `nnNetObj`
+- Add missing `create_nn_net_obj()` internal constructor function for S4
+  `nnNetObj`
 - Add `id_col`, `x_col`, `y_col` params to
   [`polyStamp()`](https://giotto-suite.github.io/GiottoClass/reference/polyStamp.html)
   to make stamp location input more flexible
@@ -1030,10 +1257,8 @@
   [`overlapImagesToMatrix()`](https://giotto-suite.github.io/GiottoClass/reference/overlapImagesToMatrix.html)
   converts intensity\*polygon overlap info into an expression matrix
   (e.g. cell by protein)
-- New
-  [`aggregateStacks()`](https://giotto-suite.github.io/GiottoClass/reference/aggregateStacks.html)
-  set of functions work with multiple subcellular layers when generating
-  aggregated expression matrices
+- New `aggregateStacks()` set of functions work with multiple
+  subcellular layers when generating aggregated expression matrices
 
 ### Changes
 

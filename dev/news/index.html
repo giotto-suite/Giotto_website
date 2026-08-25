@@ -61,7 +61,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.2.3</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.2.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -194,6 +194,66 @@
       <small>Source: <a href="https://github.com/giotto-suite/Giotto/blob/dev/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="4.2.4" id="giotto-424-in-development">Giotto 4.2.4 (in development)<a class="anchor" aria-label="anchor" href="#giotto-424-in-development"></a></h2>
+<div class="section level3">
+<h3 id="bug-fixes-4-2-4">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-4-2-4"></a></h3>
+<ul><li>
+<code><a href="../reference/createGiottoXeniumObject.html">createGiottoXeniumObject()</a></code> no longer errors on Xenium-format directories that ship no panel json; feature metadata is generated from the expression matrix when the panel is absent.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="breaking-changes-4-2-4">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-4-2-4"></a></h3>
+<ul><li>
+<code><a href="../reference/findScranMarkers_one_vs_all.html">findScranMarkers_one_vs_all()</a></code> returns <code>cluster</code> as <strong>character</strong>. All <code><a href="../reference/findMarkers_one_vs_all.html">findMarkers_one_vs_all()</a></code> methods now agree on the type, so their results can be joined or stacked on <code>cluster</code> regardless of <code>method</code>; previously scran disagreed with gini. Code comparing against a numeric literal needs <code>"3"</code> rather than <code>3</code>. Note that <code>method = "mast"</code> labels the comparison (<code>"3_vs_others"</code>) rather than the bare cluster id, so joins across mast and the others still need a translation step.</li>
+<li>
+<code>calculateHVF(method = "var_p_resid")</code> now computes analytic Pearson residuals itself, from <strong>raw counts</strong>, instead of taking the plain variance of whatever matrix it was handed. <strong>Selected features will differ from previous releases.</strong> Previously the residual criterion required running <code>normalizeGiotto(norm_methods = "pearson_resid")</code> first <em>and</em> passing <code>expression_values = "scaled"</code> (the slot that normalization writes to, not the <code>"normalized"</code> default) — a three-way agreement nothing verified, and which silently returned the variance of library-normalized values whenever it was not met. <code>expression_values</code> is now ignored for this method, with a warning if it was set explicitly. <code>normalizeGiotto(norm_methods = "pearson_resid")</code> is unaffected and remains available for producing residuals as a stored matrix.</li>
+<li>
+<code>analyzeData(x, varParam)</code> correspondingly returns the residual variance, and gained a <code>mean_expr</code> column. It gains a <code>theta</code> parameter (default <code>100</code>, following Lause/Kobak and matching <code><a href="../reference/normalizeGiotto.html">normalizeGiotto()</a></code>); <code><a href="../reference/calculateHVF.html">calculateHVF()</a></code> exposes the same argument. <code>IterableMatrix</code> (BPCells) input now errors rather than silently returning a different statistic.</li>
+<li>
+<code><a href="../reference/calculateHVF.html">calculateHVF()</a></code> gains <code>n_top_feats</code> (default <code>2000</code>), a top-N cut that applies to <strong>all three</strong> methods, combined with each method’s own threshold so the more restrictive one decides. <code>var_number</code> is deprecated in favour of it — the old name implied variance and the cut is now method-agnostic. Each method ranks on its own score: residual variance, within-bin COV z-score, or COV above the LOESS fit. For <code>cov_groups</code> the z-score is standardised within expression bins, so a global ranking stays balanced across expression levels (a top-2000 cut on a Stereo-seq transcriptome drew 9.6-12.4% from each of 19 of 20 bins; the highest-expression bin is under-represented because COV is compressed there by construction). In practice only <code>cov_loess</code> changes at the default — 6,043 features selected before, 2,000 now — since <code>cov_groups</code>’s <code>zscore_threshold</code> is already stricter than the count.</li>
+<li>
+<code>calculateHVF(method = "var_p_resid")</code> selection defaults change to <code>n_top_feats = 2000</code> (was no count) and <code>var_threshold = 1</code> (was <code>1.5</code>), and the two are now applied <strong>together</strong> rather than the count overriding the threshold. The more restrictive constraint decides; passing <code>NULL</code> to either falls back to the other. The old defaults selected on variance alone at a cut that sits essentially at the median of the corrected distribution — measured 1.496 on a Stereo-seq cellbin sample, where <code>1.5</code> took 9,696 of 19,558 features. <code>var_threshold = 1</code> is now a noise floor (under Pearson residuals variance 1 is the no-signal expectation) rather than a selector, and <code>var_number</code> sets the size. On a targeted panel, where <code>var_number</code> cannot bind — Xenium’s 528 features — the floor is what applies, keeping the 433 above noise.</li>
+<li>
+<code><a href="../reference/findScranMarkers_one_vs_all.html">findScranMarkers_one_vs_all()</a></code>’s <code>logFC</code> threshold now takes effect. The filter read <code>logFC &gt;= logFC</code>, where both sides resolved to the result column rather than the argument, so the comparison was always <code>TRUE</code> and the threshold was silently ignored — features were kept on <code>pval</code> and <code>min_feats</code> alone. <strong>Fewer features will be returned than in previous releases</strong>; pass <code>logFC = -Inf</code> to restore the old behaviour exactly (<code>logFC = 0</code> is <em>not</em> equivalent — it still drops down-regulated features, which the broken comparison kept).</li>
+<li>All Leiden entry points now default to <code>n_iterations = 20</code>: <code><a href="../reference/doLeidenCluster.html">doLeidenCluster()</a></code>, <code><a href="../reference/doLeidenCluster.html">doLeidenClusterIgraph()</a></code>, <code><a href="../reference/doLeidenClusterPython.html">doLeidenClusterPython()</a></code>, <code><a href="../reference/subClusterCells.html">subClusterCells()</a></code> (was <code>1000</code>) and <code><a href="../reference/subClusterCells.html">doLeidenSubCluster()</a></code> (was <code>500</code>). Measured ARI 0.97 against the 1000-iteration partition on a 159k-cell Xenium dataset, at ~50x the speed. <strong>Cluster IDs will differ from previous releases</strong>; pass <code>n_iterations = 1000</code> to restore the old behaviour.</li>
+<li>
+<code><a href="../reference/runUMAP.html">runUMAP()</a></code> gained size-adaptive <code>n_epochs</code> and <code>init</code>, both now defaulting to <code>NULL</code>. Above 50,000 observations they resolve to <code>200</code> and <code>"pca"</code>; below it to uwot’s own <code>n_epochs</code> default and <code>"spectral"</code>. A PCA init benchmarked both tighter and faster than a random or spectral init at that scale. Passing either explicitly overrides the adaptation. <code>n_epochs</code> was previously a fixed <code>400</code>. <strong>Embeddings above 50,000 observations will differ from previous releases.</strong> <code><a href="../reference/runUMAPprojection.html">runUMAPprojection()</a></code> and <code><a href="../reference/runIntegratedUMAP.html">runIntegratedUMAP()</a></code> are unchanged and still use <code>spread = 5, min_dist = 0.01</code>.</li>
+<li>
+<code><a href="../reference/runUMAP.html">runUMAP()</a></code> now uses <code><a href="https://jlmelville.github.io/uwot/reference/umap2.html" class="external-link">uwot::umap2()</a></code> instead of <code><a href="https://jlmelville.github.io/uwot/reference/umap.html" class="external-link">uwot::umap()</a></code>. <code>umap2()</code> is the same algorithm with a faster approximate nearest-neighbor backend selected automatically, and it threads the optimizer when <code>batch = TRUE</code>. Pass <code>method = "umap"</code> to restore the previous engine.</li>
+<li>
+<code><a href="../reference/runUMAP.html">runUMAP()</a></code> defaults retuned to match the benchmarked streaming pipeline: <code>min_dist</code> <code>0.01</code> -&gt; <code>0.05</code>, <code>spread</code> <code>5</code> -&gt; <code>1</code>, and a new <code>batch = TRUE</code> argument (was <code>FALSE</code>). <code>min_dist</code> and <code>spread</code> are changed together because uwot fits the embedding’s <code>a</code>/<code>b</code> curve from the pair. <code>batch = TRUE</code> is also what lets <code>umap2()</code> thread the optimizer. <strong>Embeddings will differ from previous releases</strong>; <code>min_dist = 0.01, spread = 5, init = "spectral", n_epochs = 400, batch = FALSE</code> restores the old shape. <code>n_neighbors</code> is unchanged at <code>40</code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="changes-4-2-4">Changes<a class="anchor" aria-label="anchor" href="#changes-4-2-4"></a></h3>
+<ul><li>gini <code>min_expr_gini_score</code> and <code>min_det_gini_score</code> renamed <code>min_expression</code> and <code>min_detection</code> — they gate mean expression and detection fraction, not the gini coefficients. Old names deprecated. <a href="https://github.com/drieslab/Giotto/pull/1238" class="external-link">#1238</a> by eryuluts</li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-4-2-4">New<a class="anchor" aria-label="anchor" href="#new-4-2-4"></a></h3>
+<ul><li>
+<code>importAtera()</code> and <code>createGiottoAteraObject()</code> read Atera output. <code>AteraReader</code> subclasses <code>XeniumReader</code> — the layouts are identical today, so it overrides only the platform label and inherits the rest, including <code>backend =</code>.</li>
+<li>
+<code><a href="../reference/importStereoSeq.html">importStereoSeq()</a></code>, <code><a href="../reference/createGiottoStereoSeqObjectBin.html">createGiottoStereoSeqObjectBin()</a></code> and <code><a href="../reference/createGiottoStereoSeqObjectCell.html">createGiottoStereoSeqObjectCell()</a></code> gained a <code>backend =</code> argument. When set to a <code>gsource</code> project backend it routes to <code>GiottoDisk::importStereoSeqDisk()</code>, so a Stereo-seq object can be created as a managed on-disk project with expression held in a <code>parquetExprStore</code> instead of memory — mirroring what <code><a href="../reference/createGiottoXeniumObject.html">createGiottoXeniumObject()</a></code> already did. <code>backend = NULL</code> (the default) is a no-op and leaves the in-memory path byte-identical. Requires a GiottoDisk carrying the matching GEF reader fixes.</li>
+<li>
+<code>.stereoseq_build_polygons_from_border()</code> now populates <code>giottoPolygon@unique_ID_cache</code>, as every other polygon constructor does. This is the one change visible on the in-memory path; the cached value equals <code>unique(poly_ID)</code> and <code><a href="https://giotto-suite.github.io/GiottoClass/reference/spatIDs-generic.html" class="external-link">spatIDs()</a></code> is unaffected. Left unset, adding cellBorder polygons to a backend-managed <code>giotto</code> failed, because <code><a href="https://giotto-suite.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto()</a></code> has by then swapped the <code>SpatVector</code> for a <code>parquetGeomStore</code> and the ID recompute calls <code><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique()</a></code> on it.</li>
+<li>The <code>method = "var_p_resid"</code> diagnostic plot is now decision-support rather than a bare scatter: a reference line at <code>var = 1</code> (the no-signal expectation for Pearson residuals, so the value the threshold is relative to), a line at the active <code>var_threshold</code>, a log10 y-axis so the elbow in a heavy-tailed distribution is visible, and a second panel of mean expression against residual variance. That panel is the check that selection is not tracking expression level, which is what Pearson residuals exist to avoid. The second panel needs ; without it the rank view is returned alone.</li>
+<li>
+<code>RcppHNSW</code> and <code>rnndescent</code> added to <code>Suggests</code>. Either one accelerates the <code><a href="../reference/runUMAP.html">runUMAP()</a></code> neighbor search; without them uwot falls back to Annoy. <code>RcppHNSW</code> is preferred for dense input with a euclidean, cosine or correlation metric (the usual <code><a href="../reference/runUMAP.html">runUMAP()</a></code> case), while <code>rnndescent</code> covers sparse input and metrics HNSW does not support. Installing <code>rnndescent</code> is <strong>required</strong> to run <code>runUMAP(dim_reduction_to_use = NULL)</code> on a sparse expression matrix.</li>
+<li>gini <code>min_expression_gini</code> and <code>min_detection_gini</code> gate the gini coefficients themselves, defaulting to <code>-Inf</code>. <a href="https://github.com/drieslab/Giotto/pull/1238" class="external-link">#1238</a> by eryuluts</li>
+<li>gini <code>min_length</code> pads the per-cluster vector so coefficients compare across runs with different cluster counts. Defaults to <code>0</code>, no padding. Replaces the unused <code>extended_gini_fun()</code>.</li>
+<li>
+<code>analyzeData(x, featStatsParam)</code> gained <code>groups</code> and <code>stats</code>, giving per-(feature, group) statistics from one pass. Group means are a pseudobulk matrix and mean plus percent-detected is dot plot input. <code>groups</code> may be named or factored by <code>cell_ID</code>, which is the only form that cannot be misaligned; an unnamed vector is still positional, with a warning.</li>
+<li>gini coefficients are taken over all features in one vectorized pass instead of one call per feature — 32x faster at 4000 features x 20 groups, cutting the scoring step 0.31s -&gt; 0.18s. Results are bit-identical. Gini marker detection now errors on fewer than 2 groups, where it previously failed inside <code><a href="../reference/mygini_fun.html">mygini_fun()</a></code>.</li>
+<li>
+<code>markersParam(method = "gini")</code> and <code>analyzeData(x, giniMarkersParam)</code> expose gini marker detection as a verb, and now hold the machinery — <code><a href="../reference/findGiniMarkers.html">findGiniMarkers()</a></code> and <code><a href="../reference/findGiniMarkers_one_vs_all.html">findGiniMarkers_one_vs_all()</a></code> are thin wrappers that fetch expression and a grouping. Dispatches on <code>ANY</code> because it is derived entirely from <code>featStatsParam</code>, so any backend implementing that statistic supplies gini markers with no code of its own.</li>
+<li>gini markers and ligand-receptor scoring now run on that verb, so both work on disk-backed expression. <code><a href="../reference/findGiniMarkers_one_vs_all.html">findGiniMarkers_one_vs_all()</a></code> takes one grouped pass instead of one per cluster (8.9s -&gt; 4.2s at 4000 features x 12000 cells x 20 clusters).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-4-2-4-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-4-2-4-1"></a></h3>
+<ul><li>gini markers, <code><a href="../reference/findScranMarkers.html">findScranMarkers()</a></code>, <code><a href="../reference/findScranMarkers_one_vs_all.html">findScranMarkers_one_vs_all()</a></code> and ligand-receptor scoring now match cluster labels to expression columns by <code>cell_ID</code>. Expression and cell metadata are fetched independently and are not guaranteed to share a cell order, so statistics were taken over mislabelled cells — none of the 624 cells of <code>GiottoData::loadGiottoMini("visium")</code> are in matching position, and only 1 of 70 top-10 scran markers agreed with the correctly labelled run. <strong>Results will change for affected objects</strong>; they were wrong before.</li>
+<li>gini <code>rank_score</code> now takes effect. It compared against a rescaled rank capped at 1, and <code><a href="../reference/findMarkers_one_vs_all.html">findMarkers_one_vs_all()</a></code> never forwarded it. Default <code>1</code> -&gt; <code>Inf</code> keeps results unchanged.</li>
+<li>gini <code>expression_rank</code> and <code>detection_rank</code> now hold ranks, not the <code>[1, 0.1]</code> weight behind <code>comb_score</code>. Row counts and <code>comb_score</code> unchanged.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="4.2.3" id="giotto-423-20260514">Giotto 4.2.3 (2026/05/14)<a class="anchor" aria-label="anchor" href="#giotto-423-20260514"></a></h2>
 <div class="section level3">
@@ -744,7 +804,7 @@
 <li>update <code><a href="https://giotto-suite.github.io/GiottoClass/reference/loadGiotto.html" class="external-link">loadGiotto()</a></code> and <code><a href="https://giotto-suite.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto()</a></code> to allow using long strings as column names in the spatVector objects</li>
 <li>
 <code>'active_spat_unit'</code> and <code>'active_feat_type'</code> params that can be set through <code><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">instructions()</a></code> are now used instead of ‘giotto.spat_unit’ and ‘giotto.feat_type’ global options</li>
-<li>removed duplicate <code>create_dimObject()</code> internal function. Keeping <code><a href="https://giotto-suite.github.io/GiottoClass/reference/create_dim_obj.html" class="external-link">create_dim_obj()</a></code>
+<li>removed duplicate <code>create_dimObject()</code> internal function. Keeping <code>create_dim_obj()</code>
 </li>
 </ul></div>
 <div class="section level3">
@@ -768,7 +828,7 @@
 <li>Add option to return as <code>giottoPoints</code> from <code>getFeatureInfo</code> (default is still <code>SpatVector</code>)</li>
 <li>Add <code>spatVector_to_dt2</code> internal as a barebones alternative to <code>spatVector_to_dt()</code>
 </li>
-<li>Add <code><a href="https://drieslab.github.io/GiottoUtils/reference/getRainbowColors.html" class="external-link">getRainbowColors()</a></code> color palette</li>
+<li>Add <code><a href="https://giotto-suite.github.io/GiottoUtils/reference/getRainbowColors.html" class="external-link">getRainbowColors()</a></code> color palette</li>
 <li>New <code>assign_objnames_2_list()</code> and <code>assign_listnames_2_obj()</code> internals for passing list names to object <code>@name</code> slots and vice versa</li>
 <li>New test_that <code>test_createObject.R</code> script for <code>read</code> functions/S4 subobject creation</li>
 <li>New test_that <code>test_accessors.R</code> script for <code>accessor</code> functions</li>
@@ -827,7 +887,7 @@
 </li>
 <li>New <code>set_row_order_dt()</code> internal for setting <code>data.table</code> to a specific row order by reference</li>
 <li>New <code>fread_colmatch()</code> internal for fread loading a subset of rows based on matches in a specified column</li>
-<li>Add missing <code><a href="https://giotto-suite.github.io/GiottoClass/reference/create_nn_net_obj.html" class="external-link">create_nn_net_obj()</a></code> internal constructor function for S4 <code>nnNetObj</code>
+<li>Add missing <code>create_nn_net_obj()</code> internal constructor function for S4 <code>nnNetObj</code>
 </li>
 <li>Add <code>id_col</code>, <code>x_col</code>, <code>y_col</code> params to <code><a href="https://giotto-suite.github.io/GiottoClass/reference/polyStamp.html" class="external-link">polyStamp()</a></code> to make stamp location input more flexible</li>
 <li>Add <code>optional</code> and <code>custom_msg</code> params to <code>package_check()</code>
@@ -909,7 +969,7 @@
 <li>New <code>@provenance</code> slot in S4 subobjects to track provenance of aggregated information (z_layers used for example)</li>
 <li>New <code><a href="https://giotto-suite.github.io/GiottoClass/reference/calculateOverlapPolygonImages.html" class="external-link">calculateOverlapPolygonImages()</a></code> for calculating overlapped intensities from image*based information (e.g. IMC, IF, MIBI, …) and polygon data (e.g. cell)</li>
 <li>New <code><a href="https://giotto-suite.github.io/GiottoClass/reference/overlapImagesToMatrix.html" class="external-link">overlapImagesToMatrix()</a></code> converts intensity*polygon overlap info into an expression matrix (e.g. cell by protein)</li>
-<li>New <code><a href="https://giotto-suite.github.io/GiottoClass/reference/aggregateStacks.html" class="external-link">aggregateStacks()</a></code> set of functions work with multiple subcellular layers when generating aggregated expression matrices</li>
+<li>New <code>aggregateStacks()</code> set of functions work with multiple subcellular layers when generating aggregated expression matrices</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-3-0-0">Changes<a class="anchor" aria-label="anchor" href="#changes-3-0-0"></a></h3>

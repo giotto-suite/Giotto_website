@@ -106,13 +106,11 @@ createGiottoMerscopeObject(
 
 - aggregate_stack:
 
-  whether to run
-  [`aggregateStacks`](https://giotto-suite.github.io/GiottoClass/reference/aggregateStacks.html)
+  whether to run `aggregateStacks`
 
 - aggregate_stack_param:
 
-  params to pass to
-  [`aggregateStacks`](https://giotto-suite.github.io/GiottoClass/reference/aggregateStacks.html)
+  params to pass to `aggregateStacks`
 
 - split_keyword:
 

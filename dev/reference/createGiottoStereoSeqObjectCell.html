@@ -69,7 +69,7 @@ pipeline. For lower-level loading of individual pieces of data, see
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.2.3</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.2.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -227,6 +227,7 @@ pipeline. For lower-level loading of individual pieces of data, see
 <span>  gef_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  image_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  mask_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  backend <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  instructions <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -298,6 +299,12 @@ Auto-detected from `stereoseq_dir/image/` when not provided.</p></dd>
 <dt id="arg-mask-path">mask_path<a class="anchor" aria-label="anchor" href="#arg-mask-path"></a></dt>
 <dd><p>(optional) direct filepath to the `*_HE_mask.tif` file.
 Auto-detected from `stereoseq_dir/image/` when not provided.</p></dd>
+
+
+<dt id="arg-backend">backend<a class="anchor" aria-label="anchor" href="#arg-backend"></a></dt>
+<dd><p>(optional) a `gsource`-inheriting project backend (typically
+produced by `GiottoDisk::sourceCreate()`). When provided, creates the
+`giotto` object as a managed on-disk project.</p></dd>
 
 
 <dt id="arg-instructions">instructions<a class="anchor" aria-label="anchor" href="#arg-instructions"></a></dt>

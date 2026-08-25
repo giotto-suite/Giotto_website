@@ -18,10 +18,11 @@ doLeidenClusterIgraph(
   resolution = 1,
   beta = 0.01,
   initial_membership = NULL,
-  n_iterations = 1000,
+  n_iterations = 20,
   return_gobject = TRUE,
   set_seed = TRUE,
   seed_number = 1234,
+  verbose = NULL,
   ...
 )
 
@@ -37,10 +38,11 @@ doLeidenCluster(
   resolution = 1,
   beta = 0.01,
   initial_membership = NULL,
-  n_iterations = 1000,
+  n_iterations = 20,
   return_gobject = TRUE,
   set_seed = TRUE,
   seed_number = 1234,
+  verbose = NULL,
   ...
 )
 ```
@@ -106,6 +108,10 @@ doLeidenCluster(
 - seed_number:
 
   number for seed
+
+- verbose:
+
+  verbosity of function
 
 - ...:
 

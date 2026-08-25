@@ -1,0 +1,53 @@
+# Parameter Classes for Data Analysis Operations
+
+Parameter classes for use with \[analyzeData()\]. Each class encodes a
+specific analysis method and its settings. Pass these to
+\[analyzeData()\] directly or via the \[analyzeParam()\] factory
+function.
+
+These params produce computed values (scores, statistics). Any
+downstream thresholding or selection is a separate step.
+
+\*\*Stat params\*\* (per-feature or per-cell summaries): -
+\`featStatsParam\` — per-feature: nr_cells, perc_cells, mean_expr,
+mean_expr_det, total_expr - \`cellStatsParam\` — per-cell: nr_feats,
+perc_feats, total_expr
+
+\*\*COV-based score params\*\* (coefficient of variation scores): -
+\`covGroupsParam\` — COV z-score within expression-level bins -
+\`covLoessParam\` — residual COV above a LOESS fit of COV ~
+log(mean_expr)
+
+\*\*Variance param\*\*: - \`varParam\` — per-feature variance of
+analytic Pearson residuals, computed from raw counts
+
+\*\*Marker detection params\*\* (one subclass of the virtual
+\`markersParam\` per detection method): - \`scranMarkersParam\` —
+pairwise group comparisons combined per group; see \[markers_scran\].
+Built with \[markersParam()\]. - \`giniMarkersParam\` — per-group
+specificity by Gini coefficient, derived from \`featStatsParam\`; see
+\[markers_gini\]. Built with \[markersParam()\].
+
+## Usage
+
+``` r
+markersParam(method = "scran", ...)
+
+analyzeParam(method, ...)
+```
+
+## Arguments
+
+- method:
+
+  character. One of \`"feat_stats"\`, \`"cell_stats"\`,
+  \`"cov_groups"\`, \`"cov_loess"\`, \`"var"\`.
+
+- ...:
+
+  additional parameters passed to the specific param constructor. Use
+  \`\$\` on the returned object to inspect or modify individual params.
+
+## Value
+
+an \`analyzeParam\`-inheriting object

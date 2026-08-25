@@ -61,7 +61,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.2.3</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.2.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -211,15 +211,20 @@
 <span>  subset_clusters <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  group_1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  group_2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  min_expr_gini_score <span class="op">=</span> <span class="fl">0.5</span>,</span>
-<span>  min_det_gini_score <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  min_expression <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  min_detection <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  min_expression_gini <span class="op">=</span> <span class="op">-</span><span class="cn">Inf</span>,</span>
+<span>  min_detection_gini <span class="op">=</span> <span class="op">-</span><span class="cn">Inf</span>,</span>
 <span>  detection_threshold <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  rank_score <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  min_length <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  rank_score <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  min_feats <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>  min_genes <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  group_1_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  group_2_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  adjust_columns <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  min_expr_gini_score <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  min_det_gini_score <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -266,21 +271,40 @@ comparison</p></dd>
 comparison</p></dd>
 
 
-<dt id="arg-min-expr-gini-score">min_expr_gini_score<a class="anchor" aria-label="anchor" href="#arg-min-expr-gini-score"></a></dt>
-<dd><p>gini: filter on minimum gini coefficient for
-expression</p></dd>
+<dt id="arg-min-expression">min_expression<a class="anchor" aria-label="anchor" href="#arg-min-expression"></a></dt>
+<dd><p>gini: minimum per-cluster mean expression</p></dd>
 
 
-<dt id="arg-min-det-gini-score">min_det_gini_score<a class="anchor" aria-label="anchor" href="#arg-min-det-gini-score"></a></dt>
-<dd><p>gini: filter minimum gini coefficient for detection</p></dd>
+<dt id="arg-min-detection">min_detection<a class="anchor" aria-label="anchor" href="#arg-min-detection"></a></dt>
+<dd><p>gini: minimum fraction of a cluster's cells with
+expression above `detection_threshold`</p></dd>
+
+
+<dt id="arg-min-expression-gini">min_expression_gini<a class="anchor" aria-label="anchor" href="#arg-min-expression-gini"></a></dt>
+<dd><p>gini: minimum gini coefficient of expression.
+`-Inf` (default) disables it.</p></dd>
+
+
+<dt id="arg-min-detection-gini">min_detection_gini<a class="anchor" aria-label="anchor" href="#arg-min-detection-gini"></a></dt>
+<dd><p>gini: minimum gini coefficient of detection.
+`-Inf` (default) disables it.</p></dd>
 
 
 <dt id="arg-detection-threshold">detection_threshold<a class="anchor" aria-label="anchor" href="#arg-detection-threshold"></a></dt>
-<dd><p>gini: detection threshold for feat expression</p></dd>
+<dd><p>gini: expression value above which a cell counts
+as expressing a feature</p></dd>
+
+
+<dt id="arg-min-length">min_length<a class="anchor" aria-label="anchor" href="#arg-min-length"></a></dt>
+<dd><p>gini: pad the per-cluster vector to this length before
+taking the gini coefficient, making scores comparable across runs with
+different cluster counts. `0` (the default) never pads.</p></dd>
 
 
 <dt id="arg-rank-score">rank_score<a class="anchor" aria-label="anchor" href="#arg-rank-score"></a></dt>
-<dd><p>gini: rank scores to include</p></dd>
+<dd><p>gini: keep a feature when its cluster is within this
+rank for both `expression` and `detection` (rank 1 = highest). `Inf`
+(default) disables it.</p></dd>
 
 
 <dt id="arg-min-feats">min_feats<a class="anchor" aria-label="anchor" href="#arg-min-feats"></a></dt>
@@ -302,6 +326,16 @@ expression</p></dd>
 <dt id="arg-adjust-columns">adjust_columns<a class="anchor" aria-label="anchor" href="#arg-adjust-columns"></a></dt>
 <dd><p>mast: column in pDataDT to adjust for
 (e.g. detection rate)</p></dd>
+
+
+<dt id="arg-min-expr-gini-score">min_expr_gini_score<a class="anchor" aria-label="anchor" href="#arg-min-expr-gini-score"></a></dt>
+<dd><p>`r lifecycle::badge("deprecated")` use
+`min_expression`. Despite its name it never gated a gini coefficient.</p></dd>
+
+
+<dt id="arg-min-det-gini-score">min_det_gini_score<a class="anchor" aria-label="anchor" href="#arg-min-det-gini-score"></a></dt>
+<dd><p>`r lifecycle::badge("deprecated")` use
+`min_detection`. Despite its name it never gated a gini coefficient.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

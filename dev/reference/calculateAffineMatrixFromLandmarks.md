@@ -25,7 +25,7 @@ a 3x3 `matrix` that defines an affine transform
 ## See also
 
 [`interactiveLandmarkSelection()`](https://giottosuite.com/dev/reference/interactiveLandmarkSelection.md)
-[`GiottoClass::affine()`](https://giotto-suite.github.io/GiottoClass/reference/affine.html)
+[`affine()`](https://giotto-suite.github.io/GiottoClass/reference/affine.html)
 
 ## Examples
 

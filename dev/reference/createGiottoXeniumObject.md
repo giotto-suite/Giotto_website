@@ -32,6 +32,7 @@ createGiottoXeniumObject(
   load_transcripts = TRUE,
   load_expression = TRUE,
   load_cellmeta = FALSE,
+  backend = NULL,
   instructions = NULL,
   verbose = NULL
 )
@@ -113,6 +114,12 @@ createGiottoXeniumObject(
 
   logical. Default = FALSE. Whether to load in 10X provided cell
   metadata information
+
+- backend:
+
+  (optional) a `gsource`-inheriting project backend (typically produced
+  by `GiottoDisk::sourceCreate()`). When provided, creates the `giotto`
+  object as a managed on-disk project (See GiottoDisk).
 
 - instructions:
 

@@ -23,6 +23,7 @@ createGiottoStereoSeqObjectBin(
   gef_path = NULL,
   image_path = NULL,
   mask_path = NULL,
+  backend = NULL,
   instructions = NULL,
   verbose = NULL
 )
@@ -99,6 +100,12 @@ createGiottoStereoSeqObjectBin(
 
   (optional) direct filepath to the \`\*\_HE_mask.tif\` file.
   Auto-detected from \`stereoseq_dir/image/\` when not provided.
+
+- backend:
+
+  (optional) a \`gsource\`-inheriting project backend (typically
+  produced by \`GiottoDisk::sourceCreate()\`). When provided, creates
+  the \`giotto\` object as a managed on-disk project.
 
 - instructions:
 

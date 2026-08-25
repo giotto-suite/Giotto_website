@@ -16,7 +16,7 @@ for more information.
 |  |  |
 |----|----|
 | `resolution` | numeric (default = 1). Clustering resolution. |
-| `n_iterations` | numeric (default = 1000). Number of iterations to run the Leiden algorithm. |
+| `n_iterations` | numeric (default = 20). Number of iterations to run the Leiden algorithm. |
 | `weights` | (default = `NULL`) weights of edges. Set `NULL` to use weights associated with the igraph network. Set `NA` if you don't want to use weights. |
 | `beta` | character (default = 0.01). Leiden randomness |
 | `objective_function` | character (default = `"modularity"`) objective function for the leiden algorithm. One of `"modularity"` or `"CPM"` |

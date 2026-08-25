@@ -9,6 +9,21 @@ Requested operations are generated as method-specific param classes that
 contain all the parameters needed to perform them, editable through
 `$<-`.
 
+Construct a \`filterParam\` carrying the cell + feature filter
+thresholds used by \[filterGiotto()\]. \`filterGiotto\` builds this
+internally; direct use is only needed when computing masks on a
+standalone matrix.
+
+Returns a \`list(feats_keep, cells_keep)\` of character ID vectors when
+passed to \[filterData()\].
+
+Construct a \`pcaParam\` for use with \[reduceData()\]. \`runPCA()\`
+builds these internally; direct use is only needed when computing PCA on
+a standalone matrix.
+
+Returns a list with \`u\`, \`d\`, \`v\`, and \`sdev\` when passed to
+\`reduceData()\`.
+
 ## Usage
 
 ``` r
@@ -19,17 +34,110 @@ scaleParam(method = "default", ...)
 adjustParam(method = "limma", ...)
 
 thresholdParam(method = "binarize", ...)
+
+filterParam(
+  method = "default",
+  expression_threshold = 1,
+  feat_det_in_min_cells = 100,
+  min_det_feats_per_cell = 100,
+  ...
+)
+
+pcaParam(
+  method = c("auto", "random", "irlba", "exact"),
+  ncp = 50L,
+  center = TRUE,
+  scale = TRUE,
+  feats_to_use = NULL,
+  n_oversamples = 10L,
+  n_power_iter = 2L,
+  set_seed = TRUE,
+  seed_number = 1234L,
+  dry_run = FALSE,
+  ...
+)
 ```
 
 ## Arguments
 
 - method:
 
-  character. Name of method to use. See details.
+  one of \`"auto"\`, \`"random"\`, \`"irlba"\`, \`"exact"\`. \`"auto"\`
+  defers the choice to the substrate: in-memory backends resolve to
+  \`"irlba"\`; streaming backends (\`parquetExprStore\` in GiottoDisk)
+  resolve to \`"random"\` / \`"gram-eigen"\` per their own heuristics.
 
 - ...:
 
   (optional) Additional named parameters relevant to the param class.
+
+- expression_threshold:
+
+  numeric. A value \`\>= expression_threshold\` counts as detected.
+  Default \`1\`.
+
+- feat_det_in_min_cells:
+
+  integer. Keep features detected in at least this many cells. Default
+  \`100\`.
+
+- min_det_feats_per_cell:
+
+  integer. Keep cells with at least this many detected features (counted
+  only over kept features — Giotto's two-stage convention). Default
+  \`100\`.
+
+- ncp:
+
+  number of components. Default \`50\`.
+
+- center:
+
+  logical. Center columns. Default \`TRUE\`.
+
+- scale:
+
+  logical. Scale columns by SD. Default \`TRUE\`. Streaming backends
+  (parquetExprStore) ignore this — scaling densifies the matrix and is
+  incompatible with O(N\*k) streaming.
+
+- feats_to_use:
+
+  character vector of feature IDs to subset to before PCA. \`NULL\`
+  means all features. Useful for HVG selection.
+
+- n_oversamples:
+
+  integer. Halko oversampling parameter for \`random\`. Default \`10\`.
+
+- n_power_iter:
+
+  integer. Halko power iterations for \`random\`. Default \`2\`.
+
+- set_seed:
+
+  logical. Default \`TRUE\`.
+
+- seed_number:
+
+  integer. Default \`1234\`.
+
+- dry_run:
+
+  logical. Only meaningful when \`method = "auto"\`. When \`TRUE\`,
+  \`reduceData(x, param)\` returns the substrate-resolved concrete
+  \`pcaParam\` instead of running PCA. Useful for inspecting or testing
+  the substrate's method selection. Default \`FALSE\`.
+
+- ...:
+
+  reserved.
+
+## Value
+
+A \`defaultFilterParam\` object.
+
+Concrete \`pcaParam\` subclass object.
 
 ## Details
 
@@ -95,3 +203,15 @@ for the generic used to apply these params
 
 [`processExpression()`](https://giottosuite.com/dev/reference/processExpression.md)
 for the way to use this framework with the `giotto` object
+
+## Examples
+
+``` r
+p <- filterParam(expression_threshold = 1,
+                  feat_det_in_min_cells = 5,
+                  min_det_feats_per_cell = 3)
+p <- pcaParam("random", ncp = 30)
+p_auto <- pcaParam("auto", ncp = 30)  # substrate picks the flavor
+# Inspect the substrate's choice without running PCA:
+# reduceData(x, pcaParam("auto", dry_run = TRUE))
+```
