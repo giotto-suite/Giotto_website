@@ -33,9 +33,14 @@
 # and silently documents gsource's code against release-era classes.
 #
 # Pinning the ref inside a DESCRIPTION does not work: two repos declare the same
-# package, one pinned and one not, and pak rejects the conflicting specs. So the
-# siblings are installed explicitly below and Remotes: is stripped from the
-# throwaway checkout, leaving pak nothing to re-resolve. No package repository
+# package, one pinned and one not, and pak rejects the conflicting specs.
+# Stripping Remotes: does not work either -- the Giotto packages are on no
+# repository, so pak then cannot find them at all and refuses to solve.
+#
+# So: let pak resolve normally, exactly as the release build does, and overlay
+# the pinned refs afterwards with dependency resolution switched off. Nothing
+# reads a Remotes: field after that point, so nothing can undo the pin. Giotto
+# itself is installed last, against the pinned siblings. No package repository
 # is modified.
 
 name: pkgdown (dev)
@@ -109,13 +114,6 @@ jobs:
           cp -r vignettes pkgdown pkgsrc/
           cp    _pkgdown.yml index.md pkgsrc/
 
-          # Strip Remotes: so pak cannot re-resolve the siblings to their
-          # default branches after the pinned installs below. Deletes the key
-          # and its indented continuation lines only; Collate: and friends are
-          # untouched because the skip resets at the next unindented key.
-          awk '/^Remotes:/{skip=1; next} skip && /^[[:space:]]/{next} {skip=0} {print}' \
-            pkgsrc/DESCRIPTION > pkgsrc/DESCRIPTION.tmp
-          mv pkgsrc/DESCRIPTION.tmp pkgsrc/DESCRIPTION
 
           echo "::group::resolved refs"
           echo "Giotto        @ ${{ inputs.giotto_ref        || 'gsource' }}   (documented)"
@@ -123,7 +121,6 @@ jobs:
           echo "GiottoVisuals @ ${{ inputs.giottovisuals_ref || 'gsource' }}"
           echo "GiottoUtils   @ ${{ inputs.giottoutils_ref   || 'main'    }}"
           echo "::endgroup::"
-          echo "Remotes: stripped -> $(grep -c '^Remotes:' pkgsrc/DESCRIPTION) remaining (expect 0)"
           echo "vignettes assembled: $(ls pkgsrc/vignettes/*.Rmd pkgsrc/vignettes/*.rmd 2>/dev/null | wc -l)"
 
       - uses: r-lib/actions/setup-pandoc@v2
@@ -132,57 +129,51 @@ jobs:
         with:
           use-public-rspm: true
 
-      # terra ships as an RSPM binary that dlopens libproj/libgdal/libgeos.
-      # setup-r-dependencies installs those system libraries via pak, but the
-      # pinned installs below run BEFORE it and remotes does not handle
-      # sysdeps -- without this, terra fails to load and every package that
-      # imports it fails to build.
-      - name: System libraries for terra
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends \
-            libgdal-dev libgeos-dev libproj-dev libsqlite3-dev libudunits2-dev
-
-      # Install the ecosystem at PINNED refs before pak gets a say.
+      # Resolve dependencies exactly as the release build does: Remotes: intact,
+      # pak in charge, system libraries handled. This installs the siblings at
+      # their DEFAULT branches -- GiottoClass 0.5.1, not what we want yet. The
+      # pins go on top in the next step.
       #
-      # GiottoClass goes LAST and with force. Every sibling declares a bare
-      # `giotto-suite/GiottoClass` in Remotes:, so installing any of them drags
-      # in GiottoClass@HEAD -- that is main, v0.5.1, and it overwrites whatever
-      # was pinned. Installing the pin last means nothing runs after it that
-      # could undo it. Safe in this order because gsource only adds exports
-      # relative to main, apart from ten legacy snake_case constructors that no
-      # sibling imports.
-      #
-      # GiottoData is installed here rather than via extra-packages for the
-      # same reason: letting pak fetch it from GitHub re-resolves that bare
-      # Remote. Suggests are excluded so it cannot drag in Giotto@suite.
-      - name: Install pinned Giotto ecosystem
-        run: |
-          Rscript -e 'install.packages("remotes", repos = "https://cloud.r-project.org")'
-          Rscript -e '
-            hard <- c("Depends", "Imports", "LinkingTo")
-            gh <- function(spec, force = FALSE) remotes::install_github(
-              spec, upgrade = "never", dependencies = hard, force = force)
-            gh("giotto-suite/GiottoUtils@${{ inputs.giottoutils_ref   || 'main'    }}")
-            gh("giotto-suite/GiottoVisuals@${{ inputs.giottovisuals_ref || 'gsource' }}")
-            gh("giotto-suite/GiottoData")
-            gh("giotto-suite/GiottoClass@${{ inputs.giottoclass_ref   || 'gsource' }}", force = TRUE)
-          '
-
+      # local::. is deliberately absent. pak would install Giotto here, against
+      # 0.5.1, and Giotto@gsource imports symbols that only exist in 0.6.0.
+      # Giotto is installed after the pins instead.
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           working-directory: pkgsrc
           dependencies: '"hard"'
-          # GiottoData deliberately absent -- installed at a pinned ref above.
           extra-packages: >
-            any::pkgdown, local::.,
+            github::giotto-suite/GiottoData, any::pkgdown,
             any::kableExtra, any::ggspavis, any::pheatmap, any::scater,
             any::STexampleData, any::scran, any::ComplexHeatmap
           needs: website
 
+      # Overlay the pinned refs. dependencies = FALSE throughout: everything is
+      # already present, and it is what stops any Remotes: field being read
+      # again -- a single bare `giotto-suite/GiottoClass` anywhere in the
+      # ecosystem would otherwise pull main straight back over the pin.
+      #
+      # GiottoClass goes LAST so nothing runs after it that could undo it. Safe
+      # in this order because gsource only adds exports relative to main, apart
+      # from ten legacy snake_case constructors that no sibling imports.
+      - name: Pin the ecosystem to the gsource line
+        run: |
+          Rscript -e 'install.packages("remotes", repos = "https://cloud.r-project.org")'
+          Rscript -e '
+            gh <- function(spec) remotes::install_github(
+              spec, upgrade = "never", dependencies = FALSE, force = TRUE)
+            gh("giotto-suite/GiottoUtils@${{ inputs.giottoutils_ref   || 'main'    }}")
+            gh("giotto-suite/GiottoVisuals@${{ inputs.giottovisuals_ref || 'gsource' }}")
+            gh("giotto-suite/GiottoClass@${{ inputs.giottoclass_ref   || 'gsource' }}")
+          '
+
+      # Now Giotto, built against the pinned siblings. R CMD INSTALL rather than
+      # install_local: the assembled tree carries a 1.2 GB vignettes/images
+      # directory that a tarball build would copy for nothing.
+      - name: Install Giotto against the pinned siblings
+        run: R CMD INSTALL --no-multiarch --no-docs pkgsrc
+
       # Fail loudly rather than publish a site built against the wrong classes.
-      # This runs AFTER pak, which is the last thing that could swap a version.
-      - name: Verify the pinned versions survived
+      - name: Verify the pinned versions
         run: |
           Rscript -e '
             want <- c(GiottoClass = "0.6.0", Giotto = "4.2.4")
