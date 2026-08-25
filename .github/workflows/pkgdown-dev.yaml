@@ -13,18 +13,30 @@
 #   * force: false, so a release deploy that lands mid-build is rebased onto,
 #     not overwritten.
 #
-# WHICH PACKAGE DOES THIS DOCUMENT?
-# The `giotto_ref` input below. This repository owns the website content --
+# WHICH PACKAGES DOES THIS DOCUMENT?
+# The four `*_ref` inputs below. This repository owns the website content --
 # vignettes, _pkgdown.yml, theme -- while the package source (R/, man/,
 # NAMESPACE, DESCRIPTION) is checked out from giotto-suite/Giotto at build time.
 # So pointing the dev site at a different package branch is one word, with no
 # merging of package code into this repository.
 #
-# Currently `suite`, i.e. the same package the release site documents, so the
-# dev site previews WEBSITE changes (theme, navigation, landing page). Switch to
-# `gsource` to preview unreleased API -- note that requires gsource to be
-# installable, which today it is not (it needs GiottoClass 0.6.0, which exists
-# only on a non-default branch).
+# Currently the `gsource` line, which is ahead of the release branches and is
+# slated to become the next `dev`. When that merge happens and gsource is
+# retired, change the three `gsource` defaults below to `dev`. That is the
+# entire migration.
+#
+# WHY THE SIBLING REFS ARE PINNED SEPARATELY
+# Giotto@gsource and GiottoVisuals@gsource both declare a BARE
+# `giotto-suite/GiottoClass` in Remotes:, which pak resolves to that repo's
+# DEFAULT branch -- main, v0.5.1. gsource needs v0.6.0, which exists only on
+# GiottoClass@gsource. Left alone, CI installs the wrong GiottoClass, succeeds,
+# and silently documents gsource's code against release-era classes.
+#
+# Pinning the ref inside a DESCRIPTION does not work: two repos declare the same
+# package, one pinned and one not, and pak rejects the conflicting specs. So the
+# siblings are installed explicitly below and Remotes: is stripped from the
+# throwaway checkout, leaving pak nothing to re-resolve. No package repository
+# is modified.
 
 name: pkgdown (dev)
 
@@ -35,7 +47,21 @@ on:
     inputs:
       giotto_ref:
         description: "Branch/tag of giotto-suite/Giotto to document"
-        default: suite
+        default: gsource
+        required: false
+      giottoclass_ref:
+        description: "Branch/tag of giotto-suite/GiottoClass to build against"
+        default: gsource
+        required: false
+      giottovisuals_ref:
+        description: "Branch/tag of giotto-suite/GiottoVisuals to build against"
+        default: gsource
+        required: false
+      giottoutils_ref:
+        # no gsource branch exists; main is v0.2.5, which satisfies
+        # GiottoClass@gsource's `GiottoUtils (>= 0.2.5)`
+        description: "Branch/tag of giotto-suite/GiottoUtils to build against"
+        default: main
         required: false
 
 jobs:
@@ -65,7 +91,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: giotto-suite/Giotto
-          ref: ${{ inputs.giotto_ref || 'suite' }}
+          ref: ${{ inputs.giotto_ref || 'gsource' }}
           path: pkgsrc
 
       # 3. lay the website over the package checkout. pkgdown expects the
@@ -82,7 +108,22 @@ jobs:
           rm -rf pkgsrc/vignettes pkgsrc/pkgdown
           cp -r vignettes pkgdown pkgsrc/
           cp    _pkgdown.yml index.md pkgsrc/
-          echo "documenting giotto-suite/Giotto@${{ inputs.giotto_ref || 'suite' }}"
+
+          # Strip Remotes: so pak cannot re-resolve the siblings to their
+          # default branches after the pinned installs below. Deletes the key
+          # and its indented continuation lines only; Collate: and friends are
+          # untouched because the skip resets at the next unindented key.
+          awk '/^Remotes:/{skip=1; next} skip && /^[[:space:]]/{next} {skip=0} {print}' \
+            pkgsrc/DESCRIPTION > pkgsrc/DESCRIPTION.tmp
+          mv pkgsrc/DESCRIPTION.tmp pkgsrc/DESCRIPTION
+
+          echo "::group::resolved refs"
+          echo "Giotto        @ ${{ inputs.giotto_ref        || 'gsource' }}   (documented)"
+          echo "GiottoClass   @ ${{ inputs.giottoclass_ref   || 'gsource' }}"
+          echo "GiottoVisuals @ ${{ inputs.giottovisuals_ref || 'gsource' }}"
+          echo "GiottoUtils   @ ${{ inputs.giottoutils_ref   || 'main'    }}"
+          echo "::endgroup::"
+          echo "Remotes: stripped -> $(grep -c '^Remotes:' pkgsrc/DESCRIPTION) remaining (expect 0)"
           echo "vignettes assembled: $(ls pkgsrc/vignettes/*.Rmd pkgsrc/vignettes/*.rmd 2>/dev/null | wc -l)"
 
       - uses: r-lib/actions/setup-pandoc@v2
@@ -91,12 +132,42 @@ jobs:
         with:
           use-public-rspm: true
 
+      # Install the ecosystem at PINNED refs before pak gets a say. Order is a
+      # dependency order, not a preference: GiottoClass 0.6.0 needs GiottoUtils
+      # >= 0.2.5 present, GiottoVisuals needs GiottoClass, GiottoData needs all
+      # three.
+      #
+      # GiottoData is installed HERE rather than via extra-packages because its
+      # DESCRIPTION also declares a bare `giotto-suite/GiottoClass`; letting pak
+      # fetch it from GitHub would re-resolve that to main (v0.5.1) and quietly
+      # undo the pin. Suggests are excluded so it cannot drag in Giotto@suite.
+      - name: Install pinned Giotto ecosystem
+        run: |
+          Rscript -e 'install.packages("remotes", repos = "https://cloud.r-project.org")'
+          Rscript -e '
+            hard <- c("Depends", "Imports", "LinkingTo")
+            gh <- function(spec) remotes::install_github(
+              spec, upgrade = "never", dependencies = hard, force = FALSE)
+            gh("giotto-suite/GiottoUtils@${{ inputs.giottoutils_ref   || 'main'    }}")
+            gh("giotto-suite/GiottoClass@${{ inputs.giottoclass_ref   || 'gsource' }}")
+            gh("giotto-suite/GiottoVisuals@${{ inputs.giottovisuals_ref || 'gsource' }}")
+            gh("giotto-suite/GiottoData")
+          '
+
+      - name: Report installed versions
+        run: |
+          Rscript -e '
+            for (p in c("GiottoUtils", "GiottoClass", "GiottoVisuals", "GiottoData"))
+              cat(sprintf("%-14s %s\n", p, as.character(utils::packageVersion(p))))
+          '
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           working-directory: pkgsrc
           dependencies: '"hard"'
+          # GiottoData deliberately absent -- installed at a pinned ref above.
           extra-packages: >
-            github::giotto-suite/GiottoData, any::pkgdown, local::.,
+            any::pkgdown, local::.,
             any::kableExtra, any::ggspavis, any::pheatmap, any::scater,
             any::STexampleData, any::scran, any::ComplexHeatmap
           needs: website
