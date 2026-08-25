@@ -1,0 +1,817 @@
+# Visium CytAssist Human Lung Cancer
+
+## 1 Dataset Explanation
+
+The human lung cancer (FFPE) dataset was obtained from 10x Genomics
+using their CytAssist Visium technology that has been recently developed
+to allow users to perform standard histology workflows on two standard
+glass slides before transferring the transcriptional probes on the
+two-area capture visium slide.
+
+More information about this dataset can be found
+[here](https://www.10xgenomics.com/resources/datasets/human-lung-cancer-ffpe-2-standard/).
+
+![](images/visium_cytassist_lungcancer/CytAssist_Visium_workflow.png)
+
+## 2 Start Giotto
+
+To run the current vignette you need to install the Giotto Suite branch.
+
+``` r
+
+  # Ensure Giotto Suite and GiottoData packages are installed
+  if(!"Giotto" %in% installed.packages()) {
+  pak::pkg_install("giotto-suite/Giotto")
+  }
+  
+  # Ensure the Python environment for Giotto has been installed
+  genv_exists <- Giotto::checkGiottoEnvironment()
+  
+  if(!genv_exists){
+  # The following command need only be run once to install the Giotto environment.
+  Giotto::installGiottoEnvironment()
+  }
+```
+
+## 3 Create a Giotto object
+
+The minimum requirements are
+
+- matrix with expression information (or path to)
+- x,y(,z) coordinates for cells or spots (or path to)
+
+``` r
+
+library(Giotto)
+  
+# Provide path to visium folder
+data_path <- "/path/to/data/"
+  
+# to automatically save figures in save_dir set save_plot to TRUE
+results_folder <- "/path/to/results/"
+  
+python_path <- NULL
+  
+instructions <- createGiottoInstructions(save_dir = results_folder, 
+                                         save_plot = TRUE, 
+                                         show_plot = FALSE, 
+                                         return_plot = FALSE, 
+                                         python_path = python_path)
+  
+# Create Giotto object
+visium_lungcancer <- createGiottoVisiumObject(visium_dir = data_path,
+                                              expr_data = "raw",
+                                              png_name = "tissue_lowres_image.png",
+                                              gene_column_index = 2,
+                                              instructions = instructions)
+  
+# check metadata
+pDataDT(visium_lungcancer)
+
+# check available image names
+showGiottoImageNames(visium_lungcancer) # "image" is the default name
+
+# show aligned image
+spatPlot(gobject = visium_lungcancer, 
+         cell_color = "in_tissue", 
+         show_image = TRUE, 
+         point_alpha = 0.7)
+```
+
+![](images/visium_cytassist_lungcancer/0-spatPlot2D.png)
+
+How to work with Giotto instructions that are part of your Giotto
+object:
+
+- show the instructions associated with your Giotto object with
+  **showGiottoInstructions()**
+- change one or more instructions with **changeGiottoInstructions()**
+- replace all instructions at once with **replaceGiottoInstructions()**
+- read or get a specific Giotto instruction with
+  **readGiottoInstructions()**
+
+``` r
+
+# show instructions associated with giotto object (visium_lungcancer)
+showGiottoInstructions(visium_lungcancer)
+```
+
+## 4 Processing steps
+
+- filter genes and cells based on detection frequencies
+- normalize expression matrix (log transformation, scaling factor and/or
+  z-scores)
+- add cell and gene statistics (optional)
+- adjust expression matrix for technical covariates or batches
+  (optional). These results will be stored in the *custom* slot.
+
+``` r
+
+visium_lungcancer <- filterGiotto(gobject = visium_lungcancer,
+                                  expression_threshold = 1,
+                                  feat_det_in_min_cells = 50,
+                                  min_det_feats_per_cell = 1000,
+                                  expression_values = "raw",
+                                  verbose = TRUE)
+
+visium_lungcancer <- normalizeGiotto(gobject = visium_lungcancer, 
+                                     scalefactor = 6000, 
+                                     verbose = TRUE)
+
+visium_lungcancer <- addStatistics(gobject = visium_lungcancer)
+```
+
+### 4.1 Visualize aligned tissue with number of features after processing
+
+``` r
+
+spatPlot2D(gobject = visium_lungcancer, 
+           show_image = TRUE, 
+           point_alpha = 0.7)
+```
+
+![](images/visium_cytassist_lungcancer/1-spatPlot2D.png)
+
+``` r
+
+spatPlot2D(gobject = visium_lungcancer, 
+           show_image = TRUE, 
+           point_alpha = 0.7,
+           cell_color = "nr_feats", 
+           color_as_factor = FALSE)
+```
+
+![](images/visium_cytassist_lungcancer/2-spatPlot2D.png)
+
+## 5 Dimension Reduction
+
+- identify highly variable features (HVF)
+
+``` r
+
+visium_lungcancer <- calculateHVF(gobject = visium_lungcancer)
+```
+
+- perform PCA
+- identify number of significant principal components (PCs)
+
+``` r
+
+visium_lungcancer <- runPCA(gobject = visium_lungcancer)
+
+screePlot(visium_lungcancer, 
+          ncp = 30)
+```
+
+![](images/visium_cytassist_lungcancer/3-screePlot.png)
+
+``` r
+
+plotPCA(gobject = visium_lungcancer)
+```
+
+![](images/visium_cytassist_lungcancer/4-PCA.png)
+
+- run UMAP and/or t-SNE on PCs (or directly on matrix)
+
+``` r
+
+visium_lungcancer <- runUMAP(visium_lungcancer, 
+                             dimensions_to_use = 1:10)
+
+plotUMAP(gobject = visium_lungcancer)
+```
+
+![](images/visium_cytassist_lungcancer/5-UMAP.png)
+
+``` r
+
+visium_lungcancer <- runtSNE(visium_lungcancer, 
+                             dimensions_to_use = 1:10)
+
+plotTSNE(gobject = visium_lungcancer)
+```
+
+![](images/visium_cytassist_lungcancer/6-tSNE.png)
+
+## 6 Clustering
+
+- create a shared (default) nearest network in PCA space (or directly on
+  matrix)
+- cluster on nearest network with Leiden or Louvain (k-means and hclust
+  are alternatives)
+
+``` r
+
+# Create shared nearest network (SNN) and perform leiden clustering
+visium_lungcancer <- createNearestNetwork(gobject = visium_lungcancer, 
+                                          dimensions_to_use = 1:10, 
+                                          k = 30)
+
+visium_lungcancer <- doLeidenCluster(gobject = visium_lungcancer, 
+                                     spat_unit = "cell", 
+                                     feat_type = "rna", 
+                                     resolution = 0.4, 
+                                     n_iterations = 1000)
+
+# visualize UMAP cluster results
+plotUMAP(gobject = visium_lungcancer, 
+         cell_color = "leiden_clus", 
+         show_NN_network = TRUE, 
+         point_size = 2)
+```
+
+![](images/visium_cytassist_lungcancer/7-UMAP.png)
+
+``` r
+
+# visualize tSNE cluster results
+plotTSNE(gobject = visium_lungcancer, 
+         cell_color = "leiden_clus", 
+         show_NN_network = TRUE, 
+         point_size = 2)
+```
+
+![](images/visium_cytassist_lungcancer/8-tSNE.png)
+
+``` r
+
+# visualize expression and spatial results
+spatDimPlot(gobject = visium_lungcancer, 
+            cell_color = "leiden_clus",
+            dim_point_size = 2, 
+            spat_point_size = 2)
+```
+
+![](images/visium_cytassist_lungcancer/9-spatDimPlot2D.png)
+
+``` r
+
+spatDimPlot(gobject = visium_lungcancer, 
+            cell_color = "nr_feats", 
+            color_as_factor = FALSE,
+            dim_point_size = 2, 
+            dim_show_legend = TRUE, 
+            spat_show_legend = TRUE,
+            spat_point_size = 2)
+```
+
+![](images/visium_cytassist_lungcancer/10-spatDimPlot2D.png)
+
+## 7 Differential expression
+
+``` r
+
+# Cell type marker detection
+# Gini markers
+gini_markers_subclusters <- findMarkers_one_vs_all(gobject = visium_lungcancer,
+                                                   method = "gini",
+                                                   expression_values = "normalized",
+                                                   cluster_column = "leiden_clus",
+                                                   min_featss = 20,
+                                                   min_expr_gini_score = 0.5,
+                                                   min_det_gini_score = 0.5)
+
+# get top 2 genes per cluster and visualize with violin plot
+topgenes_gini <- gini_markers_subclusters[, head(.SD, 2), by = "cluster"]$feats
+
+violinPlot(visium_lungcancer, 
+           feats = unique(topgenes_gini), 
+           cluster_column = "leiden_clus",
+           strip_text = 8, 
+           strip_position = "right")
+```
+
+![](images/visium_cytassist_lungcancer/11-violinPlot.png)
+
+``` r
+
+# cluster heatmap
+plotMetaDataHeatmap(visium_lungcancer,
+                    selected_feats = topgenes_gini,
+                    metadata_cols = "leiden_clus",
+                    x_text_size = 10, 
+                    y_text_size = 10)
+```
+
+![](images/visium_cytassist_lungcancer/12-plotMetaDataHeatmap.png)
+
+``` r
+
+# umap plots
+dimFeatPlot2D(visium_lungcancer,
+              expression_values = "scaled",
+              feats = gini_markers_subclusters[, head(.SD, 1), by = "cluster"]$feats,
+              cow_n_col = 3,
+              point_size = 1)
+```
+
+![](images/visium_cytassist_lungcancer/13-dimFeatPlot2D.png)
+
+``` r
+
+# Cell type marker detection
+# Scran markers
+scran_markers_subclusters <- findMarkers_one_vs_all(gobject = visium_lungcancer,
+                                                    method = "scran",
+                                                    expression_values = "normalized",
+                                                    cluster_column = "leiden_clus")
+
+# get top 2 genes per cluster and visualize with violin plot
+topgenes_scran <- scran_markers_subclusters[, head(.SD, 2), by = "cluster"]$feats
+
+violinPlot(visium_lungcancer, 
+           feats = unique(topgenes_scran),
+           cluster_column = "leiden_clus",
+           strip_text = 10, 
+           strip_position = "right")
+```
+
+![](images/visium_cytassist_lungcancer/14-violinPlot.png)
+
+``` r
+
+# cluster heatmap
+plotMetaDataHeatmap(visium_lungcancer,
+                    selected_feats = topgenes_scran,
+                    metadata_cols = "leiden_clus",
+                    x_text_size = 10, 
+                    y_text_size = 10)
+```
+
+![](images/visium_cytassist_lungcancer/15-plotMetaDataHeatmap.png)
+
+``` r
+
+# umap plots
+dimFeatPlot2D(visium_lungcancer,
+              expression_values = "scaled",
+              feats = scran_markers_subclusters[, head(.SD, 1), by = "cluster"]$feats,
+              cow_n_col = 3, 
+              point_size = 1)
+```
+
+![](images/visium_cytassist_lungcancer/16-dimFeatPlot2D.png)
+
+## 8 Cell Type Enrichment
+
+Visium spatial transcriptomics does not provide single-cell resolution,
+making cell type annotation a harder problem. Giotto provides several
+ways to calculate enrichment of specific cell-type signature gene lists:
+
+- PAGE
+- hypergeometric test
+- Rank
+- DWLS
+
+Corresponded Single cell dataset can be generated from [Single Cell
+Human Lung
+Adenocarcinoma](https://giotto-suite.github.io/Giotto/articles/singlecell_lung_adenocarcinoma.html)
+vignette. You can also download the Giotto object, or count matrix and
+metadata from
+[here](https://drive.google.com/drive/folders/1lv3KYkJoTy4vzJxyRT0zhm6RALVO89M8)
+
+Load the single-cell object
+
+``` r
+
+giotto_SC <- Giotto::loadGiotto("sc_lung_carcinoma")
+```
+
+### 8.1 PAGE
+
+The cell-type specific signature gene list was obtained from a previous
+study focused on investigating the therapy-induced evolution of lung
+cancer revealed by single-cell RNA sequencing. More information about
+the paper and scRNA-seq dataset can be found
+[here](https://doi.org/10.1016/j.cell.2020.07.017).
+
+``` r
+
+# umap plots
+# Create PAGE matrix
+# PAGE matrix should be a binary matrix with each row represent a gene marker and each column represent a cell type
+# There are several ways to create PAGE matrix
+# 1.1 create binary matrix of cell signature genes
+# small example #
+Tcells_markers <- c("CD2", "CD3D", "CD3E", "CD3G")
+macrophage_markers <- c("MARCO", "CSF1R", "CD68", "GLDN", 
+                        "APOE", "CCL3L1", "TREM2", "C1QB", 
+                        "NUPR1", "FOLR2", "RNASE1", "C1QA")
+dendritic_markers <- c("CD1E", "CD1C", "FCER1A", "PKIB", "CYP2S1", "NDRG2")
+mast_markers <- c("CMA1", "TPSAB1", "TPSB2")
+Bcell_markers <- c("IGLL5", "MZB1", "JCHAIN", "DERL3", "SDC1", 
+                   "MS$A1", "BANK1", "PAX5", "CD79A")
+Bcell_PB_markers <- c("PRDM1", "XSP1", "IRF4")
+Bcell_mem_markers <- c("MS4A1", "IRF8")
+housekeeping_markers <- c("ACTB", "GAPDH", "MALAT1")
+neutrophils_markers <- c("FCGR3B", "ALPL", "CXCR1", "CXCR2", 
+                         "ADGRG3", "CMTM2", "PROK2", "MME", "MMP25", "TNFRSF10C")
+pdcs_markers <- c("SLC32A1", "SHD", "LRRC26", "PACSIN1", 
+                  "LILRA4", "CLEC4C", "DNASE1L3", "SCT", "LAMP5")
+
+signature_matrix <- makeSignMatrixPAGE(
+  sign_names = c("T_Cells", "Macrophage", "Dendritic", "Mast", 
+                 "B_cell", "Bcell_PB", "Bcells_memory",
+                 "Housekeeping", "Neutrophils", "pDCs"),
+  sign_list = list(Tcells_markers,
+                   macrophage_markers,
+                   dendritic_markers,
+                   mast_markers,
+                   Bcell_markers,
+                   Bcell_PB_markers,
+                   Bcell_mem_markers,
+                   housekeeping_markers,
+                   neutrophils_markers,
+                   pdcs_markers))
+
+# 1.3 enrichment test with PAGE
+markers_scran <- findMarkers_one_vs_all(gobject = giotto_SC, 
+                                        method = "scran",
+                                       expression_values = "normalized", 
+                                       cluster_column = "leiden_clus", 
+                                       min_feats = 3)
+
+topgenes_scran <- markers_scran[, head(.SD, 10), by = "cluster"]
+
+celltypes <- levels(factor(markers_scran$cluster))
+
+sign_list <- list()
+
+for (i in 1:length(celltypes)){
+  sign_list[[i]] <- topgenes_scran[which(topgenes_scran$cluster == celltypes[i]),]$feats
+}
+
+PAGE_matrix <- makeSignMatrixPAGE(sign_names = celltypes,
+                                  sign_list = sign_list)
+
+#  runSpatialEnrich() can also be used as a wrapper for all currently provided enrichment options
+visium_lungcancer <- runPAGEEnrich(gobject = visium_lungcancer, 
+                                   sign_matrix = signature_matrix, 
+                                   min_overlap_genes = 1)
+
+# 1.4 heatmap of enrichment versus annotation (e.g. clustering result)
+cell_types <- colnames(signature_matrix)
+
+plotMetaDataCellsHeatmap(gobject = visium_lungcancer,
+                         metadata_cols = "leiden_clus",
+                         value_cols = cell_types,
+                         spat_enr_names = "PAGE",
+                         x_text_size = 8,
+                         y_text_size = 8,
+                         show_plot = TRUE)
+```
+
+![](images/visium_cytassist_lungcancer/17_metaheatmap.png)
+
+``` r
+
+cell_types_subset <- colnames(signature_matrix)
+
+spatCellPlot(gobject = visium_lungcancer,
+             spat_enr_names = "PAGE",
+             cell_annotation_values = cell_types_subset,
+             cow_n_col = 4, 
+             coord_fix_ratio = NULL, 
+             point_size = 0.75)
+```
+
+![](images/visium_cytassist_lungcancer/18_spatCellPlot.png)
+
+``` r
+
+spatDimCellPlot(gobject = visium_lungcancer,
+                spat_enr_names = "PAGE",
+                cell_annotation_values = c("B_cell","Macrophage"),
+                cow_n_col = 1, 
+                spat_point_size = 1.2,
+                plot_alignment = "horizontal")
+```
+
+![](images/visium_cytassist_lungcancer/19_spatDimCellPlot.png)
+
+## 9 Spatial Grids
+
+``` r
+
+visium_lungcancer <- createSpatialGrid(gobject = visium_lungcancer,
+                                       sdimx_stepsize = 400,
+                                       sdimy_stepsize = 400,
+                                       minimum_padding = 0)
+
+spatPlot(visium_lungcancer, 
+         cell_color = "leiden_clus", 
+         point_size = 2.5, 
+         show_grid = TRUE,
+         grid_color = "red", 
+         spatial_grid_name = "spatial_grid")
+```
+
+![](images/visium_cytassist_lungcancer/20-spatPlot2D.png)
+
+## 10 Spatial Network
+
+``` r
+
+## Delaunay network: stats + creation
+plotStatDelaunayNetwork(gobject = visium_lungcancer, 
+                        maximum_distance = 400)
+```
+
+![](images/visium_cytassist_lungcancer/21-plotStatDelaunayNetwork.png)
+
+``` r
+
+visium_lungcancer <- createSpatialNetwork(gobject = visium_lungcancer, 
+                                          minimum_k = 0)
+
+showGiottoSpatNetworks(visium_lungcancer)
+
+spatPlot(gobject = visium_lungcancer, 
+         show_network = TRUE,
+         network_color = "blue", 
+         spatial_network_name = "Delaunay_network")
+```
+
+![](images/visium_cytassist_lungcancer/22-spatPlot2D.png)
+
+## 11 Spatial Genes
+
+``` r
+
+# kmeans binarization
+km_spatialfeats <- binSpect(visium_lungcancer)
+
+spatFeatPlot2D(visium_lungcancer, 
+               expression_values = "scaled",
+               feats = km_spatialfeats$feats[1:6], 
+               cow_n_col = 2, 
+               point_size = 1.5)
+```
+
+![](images/visium_cytassist_lungcancer/23-spatFeatPlot2D.png)
+
+``` r
+
+## rank binarization
+ranktest <- binSpect(visium_lungcancer, 
+                     bin_method = "rank")
+
+spatFeatPlot2D(visium_lungcancer, 
+               expression_values = "scaled",
+               feats = ranktest$feats[1:6], 
+               cow_n_col = 2, 
+               point_size = 1.5)
+```
+
+![](images/visium_cytassist_lungcancer/24-spatFeatPlot2D.png)
+
+``` r
+
+## spatially correlated genes ##
+my_spatial_genes <- km_spatialfeats[1:500]$feats
+
+# 1. calculate gene spatial correlation and single-cell correlation
+# create spatial correlation object
+spat_cor_netw_DT <- detectSpatialCorFeats(
+  visium_lungcancer,
+  method = "network",
+  spatial_network_name = "Delaunay_network",
+  subset_feats = my_spatial_genes)
+
+# 2. identify most similar spatially correlated genes for one gene
+top10_genes <- showSpatialCorFeats(spat_cor_netw_DT, 
+                                   feats = "DNAI1", 
+                                   show_top_feats = 10)
+
+spatFeatPlot2D(visium_lungcancer, 
+               expression_values = "scaled",
+               feats = c("RSPH1", "C20orf85", "DNAAF1","TEKT2"), 
+               point_size = 3)
+```
+
+![](images/visium_cytassist_lungcancer/25-spatFeatPlot2D.png)
+
+``` r
+
+spatFeatPlot2D(visium_lungcancer, 
+               expression_values = "scaled",
+               feats = c("TEKT2", "CFAP157", "MAPK15", "MS4A8", "CDHR3", "C9orf24"), 
+               point_size = 3)
+```
+
+![](images/visium_cytassist_lungcancer/26-spatFeatPlot2D.png)
+
+``` r
+
+# 3. cluster correlated genes & visualize
+spat_cor_netw_DT <- clusterSpatialCorFeats(spat_cor_netw_DT, 
+                                           name = "spat_netw_clus", 
+                                           k = 10)
+
+heatmSpatialCorFeats(visium_lungcancer,
+                     spatCorObject = spat_cor_netw_DT,
+                     use_clus_name = "spat_netw_clus",
+                     save_param = list(save_name = "27-heatmap_correlated_genes",
+                                       save_format = "pdf",
+                                       base_height = 6,
+                                       base_width = 8,
+                                       units = "cm"),
+                     heatmap_legend_param = list(title = NULL))
+```
+
+``` r
+
+# 4. rank spatial correlated clusters and show genes for selected clusters
+netw_ranks <- rankSpatialCorGroups(visium_lungcancer,
+                                   spatCorObject = spat_cor_netw_DT,
+                                   use_clus_name = "spat_netw_clus",
+                                   save_param = list(save_name = "28-rank_correlated_groups",
+                                                  base_height = 3, base_width = 5))
+
+top_netw_spat_cluster <- showSpatialCorFeats(spat_cor_netw_DT, 
+                                             use_clus_name = "spat_netw_clus",
+                                             selected_clusters = 6, 
+                                             show_top_feats = 1)
+```
+
+![](images/visium_cytassist_lungcancer/28-rank_correlated_groups.png)
+
+``` r
+
+# 5. create metagene enrichment score for clusters
+cluster_genes_DT <- showSpatialCorFeats(spat_cor_netw_DT, 
+                                        use_clus_name = "spat_netw_clus", 
+                                        show_top_feats = 1)
+
+cluster_genes <- cluster_genes_DT$clus 
+names(cluster_genes) <- cluster_genes_DT$feat_ID
+
+visium_lungcancer <- createMetafeats(visium_lungcancer, 
+                                     feat_clusters = cluster_genes, 
+                                     name = "cluster_metagene")
+
+showGiottoSpatEnrichments(visium_lungcancer)
+
+spatCellPlot(visium_lungcancer,
+             spat_enr_names = "cluster_metagene",
+             cell_annotation_values = netw_ranks$clusters,
+             point_size = 1.5, 
+             cow_n_col = 4)
+```
+
+![](images/visium_cytassist_lungcancer/29-spatCellPlot2D.png)
+
+## 12 HMRF Domains
+
+``` r
+
+# HMRF requires a fully connected network!
+visium_lungcancer <- createSpatialNetwork(gobject = visium_lungcancer, 
+                                          minimum_k = 2, 
+                                          name = "Delaunay_full")
+
+# spatial genes
+my_spatial_genes <- km_spatialfeats[1:100]$feats
+
+# do HMRF with different betas
+hmrf_folder <- file.path(results_dir, "HMRF_results")
+
+if(!file.exists(hmrf_folder)) dir.create(hmrf_folder, recursive = TRUE)
+
+# if Rscript is not found, you might have to create a symbolic link, e.g.
+# cd /usr/local/bin
+# sudo ln -s /Library/Frameworks/R.framework/Resources/Rscript Rscript
+HMRF_spatial_genes <- doHMRF(gobject = visium_lungcancer,
+                             expression_values = "scaled",
+                             spatial_network_name = "Delaunay_full",
+                             spatial_genes = my_spatial_genes,
+                             k = 5,
+                             betas = c(0, 10, 3),
+                             output_folder = file.path(hmrf_folder, "Spatial_genes/SG_topgenes_k5_scaled"))
+
+## alternative way to view HMRF results
+# results = writeHMRFresults(gobject = ST_test,
+#                            HMRFoutput = HMRF_spatial_genes,
+#                            k = 5, betas_to_view = seq(0, 25, by = 5))
+# ST_test = addCellMetadata(ST_test, new_metadata = results, by_column = T, column_cell_ID = "cell_ID")
+
+## add HMRF of interest to giotto object
+visium_lungcancer <- addHMRF(gobject = visium_lungcancer,
+                             HMRFoutput = HMRF_spatial_genes,
+                             k = 5, 
+                             betas_to_add = c(0,10,20),
+                             hmrf_name = "HMRF")
+
+showGiottoSpatEnrichments(visium_lungcancer)
+
+## visualize
+spatPlot(gobject = visium_lungcancer, 
+         cell_color = "HMRF_k5_b.0", 
+         point_size = 3)
+```
+
+![](images/visium_cytassist_lungcancer/30-spatPlot2D.png)
+
+``` r
+
+spatPlot(gobject = visium_lungcancer, 
+         cell_color = "HMRF_k5_b.10", 
+         point_size = 3)
+```
+
+![](images/visium_cytassist_lungcancer/31-spatPlot2D.png)
+
+## 13 Session info
+
+``` r
+
+sessionInfo()
+```
+
+``` r
+R version 4.4.0 (2024-04-24)
+Platform: x86_64-apple-darwin20
+Running under: macOS Sonoma 14.5
+
+Matrix products: default
+BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/New_York
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] Giotto_4.1.0      GiottoClass_0.3.4
+
+loaded via a namespace (and not attached):
+  [1] colorRamp2_0.1.0            deldir_2.0-4               
+  [3] rlang_1.1.4                 magrittr_2.0.3             
+  [5] clue_0.3-65                 GetoptLong_1.0.5           
+  [7] GiottoUtils_0.1.10          matrixStats_1.3.0          
+  [9] compiler_4.4.0              DelayedMatrixStats_1.26.0  
+ [11] systemfonts_1.1.0           png_0.1-8                  
+ [13] vctrs_0.6.5                 reshape2_1.4.4             
+ [15] stringr_1.5.1               shape_1.4.6.1              
+ [17] pkgconfig_2.0.3             SpatialExperiment_1.14.0   
+ [19] crayon_1.5.3                fastmap_1.2.0              
+ [21] backports_1.5.0             magick_2.8.4               
+ [23] XVector_0.44.0              labeling_0.4.3             
+ [25] scuttle_1.14.0              utf8_1.2.4                 
+ [27] rmarkdown_2.27              UCSC.utils_1.0.0           
+ [29] ragg_1.3.2                  purrr_1.0.2                
+ [31] bluster_1.14.0              xfun_0.46                  
+ [33] zlibbioc_1.50.0             beachmat_2.20.0            
+ [35] GenomeInfoDb_1.40.1         jsonlite_1.8.8             
+ [37] DelayedArray_0.30.1         BiocParallel_1.38.0        
+ [39] terra_1.7-78                cluster_2.1.6              
+ [41] irlba_2.3.5.1               parallel_4.4.0             
+ [43] R6_2.5.1                    stringi_1.8.4              
+ [45] RColorBrewer_1.1-3          limma_3.60.4               
+ [47] reticulate_1.38.0           GenomicRanges_1.56.1       
+ [49] scattermore_1.2             iterators_1.0.14           
+ [51] Rcpp_1.0.13                 SummarizedExperiment_1.34.0
+ [53] knitr_1.48                  IRanges_2.38.1             
+ [55] Matrix_1.7-0                igraph_2.0.3               
+ [57] tidyselect_1.2.1            rstudioapi_0.16.0          
+ [59] abind_1.4-5                 yaml_2.3.10                
+ [61] doParallel_1.0.17           codetools_0.2-20           
+ [63] lattice_0.22-6              tibble_3.2.1               
+ [65] plyr_1.8.9                  Biobase_2.64.0             
+ [67] withr_3.0.0                 evaluate_0.24.0            
+ [69] circlize_0.4.16             pillar_1.9.0               
+ [71] MatrixGenerics_1.16.0       foreach_1.5.2              
+ [73] checkmate_2.3.2             stats4_4.4.0               
+ [75] plotly_4.10.4               generics_0.1.3             
+ [77] dbscan_1.2-0                sp_2.1-4                   
+ [79] S4Vectors_0.42.1            ggplot2_3.5.1              
+ [81] sparseMatrixStats_1.16.0    munsell_0.5.1              
+ [83] scales_1.3.0                gtools_3.9.5               
+ [85] glue_1.7.0                  metapod_1.12.0             
+ [87] lazyeval_0.2.2              tools_4.4.0                
+ [89] GiottoVisuals_0.2.4         BiocNeighbors_1.22.0       
+ [91] data.table_1.15.4           ScaledMatrix_1.12.0        
+ [93] locfit_1.5-9.10             scran_1.32.0               
+ [95] Cairo_1.6-2                 cowplot_1.1.3              
+ [97] grid_4.4.0                  tidyr_1.3.1                
+ [99] edgeR_4.2.1                 colorspace_2.1-1           
+[101] SingleCellExperiment_1.26.0 GenomeInfoDbData_1.2.12    
+[103] BiocSingular_1.20.0         cli_3.6.3                  
+[105] rsvd_1.0.5                  textshaping_0.4.0          
+[107] fansi_1.0.6                 S4Arrays_1.4.1             
+[109] viridisLite_0.4.2           ComplexHeatmap_2.20.0      
+[111] dplyr_1.1.4                 gtable_0.3.5               
+[113] digest_0.6.36               progressr_0.14.0           
+[115] BiocGenerics_0.50.0         dqrng_0.4.1                
+[117] SparseArray_1.4.8           ggrepel_0.9.5              
+[119] farver_2.1.2                rjson_0.2.21               
+[121] htmlwidgets_1.6.4           htmltools_0.5.8.1          
+[123] lifecycle_1.0.4             httr_1.4.7                 
+[125] GlobalOptions_0.1.2         statmod_1.5.0
+```

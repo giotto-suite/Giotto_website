@@ -1,0 +1,222 @@
+# Create 10x VisiumHD Giotto Object from Binned Outputs
+
+Convenience function to create a Giotto object from a VisiumHD
+\`binned_outputs\` folder. Point \`binned_outputs_dir\` directly at the
+\`binned_outputs\` directory that contains the \`square\_???um\`
+subdirectories (or tar files). For lower-level loading of individual
+pieces of data, see \[importVisiumHD()\].
+
+## Usage
+
+``` r
+createGiottoVisiumHDObjectBin(
+  binned_outputs_dir,
+  bin = 8,
+  micron = FALSE,
+  load_expression = TRUE,
+  load_spatlocs = TRUE,
+  load_metadata = TRUE,
+  load_image = TRUE,
+  load_transcripts = FALSE,
+  create_tessellated_polys = FALSE,
+  tissue_only = FALSE,
+  barcodes = NULL,
+  array_subset_row = NULL,
+  array_subset_col = NULL,
+  pxl_subset_row = NULL,
+  pxl_subset_col = NULL,
+  filter = NULL,
+  filter_coverage_cutoff = 0.5,
+  expression_source = "raw",
+  feature_id_type = c("symbol", "ensembl"),
+  expression_remove_zero_rows = TRUE,
+  expression_split_by_type = TRUE,
+  image_type = "hires",
+  tessellate_shape = "hexagon",
+  tessellate_shape_size = 400,
+  tessellate_name = sprintf("%s%d", tessellate_shape,
+    as.integer(tessellate_shape_size)),
+  tissue_positions_path = NULL,
+  scalefactors_path = NULL,
+  expression_path = NULL,
+  image_path = NULL,
+  outdir = NULL,
+  force_untar = FALSE,
+  untar_params = list(),
+  instructions = NULL,
+  verbose = NULL
+)
+```
+
+## Arguments
+
+- binned_outputs_dir:
+
+  filepath to the VisiumHD \`binned_outputs\` directory
+
+- bin:
+
+  numeric. One of 2, 8, 16. Which binning resolution to load expression
+  and spatial locations from.
+
+- micron:
+
+  logical. Set \`TRUE\` to load in micron scale instead of fullres image
+  mapping.
+
+- load_expression:
+
+  logical. Whether to load in expression matrix.
+
+- load_spatlocs:
+
+  logical. Whether to load in spatial locations.
+
+- load_metadata:
+
+  logical. Whether to include array row/col and in_tissue metadata
+  information.
+
+- load_image:
+
+  logical. Whether to load in paired image information.
+
+- load_transcripts:
+
+  logical. Whether to load in bin 2 micron data as transcripts
+  information. Very memory expensive. Using \`filter\` or subsets on
+  array or pixel row/col is recommended.
+
+- create_tessellated_polys:
+
+  logical. Whether to generate tessellated polys across the dataset.
+
+- tissue_only:
+
+  logical. Whether to only load information tagged as \`in_tissue\` (in
+  \`tissue_positions.parquet\`). This is ignored by transcript loading.
+
+- barcodes:
+
+  character. Specific pixel barcodes to keep.
+
+- array_subset_row:
+
+  numeric vector, length = 2. Min/max of array rows to keep.
+
+- array_subset_col:
+
+  numeric vector, length = 2. Min/max of array cols to keep.
+
+- pxl_subset_row:
+
+  numeric vector, length = 2. Min/max of fullres image mapped rows to
+  keep. Note that values are inverted into the negatives.
+
+- pxl_subset_col:
+
+  numeric vector, length = 2. Min/max of fullres image mapped cols to
+  keep.
+
+- filter:
+
+  a \`SpatVector\`, \`sf\`, or \`giottoPolygon\` to spatially filter the
+  data by.
+
+- filter_coverage_cutoff:
+
+  numeric between 0 and 1. Minimal fraction of pixel coverage by
+  \`filter\` in order to be selected.
+
+- expression_source:
+
+  character. One of \`"raw"\` or \`"filtered"\`. Designates whether to
+  pull expression values from raw or filtered matrix outputs.
+
+- feature_id_type:
+
+  character. One of \`"symbol"\` or \`"ensembl"\`. Determines which to
+  use as the feature identifiers.
+
+- expression_remove_zero_rows:
+
+  logical (default = \`TRUE\`). Whether to remove features with no
+  detections.
+
+- expression_split_by_type:
+
+  logical (default = \`TRUE\`). Whether to split expression information
+  by feature types in the dataset.
+
+- image_type:
+
+  character. One of \`"hires"\` (default) or \`"lowres"\`. Determines
+  which image output to load. Ignored if \`image_path\` is provided.
+
+- tessellate_shape:
+
+  character. One of \`"hexagon"\` or \`"square"\`. Shape of poly to
+  tessellate if \`create_tessellated_polys = TRUE\`.
+
+- tessellate_shape_size:
+
+  numeric. Size of shape to tessellate (see
+  \[GiottoClass::tessellate()\]).
+
+- tessellate_name:
+
+  name of tessellated polygons to create.
+
+- tissue_positions_path:
+
+  (optional) filepath to \`tissue_positions.parquet\`.
+
+- scalefactors_path:
+
+  (optional) filepath to \`scalefactors_json.json\`.
+
+- expression_path:
+
+  (optional) filepath to .h5 or matrix market directory.
+
+- image_path:
+
+  (optional) filepath to image to use.
+
+- outdir:
+
+  (optional) directory to unpack bin output tar contents into. (Default
+  is the same directory as the tarfile.)
+
+- force_untar:
+
+  logical. Whether to force a untarring operation.
+
+- untar_params:
+
+  list. Additional named params to pass to \[untar()\].
+
+- instructions:
+
+  giotto instructions to apply.
+
+- verbose:
+
+  verbosity
+
+## Value
+
+giotto object
+
+## See also
+
+\[importVisiumHD()\] \[createGiottoVisiumHDObjectCell()\]
+
+## Examples
+
+``` r
+if (FALSE) {
+binned_dir <- "path/to/visiumhd/binned_outputs"
+g <- createGiottoVisiumHDObjectBin(binned_dir, tissue_only = TRUE, bin = 16)
+}
+```

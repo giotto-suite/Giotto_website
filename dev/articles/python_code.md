@@ -1,0 +1,62 @@
+# Python code
+
+To use Python code we prefer to create a python wrapper/functions around
+the python code, which can then be sourced by *reticulate*. As an
+example we show the basic principles of how we implemented the Leiden
+clustering algorithm in Giotto.
+
+## 1 Write python wrapper
+
+Write python wrapper (below) and store as `python_leiden.py` in
+`/inst/python`:
+
+``` python
+import igraph as ig 
+import leidenalg as la 
+import pandas as pd
+import networkx as nx
+
+def python_leiden(df, partition_type, initial_membership=None, weights=None, n_iterations=2, seed=None, resolution_parameter = 1):
+    
+    # create networkx object
+    Gx = nx.from_pandas_edgelist(df = df, source = 'from', target =  'to', edge_attr = 'weight')  
+
+    # get weight attribute
+    myweights = nx.get_edge_attributes(Gx, 'weight')
+
+    ....
+
+    return(leiden_dfr)
+```
+
+## 2 Source python code with reticulate
+
+``` r
+
+py_leiden_filepath = system.file("python", "python_leiden.py", package = 'Giotto')
+reticulate::source_python(file = py_leiden_filepath)
+```
+
+## 3 Use the python code as R code
+
+The function name is the same as that defined in the python script. See
+`doLeidenCLuster()` for more detailed information.
+
+``` r
+
+pyth_leid_result = python_leiden(
+    df = network_edge_dt,
+    partition_type = partition_type, 
+    initial_membership = init_membership, 
+    weights = 'weight', 
+    n_iterations = n_iterations,
+    seed = seed_number, 
+    resolution_parameter = resolution
+)
+```
+
+## 4 Add the python function name
+
+Add the python function name to the
+[`globalVariables()`](https://rdrr.io/r/utils/globalVariables.html) call
+under `globals.R` so that it does not get flagged by `devtools::check()`

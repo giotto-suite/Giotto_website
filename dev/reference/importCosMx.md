@@ -1,0 +1,108 @@
+# Import a Nanostring CosMx Assay
+
+Giotto import functionalities for CosMx datasets. This function
+generates a \`CosmxReader\` instance that has convenient reader
+functions for converting individual pieces of CosMx data into
+Giotto-compatible representations when the params \`cosmx_dir\` and
+\`fovs\` (if only a subset is desired) are provided. A function that
+creates the full \`giotto\` object is also available. These functions
+should have all param values provided as defaults, but can be flexibly
+modified to do things such as look in alternative directories or paths.
+
+## Usage
+
+``` r
+importCosMx(
+  cosmx_dir = NULL,
+  slide = 1,
+  fovs = NULL,
+  micron = FALSE,
+  px2um = 0.12028,
+  poly_pref = "mask"
+)
+```
+
+## Arguments
+
+- cosmx_dir:
+
+  CosMx output directory
+
+- slide:
+
+  numeric. Slide number. Defaults to 1
+
+- fovs:
+
+  numeric. (optional) If provided, will load specific fovs. Otherwise,
+  all FOVs will be loaded
+
+- micron:
+
+  logical. Whether to scale spatial information as micron instead of the
+  default pixels
+
+- px2um:
+
+  numeric. Scalefactor from pixels to micron. Defaults to 0.12028 based
+  on \`CosMx-ReadMe.html\` info. May be different depending on dataset.
+
+- poly_pref:
+
+  character. Either "csv" (default) or "mask". Which format of data to
+  load as polygon info. "csv" will use vector polygons from the
+  \`polygons.csv\`. "mask" will load the mask images from \`CellLabels\`
+  directory.
+
+## Value
+
+CosmxReader object
+
+## Details
+
+Loading functions are generated after the \`cosmx_dir\` is added.
+Transcripts, expression, and metadata loading are all expected to be
+done from the top level of the directory. Loading of polys, and any
+image sets are expected to be from specific subdirectories containing
+only those images for the set of FOVs.
+
+## Examples
+
+``` r
+# Create a `CosmxReader` object
+reader <- importCosMx()
+
+if (FALSE) { # \dontrun{
+# Set the cosmx_dir and fov parameters
+path <- "path/to/cosmx/dir"
+reader$cosmx_dir <- path
+reader$fov <- c(1, 4)
+
+plot(reader) # displays FOVs (top left corner) in px scale.
+
+# Load polygons, transcripts, and images
+polys <- reader$load_polys()
+tx <- reader$load_transcripts()
+imgs <- reader$load_images()
+
+# polygons (mask) and images loading supports multiple filepaths
+# This can be useful when loading AtoMx outputs
+polys <- reader$load_polys(path = list.files(path,
+    pattern = "CellLabels_F",
+    recursive = TRUE,
+    full.names = TRUE
+))
+imgs <- reader$load_images(path = list.files(path,
+    pattern = "Composite_F",
+    recursive = TRUE,
+    full.names = TRUE
+))
+
+# Create a `giotto` object and add the loaded data
+g <- giotto()
+g <- setGiotto(g, tx[["rna"]])
+g <- setGiotto(g, polys)
+g <- addGiottoLargeImage(g, largeImages = imgs)
+force(g)
+} # }
+```

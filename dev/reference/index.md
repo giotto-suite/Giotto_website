@@ -1,0 +1,1177 @@
+# Package index
+
+## Giotto Environment
+
+Install and work with Giotto Python Environment.
+
+- [`checkGiottoEnvironment()`](https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html)
+  [`installGiottoEnvironment()`](https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html)
+  [`removeGiottoEnvironment()`](https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html)
+  [`set_giotto_python_path()`](https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html)
+  : Giotto python environment (from GiottoClass)
+- [`checkGiottoEnvironment()`](https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html)
+  [`installGiottoEnvironment()`](https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html)
+  [`removeGiottoEnvironment()`](https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html)
+  [`set_giotto_python_path()`](https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html)
+  : Giotto python environment (from GiottoClass)
+- [`checkGiottoEnvironment()`](https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html)
+  [`installGiottoEnvironment()`](https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html)
+  [`removeGiottoEnvironment()`](https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html)
+  [`set_giotto_python_path()`](https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html)
+  : Giotto python environment (from GiottoClass)
+
+## Giotto Instructions
+
+Create or change Giotto instructions.
+
+- [`createGiottoInstructions()`](https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html)
+  [`instructions(`*`<missing>`*`,`*`<missing>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html)
+  [`instructions(`*`<giotto>`*`,`*`<missing>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html)
+  [`instructions(`*`<giotto>`*`,`*`<character>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html)
+  [`instructions(`*`<giottoInstructions>`*`,`*`<character>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html)
+  [`` `instructions<-`( ``*`<giotto>`*`,`*`<missing>`*`,`*`<missing>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html)
+  [`` `instructions<-`( ``*`<giotto>`*`,`*`<missing>`*`,`*`<logical>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html)
+  [`` `instructions<-`( ``*`<giotto>`*`,`*`<character>`*`,`*`<missing>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html)
+  [`` `instructions<-`( ``*`<giotto>`*`,`*`<character>`*`,`*`<logical>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html)
+  [`` `instructions<-`( ``*`<giottoInstructions>`*`,`*`<character>`*`,`*`<ANY>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html)
+  : Giotto instructions (from GiottoClass)
+- [`createGiottoInstructions()`](https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html)
+  [`instructions(`*`<missing>`*`,`*`<missing>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html)
+  [`instructions(`*`<giotto>`*`,`*`<missing>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html)
+  [`instructions(`*`<giotto>`*`,`*`<character>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html)
+  [`instructions(`*`<giottoInstructions>`*`,`*`<character>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html)
+  [`` `instructions<-`( ``*`<giotto>`*`,`*`<missing>`*`,`*`<missing>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html)
+  [`` `instructions<-`( ``*`<giotto>`*`,`*`<missing>`*`,`*`<logical>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html)
+  [`` `instructions<-`( ``*`<giotto>`*`,`*`<character>`*`,`*`<missing>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html)
+  [`` `instructions<-`( ``*`<giotto>`*`,`*`<character>`*`,`*`<logical>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html)
+  [`` `instructions<-`( ``*`<giottoInstructions>`*`,`*`<character>`*`,`*`<ANY>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html)
+  : Giotto instructions (from GiottoClass)
+
+## Import Raw Data
+
+Functions to help to import raw spatial data.
+
+- [`getSpatialDataset()`](https://giotto-suite.github.io/GiottoData/reference/getSpatialDataset.html)
+  : getSpatialDataset (from GiottoData)
+- [`readExprMatrix()`](https://giotto-suite.github.io/GiottoClass/reference/readExprMatrix.html)
+  : Read expression matrix (from GiottoClass)
+- [`get10Xmatrix()`](https://giottosuite.com/dev/reference/get10Xmatrix.md)
+  : get10Xmatrix
+- [`get10Xmatrix_h5()`](https://giottosuite.com/dev/reference/get10Xmatrix_h5.md)
+  : get10Xmatrix_h5
+- [`stitchFieldCoordinates()`](https://giotto-suite.github.io/GiottoClass/reference/stitchFieldCoordinates.html)
+  : stitchFieldCoordinates (from GiottoClass)
+- [`stitchTileCoordinates()`](https://giotto-suite.github.io/GiottoClass/reference/stitchTileCoordinates.html)
+  : stitchTileCoordinates (from GiottoClass)
+- [`readPolygonFilesVizgen()`](https://giottosuite.com/dev/reference/readPolygonFilesVizgen.md)
+  [`.h5_read_vizgen()`](https://giottosuite.com/dev/reference/readPolygonFilesVizgen.md)
+  : readPolygonFilesVizgen
+- [`readPolygonFilesVizgenHDF5()`](https://giottosuite.com/dev/reference/readPolygonFilesVizgenHDF5.md)
+  : readPolygonFilesVizgenHDF5
+- [`readPolygonVizgenParquet()`](https://giottosuite.com/dev/reference/readPolygonVizgenParquet.md)
+  : Read MERSCOPE polygons from parquet
+- [`getGEFtxCoords()`](https://giottosuite.com/dev/reference/getGEFtxCoords.md)
+  : getGEFtxCoords
+
+## Images
+
+Functions to work with images for a Giotto object.
+
+- [`estimateImageBg()`](https://giotto-suite.github.io/GiottoClass/reference/estimateImageBg.html)
+  : estimateImageBg (from GiottoClass)
+- [`changeImageBg()`](https://giotto-suite.github.io/GiottoClass/reference/changeImageBg.html)
+  : changeImageBg (from GiottoClass)
+- [`createGiottoImage()`](https://giotto-suite.github.io/GiottoClass/reference/createGiottoImage.html)
+  : createGiottoImage (from GiottoClass)
+- [`addGiottoImage()`](https://giotto-suite.github.io/GiottoClass/reference/addGiottoImage.html)
+  : addGiottoImage (from GiottoClass)
+- [`addGiottoImageToSpatPlot()`](https://giotto-suite.github.io/GiottoVisuals/reference/addGiottoImageToSpatPlot.html)
+  : addGiottoImageToSpatPlot (from GiottoVisuals)
+- [`showGiottoImageNames()`](https://giotto-suite.github.io/GiottoClass/reference/showGiottoImageNames.html)
+  : showGiottoImageNames (from GiottoClass)
+- [`updateGiottoImage()`](https://giotto-suite.github.io/GiottoClass/reference/updateGiottoImage.html)
+  : updateGiottoImage (from GiottoClass)
+- [`getGiottoImage()`](https://giotto-suite.github.io/GiottoClass/reference/getGiottoImage.html)
+  : Get giotto image object (from GiottoClass)
+- [`plotGiottoImage()`](https://giotto-suite.github.io/GiottoClass/reference/plotGiottoImage.html)
+  : Plot a giotto image object (from GiottoClass)
+- [`setGiottoImage()`](https://giotto-suite.github.io/GiottoClass/reference/setGiottoImage.html)
+  : Set giotto image object (from GiottoClass)
+- [`addGiottoLargeImage()`](https://giotto-suite.github.io/GiottoClass/reference/addGiottoLargeImage.html)
+  : addGiottoLargeImage (from GiottoClass)
+- [`createGiottoLargeImage()`](https://giotto-suite.github.io/GiottoClass/reference/createGiottoLargeImage.html)
+  : createGiottoLargeImage (from GiottoClass)
+- [`createGiottoLargeImageList()`](https://giotto-suite.github.io/GiottoClass/reference/createGiottoLargeImageList.html)
+  : createGiottoLargeImageList (from GiottoClass)
+- [`createMerscopeLargeImage()`](https://giottosuite.com/dev/reference/createMerscopeLargeImage.md)
+  : Create Vizgen MERSCOPE largeImage
+- [`cropGiottoLargeImage()`](https://giotto-suite.github.io/GiottoClass/reference/cropGiottoLargeImage.html)
+  : Crop a giotto largeImage object (from GiottoClass)
+- [`updateGiottoLargeImage()`](https://giotto-suite.github.io/GiottoClass/reference/updateGiottoLargeImage.html)
+  : updateGiottoLargeImage (from GiottoClass)
+- [`writeGiottoLargeImage()`](https://giotto-suite.github.io/GiottoClass/reference/writeGiottoLargeImage.html)
+  : writeGiottoLargeImage (from GiottoClass)
+- [`stitchGiottoLargeImage()`](https://giotto-suite.github.io/GiottoClass/reference/stitchGiottoLargeImage.html)
+  : Stitch multiple giottoLargeImage objects into a single
+  giottoLargeImage object (from GiottoClass)
+- [`convertGiottoLargeImageToMG()`](https://giotto-suite.github.io/GiottoClass/reference/convertGiottoLargeImageToMG.html)
+  : convertGiottoLargeImageToMG (from GiottoClass)
+- [`addGiottoImageMG()`](https://giotto-suite.github.io/GiottoClass/reference/addGiottoImageMG.html)
+  : addGiottoImageMG (from GiottoClass)
+- [`updateGiottoImageMG()`](https://giotto-suite.github.io/GiottoClass/reference/updateGiottoImageMG.html)
+  : updateGiottoImageMG (from GiottoClass)
+- [`distGiottoImage()`](https://giotto-suite.github.io/GiottoClass/reference/distGiottoImage.html)
+  : Plot distribution of image intensity values (from GiottoClass)
+- [`reconnectGiottoImage()`](https://giotto-suite.github.io/GiottoClass/reference/reconnectGiottoImage.html)
+  : Reconnect images with dead pointers (from GiottoClass)
+- [`registerImagesFIJI()`](https://giottosuite.com/dev/reference/registerImagesFIJI.md)
+  : registerImagesFIJI
+- [`registerGiottoObjectList()`](https://giottosuite.com/dev/reference/registerGiottoObjectList.md)
+  : registerGiottoObjectList
+- [`registerGiottoObjectListFiji()`](https://giottosuite.com/dev/reference/registerGiottoObjectListFiji.md)
+  : registerGiottoObjectListFiji
+- [`registerGiottoObjectListRvision()`](https://giottosuite.com/dev/reference/registerGiottoObjectListRvision.md)
+  : registerGiottoObjectListRvision
+- [`estimateAutomatedImageRegistrationWithSIFT()`](https://giottosuite.com/dev/reference/estimateAutomatedImageRegistrationWithSIFT.md)
+  : Estimate Automated ImageRegistration With SIFT
+- [`.sift_detect()`](https://giottosuite.com/dev/reference/dot-sift_detect.md)
+  : Run SIFT feature detector and descriptor extractor
+- [`.warp_transformed_image()`](https://giottosuite.com/dev/reference/dot-warp_transformed_image.md)
+  : Warp transformed images from estimated transformation
+- [`.estimate_transform_from_matched_descriptor()`](https://giottosuite.com/dev/reference/dot-estimate_transform_from_matched_descriptor.md)
+  : Estimate affine transformation from matched descriptor
+- [`.match_descriptor()`](https://giottosuite.com/dev/reference/dot-match_descriptor.md)
+  : Match image descriptors
+- [`.plot_matched_descriptors()`](https://giottosuite.com/dev/reference/dot-plot_matched_descriptors.md)
+  : plot matched descriptors
+- [`preprocessImageToMatrix()`](https://giottosuite.com/dev/reference/preprocessImageToMatrix.md)
+  : Preprocess from image directory to the required matrix format for
+  Image registration pipeline built on scikit-image
+
+## Giotto Object
+
+Functions to help to import raw spatial data.
+
+- [`createGiottoObject()`](https://giotto-suite.github.io/GiottoClass/reference/create_giotto.html)
+  [`createGiottoObjectSubcellular()`](https://giotto-suite.github.io/GiottoClass/reference/create_giotto.html)
+  : Create a giotto object (from GiottoClass)
+- [`createGiottoCosMxObject()`](https://giottosuite.com/dev/reference/createGiottoCosMxObject.md)
+  : Create Nanostring CosMx Giotto Object
+- [`createGiottoMerscopeObject()`](https://giottosuite.com/dev/reference/createGiottoMerscopeObject.md)
+  [`.createGiottoMerscopeObject_subcellular()`](https://giottosuite.com/dev/reference/createGiottoMerscopeObject.md)
+  [`.createGiottoMerscopeObject_aggregate()`](https://giottosuite.com/dev/reference/createGiottoMerscopeObject.md)
+  : Create Vizgen MERSCOPE Giotto Object
+- [`createGiottoStereoSeqObject()`](https://giottosuite.com/dev/reference/createGiottoStereoSeqObject.md)
+  : Create Stereo-seq Giotto Object
+- [`createGiottoStereoSeqObjectBin()`](https://giottosuite.com/dev/reference/createGiottoStereoSeqObjectBin.md)
+  : Create Stereo-seq Giotto Object from Square Bin Data
+- [`createGiottoStereoSeqObjectCell()`](https://giottosuite.com/dev/reference/createGiottoStereoSeqObjectCell.md)
+  : Create Stereo-seq Giotto Object from Cell Bin Data
+- [`createGiottoVisiumObject()`](https://giottosuite.com/dev/reference/createGiottoVisiumObject.md)
+  : Create a giotto object from 10x visium data
+- [`createGiottoVisiumHDObject()`](https://giottosuite.com/dev/reference/createGiottoVisiumHDObject.md)
+  : deprecated
+- [`createGiottoVisiumHDObjectBin()`](https://giottosuite.com/dev/reference/createGiottoVisiumHDObjectBin.md)
+  : Create 10x VisiumHD Giotto Object from Binned Outputs
+- [`createGiottoVisiumHDObjectCell()`](https://giottosuite.com/dev/reference/createGiottoVisiumHDObjectCell.md)
+  : Create 10x VisiumHD Giotto Object from Segmented Outputs
+- [`createGiottoXeniumObject()`](https://giottosuite.com/dev/reference/createGiottoXeniumObject.md)
+  : Create 10x Xenium Giotto Object
+- [`createGiottoObject()`](https://giotto-suite.github.io/GiottoClass/reference/create_giotto.html)
+  [`createGiottoObjectSubcellular()`](https://giotto-suite.github.io/GiottoClass/reference/create_giotto.html)
+  : Create a giotto object (from GiottoClass)
+- [`createGiottoObjectfromArchR()`](https://giottosuite.com/dev/reference/createGiottoObjectfromArchR.md)
+  : Create a Giotto object from an ArchR project
+- [`createArchRProj()`](https://giottosuite.com/dev/reference/createArchRProj.md)
+  : Create an ArchR project and run LSI dimension reduction
+- [`importCosMx()`](https://giottosuite.com/dev/reference/importCosMx.md)
+  : Import a Nanostring CosMx Assay
+- [`importStereoSeq()`](https://giottosuite.com/dev/reference/importStereoSeq.md)
+  [`plot(`*`<StereoSeqReader>`*`,`*`<missing>`*`)`](https://giottosuite.com/dev/reference/importStereoSeq.md)
+  : Import a Stereo-seq assay
+- [`importVisiumHD()`](https://giottosuite.com/dev/reference/importVisiumHD.md)
+  [`plot(`*`<VisiumHDReader>`*`,`*`<missing>`*`)`](https://giottosuite.com/dev/reference/importVisiumHD.md)
+  : Import a Visium HD assay
+- [`importXenium()`](https://giottosuite.com/dev/reference/importXenium.md)
+  : Import a 10X Xenium Assay
+- [`readPolygonFilesVizgenHDF5_old()`](https://giottosuite.com/dev/reference/readPolygonFilesVizgenHDF5_old.md)
+  : readPolygonFilesVizgenHDF5
+- [`read10xAffineImage()`](https://giottosuite.com/dev/reference/read10xAffineImage.md)
+  : read10xAffineImage
+
+## Load and Save Giotto Object
+
+Functions to help loading and saving a giotto object from and to a local
+folder.
+
+- [`loadGiotto()`](https://giotto-suite.github.io/GiottoClass/reference/loadGiotto.html)
+  : loadGiotto (from GiottoClass)
+- [`saveGiotto()`](https://giotto-suite.github.io/GiottoClass/reference/saveGiotto.html)
+  : saveGiotto (from GiottoClass)
+
+## Giotto Helper Functions
+
+Common functions to help working with Giotto objects.
+
+- [`pDataDT()`](https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html)
+  : pDataDT (from GiottoClass)
+- [`fDataDT()`](https://giotto-suite.github.io/GiottoClass/reference/fDataDT.html)
+  : fDataDT (from GiottoClass)
+- [`showProcessingSteps()`](https://giotto-suite.github.io/GiottoClass/reference/showProcessingSteps.html)
+  : showProcessingSteps (from GiottoClass)
+- [`calculateMetaTable()`](https://giotto-suite.github.io/GiottoClass/reference/calculateMetaTable.html)
+  : calculateMetaTable (from GiottoClass)
+- [`calculateMetaTableCells()`](https://giotto-suite.github.io/GiottoClass/reference/calculateMetaTableCells.html)
+  : calculateMetaTableCells (from GiottoClass)
+- [`createMetafeats()`](https://giotto-suite.github.io/GiottoClass/reference/createMetafeats.html)
+  : createMetafeats (from GiottoClass)
+- [`findNetworkNeighbors()`](https://giottosuite.com/dev/reference/findNetworkNeighbors.md)
+  : Find network neighbors
+- [`objHistory()`](https://giotto-suite.github.io/GiottoClass/reference/objHistory.html)
+  : Giotto object history (from GiottoClass)
+- [`fiji()`](https://giottosuite.com/dev/reference/runFijiMacro.md) :
+  Find Fiji location
+
+## Report Extractors
+
+Functions to extract report tables of information
+
+- [`spatValues()`](https://giotto-suite.github.io/GiottoClass/reference/spatValues.html)
+  [`svkey()`](https://giotto-suite.github.io/GiottoClass/reference/spatValues.html)
+  : Giotto object spatial values (from GiottoClass)
+- [`combineCellData()`](https://giotto-suite.github.io/GiottoClass/reference/combineCellData.html)
+  : combineCellData (from GiottoClass)
+- [`combineFeatureData()`](https://giotto-suite.github.io/GiottoClass/reference/combineFeatureData.html)
+  : combineFeatureData (from GiottoClass)
+- [`combineMetadata()`](https://giotto-suite.github.io/GiottoClass/reference/combineMetadata.html)
+  : combineMetadata (from GiottoClass)
+- [`combineSpatialCellMetadataInfo()`](https://giotto-suite.github.io/GiottoClass/reference/combineSpatialCellMetadataInfo.html)
+  : combineSpatialCellMetadataInfo (from GiottoClass)
+- [`combineFeatureOverlapData()`](https://giotto-suite.github.io/GiottoClass/reference/combineFeatureOverlapData.html)
+  : combineFeatureOverlapData (from GiottoClass)
+
+## Giotto Getters & Setters
+
+Low level functions to get, set and show Giotto slots.
+
+- [`getExpression()`](https://giotto-suite.github.io/GiottoClass/reference/getExpression.html)
+  : Get expression values (from GiottoClass)
+- [`setExpression()`](https://giotto-suite.github.io/GiottoClass/reference/setExpression.html)
+  : Set expression data (from GiottoClass)
+- [`getSpatialLocations()`](https://giotto-suite.github.io/GiottoClass/reference/getSpatialLocations.html)
+  : Get spatial locations (from GiottoClass)
+- [`setSpatialLocations()`](https://giotto-suite.github.io/GiottoClass/reference/setSpatialLocations.html)
+  : Set spatial locations (from GiottoClass)
+- [`getDimReduction()`](https://giotto-suite.github.io/GiottoClass/reference/getDimReduction.html)
+  : Get dimension reduction (from GiottoClass)
+- [`setDimReduction()`](https://giotto-suite.github.io/GiottoClass/reference/setDimReduction.html)
+  : Set dimension reduction data (from GiottoClass)
+- [`getNearestNetwork()`](https://giotto-suite.github.io/GiottoClass/reference/getNearestNetwork.html)
+  : Get nearest neighbor network (from GiottoClass)
+- [`setNearestNetwork()`](https://giotto-suite.github.io/GiottoClass/reference/setNearestNetwork.html)
+  : Set nearest neighbor network (from GiottoClass)
+- [`getSpatialNetwork()`](https://giotto-suite.github.io/GiottoClass/reference/getSpatialNetwork.html)
+  : Get spatial network (from GiottoClass)
+- [`setSpatialNetwork()`](https://giotto-suite.github.io/GiottoClass/reference/setSpatialNetwork.html)
+  : Set spatial network (from GiottoClass)
+- [`getSpatialGrid()`](https://giotto-suite.github.io/GiottoClass/reference/getSpatialGrid.html)
+  : Get spatial grid (from GiottoClass)
+- [`setSpatialGrid()`](https://giotto-suite.github.io/GiottoClass/reference/setSpatialGrid.html)
+  : Set spatial grid (from GiottoClass)
+- [`getPolygonInfo()`](https://giotto-suite.github.io/GiottoClass/reference/getPolygonInfo.html)
+  : Get polygon info (from GiottoClass)
+- [`setPolygonInfo()`](https://giotto-suite.github.io/GiottoClass/reference/setPolygonInfo.html)
+  : Set polygon info (from GiottoClass)
+- [`getFeatureInfo()`](https://giotto-suite.github.io/GiottoClass/reference/getFeatureInfo.html)
+  : Get feature info (from GiottoClass)
+- [`setFeatureInfo()`](https://giotto-suite.github.io/GiottoClass/reference/setFeatureInfo.html)
+  : Set feature info (from GiottoClass)
+- [`getFeatureMetadata()`](https://giotto-suite.github.io/GiottoClass/reference/getFeatureMetadata.html)
+  : getFeatureMetadata (from GiottoClass)
+- [`setFeatureMetadata()`](https://giotto-suite.github.io/GiottoClass/reference/setFeatureMetadata.html)
+  : Set feature metadata (from GiottoClass)
+- [`getSpatialEnrichment()`](https://giotto-suite.github.io/GiottoClass/reference/getSpatialEnrichment.html)
+  : Get spatial enrichment (from GiottoClass)
+- [`setSpatialEnrichment()`](https://giotto-suite.github.io/GiottoClass/reference/setSpatialEnrichment.html)
+  : Set spatial enrichment (from GiottoClass)
+- [`getCellMetadata()`](https://giotto-suite.github.io/GiottoClass/reference/getCellMetadata.html)
+  : getCellMetadata (from GiottoClass)
+- [`setCellMetadata()`](https://giotto-suite.github.io/GiottoClass/reference/setCellMetadata.html)
+  : Set cell metadata (from GiottoClass)
+- [`getMultiomics()`](https://giotto-suite.github.io/GiottoClass/reference/getMultiomics.html)
+  : Get multiomics integration results (from GiottoClass)
+- [`setMultiomics()`](https://giotto-suite.github.io/GiottoClass/reference/setMultiomics.html)
+  : Set multiomics integration results (from GiottoClass)
+
+## Giotto Show Slots
+
+Show what is available in different information slots.
+
+- [`showGiottoExpression()`](https://giotto-suite.github.io/GiottoClass/reference/showGiottoExpression.html)
+  : showGiottoExpression (from GiottoClass)
+- [`showGiottoCellMetadata()`](https://giotto-suite.github.io/GiottoClass/reference/showGiottoCellMetadata.html)
+  : showGiottoCellMetadata (from GiottoClass)
+- [`showGiottoDimRed()`](https://giotto-suite.github.io/GiottoClass/reference/showGiottoDimRed.html)
+  : showGiottoDimRed (from GiottoClass)
+- [`showGiottoFeatInfo()`](https://giotto-suite.github.io/GiottoClass/reference/showGiottoFeatInfo.html)
+  : showGiottoFeatInfo (from GiottoClass)
+- [`showGiottoFeatMetadata()`](https://giotto-suite.github.io/GiottoClass/reference/showGiottoFeatMetadata.html)
+  : showGiottoFeatMetadata (from GiottoClass)
+- [`showGiottoImageNames()`](https://giotto-suite.github.io/GiottoClass/reference/showGiottoImageNames.html)
+  : showGiottoImageNames (from GiottoClass)
+- [`showGiottoInstructions()`](https://giotto-suite.github.io/GiottoClass/reference/showGiottoInstructions.html)
+  : deprecated (from GiottoClass)
+- [`showGiottoNearestNetworks()`](https://giotto-suite.github.io/GiottoClass/reference/showGiottoNearestNetworks.html)
+  : showGiottoNearestNetworks (from GiottoClass)
+- [`showGiottoSpatEnrichments()`](https://giotto-suite.github.io/GiottoClass/reference/showGiottoSpatEnrichments.html)
+  : showGiottoSpatEnrichments (from GiottoClass)
+- [`showGiottoSpatGrids()`](https://giotto-suite.github.io/GiottoClass/reference/showGiottoSpatGrids.html)
+  : showGiottoSpatGrids (from GiottoClass)
+- [`showGiottoSpatialInfo()`](https://giotto-suite.github.io/GiottoClass/reference/showGiottoSpatialInfo.html)
+  : showGiottoSpatialInfo (from GiottoClass)
+- [`showGiottoSpatLocs()`](https://giotto-suite.github.io/GiottoClass/reference/showGiottoSpatLocs.html)
+  : showGiottoSpatLocs (from GiottoClass)
+- [`showGiottoSpatNetworks()`](https://giotto-suite.github.io/GiottoClass/reference/showGiottoSpatNetworks.html)
+  : showGiottoSpatNetworks (from GiottoClass)
+- [`showGrids()`](https://giotto-suite.github.io/GiottoClass/reference/showGrids.html)
+  : Show Spatial Grids (from GiottoClass)
+- [`showNetworks()`](https://giotto-suite.github.io/GiottoClass/reference/showNetworks.html)
+  : Show networks (from GiottoClass)
+- [`showPattern()`](https://giottosuite.com/dev/reference/showPattern.md)
+  : showPattern
+- [`showPattern2D()`](https://giottosuite.com/dev/reference/showPattern2D.md)
+  : showPattern2D
+- [`showPattern3D()`](https://giottosuite.com/dev/reference/showPattern3D.md)
+  : showPattern3D
+- [`showPatternGenes()`](https://giottosuite.com/dev/reference/showPatternGenes.md)
+  : showPatternGenes
+
+## Data Processing
+
+Data Processing Functions
+
+- [`filterGiotto()`](https://giottosuite.com/dev/reference/filterGiotto.md)
+  : filterGiotto
+- [`filterCombinations()`](https://giottosuite.com/dev/reference/filterCombinations.md)
+  : filterCombinations
+- [`filterDistributions()`](https://giottosuite.com/dev/reference/filterDistributions.md)
+  : filterDistributions
+- [`normalizeGiotto()`](https://giottosuite.com/dev/reference/normalizeGiotto.md)
+  : normalizeGiotto
+- [`adjustGiottoMatrix()`](https://giottosuite.com/dev/reference/adjustGiottoMatrix.md)
+  : Adjust expression values
+- [`normParam()`](https://giottosuite.com/dev/reference/process_param.md)
+  [`scaleParam()`](https://giottosuite.com/dev/reference/process_param.md)
+  [`adjustParam()`](https://giottosuite.com/dev/reference/process_param.md)
+  [`thresholdParam()`](https://giottosuite.com/dev/reference/process_param.md)
+  : Data Processing Parameter Classes
+- [`norm_default`](https://giottosuite.com/dev/reference/norm_default.md)
+  : Default Giotto Normalization
+- [`norm_library`](https://giottosuite.com/dev/reference/norm_library.md)
+  : Library Size Normalization
+- [`norm_log`](https://giottosuite.com/dev/reference/norm_log.md) : Log
+  Normalization
+- [`norm_arcsinh`](https://giottosuite.com/dev/reference/norm_arcsinh.md)
+  : Arcsinh Normalization
+- [`norm_pearson`](https://giottosuite.com/dev/reference/norm_pearson.md)
+  : Lause/Kobak Pearson Residuals Normalization
+- [`norm_osmfish`](https://giottosuite.com/dev/reference/norm_osmfish.md)
+  : osmFISH Normalization
+- [`norm_quantile`](https://giottosuite.com/dev/reference/norm_quantile.md)
+  : Quantile Normalization
+- [`norm_tfidf`](https://giottosuite.com/dev/reference/norm_tfidf.md) :
+  TF-IDF Normalization
+- [`norm_l2`](https://giottosuite.com/dev/reference/norm_l2.md) : L2
+  Normalization
+- [`scale_default`](https://giottosuite.com/dev/reference/scale_default.md)
+  : Default Giotto Scaling
+- [`scale_zscore`](https://giottosuite.com/dev/reference/scale_zscore.md)
+  : Z Score Scaling
+- [`threshold_binarize`](https://giottosuite.com/dev/reference/threshold_binarize.md)
+  : Data Binarization
+- [`threshold_minmax`](https://giottosuite.com/dev/reference/threshold_minmax.md)
+  : Value MinMax Restriction/Clamping
+- [`adjust_limma`](https://giottosuite.com/dev/reference/adjust_limma.md)
+  : Limma Batch Correction
+- [`processExpression()`](https://giottosuite.com/dev/reference/processExpression.md)
+  : Expression Data Processing
+- [`processData(`*`<giottoLargeImage>`*`,`*`<list>`*`)`](https://giottosuite.com/dev/reference/processData.md)
+  [`processData(`*`<giottoLargeImage>`*`,`*`<processParam>`*`)`](https://giottosuite.com/dev/reference/processData.md)
+  [`processData(`*`<exprObj>`*`,`*`<list>`*`)`](https://giottosuite.com/dev/reference/processData.md)
+  [`processData(`*`<exprObj>`*`,`*`<normParam>`*`)`](https://giottosuite.com/dev/reference/processData.md)
+  [`processData(`*`<exprObj>`*`,`*`<scaleParam>`*`)`](https://giottosuite.com/dev/reference/processData.md)
+  [`processData(`*`<exprObj>`*`,`*`<adjustParam>`*`)`](https://giottosuite.com/dev/reference/processData.md)
+  [`processData(`*`<SpatRaster>`*`,`*`<list>`*`)`](https://giottosuite.com/dev/reference/processData.md)
+  [`processData(`*`<allMatrix>`*`,`*`<list>`*`)`](https://giottosuite.com/dev/reference/processData.md)
+  : Composable Data Processing
+- [`processGiotto()`](https://giottosuite.com/dev/reference/processGiotto.md)
+  : processGiotto
+
+## Modify Giotto Object
+
+Modifications to the Giotto objects.
+
+- [`subsetGiotto()`](https://giotto-suite.github.io/GiottoClass/reference/subsetGiotto.html)
+  : subsetGiotto (from GiottoClass)
+- [`subsetGiottoLocs()`](https://giotto-suite.github.io/GiottoClass/reference/subsetGiottoLocs.html)
+  : Subset by spatial locations (from GiottoClass)
+- [`subsetGiottoLocsMulti()`](https://giotto-suite.github.io/GiottoClass/reference/subsetGiottoLocsMulti.html)
+  : deprecated (from GiottoClass)
+- [`joinGiottoObjects()`](https://giotto-suite.github.io/GiottoClass/reference/joinGiottoObjects.html)
+  : Join giotto objects (from GiottoClass)
+- [`annotateGiotto()`](https://giotto-suite.github.io/GiottoClass/reference/annotateGiotto.html)
+  : Annotate Giotto object (from GiottoClass)
+- [`removeCellAnnotation()`](https://giotto-suite.github.io/GiottoClass/reference/removeCellAnnotation.html)
+  : Remove cell annotation (from GiottoClass)
+- [`removeFeatAnnotation()`](https://giotto-suite.github.io/GiottoClass/reference/removeFeatAnnotation.html)
+  : Remove feature annotation (from GiottoClass)
+- [`addCellMetadata()`](https://giotto-suite.github.io/GiottoClass/reference/addCellMetadata.html)
+  : Add cell metadata (from GiottoClass)
+- [`addFeatMetadata()`](https://giotto-suite.github.io/GiottoClass/reference/addFeatMetadata.html)
+  : Add feature metadata (from GiottoClass)
+- [`labelTransfer(`*`<giotto>`*`,`*`<giotto>`*`)`](https://giottosuite.com/dev/reference/labelTransfer.md)
+  [`labelTransfer(`*`<giotto>`*`,`*`<missing>`*`)`](https://giottosuite.com/dev/reference/labelTransfer.md)
+  : Transfer labels/annotations between sets of data via similarity
+  voting
+- [`addFeatStatistics()`](https://giottosuite.com/dev/reference/addFeatStatistics.md)
+  : Add feature statistics
+- [`addCellStatistics()`](https://giottosuite.com/dev/reference/addCellStatistics.md)
+  : addCellStatistics
+- [`addStatistics()`](https://giottosuite.com/dev/reference/addStatistics.md)
+  : addStatistics
+- [`addFeatsPerc()`](https://giottosuite.com/dev/reference/addFeatsPerc.md)
+  : addFeatsPerc
+- [`addCellIntMetadata()`](https://giottosuite.com/dev/reference/addCellIntMetadata.md)
+  : addCellIntMetadata
+- [`filterCPG()`](https://giottosuite.com/dev/reference/filterCPG.md) :
+  deprecated
+
+## Dimension Reduction
+
+Functions to reduce dimensions.
+
+- [`calculateHVF()`](https://giottosuite.com/dev/reference/calculateHVF.md)
+  : calculateHVF
+- [`signPCA()`](https://giottosuite.com/dev/reference/signPCA.md) :
+  signPCA
+- [`screePlot()`](https://giottosuite.com/dev/reference/screePlot.md) :
+  screePlot
+- [`create_screeplot()`](https://giottosuite.com/dev/reference/create_screeplot.md)
+  : create_screeplot
+- [`jackstrawPlot()`](https://giottosuite.com/dev/reference/jackstrawPlot.md)
+  : jackstrawPlot
+- [`reduceDims()`](https://giottosuite.com/dev/reference/reduceDims.md)
+  : Run dimension reduction method
+- [`runNMF()`](https://giottosuite.com/dev/reference/runNMF.md) : Run
+  Non-Negative Matrix Factorization
+- [`runPCA()`](https://giottosuite.com/dev/reference/runPCA.md) : runPCA
+- [`runUMAP()`](https://giottosuite.com/dev/reference/runUMAP.md) : Run
+  UMAP dimension reduction
+- [`runtSNE()`](https://giottosuite.com/dev/reference/runtSNE.md) : Run
+  tSNE dimensional reduction
+- [`runIterativeLSI()`](https://giottosuite.com/dev/reference/runIterativeLSI.md)
+  : Run Iterative Latent Semantic Indexing (LSI)
+- [`runGiottoHarmony()`](https://giottosuite.com/dev/reference/runGiottoHarmony.md)
+  : runGiottoHarmony
+- [`runWNN()`](https://giottosuite.com/dev/reference/runWNN.md) : Multi
+  omics integration with WNN
+- [`runIntegratedUMAP()`](https://giottosuite.com/dev/reference/runIntegratedUMAP.md)
+  : Run integrated UMAP
+- [`runPCAprojection()`](https://giottosuite.com/dev/reference/runPCAprojection.md)
+  : runPCAprojection
+- [`runPCAprojectionBatch()`](https://giottosuite.com/dev/reference/runPCAprojectionBatch.md)
+  : runPCAprojectionBatch
+- [`runUMAPprojection()`](https://giottosuite.com/dev/reference/runUMAPprojection.md)
+  : Run UMAP dimension reduction
+
+## Clustering
+
+Functions to cluster cells.
+
+- [`calculateHVF()`](https://giottosuite.com/dev/reference/calculateHVF.md)
+  : calculateHVF
+- [`createNearestNetwork()`](https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html)
+  : createNearestNetwork (from GiottoClass)
+- [`addNetworkLayout()`](https://giotto-suite.github.io/GiottoClass/reference/addNetworkLayout.html)
+  : addNetworkLayout (from GiottoClass)
+- [`clusterCells()`](https://giottosuite.com/dev/reference/clusterCells.md)
+  : clusterCells
+- [`doLeidenClusterIgraph()`](https://giottosuite.com/dev/reference/doLeidenCluster.md)
+  [`doLeidenCluster()`](https://giottosuite.com/dev/reference/doLeidenCluster.md)
+  : doLeidenCluster
+- [`doLeidenClusterPython()`](https://giottosuite.com/dev/reference/doLeidenClusterPython.md)
+  : doLeidenClusterPython
+- [`doLouvainCluster()`](https://giottosuite.com/dev/reference/doLouvainCluster.md)
+  : doLouvainCluster
+- [`doKmeans()`](https://giottosuite.com/dev/reference/doKmeans.md) :
+  doKmeans
+- [`doHclust()`](https://giottosuite.com/dev/reference/doHclust.md) :
+  doHclust
+- [`doRandomWalkCluster()`](https://giottosuite.com/dev/reference/doRandomWalkCluster.md)
+  : doRandomWalkCluster
+- [`doSNNCluster()`](https://giottosuite.com/dev/reference/doSNNCluster.md)
+  : doSNNCluster
+- [`subClusterCells()`](https://giottosuite.com/dev/reference/subClusterCells.md)
+  [`doLeidenSubCluster()`](https://giottosuite.com/dev/reference/subClusterCells.md)
+  [`doLouvainSubCluster()`](https://giottosuite.com/dev/reference/subClusterCells.md)
+  : Cell subclustering
+- [`getClusterSimilarity()`](https://giottosuite.com/dev/reference/getClusterSimilarity.md)
+  : getClusterSimilarity
+- [`mergeClusters()`](https://giottosuite.com/dev/reference/mergeClusters.md)
+  : mergeClusters
+- [`getDendrogramSplits()`](https://giottosuite.com/dev/reference/getDendrogramSplits.md)
+  : getDendrogramSplits
+- [`doClusterProjection()`](https://giottosuite.com/dev/reference/doClusterProjection.md)
+  : Projection of cluster labels
+- [`doGiottoClustree()`](https://giottosuite.com/dev/reference/doGiottoClustree.md)
+  : doGiottoClustree
+- [`LeidenIgraphClusParam-class`](https://giottosuite.com/dev/reference/LeidenIgraphClusParam-class.md)
+  [`LeidenIgraphClusParam`](https://giottosuite.com/dev/reference/LeidenIgraphClusParam-class.md)
+  : Leiden Clustering
+- [`LeidenPythonClusParam-class`](https://giottosuite.com/dev/reference/LeidenPythonClusParam-class.md)
+  [`LeidenPythonClusParam`](https://giottosuite.com/dev/reference/LeidenPythonClusParam-class.md)
+  : Leiden Clustering
+- [`LouvainCommunityClusParam-class`](https://giottosuite.com/dev/reference/LouvainCommunityClusParam-class.md)
+  [`LouvainCommunityClusParam`](https://giottosuite.com/dev/reference/LouvainCommunityClusParam-class.md)
+  : Louvain Clustering
+- [`LouvainMultinetClusParam-class`](https://giottosuite.com/dev/reference/LouvainMultinetClusParam-class.md)
+  [`LouvainMultinetClusParam`](https://giottosuite.com/dev/reference/LouvainMultinetClusParam-class.md)
+  : Louvain Clustering
+- [`NNClusParam-class`](https://giottosuite.com/dev/reference/NNClusParam-class.md)
+  [`NNClusParam`](https://giottosuite.com/dev/reference/NNClusParam-class.md)
+  : NNClusParam
+- [`clusterData(`*`<allMatrix>`*`,`*`<BlusterParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
+  [`clusterData(`*`<allMatrix>`*`,`*`<NNClusParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
+  [`clusterData(`*`<exprObj>`*`,`*`<BlusterParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
+  [`clusterData(`*`<dimObj>`*`,`*`<BlusterParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
+  [`clusterData(`*`<spatEnrObj>`*`,`*`<BlusterParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
+  [`clusterData(`*`<nnNetObj>`*`,`*`<NNClusParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
+  [`clusterData(`*`<igraph>`*`,`*`<LouvainCommunityClusParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
+  [`clusterData(`*`<igraph>`*`,`*`<LouvainMultinetClusParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
+  [`clusterData(`*`<igraph>`*`,`*`<LeidenPythonClusParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
+  [`clusterData(`*`<igraph>`*`,`*`<LeidenIgraphClusParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
+  [`clusterData(`*`<giotto>`*`,`*`<BlusterParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
+  [`clusterData(`*`<giotto>`*`,`*`<NNClusParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
+  : Data clustering
+- [`clusterParam()`](https://giottosuite.com/dev/reference/clusterParam.md)
+  : Clustering Parameter Classes
+
+## Marker Genes
+
+Functions to detect cell type / cluster specific marker genes.
+
+- [`findMarkers()`](https://giottosuite.com/dev/reference/findMarkers.md)
+  : findMarkers
+- [`findMarkers_one_vs_all()`](https://giottosuite.com/dev/reference/findMarkers_one_vs_all.md)
+  : findMarkers_one_vs_all
+- [`findGiniMarkers()`](https://giottosuite.com/dev/reference/findGiniMarkers.md)
+  : findGiniMarkers
+- [`findGiniMarkers_one_vs_all()`](https://giottosuite.com/dev/reference/findGiniMarkers_one_vs_all.md)
+  : findGiniMarkers_one_vs_all
+- [`findScranMarkers()`](https://giottosuite.com/dev/reference/findScranMarkers.md)
+  : findScranMarkers
+- [`findScranMarkers_one_vs_all()`](https://giottosuite.com/dev/reference/findScranMarkers_one_vs_all.md)
+  : findScranMarkers_one_vs_all
+- [`findMastMarkers()`](https://giottosuite.com/dev/reference/findMastMarkers.md)
+  : findMastMarkers
+- [`findMastMarkers_one_vs_all()`](https://giottosuite.com/dev/reference/findMastMarkers_one_vs_all.md)
+  : findMastMarkers_one_vs_all
+
+## Spatial Enrichment
+
+Algorithms to compute spatial enrichment of gene signatures or scRNA-seq
+matrix.
+
+- [`makeSignMatrixPAGE()`](https://giottosuite.com/dev/reference/enrichment_PAGE.md)
+  [`runPAGEEnrich()`](https://giottosuite.com/dev/reference/enrichment_PAGE.md)
+  : PAGE feature enrichment
+- [`makeSignMatrixRank()`](https://giottosuite.com/dev/reference/makeSignMatrixRank.md)
+  : makeSignMatrixRank
+- [`runSpatialEnrich()`](https://giottosuite.com/dev/reference/runSpatialEnrich.md)
+  : runSpatialEnrich
+- [`runRankEnrich()`](https://giottosuite.com/dev/reference/runRankEnrich.md)
+  : runRankEnrich
+- [`runHyperGeometricEnrich()`](https://giottosuite.com/dev/reference/runHyperGeometricEnrich.md)
+  : runHyperGeometricEnrich
+- [`createSpatialGenomicsObject()`](https://giottosuite.com/dev/reference/createSpatialGenomicsObject.md)
+  : Create Spatial Genomics Giotto Object
+- [`doFeatureSetEnrichment()`](https://giottosuite.com/dev/reference/doFeatureSetEnrichment.md)
+  : doFeatureSetEnrichment
+- [`selectPatternGenes()`](https://giottosuite.com/dev/reference/selectPatternGenes.md)
+  : selectPatternGenes
+- [`silhouetteRank()`](https://giottosuite.com/dev/reference/silhouetteRank.md)
+  : silhouetteRank
+- [`silhouetteRankTest()`](https://giottosuite.com/dev/reference/silhouetteRankTest.md)
+  : silhouetteRankTest
+
+## Spatial Deconvolution
+
+Algorithms to perform spatial deconvolution based on gene signatures or
+single-cell RNAseq information.
+
+- [`makeSignMatrixDWLSfromMatrix()`](https://giottosuite.com/dev/reference/makeSignMatrixDWLSfromMatrix.md)
+  : makeSignMatrixDWLSfromMatrix
+- [`makeSignMatrixDWLS()`](https://giottosuite.com/dev/reference/makeSignMatrixDWLS.md)
+  : makeSignMatrixDWLS
+- [`runSpatialDeconv()`](https://giottosuite.com/dev/reference/runSpatialDeconv.md)
+  : runSpatialDeconv
+- [`runDWLSDeconv()`](https://giottosuite.com/dev/reference/runDWLSDeconv.md)
+  : runDWLSDeconv
+- [`spatDeconvPlot()`](https://giotto-suite.github.io/GiottoVisuals/reference/spatDeconvPlot.html)
+  : spatDeconvPlot (from GiottoVisuals)
+- [`featExpDWLS()`](https://giottosuite.com/dev/reference/featExpDWLS.md)
+  : featExpDWLS
+
+## Spatial Network or Grid
+
+Function to (help) create a spatial network or grid.
+
+- [`spatNetwDistributionsDistance()`](https://giotto-suite.github.io/GiottoVisuals/reference/spatNetwDistributionsDistance.html)
+  : Plot spatial distance distribution (from GiottoVisuals)
+- [`spatNetwDistributionsKneighbors()`](https://giotto-suite.github.io/GiottoVisuals/reference/spatNetwDistributionsKneighbors.html)
+  : spatNetwDistributionsKneighbors (from GiottoVisuals)
+- [`spatNetwDistributions()`](https://giotto-suite.github.io/GiottoVisuals/reference/spatNetwDistributions.html)
+  : spatNetwDistributions (from GiottoVisuals)
+- [`createSpatialDelaunayNetwork()`](https://giotto-suite.github.io/GiottoClass/reference/createSpatialDelaunayNetwork.html)
+  : Create a spatial Delaunay network (from GiottoClass)
+- [`plotStatDelaunayNetwork()`](https://giotto-suite.github.io/GiottoVisuals/reference/plotStatDelaunayNetwork.html)
+  : plotStatDelaunayNetwork (from GiottoVisuals)
+- [`createSpatialKNNnetwork()`](https://giotto-suite.github.io/GiottoClass/reference/createSpatialKNNnetwork.html)
+  : createSpatialKNNnetwork (from GiottoClass)
+- [`annotateSpatialNetwork()`](https://giotto-suite.github.io/GiottoClass/reference/annotateSpatialNetwork.html)
+  : annotateSpatialNetwork (from GiottoClass)
+- [`annotateSpatialGrid()`](https://giotto-suite.github.io/GiottoClass/reference/annotateSpatialGrid.html)
+  : annotateSpatialGrid (from GiottoClass)
+- [`createSpatialGrid()`](https://giotto-suite.github.io/GiottoClass/reference/createSpatialGrid.html)
+  : createSpatialGrid (from GiottoClass)
+- [`createSpatialDefaultGrid()`](https://giotto-suite.github.io/GiottoClass/reference/createSpatialDefaultGrid.html)
+  : createSpatialDefaultGrid (from GiottoClass)
+- [`identifyTMAcores()`](https://giottosuite.com/dev/reference/identifyTMAcores.md)
+  : Split cluster annotations based on a spatial network
+
+## Spatial Expression Patterns
+
+Methods to detect spatially coherent expression patterns.
+
+- [`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md)
+  [`binSpectSingleMatrix()`](https://giottosuite.com/dev/reference/binSpect.md)
+  [`binSpectSingle()`](https://giottosuite.com/dev/reference/binSpect.md)
+  [`binSpectMulti()`](https://giottosuite.com/dev/reference/binSpect.md)
+  : binSpect
+- [`binSpectMultiMatrix()`](https://giottosuite.com/dev/reference/binSpectMultiMatrix.md)
+  : binSpectMultiMatrix
+- [`spatialDE()`](https://giottosuite.com/dev/reference/spatialDE.md) :
+  spatialDE
+- [`spatialAEH()`](https://giottosuite.com/dev/reference/spatialAEH.md)
+  : spatialAEH
+- [`trendSceek()`](https://giottosuite.com/dev/reference/trendSceek.md)
+  : trendSceek
+- [`spark()`](https://giottosuite.com/dev/reference/spark.md) : spark
+- [`filterSpatialGenes()`](https://giottosuite.com/dev/reference/filterSpatialGenes.md)
+  : filterSpatialGenes
+
+## Simulate Spatial Expression Patterns
+
+Function to simulate a user-defined pattern using the full complexity of
+the different gene distributions.
+
+- [`simulateOneGenePatternGiottoObject()`](https://giottosuite.com/dev/reference/simulateOneGenePatternGiottoObject.md)
+  : simulateOneGenePatternGiottoObject
+- [`runPatternSimulation()`](https://giottosuite.com/dev/reference/runPatternSimulation.md)
+  : runPatternSimulation
+
+## Spatial Co-Expression Modules
+
+Method to detect spatially co-expressed feature modules.
+
+- [`clusterSpatialCorFeats()`](https://giottosuite.com/dev/reference/clusterSpatialCorFeats.md)
+  : clusterSpatialCorFeats
+- [`detectSpatialCorFeats()`](https://giottosuite.com/dev/reference/detectSpatialCorFeats.md)
+  [`detectSpatialCorFeatsMatrix()`](https://giottosuite.com/dev/reference/detectSpatialCorFeats.md)
+  : Detect spatially correlated features
+- [`clusterSpatialCorGenes()`](https://giottosuite.com/dev/reference/clusterSpatialCorGenes.md)
+  : clusterSpatialCorGenes
+- [`detectSpatialPatterns()`](https://giottosuite.com/dev/reference/detectSpatialPatterns.md)
+  : detectSpatialPatterns
+- [`heatmSpatialCorFeats()`](https://giottosuite.com/dev/reference/heatmSpatialCorFeats.md)
+  : heatmSpatialCorFeats
+- [`showSpatialCorFeats()`](https://giottosuite.com/dev/reference/showSpatialCorFeats.md)
+  : showSpatialCorFeats
+- [`showSpatialCorGenes()`](https://giottosuite.com/dev/reference/showSpatialCorGenes.md)
+  : showSpatialCorGenes
+- [`rankSpatialCorGroups()`](https://giottosuite.com/dev/reference/rankSpatialCorGroups.md)
+  : rankSpatialCorGroups
+- [`getBalancedSpatCoexpressionFeats()`](https://giottosuite.com/dev/reference/getBalancedSpatCoexpressionFeats.md)
+  : Get balanced spatial coexpression features
+
+## Hidden Markov Random Field (HMRF)
+
+Functions to identify spatial domains with HMRF.
+
+- [`doHMRF()`](https://giottosuite.com/dev/reference/doHMRF.md) : doHMRF
+- [`doHMRF_V2()`](https://giottosuite.com/dev/reference/doHMRF_V2.md) :
+  doHMRF_V2
+- [`initHMRF_V2()`](https://giottosuite.com/dev/reference/initHMRF_V2.md)
+  : initHMRF_V2
+- [`loadHMRF()`](https://giottosuite.com/dev/reference/loadHMRF.md) :
+  loadHMRF
+- [`viewHMRFresults()`](https://giottosuite.com/dev/reference/viewHMRFresults.md)
+  : viewHMRFresults
+- [`viewHMRFresults_V2()`](https://giottosuite.com/dev/reference/viewHMRFresults_V2.md)
+  : viewHMRFresults_V2
+- [`writeHMRFresults()`](https://giottosuite.com/dev/reference/writeHMRFresults.md)
+  : writeHMRFresults
+- [`addHMRF()`](https://giottosuite.com/dev/reference/addHMRF.md) :
+  addHMRF
+- [`addHMRF_V2()`](https://giottosuite.com/dev/reference/addHMRF_V2.md)
+  : addHMRF_V2
+- [`viewHMRFresults2D()`](https://giottosuite.com/dev/reference/viewHMRFresults2D.md)
+  : viewHMRFresults2D
+- [`viewHMRFresults3D()`](https://giottosuite.com/dev/reference/viewHMRFresults3D.md)
+  : viewHMRFresults3D
+
+## Basic Visualizations
+
+Functions for different visualization options to explore gene, cell or
+cluster characteristics.
+
+- [`showClusterHeatmap()`](https://giotto-suite.github.io/GiottoVisuals/reference/showClusterHeatmap.html)
+  : showClusterHeatmap (from GiottoVisuals)
+- [`showClusterDendrogram()`](https://giotto-suite.github.io/GiottoVisuals/reference/showClusterDendrogram.html)
+  : showClusterDendrogram (from GiottoVisuals)
+- [`plotHeatmap()`](https://giotto-suite.github.io/GiottoVisuals/reference/plotHeatmap.html)
+  : plotHeatmap (from GiottoVisuals)
+- [`plotMetaDataHeatmap()`](https://giotto-suite.github.io/GiottoVisuals/reference/plotMetaDataHeatmap.html)
+  : plotMetaDataHeatmap (from GiottoVisuals)
+- [`plotMetaDataCellsHeatmap()`](https://giotto-suite.github.io/GiottoVisuals/reference/plotMetaDataCellsHeatmap.html)
+  : plotMetaDataCellsHeatmap (from GiottoVisuals)
+- [`violinPlot()`](https://giotto-suite.github.io/GiottoVisuals/reference/violinPlot.html)
+  : violinPlot (from GiottoVisuals)
+- [`dotPlot()`](https://giotto-suite.github.io/GiottoVisuals/reference/dotPlot.html)
+  : Create a dotplot (from GiottoVisuals)
+
+## 2D Visualization In Expression Space
+
+Visualization of expression space (e.g. UMAP) in 2D.
+
+- [`dimPlot2D()`](https://giotto-suite.github.io/GiottoVisuals/reference/dimPlot.html)
+  [`dimPlot()`](https://giotto-suite.github.io/GiottoVisuals/reference/dimPlot.html)
+  [`dimPlot3D()`](https://giotto-suite.github.io/GiottoVisuals/reference/dimPlot.html)
+  : Plot dimension reduction (from GiottoVisuals)
+- [`dimPlot2D()`](https://giotto-suite.github.io/GiottoVisuals/reference/dimPlot.html)
+  [`dimPlot()`](https://giotto-suite.github.io/GiottoVisuals/reference/dimPlot.html)
+  [`dimPlot3D()`](https://giotto-suite.github.io/GiottoVisuals/reference/dimPlot.html)
+  : Plot dimension reduction (from GiottoVisuals)
+- [`plotUMAP()`](https://giotto-suite.github.io/GiottoVisuals/reference/plotUMAP.html)
+  : plotUMAP (from GiottoVisuals)
+- [`plotUMAP_2D()`](https://giotto-suite.github.io/GiottoVisuals/reference/plotUMAP_2D.html)
+  : plotUMAP_2D (from GiottoVisuals)
+- [`plotTSNE()`](https://giotto-suite.github.io/GiottoVisuals/reference/plotTSNE.html)
+  : plotTSNE (from GiottoVisuals)
+- [`plotTSNE_2D()`](https://giotto-suite.github.io/GiottoVisuals/reference/plotTSNE_2D.html)
+  : plotTSNE_2D (from GiottoVisuals)
+- [`plotPCA()`](https://giotto-suite.github.io/GiottoVisuals/reference/plotPCA.html)
+  : plotPCA (from GiottoVisuals)
+- [`plotPCA_2D()`](https://giotto-suite.github.io/GiottoVisuals/reference/plotPCA_2D.html)
+  : plotPCA_2D (from GiottoVisuals)
+- [`dimFeatPlot2D()`](https://giotto-suite.github.io/GiottoVisuals/reference/dimFeatPlot2D.html)
+  : dimFeatPlot2D (from GiottoVisuals)
+- [`dimCellPlot2D()`](https://giotto-suite.github.io/GiottoVisuals/reference/dimCellPlot.html)
+  [`dimCellPlot()`](https://giotto-suite.github.io/GiottoVisuals/reference/dimCellPlot.html)
+  : dimCellPlot (from GiottoVisuals)
+
+## 2D Visualization in Spatial Space
+
+Visualization of expression space (e.g. UMAP) in 2D.
+
+- [`spatPlot2D()`](https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html)
+  [`spatPlot()`](https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html)
+  [`spatPlot3D()`](https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html)
+  : spatPlot (from GiottoVisuals)
+- [`spatCellPlot2D()`](https://giotto-suite.github.io/GiottoVisuals/reference/spatCellPlot.html)
+  [`spatCellPlot()`](https://giotto-suite.github.io/GiottoVisuals/reference/spatCellPlot.html)
+  : spatCellPlot (from GiottoVisuals)
+- [`spatFeatPlot2D()`](https://giotto-suite.github.io/GiottoVisuals/reference/spatFeatPlot2D.html)
+  : Plot data in physical space 2D (from GiottoVisuals)
+
+## 2D Visualization In Both Spatial And Expression Space
+
+Visualization in both 2D spatial and expression space.
+
+- [`spatDimPlot2D()`](https://giotto-suite.github.io/GiottoVisuals/reference/spatDimPlot.html)
+  [`spatDimPlot()`](https://giotto-suite.github.io/GiottoVisuals/reference/spatDimPlot.html)
+  : spatDimPlot (from GiottoVisuals)
+- [`spatDimCellPlot2D()`](https://giotto-suite.github.io/GiottoVisuals/reference/spatDimCellPlot2D.html)
+  : spatDimCellPlot2D (from GiottoVisuals)
+- [`spatDimFeatPlot2D()`](https://giotto-suite.github.io/GiottoVisuals/reference/spatDimFeatPlot2D.html)
+  : spatDimFeatPlot2D (from GiottoVisuals)
+
+## 3D Visualization Dimension Reduction
+
+Visualization of expression space (e.g. UMAP) in 3D.
+
+- [`dimPlot2D()`](https://giotto-suite.github.io/GiottoVisuals/reference/dimPlot.html)
+  [`dimPlot()`](https://giotto-suite.github.io/GiottoVisuals/reference/dimPlot.html)
+  [`dimPlot3D()`](https://giotto-suite.github.io/GiottoVisuals/reference/dimPlot.html)
+  : Plot dimension reduction (from GiottoVisuals)
+- [`plotTSNE_3D()`](https://giotto-suite.github.io/GiottoVisuals/reference/plotTSNE_3D.html)
+  : plotTSNE_3D (from GiottoVisuals)
+- [`plotPCA_3D()`](https://giotto-suite.github.io/GiottoVisuals/reference/plotPCA_3D.html)
+  : plotPCA_3D (from GiottoVisuals)
+
+## 3D Visualization In Spatial Space
+
+Visualization in 3D spatial space.
+
+- [`spatPlot2D()`](https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html)
+  [`spatPlot()`](https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html)
+  [`spatPlot3D()`](https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html)
+  : spatPlot (from GiottoVisuals)
+
+## 3D visualization in Spatial and Expression Space
+
+Visualization in 3D spatial space.
+
+- [`spatDimPlot3D()`](https://giotto-suite.github.io/GiottoVisuals/reference/spatDimPlot3D.html)
+  : spatDimPlot3D (from GiottoVisuals)
+
+## Plotting Utilities
+
+Functions to assist in plotting.
+
+- [`getDistinctColors()`](https://drieslab.github.io/GiottoUtils/reference/getDistinctColors.html)
+  : getDistinctColors (from GiottoUtils)
+- [`getRainbowColors()`](https://drieslab.github.io/GiottoUtils/reference/getRainbowColors.html)
+  : getRainbowColors (from GiottoUtils)
+- [`getColors()`](https://giotto-suite.github.io/GiottoVisuals/reference/getColors.html)
+  : getColors (from GiottoVisuals)
+- [`showSaveParameters()`](https://giotto-suite.github.io/GiottoVisuals/reference/showSaveParameters.html)
+  : showSaveParameters (from GiottoVisuals)
+
+## In Silico Cross Sections
+
+Functions to create an in silico 2D cross sections from 3D data.
+
+- [`createCrossSection()`](https://giottosuite.com/dev/reference/createCrossSection.md)
+  : createCrossSection
+- [`crossSectionPlot()`](https://giottosuite.com/dev/reference/crossSectionPlot.md)
+  : crossSectionPlot
+- [`crossSectionFeatPlot()`](https://giottosuite.com/dev/reference/crossSectionFeatPlot.md)
+  : crossSectionFeatPlot
+- [`crossSectionPlot3D()`](https://giottosuite.com/dev/reference/crossSectionPlot3D.md)
+  : crossSectionPlot3D
+- [`crossSectionFeatPlot3D()`](https://giottosuite.com/dev/reference/crossSectionFeatPlot3D.md)
+  : crossSectionFeatPlot3D
+- [`insertCrossSectionSpatPlot3D()`](https://giottosuite.com/dev/reference/insertCrossSectionSpatPlot3D.md)
+  : insertCrossSectionSpatPlot3D
+- [`insertCrossSectionFeatPlot3D()`](https://giottosuite.com/dev/reference/insertCrossSectionFeatPlot3D.md)
+  : insertCrossSectionFeatPlot3D
+- [`create_crossSection_object()`](https://giottosuite.com/dev/reference/create_crossSection_object.md)
+  : create_crossSection_object
+
+## Cell Neighborhood, Cell-Type/Cell-Type Enrichment
+
+Functions to calculate and visualize cell-type/cell-type spatial
+enrichment or depletion.
+
+- [`cellProximityEnrichment()`](https://giottosuite.com/dev/reference/cellProximityEnrichment.md)
+  : cellProximityEnrichment
+- [`cellProximityEnrichmentEachSpot()`](https://giottosuite.com/dev/reference/cellProximityEnrichmentEachSpot.md)
+  : cellProximityEnrichmentEachSpot
+- [`cellProximityEnrichmentSpots()`](https://giottosuite.com/dev/reference/cellProximityEnrichmentSpots.md)
+  : cellProximityEnrichmentSpots
+- [`cellProximityBarplot()`](https://giottosuite.com/dev/reference/cellProximityBarplot.md)
+  : cellProximityBarplot
+- [`cellProximityHeatmap()`](https://giottosuite.com/dev/reference/cellProximityHeatmap.md)
+  : cellProximityHeatmap
+- [`cellProximityNetwork()`](https://giottosuite.com/dev/reference/cellProximityNetwork.md)
+  : cellProximityNetwork
+- [`cellProximitySpatPlot()`](https://giottosuite.com/dev/reference/cellProximitySpatPlot.md)
+  : cellProximitySpatPlot
+- [`cellProximitySpatPlot3D()`](https://giottosuite.com/dev/reference/cellProximitySpatPlot3D.md)
+  : cellProximitySpatPlot3D
+- [`spatCellCellcom()`](https://giottosuite.com/dev/reference/spatCellCellcom.md)
+  [`specificCellCellcommunicationScores()`](https://giottosuite.com/dev/reference/spatCellCellcom.md)
+  : Spatial cell cell communication scoring
+- [`filterCellProximityGenes()`](https://giottosuite.com/dev/reference/filterCellProximityGenes.md)
+  : deprecated
+- [`findCellProximityGenes()`](https://giottosuite.com/dev/reference/findCellProximityGenes.md)
+  : deprecated
+- [`findCellTypesFromEnrichment()`](https://giottosuite.com/dev/reference/findCellTypesFromEnrichment.md)
+  : findCellTypesFromEnrichment
+- [`pieCellTypesFromEnrichment()`](https://giottosuite.com/dev/reference/pieCellTypesFromEnrichment.md)
+  : pieCellTypesFromEnrichment
+- [`plotCellTypesFromEnrichment()`](https://giottosuite.com/dev/reference/plotCellTypesFromEnrichment.md)
+  : plotCellTypesFromEnrichment
+- [`plotCellProximityFeatSpot()`](https://giottosuite.com/dev/reference/plotCellProximityFeatSpot.md)
+  : plotCellProximityFeatSpot
+- [`showCellProportionSwitchedPie()`](https://giottosuite.com/dev/reference/showCellProportionSwitchedPie.md)
+  : showCellProportionSwitchedPie
+- [`showCellProportionSwitchedSanKey()`](https://giottosuite.com/dev/reference/showCellProportionSwitchedSanKey.md)
+  : showCellProportionSwitchedSanKey
+- [`spatCellCellcomSpots()`](https://giottosuite.com/dev/reference/spatCellCellcomSpots.md)
+  : spatCellCellcomSpots
+
+## Cell Neighborhood, Spatial Interaction Changed Features (ICF)
+
+Identify and visualize features (genes) that change in a source cell
+type due to interaction with another neighboring cell type.
+
+- [`findInteractionChangedFeats()`](https://giottosuite.com/dev/reference/findInteractionChangedFeats.md)
+  [`findICF()`](https://giottosuite.com/dev/reference/findInteractionChangedFeats.md)
+  : findInteractionChangedFeats
+- [`findICFSpot()`](https://giottosuite.com/dev/reference/findICFSpot.md)
+  : findICFSpot
+- [`findICG()`](https://giottosuite.com/dev/reference/findICG.md) :
+  deprecated
+- [`findCPG()`](https://giottosuite.com/dev/reference/findCPG.md) :
+  deprecated
+- [`filterInteractionChangedFeats()`](https://giottosuite.com/dev/reference/filterInteractionChangedFeats.md)
+  [`filterICF()`](https://giottosuite.com/dev/reference/filterInteractionChangedFeats.md)
+  : filterInteractionChangedFeats
+- [`filterInteractionChangedGenes()`](https://giottosuite.com/dev/reference/filterInteractionChangedGenes.md)
+  : deprecated
+- [`filterICFSpot()`](https://giottosuite.com/dev/reference/filterICFSpot.md)
+  : filterICFSpot
+- [`filterICG()`](https://giottosuite.com/dev/reference/filterICG.md) :
+  deprecated
+- [`plotICF()`](https://giottosuite.com/dev/reference/plotICF.md) : Plot
+  interaction changed features
+- [`plotICFSpot()`](https://giottosuite.com/dev/reference/plotICFSpot.md)
+  : plotICFSpot
+- [`plotCellProximityFeats()`](https://giottosuite.com/dev/reference/plotCellProximityFeats.md)
+  : plotCellProximityFeats
+- [`plotCPF()`](https://giottosuite.com/dev/reference/plotCPF.md) :
+  plotCPF
+- [`combineInteractionChangedFeats()`](https://giottosuite.com/dev/reference/combineInteractionChangedFeats.md)
+  [`combineICF()`](https://giottosuite.com/dev/reference/combineInteractionChangedFeats.md)
+  : combineInteractionChangedFeats
+- [`plotCombineInteractionChangedFeats()`](https://giottosuite.com/dev/reference/plotCombineInteractionChangedFeats.md)
+  : plotCombineInteractionChangedFeats
+- [`plotInteractionChangedFeats()`](https://giottosuite.com/dev/reference/plotInteractionChangedFeats.md)
+  : Plot interaction changed features
+- [`plotCombineICF()`](https://giottosuite.com/dev/reference/plotCombineICF.md)
+  : plotCombineICF
+- [`combineCPG()`](https://giottosuite.com/dev/reference/combineCPG.md)
+  : deprecated
+- [`combineCellProximityGenes()`](https://giottosuite.com/dev/reference/combineCellProximityGenes.md)
+  : deprecated
+- [`combineICG()`](https://giottosuite.com/dev/reference/combineICG.md)
+  : deprecated
+- [`combineInteractionChangedGenes()`](https://giottosuite.com/dev/reference/combineInteractionChangedGenes.md)
+  : deprecated
+- [`findInteractionChangedGenes()`](https://giottosuite.com/dev/reference/findInteractionChangedGenes.md)
+  : deprecated
+- [`spatialAutoCorGlobal()`](https://giottosuite.com/dev/reference/spatialAutoCor.md)
+  [`spatialAutoCorLocal()`](https://giottosuite.com/dev/reference/spatialAutoCor.md)
+  : Spatial autocorrelation
+- [`spdepAutoCorr()`](https://giottosuite.com/dev/reference/spdepAutoCorr.md)
+  : Compute spatial auto correlation using spdep
+- [`spatialSplitCluster()`](https://giottosuite.com/dev/reference/spatialSplitCluster.md)
+  : Split cluster annotations based on a spatial network
+
+## Cell Neighborhood, Ligand-Receptor Cell Communication
+
+Functions to calculate and visualize cell-type/cell-type spatial
+enrichment or depletion.
+
+- [`combCCcom()`](https://giottosuite.com/dev/reference/combCCcom.md) :
+  Combine cell cell communication tables
+- [`exprCellCellcom()`](https://giottosuite.com/dev/reference/exprCellCellcom.md)
+  : exprCellCellcom
+- [`spatCellCellcom()`](https://giottosuite.com/dev/reference/spatCellCellcom.md)
+  [`specificCellCellcommunicationScores()`](https://giottosuite.com/dev/reference/spatCellCellcom.md)
+  : Spatial cell cell communication scoring
+- [`plotCCcomDotplot()`](https://giottosuite.com/dev/reference/plotCCcomDotplot.md)
+  : plotCCcomDotplot
+- [`plotRankSpatvsExpr()`](https://giottosuite.com/dev/reference/plotRankSpatvsExpr.md)
+  : plotRankSpatvsExpr
+- [`plotRecovery()`](https://giottosuite.com/dev/reference/plotRecovery.md)
+  : plotRecovery
+- [`plotCCcomHeatmap()`](https://giottosuite.com/dev/reference/plotCCcomHeatmap.md)
+  : plotCCcomHeatmap
+- [`plotCombineCellCellCommunication()`](https://giottosuite.com/dev/reference/plotCombineCellCellCommunication.md)
+  : plotCombineCellCellCommunication
+- [`plotCombineCCcom()`](https://giottosuite.com/dev/reference/plotCombineCCcom.md)
+  : plotCombineCCcom
+
+## Subcellular
+
+Functions to manipulate and visualize subcellular data.
+
+- [`addPolygonCells()`](https://giottosuite.com/dev/reference/addPolygonCells.md)
+  : Add corresponding polygon IDs to cell metadata
+- [`addGiottoPoints()`](https://giotto-suite.github.io/GiottoClass/reference/addGiottoPoints.html)
+  [`addGiottoPoints3D()`](https://giotto-suite.github.io/GiottoClass/reference/addGiottoPoints.html)
+  : Add subcellular giotto points object to giotto object (from
+  GiottoClass)
+- [`addGiottoPoints()`](https://giotto-suite.github.io/GiottoClass/reference/addGiottoPoints.html)
+  [`addGiottoPoints3D()`](https://giotto-suite.github.io/GiottoClass/reference/addGiottoPoints.html)
+  : Add subcellular giotto points object to giotto object (from
+  GiottoClass)
+- [`addGiottoPolygons()`](https://giotto-suite.github.io/GiottoClass/reference/addGiottoPolygons.html)
+  : Add giotto polygons to giotto object (from GiottoClass)
+- [`addVisiumPolygons()`](https://giottosuite.com/dev/reference/addVisiumPolygons.md)
+  : Add Visium Polygons to Giotto Object
+- [`addSpatialCentroidLocations()`](https://giotto-suite.github.io/GiottoClass/reference/addSpatialCentroidLocations.html)
+  : addSpatialCentroidLocations (from GiottoClass)
+- [`addSpatialCentroidLocationsLayer()`](https://giotto-suite.github.io/GiottoClass/reference/addSpatialCentroidLocationsLayer.html)
+  : addSpatialCentroidLocationsLayer (from GiottoClass)
+- [`calculateOverlapParallel()`](https://giotto-suite.github.io/GiottoClass/reference/calculateOverlapParallel.html)
+  : calculateOverlapParallel (from GiottoClass)
+- [`calculateOverlapPolygonImages()`](https://giotto-suite.github.io/GiottoClass/reference/calculateOverlapPolygonImages.html)
+  : calculateOverlapPolygonImages (from GiottoClass)
+- [`calculateOverlapRaster()`](https://giotto-suite.github.io/GiottoClass/reference/calculateOverlapRaster.html)
+  : calculateOverlapRaster (from GiottoClass)
+- [`calculateOverlapSerial()`](https://giotto-suite.github.io/GiottoClass/reference/calculateOverlapSerial.html)
+  : calculateOverlapSerial (from GiottoClass)
+- [`createGiottoPoints(`*`<SpatVector>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/createGiottoPoints.html)
+  [`createGiottoPoints(`*`<data.frame>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/createGiottoPoints.html)
+  : Create giotto points object (from GiottoClass)
+- [`createGiottoPolygon(`*`<character>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/createGiottoPolygon.html)
+  [`createGiottoPolygon(`*`<SpatVector>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/createGiottoPolygon.html)
+  [`createGiottoPolygon(`*`<SpatRaster>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/createGiottoPolygon.html)
+  [`createGiottoPolygon(`*`<data.frame>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/createGiottoPolygon.html)
+  [`createGiottoPolygonsFromMask()`](https://giotto-suite.github.io/GiottoClass/reference/createGiottoPolygon.html)
+  [`createGiottoPolygonsFromDfr()`](https://giotto-suite.github.io/GiottoClass/reference/createGiottoPolygon.html)
+  [`createGiottoPolygonsFromGeoJSON()`](https://giotto-suite.github.io/GiottoClass/reference/createGiottoPolygon.html)
+  : Create giotto polygons object (from GiottoClass)
+- [`overlapToMatrix(`*`<giotto>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/overlapToMatrix.html)
+  [`overlapToMatrix(`*`<giottoPolygon>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/overlapToMatrix.html)
+  [`overlapToMatrix(`*`<SpatVector>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/overlapToMatrix.html)
+  [`overlapToMatrix(`*`<data.table>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/overlapToMatrix.html)
+  [`overlapToMatrix(`*`<overlapPointDT>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/overlapToMatrix.html)
+  [`overlapToMatrix(`*`<overlapIntensityDT>`*`)`](https://giotto-suite.github.io/GiottoClass/reference/overlapToMatrix.html)
+  : overlapToMatrix (from GiottoClass)
+- [`overlapImagesToMatrix()`](https://giotto-suite.github.io/GiottoClass/reference/overlapImagesToMatrix.html)
+  : overlapImagesToMatrix (from GiottoClass)
+- [`overlapToMatrixMultiPoly()`](https://giotto-suite.github.io/GiottoClass/reference/overlapToMatrixMultiPoly.html)
+  : overlapToMatrixMultiPoly (from GiottoClass)
+- [`smoothGiottoPolygons()`](https://giotto-suite.github.io/GiottoClass/reference/smoothGiottoPolygons.html)
+  : smoothGiottoPolygons (from GiottoClass)
+- [`spatInSituPlotDensity()`](https://giotto-suite.github.io/GiottoVisuals/reference/spatInSituPlotDensity.html)
+  : spatInSituPlotDensity (from GiottoVisuals)
+- [`spatInSituPlotHex()`](https://giotto-suite.github.io/GiottoVisuals/reference/spatInSituPlotHex.html)
+  : spatInSituPlotHex (from GiottoVisuals)
+- [`spatInSituPlotPoints()`](https://giotto-suite.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html)
+  : spatInSituPlotPoints (from GiottoVisuals)
+- [`showPolygonSizeInfluence()`](https://giottosuite.com/dev/reference/showPolygonSizeInfluence.md)
+  : showPolygonSizeInfluence
+
+## Segmentation
+
+Function to segment cells in-tissue.
+
+- [`doCellSegmentation()`](https://giottosuite.com/dev/reference/doCellSegmentation.md)
+  : doCellSegmentation
+- [`doCellposeSegmentation()`](https://giottosuite.com/dev/reference/doCellposeSegmentation.md)
+  : perform cellpose segmentation
+- [`doMesmerSegmentation()`](https://giottosuite.com/dev/reference/doMesmerSegmentation.md)
+  : perform Mesmer(Deepcell) segmentation
+- [`doStardistSegmentation()`](https://giottosuite.com/dev/reference/doStardistSegmentation.md)
+  : perform Stardist segmentation
+
+## Doublet Detection
+
+Function to detect doublets in raw expression data.
+
+- [`doScrubletDetect()`](https://giottosuite.com/dev/reference/doScrubletDetect.md)
+  : doScrubletDetect
+
+## Interactive Visualizations
+
+- [`cellProximitySpatPlot2D()`](https://giottosuite.com/dev/reference/cellProximitySpatPlot2D.md)
+  : cellProximitySpatPlot2D
+- [`cellProximityVisPlot()`](https://giottosuite.com/dev/reference/cellProximityVisPlot.md)
+  : cellProximityVisPlot
+- [`comparePolygonExpression()`](https://giottosuite.com/dev/reference/comparePolygonExpression.md)
+  : Compare gene expression between polygon areas
+- [`getCellsFromPolygon()`](https://giottosuite.com/dev/reference/getCellsFromPolygon.md)
+  : Get cells located within the polygons area
+- [`plotInteractivePolygons()`](https://giottosuite.com/dev/reference/plotInteractivePolygons.md)
+  : Select image regions by plotting interactive polygons
+- [`plotPolygons()`](https://giottosuite.com/dev/reference/plotPolygons.md)
+  : Plot stored polygons
+- [`plotInteractive3D()`](https://giottosuite.com/dev/reference/plotInteractive3D.md)
+  : Plot interactive 3D spatial plot
+- [`compareCellAbundance()`](https://giottosuite.com/dev/reference/compareCellAbundance.md)
+  : Compare cell types percent per polygon
+- [`exportGiottoViewer()`](https://giottosuite.com/dev/reference/exportGiottoViewer.md)
+  : exportGiottoViewer
+- [`interactiveLandmarkSelection()`](https://giottosuite.com/dev/reference/interactiveLandmarkSelection.md)
+  : Record landmarks by interactive selection
+- [`calculateAffineMatrixFromLandmarks()`](https://giottosuite.com/dev/reference/calculateAffineMatrixFromLandmarks.md)
+  : Calculate an affine transformation matrix from two sets of landmarks
+
+## Interoperability
+
+Convert other type of objects into a Giotto object and vice versa.
+
+- [`seuratToGiotto()`](https://giotto-suite.github.io/GiottoClass/reference/seuratToGiotto.html)
+  : Deprecated (from GiottoClass)
+- [`giottoToSeurat()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToSeurat.html)
+  : Deprecated (from GiottoClass)
+- [`giottoToSpatialExperiment()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToSpatialExperiment.html)
+  : Utility function to convert a Giotto object to a SpatialExperiment
+  object. (from GiottoClass)
+- [`giottoToAnnData()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html)
+  : Convert Giotto to anndata (from GiottoClass)
+- [`giottoToAnndataZarr()`](https://giottosuite.com/dev/reference/giottoToAnndataZarr.md)
+  : Create a local anndata zarr folder
+- [`anndataToGiotto()`](https://giotto-suite.github.io/GiottoClass/reference/anndataToGiotto.html)
+  : Convert anndata to Giotto (from GiottoClass)
+- [`giottoMasterToSuite()`](https://giotto-suite.github.io/GiottoClass/reference/giottoMasterToSuite.html)
+  : Convert a master Giotto object to suite (from GiottoClass)
+- [`convertEnsemblToGeneSymbol()`](https://giottosuite.com/dev/reference/convertEnsemblToGeneSymbol.md)
+  : convertEnsemblToGeneSymbol
+
+## Kriging
+
+- [`interpolateFeature(`*`<giotto>`*`,`*`<missing>`*`)`](https://giottosuite.com/dev/reference/interpolateFeature.md)
+  [`interpolateFeature(`*`<spatLocsObj>`*`,`*`<data.frame>`*`)`](https://giottosuite.com/dev/reference/interpolateFeature.md)
+  : Spatial feature interpolation
+
+## ONTraC integration
+
+Functions to interact with ONTraC.
+
+- [`installGiottoONTraCEnvironment()`](https://giottosuite.com/dev/reference/installGiottoONTraCEnvironment.md)
+  : installGiottoONTraCEnvironment
+- [`runONTraCV1()`](https://giottosuite.com/dev/reference/runONTraCV1.md)
+  : runONTraCV1
+- [`getONTraCv1Input()`](https://giottosuite.com/dev/reference/getONTraCv1Input.md)
+  : getONTraCv1Input
+- [`loadOntraCResults()`](https://giottosuite.com/dev/reference/loadOntraCResults.md)
+  : loadOntraCResults
+- [`load_cell_NT_score()`](https://giottosuite.com/dev/reference/load_cell_NT_score.md)
+  : load_cell_NT_score
+- [`load_cell_niche_cluster_prob()`](https://giottosuite.com/dev/reference/load_cell_niche_cluster_prob.md)
+  : load_cell_niche_cluster_prob
+- [`load_niche_cluster_nt_score()`](https://giottosuite.com/dev/reference/load_niche_cluster_nt_score.md)
+  : load_niche_cluster_nt_score
+- [`cal_cell_niche_cluster_bin()`](https://giottosuite.com/dev/reference/cal_cell_niche_cluster_bin.md)
+  : cal_cell_niche_cluster_bin
+- [`load_nc_connectivity()`](https://giottosuite.com/dev/reference/load_nc_connectivity.md)
+  : load_nc_connectivity
+- [`plotCTCompositionInNicheCluster()`](https://giottosuite.com/dev/reference/plotCTCompositionInNicheCluster.md)
+  : plotCTCompositionInNicheCluster
+- [`plotCellTypeNTScore()`](https://giottosuite.com/dev/reference/plotCellTypeNTScore.md)
+  : plotCellTypeNTScore
+- [`plotSpatNicheClusterBin()`](https://giottosuite.com/dev/reference/plotSpatNicheClusterBin.md)
+  : plotSpatNicheClusterBin
+- [`plotSpatNicheClusterProb()`](https://giottosuite.com/dev/reference/plotSpatNicheClusterProb.md)
+  : plotSpatNicheClusterProb
+- [`plotNicheClusterConnectivity()`](https://giottosuite.com/dev/reference/plotNicheClusterConnectivity.md)
+  : plotNicheClusterConnectivity
+
+## Auxiliary
+
+Auxiliary functions.
+
+- [`callSpdep()`](https://giottosuite.com/dev/reference/callSpdep.md) :
+  Call the spdep function with required parameters
+
+## AI technologies
+
+- [`writeChatGPTqueryDEG()`](https://giottosuite.com/dev/reference/writeChatGPTqueryDEG.md)
+  : writeChatGPTqueryDEG

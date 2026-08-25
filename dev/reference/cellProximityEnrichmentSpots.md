@@ -1,0 +1,106 @@
+# cellProximityEnrichmentSpots
+
+Compute cell-cell interaction enrichment for spots (observed vs
+expected)
+
+## Usage
+
+``` r
+cellProximityEnrichmentSpots(
+  gobject,
+  spat_unit = NULL,
+  feat_type = NULL,
+  spatial_network_name = "spatial_network",
+  cluster_column = "cell_ID",
+  cells_in_spot = 1,
+  number_of_simulations = 100,
+  adjust_method = c("none", "fdr", "bonferroni", "BH", "holm", "hochberg", "hommel",
+    "BY"),
+  set_seed = TRUE,
+  seed_number = 1234,
+  verbose = FALSE
+)
+```
+
+## Arguments
+
+- gobject:
+
+  giotto object
+
+- spat_unit:
+
+  spatial unit (e.g. 'cell')
+
+- feat_type:
+
+  feature type (e.g. 'rna')
+
+- spatial_network_name:
+
+  name of spatial network to use
+
+- cluster_column:
+
+  name of column to use for clusters
+
+- cells_in_spot:
+
+  cell number in each spot
+
+- number_of_simulations:
+
+  number of simulations to create expected observations
+
+- adjust_method:
+
+  method to adjust p.values (e.g. "none", "fdr",
+  "bonferroni","BH","holm", "hochberg", "hommel","BY")
+
+- set_seed:
+
+  use of seed. Default = TRUE
+
+- seed_number:
+
+  seed number to use. Default = 1234
+
+- verbose:
+
+  be verbose
+
+## Value
+
+List of cell Proximity scores (CPscores) in data.table format. The first
+data.table (raw_sim_table) shows the raw observations of both the
+original and simulated networks. The second data.table (enrichm_res)
+shows the enrichment results.
+
+## Details
+
+Spatial proximity enrichment or depletion between pairs of cell types is
+calculated by calculating the observed over the expected frequency of
+cell-cell proximity interactions. The expected frequency is the average
+frequency calculated from a number of spatial network simulations. Each
+individual simulation is obtained by reshuffling the cell type labels of
+each node (spot) in the spatial network.
+
+## Examples
+
+``` r
+g <- GiottoData::loadGiottoMini("visium")
+x <- findMarkers_one_vs_all(g,
+    cluster_column = "leiden_clus", min_feats = 20
+)
+sign_gene <- x$feats
+
+sign_matrix <- matrix(rnorm(length(sign_gene) * 7, mean = 10),
+    nrow = length(sign_gene)
+)
+rownames(sign_matrix) <- sign_gene
+colnames(sign_matrix) <- paste0("celltype_", unique(x$cluster))
+
+g <- runDWLSDeconv(gobject = g, sign_matrix = sign_matrix)
+
+cellProximityEnrichmentSpots(gobject = g)
+```
