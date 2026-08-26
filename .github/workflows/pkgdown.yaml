@@ -1,21 +1,16 @@
-# Builds the RELEASE website and publishes it to https://giottosuite.com
+# Builds the RELEASE website: https://giottosuite.com
+#
+# The build lives in giotto-suite/.github and is shared across the org. This
+# file says which site this is; the dev counterpart is pkgdown-dev.yaml, which
+# publishes the gsource line to /dev/.
 #
 # WHICH PACKAGE DOES THIS DOCUMENT?
-# The `giotto_ref` input below, default `suite`. This repository owns the
-# website content -- vignettes, _pkgdown.yml, theme, landing page -- while the
-# package source (R/, man/, NAMESPACE, DESCRIPTION) is checked out from
-# giotto-suite/Giotto at build time.
+# package-ref below. This repository owns the website content -- vignettes,
+# _pkgdown.yml, theme, landing page -- while the package source is checked out
+# at build time, so there is no package mirror here to keep in sync.
 #
-# It used to carry its own copy of the package and install it with local::.,
-# which meant a human had to keep that mirror in step with the real package.
-# The dev job has always checked the package out; this one now does the same,
-# so the two are symmetric and there is nothing left to sync by hand.
-#
-# WHY THE DEV SITE IS SAFE FROM THIS JOB
-# `clean: false` on the deploy. The action then only ever adds and updates
-# files, so everything under gh-pages/dev/ is re-committed untouched. Do not
-# change it to true: this job deploys to the root, and `clean: true` without a
-# target-folder would delete the development site.
+# Rd examples stay ON for the release build, unlike dev. They add roughly an
+# hour, but turning them off changes what the released site publishes.
 
 name: pkgdown
 
@@ -28,86 +23,26 @@ on:
     types: [published]
   workflow_dispatch:
     inputs:
-      giotto_ref:
+      package-ref:
         description: "Branch/tag of giotto-suite/Giotto to document"
         default: suite
         required: false
 
 jobs:
-  pkgdown:
-    runs-on: ubuntu-latest
-    # Only restrict concurrency for non-PR jobs. Shared with pkgdown-dev.yaml:
-    # for any non-PR run this evaluates to the constant "pkgdown-true", so a
-    # release deploy and a dev deploy queue behind one another rather than
-    # racing for the same gh-pages branch.
-    concurrency:
-      group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
-    env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+  site:
     permissions:
       contents: write
-
-    steps:
-      # 1. website content -- at the WORKSPACE ROOT, not a subpath. The deploy
-      #    action runs `git config` in GITHUB_WORKSPACE and has no input to
-      #    point it elsewhere, so the root must be a git repository. Checking
-      #    both repos into subdirectories leaves the root bare and the deploy
-      #    dies with "fatal: not in a git directory".
-      - uses: actions/checkout@v4
-
-      # 2. package source, at the ref being documented
-      - uses: actions/checkout@v4
-        with:
-          repository: giotto-suite/Giotto
-          ref: ${{ inputs.giotto_ref || 'suite' }}
-          path: pkgsrc
-
-      # 3. lay the website over the package checkout. pkgdown expects the config
-      #    and vignettes to sit in the package root.
-      #
-      #    REPLACE vignettes/, do not merge into it. The package repo ships its
-      #    own vignettes (currently dbMatrix.Rmd and intro_to_giotto.Rmd) which
-      #    are not in this repository's _pkgdown.yml. A plain `cp -r` merges the
-      #    two sets and pkgdown then aborts with
-      #      "In _pkgdown.yml, 2 vignettes missing from index"
-      #    This repository is the source of truth for tutorials.
-      - name: Assemble the site source
-        run: |
-          rm -rf pkgsrc/vignettes pkgsrc/pkgdown
-          cp -r vignettes pkgdown pkgsrc/
-          cp    _pkgdown.yml index.md pkgsrc/
-          echo "documenting giotto-suite/Giotto@${{ inputs.giotto_ref || 'suite' }}"
-          echo "version:   $(grep '^Version:' pkgsrc/DESCRIPTION)"
-          echo "vignettes: $(ls pkgsrc/vignettes/*.Rmd pkgsrc/vignettes/*.rmd 2>/dev/null | wc -l)"
-
-      - name: Setup pandoc
-        uses: r-lib/actions/setup-pandoc@v2
-
-      - name: Setup R environment
-        uses: r-lib/actions/setup-r@v2
-        with:
-          use-public-rspm: true
-
-      - name: Set up dependencies
-        uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          working-directory: pkgsrc
-          dependencies: '"hard"' # do not use suggested dependencies
-          extra-packages: github::giotto-suite/GiottoData, any::pkgdown, local::., any::kableExtra, any::ggspavis, any::pheatmap, any::scater, any::STexampleData, any::scran, any::ComplexHeatmap
-          needs: website
-
-      # Rd examples are left ON here, unlike the dev build. They add roughly an
-      # hour, but turning them off changes what the released site publishes and
-      # is a separate decision from this conversion.
-      - name: Build site
-        working-directory: pkgsrc
-        run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
-        shell: Rscript {0}
-
-      - name: Deploy to GitHub pages 🚀
-        if: github.event_name != 'pull_request'
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
-        with:
-          clean: false   # see the header -- this is what protects gh-pages/dev/
-          branch: gh-pages
-          folder: pkgsrc/docs
+    uses: giotto-suite/.github/.github/workflows/pkgdown-site.yaml@main
+    with:
+      mode: release
+      package-repo: giotto-suite/Giotto
+      package-ref: ${{ inputs.package-ref || 'suite' }}
+      overlay-files: "_pkgdown.yml index.md"
+      dependencies: '"hard"'
+      # local::. deliberately absent: the shared workflow installs the
+      # documented package itself, after any pinning. Listing it here would
+      # install Giotto twice.
+      extra-packages: >
+        github::giotto-suite/GiottoData, any::pkgdown,
+        any::kableExtra, any::ggspavis, any::pheatmap, any::scater,
+        any::STexampleData, any::scran, any::ComplexHeatmap
