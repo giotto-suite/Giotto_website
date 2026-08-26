@@ -1,55 +1,94 @@
 #!/usr/bin/env Rscript
 # Build the Giotto Suite website locally and preview it in a browser.
 #
-# The contributing guide currently says building locally "may be hard to run
-# locally", so most people never see their change before it is live. This is
-# the one command that makes it easy.
-#
-#   Rscript pkgdown/preview-sites.R              # release site only (fast)
-#   Rscript pkgdown/preview-sites.R --dev        # release + dev at /dev/
-#   Rscript pkgdown/preview-sites.R --quick      # skip articles (~1 min)
-#   Rscript pkgdown/preview-sites.R --no-serve   # build, don't open a browser
+#   Rscript pkgdown/preview-sites.R                # release site only (fast)
+#   Rscript pkgdown/preview-sites.R --dev          # release + dev at /dev/
+#   Rscript pkgdown/preview-sites.R --quick        # skip articles (~1 min)
+#   Rscript pkgdown/preview-sites.R --no-serve     # build, don't open a browser
+#   Rscript pkgdown/preview-sites.R --pkg ../Giotto  # where the package lives
 #
 # Run from the repository root.
+#
+# WHERE THE PACKAGE COMES FROM
+# This repository holds website content only -- vignettes, _pkgdown.yml, theme,
+# landing page. The package source (R/, man/, NAMESPACE, DESCRIPTION) lives in
+# giotto-suite/Giotto and is combined with it at build time, which is exactly
+# what CI does. So a preview needs a local clone of the package: `../Giotto` by
+# default, or wherever `--pkg` points.
+#
+# The two are assembled into `.preview-pkgsrc/` (git-ignored) and built there,
+# so this mirrors the CI job rather than approximating it.
 #
 # Notes
 #  * Output goes to `docs-preview/` (git-ignored), NOT `docs/`, so a preview can
 #    never be mistaken for or overwrite a deploy artifact.
 #  * `examples = FALSE` always. Several Rd examples build a Python environment
-#    and will shell out to Homebrew/pyenv on a developer machine; on CI they
-#    publish their install log into the docs. Previews never need them.
-#  * `install = FALSE` matches CI and stops pkgdown installing the package into
-#    your library as a side effect.
+#    and will shell out to Homebrew/pyenv on a developer machine. Previews never
+#    need them.
 
 args     <- commandArgs(trailingOnly = TRUE)
-with_dev <- "--dev"      %in% args
-quick    <- "--quick"    %in% args
+with_dev <- "--dev"        %in% args
+quick    <- "--quick"      %in% args
 serve    <- !("--no-serve" %in% args)
 
+pkg_arg <- which(args == "--pkg")
+pkg_src <- if (length(pkg_arg) && length(args) > pkg_arg[[1]]) {
+  args[[pkg_arg[[1]] + 1L]]
+} else {
+  "../Giotto"
+}
+
 if (!file.exists("_pkgdown.yml")) {
-  stop("Run this from the repository root (no _pkgdown.yml here).")
+  stop("Run this from the repository root (no _pkgdown.yml here).", call. = FALSE)
+}
+if (!file.exists(file.path(pkg_src, "DESCRIPTION"))) {
+  stop(sprintf(paste0(
+    "No package source at '%s'.\n",
+    "  This repository holds website content only; the package is documented\n",
+    "  from a checkout of giotto-suite/Giotto. Clone it beside this repo:\n",
+    "    git clone https://github.com/giotto-suite/Giotto ../Giotto\n",
+    "  or point at an existing clone with --pkg <path>."), pkg_src), call. = FALSE)
 }
 if (!requireNamespace("pkgdown", quietly = TRUE)) {
-  stop("pkgdown is not installed: install.packages('pkgdown')")
+  stop("pkgdown is not installed: install.packages('pkgdown')", call. = FALSE)
 }
 
-DEST <- "docs-preview"
+DEST  <- normalizePath("docs-preview", mustWork = FALSE)
+BUILD <- ".preview-pkgsrc"
+
+# ---- assemble, the same way the workflows do -------------------------------
+message("=== assembling ", pkg_src, " + website content -> ", BUILD, " ===")
+unlink(BUILD, recursive = TRUE)
+dir.create(BUILD, showWarnings = FALSE)
+
+for (f in setdiff(list.files(pkg_src, all.files = TRUE, no.. = TRUE), ".git")) {
+  file.copy(file.path(pkg_src, f), BUILD, recursive = TRUE)
+}
+# REPLACE vignettes/, do not merge: the package ships vignettes that are not in
+# this repository's _pkgdown.yml, and pkgdown hard-fails on any missing from the
+# index. This repository is the source of truth for tutorials.
+unlink(file.path(BUILD, c("vignettes", "pkgdown")), recursive = TRUE)
+file.copy("vignettes", BUILD, recursive = TRUE)
+file.copy("pkgdown",   BUILD, recursive = TRUE)
+file.copy(c("_pkgdown.yml", "index.md"), BUILD, overwrite = TRUE)
+
+desc <- read.dcf(file.path(BUILD, "DESCRIPTION"))
+message(sprintf("  documenting %s %s", desc[, "Package"], desc[, "Version"]))
 
 build_one <- function(dev = FALSE) {
+  ov <- list(destination = DEST)
   if (dev) {
     Sys.setenv(PKGDOWN_DEV_MODE = "devel")
-    ov <- list(destination = DEST)
-    # dev-only presentation is injected here, never in _pkgdown.yml
-    if (file.exists("pkgdown/dev-banner.html")) {
+    banner <- file.path(BUILD, "pkgdown", "dev-banner.html")
+    if (file.exists(banner)) {
       ov$template <- list(includes = list(before_body = paste(
-        readLines("pkgdown/dev-banner.html", warn = FALSE), collapse = "\n")))
+        readLines(banner, warn = FALSE), collapse = "\n")))
     }
   } else {
     Sys.unsetenv("PKGDOWN_DEV_MODE")
-    ov <- list(destination = DEST)
   }
 
-  pkg <- pkgdown::as_pkgdown(".", override = ov)
+  pkg <- pkgdown::as_pkgdown(BUILD, override = ov)
   message(sprintf("\n=== building %s -> %s ===",
                   if (dev) "DEV" else "RELEASE", pkg$dst_path))
 
@@ -71,23 +110,11 @@ build_one <- function(dev = FALSE) {
   invisible(pkg$dst_path)
 }
 
-# Validate the reference index before building. pkgdown aborts on the FIRST
-# unmatched topic, so without this a broken index costs a full build to find
-# one problem at a time.
-if (file.exists("pkgdown/preflight-reference.R")) {
-  message("=== pre-flight: resolving the reference index ===")
-  try(system2("Rscript", c("pkgdown/preflight-reference.R", ".", "preview")))
-}
-
 build_one(dev = FALSE)
 if (with_dev) build_one(dev = TRUE)
 
-index <- file.path(DEST, "index.html")
-message("\nRelease : ", normalizePath(index, mustWork = FALSE))
-if (with_dev) {
-  message("Dev     : ",
-          normalizePath(file.path(DEST, "dev", "index.html"), mustWork = FALSE))
-}
+message("\nRelease : ", file.path(DEST, "index.html"))
+if (with_dev) message("Dev     : ", file.path(DEST, "dev", "index.html"))
 
 if (serve) {
   # A real HTTP server, not file://, so search (which fetches search.json) and

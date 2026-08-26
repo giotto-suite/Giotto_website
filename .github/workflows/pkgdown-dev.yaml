@@ -1,47 +1,30 @@
-# Builds the DEVELOPMENT website and publishes it to giottosuite.com/dev/
+# Builds the DEVELOPMENT website: https://giottosuite.com/dev/
 #
-# The release site is built by pkgdown.yaml from the `suite` branch. This is its
-# dev counterpart, kept separate so a dev build can never touch the release
-# site. Three independent guarantees, each verified against the deploy action's
-# v4.4.1 source:
-#
-#   * PKGDOWN_DEV_MODE=devel makes pkgdown write ONLY to docs/dev/ -- nothing
-#     is produced at docs/ root.
-#   * the deploy uses target-folder: dev, and `clean: true` is scoped to it --
-#     rsync's destination is ${tmp}/dev and the worktree is a full non-orphan
-#     checkout, so the release site's files are re-committed untouched.
-#   * force: false, so a release deploy that lands mid-build is rebased onto,
-#     not overwritten.
+# The build lives in giotto-suite/.github and is shared across the org. This
+# file says which site this is and which refs it documents.
 #
 # WHICH PACKAGES DOES THIS DOCUMENT?
-# The four `*_ref` inputs below. This repository owns the website content --
-# vignettes, _pkgdown.yml, theme -- while the package source (R/, man/,
-# NAMESPACE, DESCRIPTION) is checked out from giotto-suite/Giotto at build time.
-# So pointing the dev site at a different package branch is one word, with no
-# merging of package code into this repository.
+# package-ref plus the `pins` below -- currently the gsource line, which is
+# ahead of the release branches and slated to become the next `dev`. When that
+# merge happens and gsource is retired, change those refs to dev.
 #
-# Currently the `gsource` line, which is ahead of the release branches and is
-# slated to become the next `dev`. When that merge happens and gsource is
-# retired, change the three `gsource` defaults below to `dev`. That is the
-# entire migration.
+# WHY THE SIBLINGS ARE PINNED
+# Giotto@gsource and GiottoVisuals@gsource declare a BARE
+# giotto-suite/GiottoClass in Remotes:, which resolves to that repo's default
+# branch -- main, v0.5.1. gsource needs v0.6.0. Left alone, the build installs
+# the wrong GiottoClass, succeeds, and silently documents gsource's code
+# against release-era classes.
 #
-# WHY THE SIBLING REFS ARE PINNED SEPARATELY
-# Giotto@gsource and GiottoVisuals@gsource both declare a BARE
-# `giotto-suite/GiottoClass` in Remotes:, which pak resolves to that repo's
-# DEFAULT branch -- main, v0.5.1. gsource needs v0.6.0, which exists only on
-# GiottoClass@gsource. Left alone, CI installs the wrong GiottoClass, succeeds,
-# and silently documents gsource's code against release-era classes.
+# Pinning inside a DESCRIPTION does not work (two repos declare the same
+# package, one pinned and one not, and pak rejects the conflict), and stripping
+# Remotes: does not either (the Giotto packages are on no repository, so pak
+# then cannot find them at all). So: let pak resolve normally, then overlay the
+# pins with dependency resolution switched off.
 #
-# Pinning the ref inside a DESCRIPTION does not work: two repos declare the same
-# package, one pinned and one not, and pak rejects the conflicting specs.
-# Stripping Remotes: does not work either -- the Giotto packages are on no
-# repository, so pak then cannot find them at all and refuses to solve.
-#
-# So: let pak resolve normally, exactly as the release build does, and overlay
-# the pinned refs afterwards with dependency resolution switched off. Nothing
-# reads a Remotes: field after that point, so nothing can undo the pin. Giotto
-# itself is installed last, against the pinned siblings. No package repository
-# is modified.
+# Order matters. GiottoClass goes last, because installing any sibling drags in
+# GiottoClass@HEAD and would undo the pin. Giotto itself is installed after all
+# of them by the shared workflow, since it imports symbols that exist only in
+# GiottoClass 0.6.0.
 
 name: pkgdown (dev)
 
@@ -50,172 +33,31 @@ on:
     branches: [dev]
   workflow_dispatch:
     inputs:
-      giotto_ref:
+      package-ref:
         description: "Branch/tag of giotto-suite/Giotto to document"
         default: gsource
         required: false
-      giottoclass_ref:
-        description: "Branch/tag of giotto-suite/GiottoClass to build against"
-        default: gsource
-        required: false
-      giottovisuals_ref:
-        description: "Branch/tag of giotto-suite/GiottoVisuals to build against"
-        default: gsource
-        required: false
-      giottoutils_ref:
-        # no gsource branch exists; main is v0.2.5, which satisfies
-        # GiottoClass@gsource's `GiottoUtils (>= 0.2.5)`
-        description: "Branch/tag of giotto-suite/GiottoUtils to build against"
-        default: main
-        required: false
 
 jobs:
-  pkgdown-dev:
-    runs-on: ubuntu-latest
-    # SHARE the release workflow's concurrency group so a dev deploy and a
-    # release deploy can never overlap. This expression is deliberately
-    # identical to the one in pkgdown.yaml: for any non-PR run it evaluates to
-    # the constant "pkgdown-true", so all runs queue behind one another.
-    # A per-run group would be unique every time and serialise against NOTHING.
-    concurrency:
-      group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
-    env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+  site:
     permissions:
       contents: write
-
-    steps:
-      # 1. website content -- checked out at the WORKSPACE ROOT, not a subpath.
-      #    The deploy action runs `git config` in GITHUB_WORKSPACE and has no
-      #    input to point it elsewhere, so the root must be a git repository.
-      #    Checking both repos into subdirectories leaves the root bare and the
-      #    deploy dies with "fatal: not in a git directory".
-      - uses: actions/checkout@v4
-
-      # 2. package source, at whichever ref we want documented, in a subdir
-      - uses: actions/checkout@v4
-        with:
-          repository: giotto-suite/Giotto
-          ref: ${{ inputs.giotto_ref || 'gsource' }}
-          path: pkgsrc
-
-      # 3. lay the website over the package checkout. pkgdown expects the
-      #    config and vignettes to sit in the package root.
-      #
-      #    REPLACE vignettes/, do not merge into it. The package repo ships its
-      #    own vignettes (currently dbMatrix.Rmd and intro_to_giotto.Rmd) which
-      #    are not in this repository's _pkgdown.yml. A plain `cp -r` merges the
-      #    two sets, and pkgdown then aborts with:
-      #      "In _pkgdown.yml, 2 vignettes missing from index"
-      #    This repository is the source of truth for tutorials.
-      - name: Assemble the site source
-        run: |
-          rm -rf pkgsrc/vignettes pkgsrc/pkgdown
-          cp -r vignettes pkgdown pkgsrc/
-          cp    _pkgdown.yml index.md pkgsrc/
-
-
-          echo "::group::resolved refs"
-          echo "Giotto        @ ${{ inputs.giotto_ref        || 'gsource' }}   (documented)"
-          echo "GiottoClass   @ ${{ inputs.giottoclass_ref   || 'gsource' }}"
-          echo "GiottoVisuals @ ${{ inputs.giottovisuals_ref || 'gsource' }}"
-          echo "GiottoUtils   @ ${{ inputs.giottoutils_ref   || 'main'    }}"
-          echo "::endgroup::"
-          echo "vignettes assembled: $(ls pkgsrc/vignettes/*.Rmd pkgsrc/vignettes/*.rmd 2>/dev/null | wc -l)"
-
-      - uses: r-lib/actions/setup-pandoc@v2
-
-      - uses: r-lib/actions/setup-r@v2
-        with:
-          use-public-rspm: true
-
-      # Resolve dependencies exactly as the release build does: Remotes: intact,
-      # pak in charge, system libraries handled. This installs the siblings at
-      # their DEFAULT branches -- GiottoClass 0.5.1, not what we want yet. The
-      # pins go on top in the next step.
-      #
-      # local::. is deliberately absent. pak would install Giotto here, against
-      # 0.5.1, and Giotto@gsource imports symbols that only exist in 0.6.0.
-      # Giotto is installed after the pins instead.
-      - uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          working-directory: pkgsrc
-          dependencies: '"hard"'
-          extra-packages: >
-            github::giotto-suite/GiottoData, any::pkgdown,
-            any::kableExtra, any::ggspavis, any::pheatmap, any::scater,
-            any::STexampleData, any::scran, any::ComplexHeatmap
-          needs: website
-
-      # Overlay the pinned refs. dependencies = FALSE throughout: everything is
-      # already present, and it is what stops any Remotes: field being read
-      # again -- a single bare `giotto-suite/GiottoClass` anywhere in the
-      # ecosystem would otherwise pull main straight back over the pin.
-      #
-      # GiottoClass goes LAST so nothing runs after it that could undo it. Safe
-      # in this order because gsource only adds exports relative to main, apart
-      # from ten legacy snake_case constructors that no sibling imports.
-      - name: Pin the ecosystem to the gsource line
-        run: |
-          Rscript -e 'install.packages("remotes", repos = "https://cloud.r-project.org")'
-          Rscript -e '
-            gh <- function(spec) remotes::install_github(
-              spec, upgrade = "never", dependencies = FALSE, force = TRUE)
-            gh("giotto-suite/GiottoUtils@${{ inputs.giottoutils_ref   || 'main'    }}")
-            gh("giotto-suite/GiottoVisuals@${{ inputs.giottovisuals_ref || 'gsource' }}")
-            gh("giotto-suite/GiottoClass@${{ inputs.giottoclass_ref   || 'gsource' }}")
-          '
-
-      # Now Giotto, built against the pinned siblings. R CMD INSTALL rather than
-      # install_local: the assembled tree carries a 1.2 GB vignettes/images
-      # directory that a tarball build would copy for nothing.
-      - name: Install Giotto against the pinned siblings
-        run: R CMD INSTALL --no-multiarch --no-docs pkgsrc
-
-      # Fail loudly rather than publish a site built against the wrong classes.
-      - name: Verify the pinned versions
-        run: |
-          Rscript -e '
-            want <- c(GiottoClass = "0.6.0", Giotto = "4.2.4")
-            bad <- character()
-            for (p in c("Giotto", "GiottoClass", "GiottoVisuals", "GiottoUtils", "GiottoData")) {
-              v <- tryCatch(as.character(utils::packageVersion(p)), error = function(e) NA)
-              cat(sprintf("%-14s %s\n", p, v))
-              if (p %in% names(want) && !identical(v, want[[p]]))
-                bad <- c(bad, sprintf("%s is %s, expected %s", p, v, want[[p]]))
-            }
-            if (length(bad)) stop("wrong versions installed:\n  ", paste(bad, collapse = "\n  "))
-          '
-
-      - name: Build dev site
-        working-directory: pkgsrc
-        env:
-          PKGDOWN_DEV_MODE: devel   # REQUIRED -- release and dev sources carry
-                                    # the same version, so pkgdown's `mode: auto`
-                                    # cannot tell them apart
-        run: |
-          Rscript -e '
-            banner <- paste(readLines("pkgdown/dev-banner.html"), collapse = "\n")
-            pkgdown::build_site(
-              install     = FALSE,
-              # Rd examples default to TRUE and add ~1h. Several build a Python
-              # environment, and that install log already leaks into the
-              # released docs as "example output".
-              examples    = FALSE,
-              # parity with the release job, which pins new_process = FALSE
-              new_process = FALSE,
-              override    = list(
-                # dev-only presentation lives HERE, never in _pkgdown.yml, so
-                # merging dev into suite cannot carry the banner into production
-                template = list(includes = list(before_body = banner))
-              )
-            )'
-
-      - name: Deploy to gh-pages /dev/
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
-        with:
-          branch: gh-pages
-          folder: pkgsrc/docs/dev
-          target-folder: dev
-          clean: true
-          force: false
+    uses: giotto-suite/.github/.github/workflows/pkgdown-site.yaml@main
+    with:
+      mode: dev
+      package-repo: giotto-suite/Giotto
+      package-ref: ${{ inputs.package-ref || 'gsource' }}
+      overlay-files: "_pkgdown.yml index.md"
+      dependencies: '"hard"'
+      # local::. deliberately absent: Giotto@gsource cannot install against the
+      # GiottoClass pak resolves here, so the shared workflow installs it after
+      # the pins.
+      extra-packages: >
+        github::giotto-suite/GiottoData, any::pkgdown,
+        any::kableExtra, any::ggspavis, any::pheatmap, any::scater,
+        any::STexampleData, any::scran, any::ComplexHeatmap
+      pins: |
+        giotto-suite/GiottoUtils@main
+        giotto-suite/GiottoVisuals@gsource
+        giotto-suite/GiottoClass@gsource
+      expect-versions: "GiottoClass=0.6.0,Giotto=4.2.4"

@@ -1,5 +1,17 @@
-# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
-# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+# Builds the RELEASE website: https://giottosuite.com
+#
+# The build lives in giotto-suite/.github and is shared across the org. This
+# file says which site this is; the dev counterpart is pkgdown-dev.yaml, which
+# publishes the gsource line to /dev/.
+#
+# WHICH PACKAGE DOES THIS DOCUMENT?
+# package-ref below. This repository owns the website content -- vignettes,
+# _pkgdown.yml, theme, landing page -- while the package source is checked out
+# at build time, so there is no package mirror here to keep in sync.
+#
+# Rd examples stay ON for the release build, unlike dev. They add roughly an
+# hour, but turning them off changes what the released site publishes.
+
 name: pkgdown
 
 on:
@@ -10,49 +22,27 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      package-ref:
+        description: "Branch/tag of giotto-suite/Giotto to document"
+        default: suite
+        required: false
 
 jobs:
-  pkgdown:
-    runs-on: ubuntu-latest
-    # Only restrict concurrency for non-PR jobs
-    concurrency:
-      group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
-    env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+  site:
     permissions:
       contents: write
-    steps:
-      - name: Checkout repo for workflow access
-        uses: actions/checkout@v4
-
-      - name: Setup pandoc
-        uses: r-lib/actions/setup-pandoc@v2
-
-      - name: Setup R environment
-        uses: r-lib/actions/setup-r@v2
-        with:
-          use-public-rspm: true
-
-      - name: Set up dependencies
-        uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          dependencies: '"hard"' # do not use suggested dependencies
-          extra-packages: github::giotto-suite/GiottoData, any::pkgdown, local::., any::kableExtra, any::ggspavis, any::pheatmap, any::scater, any::STexampleData, any::scran, any::ComplexHeatmap
-          needs: website
-
-      - name: Build site
-        run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
-        shell: Rscript {0}
-
-      - name: Deploy to GitHub pages 🚀
-        # The ref guard matters because of workflow_dispatch: the Actions UI
-        # lets you "Run workflow" against ANY branch, and the workflow file is
-        # taken from the branch you select. Without this, dispatching from
-        # `dev` would build dev content in RELEASE mode and publish it to the
-        # site root. Only `suite` may deploy to the root.
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/suite'
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
-        with:
-          clean: false
-          branch: gh-pages
-          folder: docs
+    uses: giotto-suite/.github/.github/workflows/pkgdown-site.yaml@main
+    with:
+      mode: release
+      package-repo: giotto-suite/Giotto
+      package-ref: ${{ inputs.package-ref || 'suite' }}
+      overlay-files: "_pkgdown.yml index.md"
+      dependencies: '"hard"'
+      # local::. deliberately absent: the shared workflow installs the
+      # documented package itself, after any pinning. Listing it here would
+      # install Giotto twice.
+      extra-packages: >
+        github::giotto-suite/GiottoData, any::pkgdown,
+        any::kableExtra, any::ggspavis, any::pheatmap, any::scater,
+        any::STexampleData, any::scran, any::ComplexHeatmap
