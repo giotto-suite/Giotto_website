@@ -21,7 +21,7 @@
 # absolutely to their own pkgdown sites, resolved from each package's published
 # pkgdown.yml where reachable, falling back to its DESCRIPTION URL offline.
 
-PKGS <- c("Giotto", "GiottoClass", "GiottoVisuals", "GiottoUtils", "GiottoData")
+PKGS <- c("Giotto", "GiottoClass", "GiottoVisuals", "GiottoUtils", "GiottoData", "GiottoDisk")
 SELF <- "Giotto"
 OUT  <- "vignettes/function_index.Rmd"
 
@@ -71,6 +71,19 @@ reference_url <- function(pkg) {
 
   # 3. the canonical org, as a known-good default
   cand <- c(cand, sprintf("https://giotto-suite.github.io/%s/reference", pkg))
+
+  # 4. PREFER a sibling's /dev/ site where one exists.
+  #
+  # This page ships only on the development site, which documents the gsource
+  # line, and the Rd metadata above is read from whatever is installed locally
+  # -- currently GiottoClass 0.6.0, i.e. gsource. Linking those topics to a
+  # sibling's RELEASE site produces dead links: filterData, reduceData,
+  # hnswKNN, networkParam, spatRelate and labelProportionsParam all 404 on
+  # GiottoClass's released site because they do not exist in 0.5.1.
+  #
+  # Sibling dev sites live alongside the release site under /dev/, so try that
+  # first and fall back when a package has no dev site.
+  cand <- c(sub("/reference$", "/dev/reference", unique(cand)), cand)
 
   for (u in unique(cand)) if (url_ok(paste0(u, "/index.html"))) return(u)
   NA_character_
