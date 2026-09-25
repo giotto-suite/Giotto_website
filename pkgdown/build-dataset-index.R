@@ -163,7 +163,8 @@ render_datasets <- function(ds) {
     text <- tolower(paste(r$title, r$section, paste(unlist(tg), collapse = " ")))
     badges <- c(
       sprintf('<span class="ds-badge ds-badge-pkg">%s</span>', html_escape(tg$packages)),
-      sprintf('<span class="ds-badge">%s</span>', html_escape(c(tg$modality, tg$resolution))))
+      sprintf('<span class="ds-badge">%s</span>', html_escape(c(tg$modality,
+        if (length(tg$panel)) paste(tg$panel, "genes"), tg$resolution))))
     c(sprintf('<a class="ds-card" href="%s.html" data-section="%s"%s data-text="%s">',
               r$slug, html_escape(r$section), paste(attr, collapse = ""), html_escape(text)),
       sprintf('<span class="ds-kind">%s</span>', html_escape(r$section)),

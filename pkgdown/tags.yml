@@ -5,6 +5,7 @@
 #   tags:
 #     packages: GiottoDisk
 #     platform: CosMx
+#     panel: 5,000+
 #     species: human
 #     tissue: colon
 #     condition: cancer
@@ -67,6 +68,13 @@ facets:
     - Spatial ATAC-RNA-seq
     - Chromium
     - Smart-seq2
+  panel:
+    label: Panel size
+    # A tier, not an exact count: tag by the panel's nominal size, so a 5K panel
+    # plus ~100 custom genes is still 500-5,000. Untargeted sequencing (Visium,
+    # Stereo-seq, scRNA-seq, ...) counts as whole transcriptome.
+    desc: Panel tier. 0-500 is e.g. MERSCOPE; 500-5,000 e.g. Xenium Prime 5K, with or without add-on genes; 5,000+ is whole transcriptome, e.g. Atera WTA, CosMx WTx, Visium.
+    values: ["0–500", "500–5,000", "5,000+"]
   species:
     label: Species
     values: [human, mouse, rhesus macaque]
