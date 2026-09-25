@@ -254,9 +254,9 @@ if (!identical(ds_env$render_datasets(ds),
 # build produces nothing.
 #
 # This needs the package being documented, which does not live here -- so it is
-# skipped when no clone is around, as in CI, where the check job runs before the
-# package is checked out. Locally it turns an hour-deep build failure into a
-# second.
+# skipped when no clone is around. CI's check job sparse-checks-out just the
+# package's DESCRIPTION and man/ for it. Either way it turns an hour-deep build
+# failure into a second.
 #
 # Only the documented package's own topics are checked. `reference:` also lists
 # GiottoClass::/GiottoVisuals::/... topics, which pkgdown resolves from the

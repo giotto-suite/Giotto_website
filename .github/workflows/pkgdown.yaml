@@ -44,8 +44,21 @@ jobs:
       - name: Install yaml
         run: install.packages("yaml")
         shell: Rscript {0}
+      # Only DESCRIPTION and man/ of the documented package: enough for
+      # check-site.R to verify every topic is listed under `reference:`, which
+      # otherwise surfaces as "N topics missing from index" deep into the build.
+      - name: Check out the documented package's Rd files
+        uses: actions/checkout@v4
+        with:
+          repository: giotto-suite/Giotto
+          ref: ${{ inputs.package-ref || 'suite' }}
+          path: pkgsrc
+          sparse-checkout: |
+            DESCRIPTION
+            man
+          sparse-checkout-cone-mode: false
       - name: Check site structure
-        run: Rscript pkgdown/check-site.R
+        run: Rscript pkgdown/check-site.R --pkg pkgsrc
 
   site:
     needs: check
