@@ -1,0 +1,87 @@
+# Controlled vocabulary for the dataset browser (articles/datasets.html).
+#
+# Each tutorial declares its tags in its own YAML header:
+#
+#   tags:
+#     packages: GiottoDisk
+#     platform: CosMx
+#     species: human
+#     tissue: colon
+#     condition: cancer
+#     modality: RNA
+#     resolution: subcellular
+#
+# A value may be a single string or a list. Every value must appear below --
+# check-site.R rejects anything else, so "Human", "human" and "H. sapiens"
+# cannot become three separate filters. Add a value here when a new tutorial
+# needs one.
+#
+# Leave a facet out when the tutorial does not say. A missing tag only means the
+# card does not match that filter; a guessed one sends people to the wrong page.
+#
+# After changing tags here or in any tutorial, regenerate the page:
+#
+#   Rscript pkgdown/build-dataset-index.R
+
+# Every tutorial in these `articles:` sections must be tagged. Tutorials outside
+# them are optional, and appear in the browser once they carry a `tags:` block.
+tagged_sections:
+- In situ methods
+- Sequencing-based methods
+- Spatial in situ transcriptomics
+- Spatial sequencing transcriptomics
+- Spatial proteomics
+- Spatial multi-omics
+- Single cell RNA sequencing (non-spatial)
+
+# Shown in this order. `values` order is the order of the checkboxes.
+facets:
+  packages:
+    label: Uses
+    desc: Tutorials built on a Giotto Suite extension package.
+    values: [GiottoDisk, GiottoLens]
+  platform:
+    label: Platform
+    required: true
+    values:
+    - Xenium
+    - Atera
+    - CosMx
+    - MERFISH
+    - MERSCOPE
+    - Molecular Cartography
+    - GenePS
+    - seqFISH+
+    - osmFISH
+    - STARmap
+    - CODEX
+    - Visium
+    - Visium CytAssist
+    - Visium HD
+    - Stereo-seq
+    - Slide-seq
+    - Open-ST
+    - Seq-Scope
+    - DBiT-seq
+    - Spatial CITE-seq
+    - Spatial ATAC-RNA-seq
+    - Chromium
+    - Smart-seq2
+  species:
+    label: Species
+    values: [human, mouse, rhesus macaque]
+  tissue:
+    label: Tissue
+    values: [brain, breast, colon, embryo, eye, kidney, liver, lung, pancreas, prostate, skin, spleen]
+  condition:
+    label: Condition
+    values: [cancer, normal]
+  modality:
+    label: Modality
+    required: true
+    values: [RNA, protein, ATAC]
+  resolution:
+    label: Resolution
+    required: true
+    desc: What the tutorial analyzes -- transcript points, segmented cells, or multi-cell spots and bins.
+    values: [subcellular, single cell, spot]

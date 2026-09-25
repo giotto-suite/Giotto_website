@@ -232,6 +232,21 @@ for (v in vig_names) {
   }
 }
 
+# ---- dataset tags -----------------------------------------------------------
+# The dataset browser is generated from each tutorial's `tags:` header. Reuse
+# the generator's own parsing and validation rather than a second copy of the
+# rules, then fail if the committed page no longer matches what it would write:
+# a stale page silently hides a new tutorial, or links a renamed one.
+ds_env <- new.env()
+sys.source("pkgdown/build-dataset-index.R", envir = ds_env)
+ds <- ds_env$collect_datasets()
+for (p in ds_env$validate_datasets(ds)) err("%s", p)
+if (!identical(ds_env$render_datasets(ds),
+               if (file.exists(ds_env$OUT)) readLines(ds_env$OUT, warn = FALSE))) {
+  err(paste0("%s is out of date with the tutorials' `tags:` headers.\n",
+             "         Run: Rscript pkgdown/build-dataset-index.R"), ds_env$OUT)
+}
+
 # ---- reference: index -------------------------------------------------------
 # The other hard failure. pkgdown aborts with "N topics missing from index" for
 # any documented topic that is neither listed under `reference:` nor marked
