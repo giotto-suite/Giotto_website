@@ -55,21 +55,33 @@ review step.
    Edit this file **textually**. Do not round-trip it through a YAML writer — it is ~1000
    hand-commented lines and the comments and section anchors are load-bearing.
 
-6. **Check, in about a second:**
+6. **Tag it** for the dataset browser (`articles/datasets.html`). Add a `tags:` block
+   to the YAML header -- required for tutorials in the Examples sections listed under
+   `tagged_sections:` in `pkgdown/tags.yml`, optional elsewhere. `platform`,
+   `modality` and `resolution` are required; omit `species`/`tissue`/`condition` when
+   the dataset does not state them rather than guessing. Use `packages: GiottoDisk`
+   when the tutorial works on a disk-backed object, `packages: GiottoLens` for the
+   interactive viewer. Values must be in `pkgdown/tags.yml`. Then regenerate and
+   commit the page:
+   ```sh
+   Rscript pkgdown/build-dataset-index.R
+   ```
+
+7. **Check, in about a second:**
    ```sh
    Rscript pkgdown/check-site.R
    ```
    Errors mean a build would fail or publish a dead link. Warnings are informational and
    are expected in the current tree (see its header for why).
 
-7. **Preview** (needs a `../Giotto` clone, or `--pkg <path>`):
+8. **Preview** (needs a `../Giotto` clone, or `--pkg <path>`):
    ```sh
    Rscript pkgdown/preview-sites.R --dev --quick
    ```
    `--quick` skips article pages, so it is about a minute; drop it to render your
    tutorial. Runs `check-site.R` first and refuses to build on errors.
 
-8. **PR against `dev`.** The dev site rebuilds in roughly 5–10 minutes. A release build
+9. **PR against `dev`.** The dev site rebuilds in roughly 5–10 minutes. A release build
    takes 40–70 because it also runs every Rd example.
 
 ## Converting an already-rendered tutorial
