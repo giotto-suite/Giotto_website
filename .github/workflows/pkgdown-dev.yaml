@@ -21,10 +21,12 @@
 # then cannot find them at all). So: let pak resolve normally, then overlay the
 # pins with dependency resolution switched off.
 #
-# Order matters. GiottoClass goes last, because installing any sibling drags in
-# GiottoClass@HEAD and would undo the pin. Giotto itself is installed after all
-# of them by the shared workflow, since it imports symbols that exist only in
-# GiottoClass 0.6.0.
+# Order matters: dependency order, each pin after everything it imports. With
+# dependencies = FALSE a pin never pulls in a sibling, so nothing can undo an
+# earlier one -- but it is built against whatever is installed at that moment.
+# GiottoVisuals@gsource needs GiottoClass >= 0.7.2, so installed before the
+# GiottoClass pin it failed and R silently restored the release version. Giotto
+# itself is installed after all of them by the shared workflow.
 
 name: pkgdown (dev)
 
@@ -77,9 +79,10 @@ jobs:
         any::STexampleData, any::scran, any::ComplexHeatmap
       pins: |
         giotto-suite/GiottoUtils@main
-        giotto-suite/GiottoVisuals@gsource
         giotto-suite/GiottoClass@gsource
+        giotto-suite/GiottoVisuals@gsource
       # Floors, not exact versions: the failure being guarded against is main
-      # (GiottoClass 0.5.1) or suite (Giotto 4.2.3) displacing the pins, and an
-      # exact version failed every time gsource bumped its own.
-      expect-versions: "GiottoClass>=0.6.0,Giotto>=4.2.4"
+      # (GiottoClass 0.5.1, GiottoVisuals 0.2.15) or suite (Giotto 4.2.3)
+      # displacing the pins, and an exact version failed every time gsource
+      # bumped its own.
+      expect-versions: "GiottoClass>=0.6.0,GiottoVisuals>=0.2.16,Giotto>=4.2.4"
