@@ -81,7 +81,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.2.4</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -114,10 +114,13 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-examples" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Examples</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-examples">
-<li><h6 class="dropdown-header" data-toc-skip>In situ methods</h6></li>
+<li><a class="dropdown-item" href="../articles/datasets.html">Browse all datasets</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>In situ methods</h6></li>
     <li><a class="dropdown-item" href="../articles/xenium_breast_cancer.html">Xenium — Human breast cancer</a></li>
     <li><a class="dropdown-item" href="../articles/nanostring_cosmx_lung_cancer.html">Nanostring CosMx — Subcellular lung cancer</a></li>
     <li><a class="dropdown-item" href="../articles/cosmx_pancreas.html">Nanostring CosMx — Human pancreas FFPE</a></li>
+    <li><a class="dropdown-item" href="../articles/cosmx_colon_wtx_giottodisk.html">Nanostring CosMx — Human colon (GiottoDisk)</a></li>
     <li><a class="dropdown-item" href="../articles/merfish_mouse_hypothalamic.html">MERFISH — Mouse hypothalamic preoptic region</a></li>
     <li><a class="dropdown-item" href="../articles/merfish_mouse_sagittal_bil.html">MERFISH — Whole mouse brain (BIL)</a></li>
     <li><a class="dropdown-item" href="../articles/vizgen_mouse_brain.html">Vizgen — Mouse brain receptor map</a></li>
@@ -326,7 +329,7 @@ thresholds to remove low quality cells.</p>
 <span></span>
 <span><span class="co"># calculate per-spot QC metrics and store in colData</span></span>
 <span><span class="va">spe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scuttle/man/addPerCellQCMetrics.html" class="external-link">addPerCellQC</a></span><span class="op">(</span><span class="va">spe</span>, subsets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mito <span class="op">=</span> <span class="va">is_mito</span><span class="op">)</span>, assay.type <span class="op">=</span> <span class="st">"raw_rna_cell"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>We plot a histogram of library size and select a threshold of 50 to
 remove low quality cells.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -365,7 +368,7 @@ library size factors using the scran package from Bioconductor.</p>
 <span></span>
 <span><span class="co"># calculate library size factors</span></span>
 <span><span class="va">spe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scuttle/man/librarySizeFactors.html" class="external-link">computeLibraryFactors</a></span><span class="op">(</span><span class="va">spe</span>, assay.type <span class="op">=</span> <span class="st">"raw_rna_cell"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html" class="external-link">sizeFactors</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html" class="external-link">sizeFactors</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html" class="external-link">sizeFactors</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span>, breaks <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/interoperability_spatialexperiment/2-histogram.png"></p>
@@ -462,7 +465,7 @@ genes in each cluster using a pheatmap</p>
 <p><img src="images/interoperability_spatialexperiment/7-heatmap.png"></p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot log-transformed normalized expression of top genes for one cluster</span></span>
-<span><span class="va">top_genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">interesting</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">top_genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">interesting</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/plotExpression.html" class="external-link">plotExpression</a></span><span class="op">(</span><span class="va">spe</span>, </span>
 <span>               x <span class="op">=</span> <span class="st">"label"</span>, </span>

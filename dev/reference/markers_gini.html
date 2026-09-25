@@ -115,7 +115,7 @@ whatever matrix it is given."><meta name="robots" content="noindex"><!-- Global 
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.2.4</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -142,10 +142,13 @@ whatever matrix it is given."><meta name="robots" content="noindex"><!-- Global 
   </ul></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-examples" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Examples</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-examples"><li><h6 class="dropdown-header" data-toc-skip>In situ methods</h6></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-examples"><li><a class="dropdown-item" href="../articles/datasets.html">Browse all datasets</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>In situ methods</h6></li>
     <li><a class="dropdown-item" href="../articles/xenium_breast_cancer.html">Xenium — Human breast cancer</a></li>
     <li><a class="dropdown-item" href="../articles/nanostring_cosmx_lung_cancer.html">Nanostring CosMx — Subcellular lung cancer</a></li>
     <li><a class="dropdown-item" href="../articles/cosmx_pancreas.html">Nanostring CosMx — Human pancreas FFPE</a></li>
+    <li><a class="dropdown-item" href="../articles/cosmx_colon_wtx_giottodisk.html">Nanostring CosMx — Human colon (GiottoDisk)</a></li>
     <li><a class="dropdown-item" href="../articles/merfish_mouse_hypothalamic.html">MERFISH — Mouse hypothalamic preoptic region</a></li>
     <li><a class="dropdown-item" href="../articles/merfish_mouse_sagittal_bil.html">MERFISH — Whole mouse brain (BIL)</a></li>
     <li><a class="dropdown-item" href="../articles/vizgen_mouse_brain.html">Vizgen — Mouse brain receptor map</a></li>
@@ -333,6 +336,28 @@ pads.</td></tr><tr><td><code>rank_score</code></td><td>numeric (default = Inf). 
 within this rank for both expression and detection.</td></tr><tr><td><code>min_feats</code></td><td>integer (default = 5). Keep this many top features per
 group regardless of the gates, so a group is never empty.</td></tr></table><p>The gates are OR'd with <code>min_feats</code>, so tightening them shrinks the result
 toward <code>min_feats</code> per group and never below it.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="detection-margin">detection_margin<a class="anchor" aria-label="anchor" href="#detection-margin"></a></h2>
+
+
+
+<p>Both comparisons also return a <code>detection_margin</code> column: per (feature,
+group), how many percentage points more of that group's cells detect the
+feature than of the next-highest <strong>single</strong> group's.</p>
+<p>$$\LARGE \mathrm{margin}(g,k) = d_{gk} - \max_{j \neq k} d_{gj}$$</p>
+<p>It answers a different question from the coefficients beside it. The gini
+columns rank features <em>within</em> a group; this measures whether a group has any
+feature of its own at all, which is what distinguishes a real population from
+an overclustered fragment. Two properties make it comparable across groups
+where <code>comb_score</code> is not: the contrast is against one other group rather
+than the pooled remainder, so it does not inherit the \(N - n_k\) term that
+makes the one-vs-rest coefficients fall as a group grows; and it is not
+rescaled within group, so <code>max(detection_margin)</code> per group means the same
+thing in every group.</p>
+<p>It is measured in percentage points and is negative where another group
+detects the feature more often. A value of zero for a group's best feature
+means no feature is more detected there than everywhere else.</p>
 <p>Defaults here are <code><a href="findGiniMarkers.html">findGiniMarkers()</a></code>'s. <code><a href="findGiniMarkers_one_vs_all.html">findGiniMarkers_one_vs_all()</a></code>
 passes <code>min_expression = 0.5</code>, <code>min_detection = 0.5</code> and <code>min_feats = 4</code>
 explicitly; <code>comparison = "one_vs_rest"</code> does <strong>not</strong> switch them for you.</p>

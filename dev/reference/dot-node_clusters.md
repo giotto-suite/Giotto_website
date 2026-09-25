@@ -1,7 +1,7 @@
 # Node clusters
 
-Merge selected clusters based on pairwise correlation scores and size of
-cluster.
+Enumerate the two leaf sets either side of every internal node of a
+hierarchical clustering.
 
 ## Usage
 
@@ -13,12 +13,27 @@ cluster.
 
 - hclus_obj:
 
-  hclus object
+  hclust object
 
 - verbose:
 
-  be verbose
+  unused, kept for backward compatibility
 
 ## Value
 
-list of splitted dendrogram nodes from high to low node height
+list whose second element holds one entry per internal node, each with
+the node height, the leaf labels on each side, and the \`merge\` row the
+node corresponds to. Ordered from high to low node height.
+
+## Details
+
+Walks \`hclust\$merge\` directly rather than repeatedly locating a node
+by its height in a growing list of dendrograms. The height-matching
+approach this replaced was wrong in three ways, all silent: a node was
+never removed from the candidate list once split, so with \*\*tied merge
+heights\*\* \`which.min()\` re-selected the same node and emitted its
+split twice while the true sibling was never split; heights were assumed
+to increase with merge order, which \`"centroid"\` and \`"median"\`
+linkage violate; and the list index advanced by two per iteration while
+the list was compacted in place. Row count was \`k - 1\` either way, so
+none of it surfaced as an error.

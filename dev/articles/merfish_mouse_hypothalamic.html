@@ -81,7 +81,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.2.4</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -114,10 +114,13 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-examples" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Examples</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-examples">
-<li><h6 class="dropdown-header" data-toc-skip>In situ methods</h6></li>
+<li><a class="dropdown-item" href="../articles/datasets.html">Browse all datasets</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>In situ methods</h6></li>
     <li><a class="dropdown-item" href="../articles/xenium_breast_cancer.html">Xenium — Human breast cancer</a></li>
     <li><a class="dropdown-item" href="../articles/nanostring_cosmx_lung_cancer.html">Nanostring CosMx — Subcellular lung cancer</a></li>
     <li><a class="dropdown-item" href="../articles/cosmx_pancreas.html">Nanostring CosMx — Human pancreas FFPE</a></li>
+    <li><a class="dropdown-item" href="../articles/cosmx_colon_wtx_giottodisk.html">Nanostring CosMx — Human colon (GiottoDisk)</a></li>
     <li><a class="dropdown-item" href="../articles/merfish_mouse_hypothalamic.html">MERFISH — Mouse hypothalamic preoptic region</a></li>
     <li><a class="dropdown-item" href="../articles/merfish_mouse_sagittal_bil.html">MERFISH — Whole mouse brain (BIL)</a></li>
     <li><a class="dropdown-item" href="../articles/vizgen_mouse_brain.html">Vizgen — Mouse brain receptor map</a></li>
@@ -257,12 +260,12 @@ clusters using marker genes will be explored in this tutorial.</p>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed.</span></span>
-<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/Giotto"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Ensure GiottoData, a small, helper module for tutorials, is installed.</span></span>
-<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"GiottoData"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"GiottoData"</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/GiottoData"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -467,7 +470,7 @@ across clusters within the violin plot.</p>
 <span>                                       min_feats <span class="op">=</span> <span class="fl">1</span>, </span>
 <span>                                       rank_score <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">topgenes_gini</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">markers_gini</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">2</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"cluster"</span><span class="op">]</span><span class="op">$</span><span class="va">feats</span><span class="op">)</span></span>
+<span><span class="va">topgenes_gini</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">markers_gini</span><span class="op">[</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">2</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"cluster"</span><span class="op">]</span><span class="op">$</span><span class="va">feats</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/violinPlot.html" class="external-link">violinPlot</a></span><span class="op">(</span><span class="va">g</span>, </span>
 <span>           feats <span class="op">=</span> <span class="va">topgenes_gini</span>, </span>
@@ -475,7 +478,7 @@ across clusters within the violin plot.</p>
 <span>           strip_position <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/merfish_mouse_hypothalamic/9-violinPlot.png" alt="Violing with expression levels of the top 2 gini genes per cluster" width="60%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">topgenes_gini</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">markers_gini</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">6</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"cluster"</span><span class="op">]</span><span class="op">$</span><span class="va">feats</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">topgenes_gini</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">markers_gini</span><span class="op">[</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">6</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"cluster"</span><span class="op">]</span><span class="op">$</span><span class="va">feats</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/plotMetaDataHeatmap.html" class="external-link">plotMetaDataHeatmap</a></span><span class="op">(</span><span class="va">g</span>, </span>
 <span>                    expression_values <span class="op">=</span> <span class="st">"scaled"</span>,</span>
@@ -497,13 +500,13 @@ identify cell type for each cluster.</p>
 <span>                    <span class="st">"Mbp"</span>, <span class="st">"Ttyh2"</span>, <span class="st">"Fezf1"</span>, <span class="st">"Cbln1"</span>, <span class="st">"Slc17a6"</span>, <span class="st">"Scg2"</span>, <span class="st">"Isl1"</span>, <span class="st">"Gad1"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">cell_metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
-<span><span class="va">cluster_order</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">cell_metadata</span><span class="op">$</span><span class="va">leiden_0.2_200</span><span class="op">)</span></span>
+<span><span class="va">cluster_order</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">cell_metadata</span><span class="op">$</span><span class="va">leiden_0.2_200</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/plotMetaDataHeatmap.html" class="external-link">plotMetaDataHeatmap</a></span><span class="op">(</span><span class="va">g</span>, </span>
 <span>                    expression_values <span class="op">=</span> <span class="st">"scaled"</span>,</span>
 <span>                    metadata_cols <span class="op">=</span> <span class="st">"leiden_0.2_200"</span>,</span>
 <span>                    selected_feats <span class="op">=</span> <span class="va">selected_genes</span>,</span>
-<span>                    custom_feat_order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">selected_genes</span><span class="op">)</span>,</span>
+<span>                    custom_feat_order <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/flip.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">selected_genes</span><span class="op">)</span>,</span>
 <span>                    custom_cluster_order <span class="op">=</span> <span class="va">cluster_order</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/merfish_mouse_hypothalamic/11-plotMetaDataHeatmap.png" alt="Heatmap with expression levels of the top 6 gini genes per cluster" width="60%" style="display: block; margin: auto;"></p>
 <p>Since there are more Leiden clusters than there are types of cells in
@@ -521,7 +524,7 @@ these will appear in <em>cell_metadata</em> within the
 <span>                         <span class="st">"OD Mature"</span>, <span class="st">"OD Immature"</span>,  <span class="st">"Ambiguous"</span>,</span>
 <span>                         <span class="st">"Ependymal"</span>, <span class="st">"Endothelial"</span>, <span class="st">"Microglia"</span>, </span>
 <span>                         <span class="st">"OD Mature"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">clusters_cell_types</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">cluster_order</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">clusters_cell_types</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">cluster_order</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/annotateGiotto.html" class="external-link">annotateGiotto</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">g</span>, </span>
 <span>                    annotation_vector <span class="op">=</span> <span class="va">clusters_cell_types</span>,</span>
@@ -533,7 +536,7 @@ these will appear in <em>cell_metadata</em> within the
 <span>                    expression_values <span class="op">=</span> <span class="st">"scaled"</span>,</span>
 <span>                    metadata_cols <span class="op">=</span> <span class="st">"cell_types"</span>,</span>
 <span>                    selected_feats <span class="op">=</span> <span class="va">selected_genes</span>,</span>
-<span>                    custom_feat_order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">selected_genes</span><span class="op">)</span>,</span>
+<span>                    custom_feat_order <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/flip.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">selected_genes</span><span class="op">)</span>,</span>
 <span>                    custom_cluster_order <span class="op">=</span> <span class="va">clusters_cell_types</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/merfish_mouse_hypothalamic/12-plotMetaDataHeatmap.png" alt="Heatmap with expression levels of the marker genes per cell type" width="60%" style="display: block; margin: auto;"></p>
 </div>
@@ -545,7 +548,7 @@ these will appear in <em>cell_metadata</em> within the
 <code class="sourceCode R"><span><span class="co"># Assign colors to each cell type </span></span>
 <span><span class="va">mycolorcode</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"lightblue"</span>, <span class="st">"yellowgreen"</span>,<span class="st">"purple"</span>, <span class="st">"darkred"</span>,</span>
 <span>                <span class="st">"magenta"</span>, <span class="st">"mediumblue"</span>, <span class="st">"yellow"</span>, <span class="st">"gray"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">mycolorcode</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Inhibitory"</span>, <span class="st">"Excitatory"</span>, <span class="st">"OD Mature"</span>, <span class="st">"OD Immature"</span>, </span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">mycolorcode</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Inhibitory"</span>, <span class="st">"Excitatory"</span>, <span class="st">"OD Mature"</span>, <span class="st">"OD Immature"</span>, </span>
 <span>                        <span class="st">"Astrocyte"</span>, <span class="st">"Microglia"</span>, <span class="st">"Ependymal"</span>, <span class="st">"Endothelial"</span>, </span>
 <span>                        <span class="st">"Ambiguous"</span><span class="op">)</span></span>
 <span></span>

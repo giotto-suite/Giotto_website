@@ -81,7 +81,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.2.4</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -114,10 +114,13 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-examples" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Examples</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-examples">
-<li><h6 class="dropdown-header" data-toc-skip>In situ methods</h6></li>
+<li><a class="dropdown-item" href="../articles/datasets.html">Browse all datasets</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>In situ methods</h6></li>
     <li><a class="dropdown-item" href="../articles/xenium_breast_cancer.html">Xenium — Human breast cancer</a></li>
     <li><a class="dropdown-item" href="../articles/nanostring_cosmx_lung_cancer.html">Nanostring CosMx — Subcellular lung cancer</a></li>
     <li><a class="dropdown-item" href="../articles/cosmx_pancreas.html">Nanostring CosMx — Human pancreas FFPE</a></li>
+    <li><a class="dropdown-item" href="../articles/cosmx_colon_wtx_giottodisk.html">Nanostring CosMx — Human colon (GiottoDisk)</a></li>
     <li><a class="dropdown-item" href="../articles/merfish_mouse_hypothalamic.html">MERFISH — Mouse hypothalamic preoptic region</a></li>
     <li><a class="dropdown-item" href="../articles/merfish_mouse_sagittal_bil.html">MERFISH — Whole mouse brain (BIL)</a></li>
     <li><a class="dropdown-item" href="../articles/vizgen_mouse_brain.html">Vizgen — Mouse brain receptor map</a></li>
@@ -261,7 +264,7 @@ Environment<a class="anchor" aria-label="anchor" href="#set-up-giotto-environmen
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed.</span></span>
-<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/Giotto"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -507,7 +510,7 @@ modules<a class="anchor" aria-label="anchor" href="#spatial-co-expression-module
 <span>                                        show_top_feats <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">cluster_genes</span> <span class="op">&lt;-</span> <span class="va">cluster_genes_DT</span><span class="op">$</span><span class="va">clus</span> </span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">cluster_genes</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">cluster_genes_DT</span><span class="op">$</span><span class="va">feat_ID</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">cluster_genes</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">cluster_genes_DT</span><span class="op">$</span><span class="va">feat_ID</span></span>
 <span></span>
 <span><span class="va">giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createMetafeats.html" class="external-link">createMetafeats</a></span><span class="op">(</span><span class="va">giotto_object</span>, </span>
 <span>                                feat_clusters <span class="op">=</span> <span class="va">cluster_genes</span>, </span>
@@ -531,12 +534,12 @@ clusters<a class="anchor" aria-label="anchor" href="#spatially-informed-clusters
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">spat_cor_netw_DT</span><span class="op">$</span><span class="va">cor_clusters</span><span class="op">$</span><span class="va">spat_netw_clus</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">coexpr_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span></span>
-<span>  genes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">spat_cor_netw_DT</span><span class="op">$</span><span class="va">cor_clusters</span><span class="op">$</span><span class="va">spat_netw_clus</span><span class="op">)</span>,</span>
+<span>  genes <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">spat_cor_netw_DT</span><span class="op">$</span><span class="va">cor_clusters</span><span class="op">$</span><span class="va">spat_netw_clus</span><span class="op">)</span>,</span>
 <span>  cluster <span class="op">=</span> <span class="va">spat_cor_netw_DT</span><span class="op">$</span><span class="va">cor_clusters</span><span class="op">$</span><span class="va">spat_netw_clus</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">coexpr_dt</span>, <span class="va">cluster</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">top30_coexpr_dt</span> <span class="op">&lt;-</span> <span class="va">coexpr_dt</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">30</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">cluster</span><span class="op">]</span></span>
+<span><span class="va">top30_coexpr_dt</span> <span class="op">&lt;-</span> <span class="va">coexpr_dt</span><span class="op">[</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">30</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">cluster</span><span class="op">]</span></span>
 <span></span>
 <span><span class="va">my_spatial_genes</span> <span class="op">&lt;-</span> <span class="va">top30_coexpr_dt</span><span class="op">$</span><span class="va">genes</span></span>
 <span></span>
@@ -562,10 +565,10 @@ clusters<a class="anchor" aria-label="anchor" href="#spatially-informed-clusters
 <span>                                name <span class="op">=</span> <span class="st">"custom_leiden"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">cell_metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">giotto_object</span><span class="op">)</span></span>
-<span><span class="va">cell_clusters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">cell_metadata</span><span class="op">$</span><span class="va">custom_leiden</span><span class="op">)</span></span>
+<span><span class="va">cell_clusters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">cell_metadata</span><span class="op">$</span><span class="va">custom_leiden</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">giotto_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoUtils/reference/getDistinctColors.html" class="external-link">getDistinctColors</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">cell_clusters</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">giotto_colors</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">cell_clusters</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">giotto_colors</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">cell_clusters</span></span>
 <span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">giotto_object</span>, </span>
 <span>           cell_color <span class="op">=</span> <span class="st">"custom_leiden"</span>, </span>

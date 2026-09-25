@@ -1,7 +1,9 @@
-# runRankEnrich
+# Rank-based feature signature enrichment
 
-Function to calculate gene signature enrichment scores per spatial
-position using a rank based approach.
+Score each spatial position against cell type or process signatures
+using a rank-biased-precision approach. Genes are ranked across cells
+and those ranks are then ranked within each cell, so the score depends
+on relative ordering rather than on absolute expression.
 
 ## Usage
 
@@ -29,47 +31,53 @@ runRankEnrich(
 
 - gobject:
 
-  Giotto object
+  giotto object
 
 - spat_unit:
 
-  spatial unit
+  spatial unit (e.g. "cell")
 
 - feat_type:
 
-  feature type
+  feature type (e.g. "rna", "dna", "protein")
 
 - sign_matrix:
 
-  Matrix of signature genes for each cell type / process
+  binary matrix of signature features (rows) by cell type or process
+  (columns), 1 where the feature marks the type. Build one with
+  [`makeSignMatrixPAGE`](https://giottosuite.com/dev/reference/enrichment_PAGE.md)
+  or
+  [`makeSignMatrixRank`](https://giottosuite.com/dev/reference/makeSignMatrixRank.md).
 
 - expression_values:
 
-  expression values to use
+  character. Which expression values to use, e.g. "normalized". A
+  method's own default is shown in its Usage section.
 
 - reverse_log_scale:
 
-  reverse expression values from log scale
+  **\[deprecated\]** ignored; see Details.
 
 - logbase:
 
-  log base to use if reverse_log_scale = TRUE
+  **\[deprecated\]** ignored; see Details.
 
 - output_enrichment:
 
-  how to return enrichment output
+  character. "original" (default) or "zscore", which standardizes the
+  scores within each cell type.
 
 - ties_method:
 
-  how to handle rank ties
+  how to rank tied expression values, `"average"` (default) or `"max"`
 
 - p_value:
 
-  calculate p-values (boolean, default = FALSE)
+  logical. Calculate p-values (default = FALSE).
 
 - n_times:
 
-  number of permutations to calculate for p_value
+  number of permutation iterations to calculate p-value
 
 - rbp_p:
 
@@ -81,11 +89,14 @@ runRankEnrich(
 
 - name:
 
-  to give to spatial enrichment results, default = rank
+  character. Name to store the result under in the giotto object's
+  spatial enrichment slot. `NULL` (default) uses the method's own name –
+  see the Usage section.
 
 - return_gobject:
 
-  return giotto object
+  logical. Return the giotto object with the result added (default =
+  TRUE), or the result object on its own.
 
 ## Value
 
@@ -104,9 +115,28 @@ each marker in each cell type. The Rank-Biased Precision is then
 calculated as: RBP = (1 - 0.99) \* (0.99)^(R - 1) and the final
 enrichment score is then calculated as the sum of top 100 RBPs.
 
+`reverse_log_scale` and `logbase` are ignored, and cannot be made to
+work: the statistic is a rank of a rank, and ranking is invariant to any
+monotonic per-gene transform, so no value of either argument can move a
+single rank. Use
+[`runPAGEEnrich()`](https://giottosuite.com/dev/reference/enrichment_PAGE.md)
+or
+[`runHyperGeometricEnrich()`](https://giottosuite.com/dev/reference/runHyperGeometricEnrich.md)
+if the reverse-log step needs to matter.
+
 ## See also
 
 [`makeSignMatrixRank`](https://giottosuite.com/dev/reference/makeSignMatrixRank.md)
+
+Other feature set enrichment:
+[`enrich_hyper`](https://giottosuite.com/dev/reference/enrich_hyper.md),
+[`enrich_page`](https://giottosuite.com/dev/reference/enrich_page.md),
+[`enrich_param`](https://giottosuite.com/dev/reference/enrich_param.md),
+[`enrich_rank`](https://giottosuite.com/dev/reference/enrich_rank.md),
+[`enrichment_PAGE`](https://giottosuite.com/dev/reference/enrichment_PAGE.md),
+[`makeSignMatrixRank()`](https://giottosuite.com/dev/reference/makeSignMatrixRank.md),
+[`runHyperGeometricEnrich()`](https://giottosuite.com/dev/reference/runHyperGeometricEnrich.md),
+[`runSpatialEnrich()`](https://giottosuite.com/dev/reference/runSpatialEnrich.md)
 
 ## Examples
 

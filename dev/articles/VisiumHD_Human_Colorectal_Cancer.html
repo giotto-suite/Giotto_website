@@ -81,7 +81,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.2.4</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -114,10 +114,13 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-examples" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Examples</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-examples">
-<li><h6 class="dropdown-header" data-toc-skip>In situ methods</h6></li>
+<li><a class="dropdown-item" href="../articles/datasets.html">Browse all datasets</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>In situ methods</h6></li>
     <li><a class="dropdown-item" href="../articles/xenium_breast_cancer.html">Xenium — Human breast cancer</a></li>
     <li><a class="dropdown-item" href="../articles/nanostring_cosmx_lung_cancer.html">Nanostring CosMx — Subcellular lung cancer</a></li>
     <li><a class="dropdown-item" href="../articles/cosmx_pancreas.html">Nanostring CosMx — Human pancreas FFPE</a></li>
+    <li><a class="dropdown-item" href="../articles/cosmx_colon_wtx_giottodisk.html">Nanostring CosMx — Human colon (GiottoDisk)</a></li>
     <li><a class="dropdown-item" href="../articles/merfish_mouse_hypothalamic.html">MERFISH — Mouse hypothalamic preoptic region</a></li>
     <li><a class="dropdown-item" href="../articles/merfish_mouse_sagittal_bil.html">MERFISH — Whole mouse brain (BIL)</a></li>
     <li><a class="dropdown-item" href="../articles/vizgen_mouse_brain.html">Vizgen — Mouse brain receptor map</a></li>
@@ -247,7 +250,7 @@ Environment<a class="anchor" aria-label="anchor" href="#setup-giotto-environment
 configured.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Verify that the Giotto Suite is installed.</span></span>
-<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/Giotto"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -932,7 +935,7 @@ organized biological processes.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">cluster_genes</span> <span class="op">&lt;-</span> <span class="va">cluster_genes_DT</span><span class="op">$</span><span class="va">clus</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">cluster_genes</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">cluster_genes_DT</span><span class="op">$</span><span class="va">feat_ID</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">cluster_genes</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">cluster_genes_DT</span><span class="op">$</span><span class="va">feat_ID</span></span>
 <span></span>
 <span><span class="va">visiumHD</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createMetafeats.html" class="external-link">createMetafeats</a></span><span class="op">(</span><span class="va">visiumHD</span>,</span>
 <span>    spat_unit <span class="op">=</span> <span class="st">"hex100"</span>,</span>
@@ -998,14 +1001,14 @@ spatInSituPlotPoints function.</p>
 <span>    spatCorObject <span class="op">=</span> <span class="va">spat_cor_netw_DT</span>,</span>
 <span>    maximum <span class="op">=</span> <span class="fl">5</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">selected_feats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">balanced_genes</span><span class="op">)</span></span>
+<span><span class="va">selected_feats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">balanced_genes</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># give genes from same cluster same color</span></span>
 <span><span class="va">distinct_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoUtils/reference/getDistinctColors.html" class="external-link">getDistinctColors</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">distinct_colors</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">20</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">distinct_colors</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">20</span></span>
 <span></span>
 <span><span class="va">my_colors</span> <span class="op">&lt;-</span> <span class="va">distinct_colors</span><span class="op">[</span><span class="va">balanced_genes</span><span class="op">]</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">my_colors</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">balanced_genes</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">my_colors</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">balanced_genes</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">visiumHD</span>,</span>
 <span>    spat_unit <span class="op">=</span> <span class="st">"hex100"</span>,</span>
@@ -1163,7 +1166,7 @@ workflow<a class="anchor" aria-label="anchor" href="#subcellular-workflow"></a>
 <span>    zscore_threshold <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">n_25_percent</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/spatIDs-generic.html" class="external-link">spatIDs</a></span><span class="op">(</span><span class="va">visiumHD_subset</span>, <span class="st">"hex25"</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fl">0.25</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">n_25_percent</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/spatIDs-generic.html" class="external-link">spatIDs</a></span><span class="op">(</span><span class="va">visiumHD_subset</span>, <span class="st">"hex25"</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fl">0.25</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># pca projection on subset</span></span>
 <span><span class="va">visiumHD_subset</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPCAprojection.html">runPCAprojection</a></span><span class="op">(</span></span>
@@ -1330,7 +1333,7 @@ organization resolution.</p>
 <span>                      iter.max <span class="op">=</span> <span class="fl">1000</span>, </span>
 <span>                      nstart <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">prop_kmeansDT</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span>cell_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">prop_kmeans</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span>, </span>
+<span><span class="va">prop_kmeansDT</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span>cell_ID <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">prop_kmeans</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span>, </span>
 <span>                                        niche <span class="op">=</span> <span class="va">prop_kmeans</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">visiumHD_subset</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/addCellMetadata.html" class="external-link">addCellMetadata</a></span><span class="op">(</span><span class="va">visiumHD_subset</span>,</span>

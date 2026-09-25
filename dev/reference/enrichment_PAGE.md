@@ -45,54 +45,58 @@ runPAGEEnrich(
 
 - gobject:
 
-  Giotto object
+  giotto object
 
 - spat_unit:
 
-  spatial unit
+  spatial unit (e.g. "cell")
 
 - feat_type:
 
-  feature type
+  feature type (e.g. "rna", "dna", "protein")
 
 - sign_matrix:
 
-  binary matrix of signature feats for each cell type / process.
-  Alternatively a list of signature feats can be provided to
-  `makeSignMatrixPAGE()`, which will create the matrix for you.
+  binary matrix of signature features (rows) by cell type or process
+  (columns), 1 where the feature marks the type. Build one with
+  `makeSignMatrixPAGE` or
+  [`makeSignMatrixRank`](https://giottosuite.com/dev/reference/makeSignMatrixRank.md).
 
 - expression_values:
 
-  expression values to use
+  character. Which expression values to use, e.g. "normalized". A
+  method's own default is shown in its Usage section.
 
 - min_overlap_genes:
 
-  minimum number of overlapping feats in `sign_matrix` required to
-  calculate enrichment
+  minimum number of overlapping features in `sign_matrix` required to
+  calculate enrichment (PAGE)
 
 - reverse_log_scale:
 
-  reverse expression values from log scale
+  logical. Undo a log transform before averaging (default = TRUE).
 
 - logbase:
 
-  log base to use if reverse_log_scale = TRUE
+  numeric. Log base to undo when `reverse_log_scale = TRUE` (default =
+  2).
 
 - output_enrichment:
 
-  how to return enrichment output
+  character. "original" (default) or "zscore", which standardizes the
+  scores within each cell type.
 
 - p_value:
 
-  logical. Default = `FALSE`. calculate p-values
+  logical. Calculate p-values (default = FALSE).
 
 - include_depletion:
 
-  calculate both enrichment and depletion
+  also test for depletion, not enrichment only (default = FALSE)
 
 - n_times:
 
-  number of permutations to calculate for p_value
+  number of permutation iterations to calculate p-value
 
 - max_block:
 
@@ -100,7 +104,9 @@ runPAGEEnrich(
 
 - name:
 
-  to give to spatial enrichment results, default = PAGE
+  character. Name to store the result under in the giotto object's
+  spatial enrichment slot. `NULL` (default) uses the method's own name –
+  see the Usage section.
 
 - verbose:
 
@@ -108,7 +114,8 @@ runPAGEEnrich(
 
 - return_gobject:
 
-  return giotto object
+  logical. Return the giotto object with the result added (default =
+  TRUE), or the result object on its own.
 
 ## Value
 
@@ -125,6 +132,18 @@ For each gene in each spot, mu is the fold change values versus the mean
 expression and delta is the standard deviation. Sm is the mean fold
 change value of a specific marker gene set and m is the size of a given
 marker gene set.
+
+## See also
+
+Other feature set enrichment:
+[`enrich_hyper`](https://giottosuite.com/dev/reference/enrich_hyper.md),
+[`enrich_page`](https://giottosuite.com/dev/reference/enrich_page.md),
+[`enrich_param`](https://giottosuite.com/dev/reference/enrich_param.md),
+[`enrich_rank`](https://giottosuite.com/dev/reference/enrich_rank.md),
+[`makeSignMatrixRank()`](https://giottosuite.com/dev/reference/makeSignMatrixRank.md),
+[`runHyperGeometricEnrich()`](https://giottosuite.com/dev/reference/runHyperGeometricEnrich.md),
+[`runRankEnrich()`](https://giottosuite.com/dev/reference/runRankEnrich.md),
+[`runSpatialEnrich()`](https://giottosuite.com/dev/reference/runSpatialEnrich.md)
 
 ## Examples
 

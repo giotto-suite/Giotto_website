@@ -81,7 +81,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.2.4</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -114,10 +114,13 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-examples" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Examples</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-examples">
-<li><h6 class="dropdown-header" data-toc-skip>In situ methods</h6></li>
+<li><a class="dropdown-item" href="../articles/datasets.html">Browse all datasets</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>In situ methods</h6></li>
     <li><a class="dropdown-item" href="../articles/xenium_breast_cancer.html">Xenium — Human breast cancer</a></li>
     <li><a class="dropdown-item" href="../articles/nanostring_cosmx_lung_cancer.html">Nanostring CosMx — Subcellular lung cancer</a></li>
     <li><a class="dropdown-item" href="../articles/cosmx_pancreas.html">Nanostring CosMx — Human pancreas FFPE</a></li>
+    <li><a class="dropdown-item" href="../articles/cosmx_colon_wtx_giottodisk.html">Nanostring CosMx — Human colon (GiottoDisk)</a></li>
     <li><a class="dropdown-item" href="../articles/merfish_mouse_hypothalamic.html">MERFISH — Mouse hypothalamic preoptic region</a></li>
     <li><a class="dropdown-item" href="../articles/merfish_mouse_sagittal_bil.html">MERFISH — Whole mouse brain (BIL)</a></li>
     <li><a class="dropdown-item" href="../articles/vizgen_mouse_brain.html">Vizgen — Mouse brain receptor map</a></li>
@@ -516,7 +519,7 @@ allowing likely cell types to be inferred.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># top 2 genes per cluster</span></span>
-<span><span class="va">topgenes_scran</span> <span class="op">&lt;-</span> <span class="va">res_scran</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">2</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">'cluster'</span><span class="op">]</span></span></code></pre></div>
+<span><span class="va">topgenes_scran</span> <span class="op">&lt;-</span> <span class="va">res_scran</span><span class="op">[</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">2</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">'cluster'</span><span class="op">]</span></span></code></pre></div>
 </div>
 <div class="section level3" number="5.2">
 <h3 id="visualizing-top-ranked-marker-genes">
@@ -528,7 +531,7 @@ violin plots, showing the normalized expression of these markers across
 all clusters.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/violinPlot.html" class="external-link">violinPlot</a></span><span class="op">(</span><span class="va">g</span>,</span>
-<span>           feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">topgenes_scran</span><span class="op">$</span><span class="va">feats</span><span class="op">)</span>,</span>
+<span>           feats <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">topgenes_scran</span><span class="op">$</span><span class="va">feats</span><span class="op">)</span>,</span>
 <span>           cluster_column <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>           save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>base_height <span class="op">=</span> <span class="fl">30</span>,base_width <span class="op">=</span> <span class="fl">12</span>, save_dir <span class="op">=</span> <span class="va">save_dir</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -578,7 +581,7 @@ values).</p>
 <span>               <span class="st">"KIT"</span>, <span class="st">"MS4A2"</span>                <span class="co">#Granulocytes (Mast/ etc...)</span></span>
 <span>               <span class="op">)</span>, </span>
 <span>  cluster_column <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
-<span>  dot_size <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span> <span class="op">!=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>,</span>
+<span>  dot_size <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/summarize-generics.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span> <span class="op">!=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>,</span>
 <span>  dot_size_threshold <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  dot_scale <span class="op">=</span> <span class="fl">6</span>,</span>
 <span>  dot_color <span class="op">=</span> <span class="va">mean</span>,</span>
@@ -649,7 +652,7 @@ with their putative biological cell types.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Assign names to cell types vector</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">cell_types</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">cell_types</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">cell_types</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">cell_types</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Annotate Giotto object with cell types</span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/annotateGiotto.html" class="external-link">annotateGiotto</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">g</span>, </span>
@@ -804,10 +807,10 @@ documentation</a>.</li>
 <span><span class="va">geom_dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/dist.html" class="external-link">dist</a></span><span class="op">(</span><span class="va">geometry</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Distance to nearest neighbor for each cell (excluding self)</span></span>
-<span><span class="va">nearest_neighbor_dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">geom_dist</span>, <span class="fl">1</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">nearest_neighbor_dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">geom_dist</span>, <span class="fl">1</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Calculate summary statistics</span></span>
-<span><span class="va">mean_nn_dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">nearest_neighbor_dist</span><span class="op">)</span></span>
+<span><span class="va">mean_nn_dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/summarize-generics.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">nearest_neighbor_dist</span><span class="op">)</span></span>
 <span><span class="va">sd_nn_dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">nearest_neighbor_dist</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Suggested thresholds to test</span></span>
@@ -815,8 +818,8 @@ documentation</a>.</li>
 <span>  <span class="va">mean_nn_dist</span>,                    <span class="co"># Average nearest neighbor distance</span></span>
 <span>  <span class="va">mean_nn_dist</span> <span class="op">+</span> <span class="va">sd_nn_dist</span>,       <span class="co"># One standard deviation above mean</span></span>
 <span>  <span class="va">mean_nn_dist</span> <span class="op">+</span> <span class="fl">2</span><span class="op">*</span><span class="va">sd_nn_dist</span>,     <span class="co"># Two standard deviations above mean</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">nearest_neighbor_dist</span>, <span class="fl">0.75</span><span class="op">)</span>,  <span class="co"># 75th percentile</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">nearest_neighbor_dist</span>, <span class="fl">0.90</span><span class="op">)</span>   <span class="co"># 90th percentile</span></span>
+<span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">nearest_neighbor_dist</span>, <span class="fl">0.75</span><span class="op">)</span>,  <span class="co"># 75th percentile</span></span>
+<span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">nearest_neighbor_dist</span>, <span class="fl">0.90</span><span class="op">)</span>   <span class="co"># 90th percentile</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Display suggested thresholds</span></span>
@@ -843,7 +846,7 @@ neighbors without including too many distant cells.</p>
 <span><span class="co"># Calculate average number of neighbors for each threshold</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">thr</span> <span class="kw">in</span> <span class="va">test_thresholds</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">neighbor_matrix</span> <span class="op">&lt;-</span> <span class="va">geom_dist</span> <span class="op">&lt;=</span> <span class="va">thr</span> <span class="op">&amp;</span> <span class="va">geom_dist</span> <span class="op">&gt;</span> <span class="fl">0</span></span>
-<span>  <span class="va">avg_neighbors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/colSums-methods.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">neighbor_matrix</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">avg_neighbors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/summarize-generics.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/colSums-methods.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">neighbor_matrix</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Threshold %d: %.1f average neighbors per cell\n"</span>, <span class="va">thr</span>, <span class="va">avg_neighbors</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
@@ -884,8 +887,8 @@ thresholds. Note: strong neighbors (weight &gt; 0.5) are cells within
 <span>    </span>
 <span>    <span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>        radius <span class="op">=</span> <span class="va">radius</span>,</span>
-<span>        avg_significant_neighbors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">significant_neighbors</span><span class="op">)</span>,  </span>
-<span>        avg_strong_neighbors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">strong_neighbors</span><span class="op">)</span></span>
+<span>        avg_significant_neighbors <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/summarize-generics.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">significant_neighbors</span><span class="op">)</span>,  </span>
+<span>        avg_strong_neighbors <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/summarize-generics.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">strong_neighbors</span><span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
 <span>    </span>
 <span>    <span class="va">para_analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">para_analysis</span>, <span class="va">result</span><span class="op">)</span></span>

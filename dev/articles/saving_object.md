@@ -6,8 +6,9 @@ Giotto objects contain certain objects that act as pointers to the data
 that they reference or pull from. While this can help with lowering the
 amount of memory needed and decrease load times, pointer objects do not
 save and reload properly when using
-[`saveRDS()`](https://rdrr.io/r/base/readRDS.html) and
-[`readRDS()`](https://rdrr.io/r/base/readRDS.html).
+[`saveRDS()`](https://rspatial.github.io/terra/reference/serialize.html)
+and
+[`readRDS()`](https://rspatial.github.io/terra/reference/serialize.html).
 
 Giotto instead implements the
 [`saveGiotto()`](https://giotto-suite.github.io/GiottoClass/reference/saveGiotto.html)
@@ -98,9 +99,10 @@ saveGiotto(gobject = vizgen,
 ## 6 Faster Saving with `qs`
 
 [`saveGiotto()`](https://giotto-suite.github.io/GiottoClass/reference/saveGiotto.html)
-defaults to using [`saveRDS()`](https://rdrr.io/r/base/readRDS.html) for
-its main files, but `qs` implements faster read and write functions for
-serialization. Saving using `qs` is done by passing the param
+defaults to using
+[`saveRDS()`](https://rspatial.github.io/terra/reference/serialize.html)
+for its main files, but `qs` implements faster read and write functions
+for serialization. Saving using `qs` is done by passing the param
 `method = "qs"`.
 
 Note that `qs` is an additional package that is not installed by default

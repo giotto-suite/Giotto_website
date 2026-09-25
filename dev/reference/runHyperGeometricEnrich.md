@@ -1,7 +1,9 @@
-# runHyperGeometricEnrich
+# Hypergeometric feature signature enrichment
 
-Function to calculate gene signature enrichment scores per spatial
-position using a hypergeometric test.
+Score each spatial position against cell type or process signatures with
+a hypergeometric test. Each cell's most highly expressed features are
+binarized, and each signature is tested for over-representation among
+them.
 
 ## Usage
 
@@ -26,52 +28,62 @@ runHyperGeometricEnrich(
 
 - gobject:
 
-  Giotto object
+  giotto object
 
 - spat_unit:
 
-  spatial unit
+  spatial unit (e.g. "cell")
 
 - feat_type:
 
-  feature type
+  feature type (e.g. "rna", "dna", "protein")
 
 - sign_matrix:
 
-  Matrix of signature genes for each cell type / process
+  binary matrix of signature features (rows) by cell type or process
+  (columns), 1 where the feature marks the type. Build one with
+  [`makeSignMatrixPAGE`](https://giottosuite.com/dev/reference/enrichment_PAGE.md)
+  or
+  [`makeSignMatrixRank`](https://giottosuite.com/dev/reference/makeSignMatrixRank.md).
 
 - expression_values:
 
-  expression values to use
+  character. Which expression values to use, e.g. "normalized". A
+  method's own default is shown in its Usage section.
 
 - reverse_log_scale:
 
-  reverse expression values from log scale
+  logical. Undo a log transform before averaging (default = TRUE).
 
 - logbase:
 
-  log base to use if reverse_log_scale = TRUE
+  numeric. Log base to undo when `reverse_log_scale = TRUE` (default =
+  2).
 
 - top_percentage:
 
-  percentage of cells that will be considered to have gene expression
-  with matrix binarization
+  percentage of features per cell treated as expressed when binarizing
+  (default = 5)
 
 - output_enrichment:
 
-  how to return enrichment output
+  character. "original" (default) or "zscore", which standardizes the
+  scores within each cell type.
 
 - p_value:
 
-  calculate p-values (boolean, default = FALSE)
+  logical. Calculate p-values (default = FALSE).
 
 - name:
 
-  to give to spatial enrichment results, default = hypergeometric
+  character. Name to store the result under in the giotto object's
+  spatial enrichment slot. `NULL` (default) uses the method's own name –
+  see the Usage section.
 
 - return_gobject:
 
-  return giotto object
+  logical. Return the giotto object with the result added (default =
+  TRUE), or the result object on its own.
 
 ## Value
 
@@ -81,6 +93,18 @@ data.table with enrichment results
 
 The enrichment score is calculated based on the p-value from the
 hypergeometric test, -log10(p-value).
+
+## See also
+
+Other feature set enrichment:
+[`enrich_hyper`](https://giottosuite.com/dev/reference/enrich_hyper.md),
+[`enrich_page`](https://giottosuite.com/dev/reference/enrich_page.md),
+[`enrich_param`](https://giottosuite.com/dev/reference/enrich_param.md),
+[`enrich_rank`](https://giottosuite.com/dev/reference/enrich_rank.md),
+[`enrichment_PAGE`](https://giottosuite.com/dev/reference/enrichment_PAGE.md),
+[`makeSignMatrixRank()`](https://giottosuite.com/dev/reference/makeSignMatrixRank.md),
+[`runRankEnrich()`](https://giottosuite.com/dev/reference/runRankEnrich.md),
+[`runSpatialEnrich()`](https://giottosuite.com/dev/reference/runSpatialEnrich.md)
 
 ## Examples
 

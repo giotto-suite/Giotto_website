@@ -31,6 +31,9 @@ runUMAP(
   method = c("umap2", "umap"),
   init = NULL,
   batch = TRUE,
+  nn_engine = c("giotto", "uwot", "fnn", "annoy", "hnsw", "nndescent"),
+  nn_network_to_use = "kNN",
+  network_name = NULL,
   ...
 )
 ```
@@ -145,7 +148,47 @@ runUMAP(
 
   UMAP param: use the batch optimizer. Default \`TRUE\`, which under
   \`method = "umap2"\` also threads the stochastic gradient descent
-  across \`n_threads\`, deterministically.
+  across \`n_threads\`. The SGD is then reproducible at any thread
+  count; note that this says nothing about the neighbor search, which is
+  the stage that made this function irreproducible before \`nn_engine\`
+  existed.
+
+- nn_engine:
+
+  character. Where the neighbor graph UMAP runs on comes from.
+  \`"giotto"\` (default) takes it from Giotto rather than from uwot: the
+  kNN stored by \[GiottoClass::createNearestNetwork()\] when one is
+  available (see \`network_name\`), otherwise one built with
+  \[GiottoClass::hnswKNN()\]. Either way uwot runs no search, and
+  neither depends on a seed. \`"uwot"\` lets uwot choose its own
+  backend, which is what earlier versions did and is \*\*not\*\*
+  reproducible: it prefers RcppHNSW, whose parallel index build is a
+  thread race the R RNG cannot reach. Any other value names a uwot
+  backend directly and is passed through as its \`nn_method\` —
+  \`"fnn"\` (exact, via FNN), \`"annoy"\`, \`"hnsw"\` or
+  \`"nndescent"\`. These are not equally reproducible: \`"annoy"\`
+  builds its trees from the R RNG and threads only the search, so
+  repeated calls agree bit for bit, while \`"hnsw"\` threads the index
+  build and does not.
+
+  Measured end-to-end on a 169,528-cell section: 5.9s reusing a stored
+  graph, 19.6s building one, 16.6s for \`"annoy"\`, 6.8s for \`"uwot"\`.
+  So reproducibility is free when the neighbor step has already run —
+  recovering the kNN costs 0.9s where repeating the search costs 13.8s.
+
+- nn_network_to_use:
+
+  character. Type of stored nearest neighbor network to reuse under
+  \`nn_engine = "giotto"\`. Default \`"kNN"\`.
+
+- network_name:
+
+  character. Name of the stored network to reuse. \`NULL\` (default)
+  derives it as \`\<nn_network_to_use\>.\<dim_reduction_to_use\>\`,
+  which is what \[GiottoClass::createNearestNetwork()\] names it. An
+  object can hold several kNN networks, so this is looked up by name and
+  never guessed: when the derived name is absent a graph is built
+  instead, but a name given explicitly and not found is an error.
 
 - ...:
 
@@ -782,7 +825,7 @@ the expression matrix is sparse – *requires* rnndescent.
 
 `method = "umap"` selects
 [`umap`](https://jlmelville.github.io/uwot/reference/umap.html) instead,
-which is the engine used before Giotto 4.2.4. `umap2()` is the same
+which is the engine used before Giotto 4.3.0. `umap2()` is the same
 algorithm with a different backend selection and optimizer default
 rather than a different method, and the two have identical formals, so
 every other argument means the same thing under either.

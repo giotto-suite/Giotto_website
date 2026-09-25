@@ -1,8 +1,9 @@
-# makeSignMatrixDWLSfromMatrix
+# Build a DWLS signature matrix from a matrix
 
-Function to convert a single-cell RNAseq matrix into a format that can
-be used with
-[`runDWLSDeconv`](https://giottosuite.com/dev/reference/runDWLSDeconv.md).
+Convert a single-cell RNAseq matrix into the mean-expression reference
+[`runDWLSDeconv`](https://giottosuite.com/dev/reference/runDWLSDeconv.md)
+expects: signature features by cell type, each entry the mean expression
+of that feature in that type.
 
 ## Usage
 
@@ -18,7 +19,7 @@ makeSignMatrixDWLSfromMatrix(matrix, sign_gene, cell_type_vector)
 
 - sign_gene:
 
-  genes to use (e.g. marker genes)
+  features to use, typically differentially expressed ones
 
 - cell_type_vector:
 
@@ -26,11 +27,16 @@ makeSignMatrixDWLSfromMatrix(matrix, sign_gene, cell_type_vector)
 
 ## Value
 
-matrix
+matrix of mean expression, features by cell type
 
 ## See also
 
 [`runDWLSDeconv`](https://giottosuite.com/dev/reference/runDWLSDeconv.md)
+
+Other spatial deconvolution:
+[`makeSignMatrixDWLS()`](https://giottosuite.com/dev/reference/makeSignMatrixDWLS.md),
+[`runDWLSDeconv()`](https://giottosuite.com/dev/reference/runDWLSDeconv.md),
+[`runSpatialDeconv()`](https://giottosuite.com/dev/reference/runSpatialDeconv.md)
 
 ## Examples
 

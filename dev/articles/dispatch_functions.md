@@ -8,19 +8,24 @@ flexible wrappers that dispatch to our preferred methods for these
 operations.
 
 - [`mean_flex()`](https://giotto-suite.github.io/GiottoClass/reference/mean_flex.html):
-  analogous to [`mean()`](https://rdrr.io/r/base/mean.html).
+  analogous to
+  [`mean()`](https://rspatial.github.io/terra/reference/summarize-generics.html).
 
 - [`rowSums_flex()`](https://giotto-suite.github.io/GiottoClass/reference/rowSums_flex.html):
-  analogous to [`rowSums()`](https://rdrr.io/r/base/colSums.html).
+  analogous to
+  [`rowSums()`](https://rspatial.github.io/terra/reference/rowSums.html).
 
 - [`rowMeans_flex()`](https://giotto-suite.github.io/GiottoClass/reference/rowMeans_flex.html):
-  analogous to [`rowMeans()`](https://rdrr.io/r/base/colSums.html).
+  analogous to
+  [`rowMeans()`](https://rspatial.github.io/terra/reference/rowSums.html).
 
 - [`colSums_flex()`](https://giotto-suite.github.io/GiottoClass/reference/colSums_flex.html):
-  analogous to [`colSums()`](https://rdrr.io/r/base/colSums.html).
+  analogous to
+  [`colSums()`](https://rspatial.github.io/terra/reference/rowSums.html).
 
 - [`colMeans_flex()`](https://giotto-suite.github.io/GiottoClass/reference/colMeans_flex.html):
-  analogous to [`colMeans()`](https://rdrr.io/r/base/colSums.html).
+  analogous to
+  [`colMeans()`](https://rspatial.github.io/terra/reference/rowSums.html).
 
 - [`t_flex()`](https://giotto-suite.github.io/GiottoClass/reference/t_flex.html):
   analogous to [`t()`](https://rdrr.io/r/base/t.html).
@@ -38,12 +43,13 @@ code.
 - `lapply_flex()`: analogous to lapply() and works for both windows and
   unix systems.
 
-- `all_plots_save_function()`: compatible with Giotto instructions and
-  helps to automatically save generated plots.
+- [`all_plots_save_function()`](https://giotto-suite.github.io/GiottoVisuals/reference/plot_save.html):
+  compatible with Giotto instructions and helps to automatically save
+  generated plots.
 
-- `plot_output_handler()`: further wraps all_plots_save_function and
-  includes handling for return_plot and show_plot and Giotto
-  instructions checking.
+- [`plot_output_handler()`](https://giotto-suite.github.io/GiottoVisuals/reference/plot_output_handler.html):
+  further wraps all_plots_save_function and includes handling for
+  return_plot and show_plot and Giotto instructions checking.
 
 - `determine_cores()`: determine the number of cores to use if a user
   does not set this explicitly.

@@ -6,6 +6,7 @@ Install Giotto, understand the object, and run your first workflow.
 
 - [Function
   index](https://giottosuite.com/dev/articles/function_index.md):
+- [Browse datasets](https://giottosuite.com/dev/articles/datasets.md):
 - [Installation](https://giottosuite.com/dev/articles/installation.md):
 - [](https://giottosuite.com/dev/articles/ecosystem.md):
 - [An introduction to the Giotto Suite
@@ -175,6 +176,8 @@ Imaging-based in situ platforms. Most users arrive with one of these.
   Cancer](https://giottosuite.com/dev/articles/nanostring_cosmx_lung_cancer.md):
 - [Whole transcriptome CosMx Human Pancreas FFPE
   Dataset](https://giottosuite.com/dev/articles/cosmx_pancreas.md):
+- [CosMx Whole Transcriptome with
+  GiottoDisk](https://giottosuite.com/dev/articles/cosmx_colon_wtx_giottodisk.md):
 - [MERFISH Mouse Hypothalamic Preoptic
   Region](https://giottosuite.com/dev/articles/merfish_mouse_hypothalamic.md):
 - [MERFISH whole mouse brain from

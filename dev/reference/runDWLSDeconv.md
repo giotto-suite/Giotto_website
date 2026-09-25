@@ -1,7 +1,9 @@
-# runDWLSDeconv
+# Estimate cell type proportions with spatialDWLS
 
-Function to perform DWLS deconvolution based on single cell expression
-data
+Estimate what fraction of each spatial position is made up of each cell
+type, given a mean-expression reference from single-cell data. Unlike
+the enrichment methods, which return unbounded scores, this returns a
+composition: the values for a position sum to one.
 
 ## Usage
 
@@ -29,43 +31,54 @@ runDWLSDeconv(
 
 - spat_unit:
 
-  spatial unit
+  spatial unit (e.g. "cell")
 
 - feat_type:
 
-  feature type
+  feature type (e.g. "rna", "dna", "protein")
 
 - expression_values:
 
-  expression values to use
+  character. Which expression values to use, e.g. "normalized". A
+  method's own default is shown in its Usage section.
 
 - logbase:
 
-  base used for log normalization
+  numeric. Log base of the expression values (default = 2).
 
 - cluster_column:
 
-  name of cluster column
+  character. Cell metadata column holding the cluster assignment used to
+  group cells.
 
 - sign_matrix:
 
-  sig matrix for deconvolution
+  matrix of mean expression per cell type: signature features (rows) by
+  cell type (columns). Build one with
+  [`makeSignMatrixDWLS`](https://giottosuite.com/dev/reference/makeSignMatrixDWLS.md)
+  or
+  [`makeSignMatrixDWLSfromMatrix`](https://giottosuite.com/dev/reference/makeSignMatrixDWLSfromMatrix.md).
+  This is not the binary matrix the enrichment methods take.
 
 - n_cell:
 
-  number of cells per spot
+  numeric. Number of cells per spot (default = 50).
 
 - cutoff:
 
-  cut off (default = 2)
+  numeric. Expression cutoff below which a value is treated as absent
+  (default = 2).
 
 - name:
 
-  name to give to spatial deconvolution results, default = DWLS
+  character. Name to store the result under in the giotto object's
+  spatial enrichment slot. `NULL` (default) uses the method's own name –
+  see the Usage section.
 
 - return_gobject:
 
-  return giotto object
+  logical. Return the giotto object with the result added (default =
+  TRUE), or the result object on its own.
 
 ## Value
 
@@ -77,6 +90,11 @@ giotto object or deconvolution results
 method, and
 [doi:10.1186/s13059-021-02362-7](https://doi.org/10.1186/s13059-021-02362-7)
 for *spatialDWLS*, the spatial implementation used here.
+
+Other spatial deconvolution:
+[`makeSignMatrixDWLS()`](https://giottosuite.com/dev/reference/makeSignMatrixDWLS.md),
+[`makeSignMatrixDWLSfromMatrix()`](https://giottosuite.com/dev/reference/makeSignMatrixDWLSfromMatrix.md),
+[`runSpatialDeconv()`](https://giottosuite.com/dev/reference/runSpatialDeconv.md)
 
 ## Examples
 

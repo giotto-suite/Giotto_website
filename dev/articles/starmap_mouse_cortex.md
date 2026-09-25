@@ -952,8 +952,9 @@ neuron markers, inhibitory markers, and glial markers, we can get a
 better idea of the cell characteristics and makeup of each cluster.
 
 To effectively perform expression distribution comparisons between
-features on the intra-cluster level, we can use `ridgePlot()` with
-`group_by"` set on the leiden clustering.
+features on the intra-cluster level, we can use
+[`ridgePlot()`](https://giotto-suite.github.io/GiottoVisuals/reference/ridgePlot.html)
+with `group_by"` set on the leiden clustering.
 
 ``` r
 

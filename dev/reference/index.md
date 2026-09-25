@@ -533,6 +533,10 @@ Functions to cluster cells.
   : mergeClusters
 - [`getDendrogramSplits()`](https://giottosuite.com/dev/reference/getDendrogramSplits.md)
   : getDendrogramSplits
+- [`calculateClusterTree()`](https://giottosuite.com/dev/reference/calculateClusterTree.md)
+  : calculateClusterTree
+- [`annotateClusterTree()`](https://giottosuite.com/dev/reference/annotateClusterTree.md)
+  : annotateClusterTree
 - [`doClusterProjection()`](https://giottosuite.com/dev/reference/doClusterProjection.md)
   : Projection of cluster labels
 - [`doGiottoClustree()`](https://giottosuite.com/dev/reference/doGiottoClustree.md)
@@ -594,6 +598,10 @@ Functions to detect cell type / cluster specific marker genes.
   [`analyzeData(`*`<Matrix>`*`,`*`<scranMarkersParam>`*`)`](https://giottosuite.com/dev/reference/markers_scran.md)
   [`analyzeData(`*`<DelayedMatrix>`*`,`*`<scranMarkersParam>`*`)`](https://giottosuite.com/dev/reference/markers_scran.md)
   : Pairwise Marker Detection (scran)
+- [`findNodeMarkers()`](https://giottosuite.com/dev/reference/findNodeMarkers.md)
+  : findNodeMarkers
+- [`writeClusterTreeQuery()`](https://giottosuite.com/dev/reference/writeClusterTreeQuery.md)
+  : writeClusterTreeQuery
 
 ## Spatial Enrichment
 
@@ -604,17 +612,25 @@ matrix.
   [`runPAGEEnrich()`](https://giottosuite.com/dev/reference/enrichment_PAGE.md)
   : PAGE feature enrichment
 - [`makeSignMatrixRank()`](https://giottosuite.com/dev/reference/makeSignMatrixRank.md)
-  : makeSignMatrixRank
+  : Build a rank signature matrix
 - [`runSpatialEnrich()`](https://giottosuite.com/dev/reference/runSpatialEnrich.md)
-  : runSpatialEnrich
+  : Feature signature enrichment, any method
 - [`runRankEnrich()`](https://giottosuite.com/dev/reference/runRankEnrich.md)
-  : runRankEnrich
+  : Rank-based feature signature enrichment
 - [`runHyperGeometricEnrich()`](https://giottosuite.com/dev/reference/runHyperGeometricEnrich.md)
-  : runHyperGeometricEnrich
+  : Hypergeometric feature signature enrichment
+- [`enrichParam()`](https://giottosuite.com/dev/reference/enrich_param.md)
+  : Sign-matrix enrichment params
+- [`analyzeData(`*`<ANY>`*`,`*`<pageEnrichParam>`*`)`](https://giottosuite.com/dev/reference/enrich_page.md)
+  : PAGE enrichment
+- [`analyzeData(`*`<ANY>`*`,`*`<rankEnrichParam>`*`)`](https://giottosuite.com/dev/reference/enrich_rank.md)
+  : Rank enrichment
+- [`analyzeData(`*`<ANY>`*`,`*`<hyperEnrichParam>`*`)`](https://giottosuite.com/dev/reference/enrich_hyper.md)
+  : Hypergeometric enrichment
 - [`createSpatialGenomicsObject()`](https://giottosuite.com/dev/reference/createSpatialGenomicsObject.md)
   : Create Spatial Genomics Giotto Object
 - [`doFeatureSetEnrichment()`](https://giottosuite.com/dev/reference/doFeatureSetEnrichment.md)
-  : doFeatureSetEnrichment
+  : Gene Set Enrichment Analysis via the external GSEA tool
 - [`selectPatternGenes()`](https://giottosuite.com/dev/reference/selectPatternGenes.md)
   : selectPatternGenes
 - [`silhouetteRank()`](https://giottosuite.com/dev/reference/silhouetteRank.md)
@@ -628,13 +644,13 @@ Algorithms to perform spatial deconvolution based on gene signatures or
 single-cell RNAseq information.
 
 - [`makeSignMatrixDWLSfromMatrix()`](https://giottosuite.com/dev/reference/makeSignMatrixDWLSfromMatrix.md)
-  : makeSignMatrixDWLSfromMatrix
+  : Build a DWLS signature matrix from a matrix
 - [`makeSignMatrixDWLS()`](https://giottosuite.com/dev/reference/makeSignMatrixDWLS.md)
-  : makeSignMatrixDWLS
+  : Build a DWLS signature matrix from a Giotto object
 - [`runSpatialDeconv()`](https://giottosuite.com/dev/reference/runSpatialDeconv.md)
-  : runSpatialDeconv
+  : Cell type deconvolution, any method
 - [`runDWLSDeconv()`](https://giottosuite.com/dev/reference/runDWLSDeconv.md)
-  : runDWLSDeconv
+  : Estimate cell type proportions with spatialDWLS
 - [`spatDeconvPlot()`](https://giotto-suite.github.io/GiottoVisuals/reference/spatDeconvPlot.html)
   : spatDeconvPlot (from GiottoVisuals)
 - [`featExpDWLS()`](https://giottosuite.com/dev/reference/featExpDWLS.md)
@@ -898,6 +914,19 @@ enrichment or depletion.
   : cellProximityEnrichmentEachSpot
 - [`cellProximityEnrichmentSpots()`](https://giottosuite.com/dev/reference/cellProximityEnrichmentSpots.md)
   : cellProximityEnrichmentSpots
+- [`cellProximityMotifs()`](https://giottosuite.com/dev/reference/cellProximityMotifs.md)
+  : cellProximityMotifs
+- [`motifParam()`](https://giottosuite.com/dev/reference/motif_param.md)
+  [`analyzeData(`*`<igraph>`*`,`*`<autoMotifParam>`*`)`](https://giottosuite.com/dev/reference/motif_param.md)
+  [`analyzeData(`*`<igraph>`*`,`*`<smotifParam>`*`)`](https://giottosuite.com/dev/reference/motif_param.md)
+  [`analyzeData(`*`<giotto>`*`,`*`<motifParam>`*`)`](https://giottosuite.com/dev/reference/motif_param.md)
+  : Motif enrichment parameters
+- [`plotMotifEnrichment()`](https://giottosuite.com/dev/reference/plotMotifEnrichment.md)
+  : plotMotifEnrichment
+- [`plotMotifGlyphs()`](https://giottosuite.com/dev/reference/plotMotifGlyphs.md)
+  : plotMotifGlyphs
+- [`spatMotifPlot()`](https://giottosuite.com/dev/reference/spatMotifPlot.md)
+  : spatMotifPlot
 - [`cellProximityBarplot()`](https://giottosuite.com/dev/reference/cellProximityBarplot.md)
   : cellProximityBarplot
 - [`cellProximityHeatmap()`](https://giottosuite.com/dev/reference/cellProximityHeatmap.md)

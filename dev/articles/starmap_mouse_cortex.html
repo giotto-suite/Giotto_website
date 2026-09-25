@@ -81,7 +81,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.2.4</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -114,10 +114,13 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-examples" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Examples</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-examples">
-<li><h6 class="dropdown-header" data-toc-skip>In situ methods</h6></li>
+<li><a class="dropdown-item" href="../articles/datasets.html">Browse all datasets</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>In situ methods</h6></li>
     <li><a class="dropdown-item" href="../articles/xenium_breast_cancer.html">Xenium — Human breast cancer</a></li>
     <li><a class="dropdown-item" href="../articles/nanostring_cosmx_lung_cancer.html">Nanostring CosMx — Subcellular lung cancer</a></li>
     <li><a class="dropdown-item" href="../articles/cosmx_pancreas.html">Nanostring CosMx — Human pancreas FFPE</a></li>
+    <li><a class="dropdown-item" href="../articles/cosmx_colon_wtx_giottodisk.html">Nanostring CosMx — Human colon (GiottoDisk)</a></li>
     <li><a class="dropdown-item" href="../articles/merfish_mouse_hypothalamic.html">MERFISH — Mouse hypothalamic preoptic region</a></li>
     <li><a class="dropdown-item" href="../articles/merfish_mouse_sagittal_bil.html">MERFISH — Whole mouse brain (BIL)</a></li>
     <li><a class="dropdown-item" href="../articles/vizgen_mouse_brain.html">Vizgen — Mouse brain receptor map</a></li>
@@ -390,7 +393,7 @@ What does the raw data to load look like?
 </summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">star_expr_table</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">expr_path</span>, header <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">feature_names</span> <span class="op">&lt;-</span> <span class="va">star_expr_table</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span> <span class="co"># extract first table column of gene names</span></span>
-<span><span class="va">star_expr</span> <span class="op">&lt;-</span> <span class="va">star_expr_table</span><span class="op">[</span>, <span class="fl">2</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">star_expr_table</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span><span class="va">star_expr</span> <span class="op">&lt;-</span> <span class="va">star_expr_table</span><span class="op">[</span>, <span class="fl">2</span><span class="op">:</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">star_expr_table</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">star_expr</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">feature_names</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/force.html" class="external-link">force</a></span><span class="op">(</span><span class="va">star_expr</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span> <span class="co"># show subset</span></span></code></pre></div>
@@ -438,12 +441,12 @@ the expression and spatial information.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The default names created for each cell:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">star</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">star</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code>[1] "cell_1" "cell_2" "cell_3" "cell_4" "cell_5" "cell_6"</code></pre>
 <p>Preview of the feature names in the dataset, just to check that these
 are attached correctly.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">star</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">star</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code>[1] "Slc17a7" "Mgp"     "Gad1"    "Nov"     "Rasgrf2" "Rorb"</code></pre>
 <p>Lastly, we can check how many cells and features are available in
 this dataset by using <code><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim()</a></code></p>
@@ -838,7 +841,7 @@ to find the correct way to implement them. For brevity in this example,
 we will be dropping these problem cells and redoing the normalization
 and scaling on the updated sample space.</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">star</span>, subset <span class="op">=</span> <span class="va">technical</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co"># remove the "technical" marked cells</span></span>
+<code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">star</span>, subset <span class="op">=</span> <span class="va">technical</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co"># remove the "technical" marked cells</span></span>
 <span></span>
 <span><span class="co"># repeat normalization and scaling for new expression space</span></span>
 <span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/processExpression.html">processExpression</a></span><span class="op">(</span><span class="va">star</span>, <span class="fu"><a href="../reference/process_param.html">normParam</a></span><span class="op">(</span><span class="st">"default"</span><span class="op">)</span>, expression_values <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span>
@@ -1012,14 +1015,14 @@ features per cluster.</p>
 <span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">markers</span>, <span class="st">"ranking"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># select the 2 highest ranked markers by leiden cluster</span></span>
-<span><span class="va">top_markers</span> <span class="op">&lt;-</span> <span class="va">markers</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">2</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"cluster"</span><span class="op">]</span></span></code></pre></div>
+<span><span class="va">top_markers</span> <span class="op">&lt;-</span> <span class="va">markers</span><span class="op">[</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">2</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"cluster"</span><span class="op">]</span></span></code></pre></div>
 <p>To get an idea of how specific these markers are, we can use
 <code><a href="https://giotto-suite.github.io/GiottoVisuals/reference/violinPlot.html" class="external-link">violinPlot()</a></code> to examine the distributions of these features
 across clusters.</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># violinplot</span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/violinPlot.html" class="external-link">violinPlot</a></span><span class="op">(</span><span class="va">star</span>,</span>
-<span>    feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">top_markers</span><span class="op">$</span><span class="va">feats</span><span class="op">)</span>,</span>
+<span>    feats <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">top_markers</span><span class="op">$</span><span class="va">feats</span><span class="op">)</span>,</span>
 <span>    cluster_column <span class="op">=</span> <span class="va">lname</span>,</span>
 <span>    strip_position <span class="op">=</span> <span class="st">"right"</span>, </span>
 <span>    save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"7_vplot"</span><span class="op">)</span></span>
@@ -1043,14 +1046,14 @@ are good markers for. By putting features into categories, of excitatory
 neuron markers, inhibitory markers, and glial markers, we can get a
 better idea of the cell characteristics and makeup of each cluster.</p>
 <p>To effectively perform expression distribution comparisons between
-features on the intra-cluster level, we can use <code>ridgePlot()</code>
+features on the intra-cluster level, we can use <code><a href="https://giotto-suite.github.io/GiottoVisuals/reference/ridgePlot.html" class="external-link">ridgePlot()</a></code>
 with <code>group_by"</code> set on the leiden clustering.</p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">excit_feats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Slc17a7"</span>, <span class="st">"Rasgrf2"</span>, <span class="st">"Rorb"</span>, <span class="st">"Cux2"</span>, <span class="st">"Pcp4"</span>, <span class="st">"Sema3e"</span><span class="op">)</span></span>
 <span><span class="va">inhib_feats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Gad1"</span>, <span class="st">"Sst"</span>, <span class="st">"Pvalb"</span>, <span class="st">"Vip"</span>, <span class="st">"Calb2"</span>, <span class="st">"Cck"</span>, <span class="st">"Npy"</span>, <span class="st">"Reln"</span><span class="op">)</span></span>
 <span><span class="va">glial_feats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Gja1"</span>, <span class="st">"Ctss"</span>, <span class="st">"Mbp"</span>, <span class="st">"Flt1"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">ridgePlot</span><span class="op">(</span><span class="va">star</span>,</span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/ridgePlot.html" class="external-link">ridgePlot</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    feats <span class="op">=</span> <span class="va">excit_feats</span>,</span>
 <span>    expression_values <span class="op">=</span> <span class="st">"normalized"</span>, </span>
 <span>    scale_axis <span class="op">=</span> <span class="st">"pseudo_log"</span>,</span>
@@ -1064,7 +1067,7 @@ with <code>group_by"</code> set on the leiden clustering.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/starmap_mouse_brain/9_a_ridge_excite.png" alt="" width="100%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ridgePlot</span><span class="op">(</span><span class="va">star</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/ridgePlot.html" class="external-link">ridgePlot</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    feats <span class="op">=</span> <span class="va">inhib_feats</span>,</span>
 <span>    expression_values <span class="op">=</span> <span class="st">"normalized"</span>, </span>
 <span>    scale_axis <span class="op">=</span> <span class="st">"pseudo_log"</span>,</span>
@@ -1078,7 +1081,7 @@ with <code>group_by"</code> set on the leiden clustering.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/starmap_mouse_brain/9_b_ridge_inhib.png" alt="" width="100%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ridgePlot</span><span class="op">(</span><span class="va">star</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/ridgePlot.html" class="external-link">ridgePlot</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    feats <span class="op">=</span> <span class="va">glial_feats</span>,</span>
 <span>    expression_values <span class="op">=</span> <span class="st">"normalized"</span>, </span>
 <span>    scale_axis <span class="op">=</span> <span class="st">"pseudo_log"</span>,</span>
@@ -1171,7 +1174,7 @@ of the clusters and the lack of specific markers to the hippocampus
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># CC is corpus callosum</span></span>
 <span><span class="va">types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"L2-L4"</span>, <span class="st">"L5-L6"</span>, <span class="st">"CC"</span>, <span class="st">"interneuron"</span>, <span class="st">"L1"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">types</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq.int</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">types</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq.int</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/annotateGiotto.html" class="external-link">annotateGiotto</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    annotation_vector <span class="op">=</span> <span class="va">types</span>,</span>

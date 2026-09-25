@@ -81,7 +81,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.2.4</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -114,10 +114,13 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-examples" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Examples</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-examples">
-<li><h6 class="dropdown-header" data-toc-skip>In situ methods</h6></li>
+<li><a class="dropdown-item" href="../articles/datasets.html">Browse all datasets</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>In situ methods</h6></li>
     <li><a class="dropdown-item" href="../articles/xenium_breast_cancer.html">Xenium — Human breast cancer</a></li>
     <li><a class="dropdown-item" href="../articles/nanostring_cosmx_lung_cancer.html">Nanostring CosMx — Subcellular lung cancer</a></li>
     <li><a class="dropdown-item" href="../articles/cosmx_pancreas.html">Nanostring CosMx — Human pancreas FFPE</a></li>
+    <li><a class="dropdown-item" href="../articles/cosmx_colon_wtx_giottodisk.html">Nanostring CosMx — Human colon (GiottoDisk)</a></li>
     <li><a class="dropdown-item" href="../articles/merfish_mouse_hypothalamic.html">MERFISH — Mouse hypothalamic preoptic region</a></li>
     <li><a class="dropdown-item" href="../articles/merfish_mouse_sagittal_bil.html">MERFISH — Whole mouse brain (BIL)</a></li>
     <li><a class="dropdown-item" href="../articles/vizgen_mouse_brain.html">Vizgen — Mouse brain receptor map</a></li>
@@ -1147,7 +1150,7 @@ single cell data processing
 <code class="sourceCode R"><span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">sc</span><span class="op">)</span></span>
 <span><span class="va">meta</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">mito</span> <span class="op">&gt;</span> <span class="fl">50</span><span class="op">)</span><span class="op">]</span> <span class="co"># 5006 # filter these out</span></span>
 <span><span class="va">meta</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">mito</span> <span class="op">&lt;</span> <span class="fl">50</span><span class="op">)</span><span class="op">]</span> <span class="co"># 17963</span></span>
-<span><span class="va">sc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">sc</span>, subset <span class="op">=</span> <span class="va">mito</span> <span class="op">&lt;</span> <span class="fl">50</span><span class="op">)</span></span>
+<span><span class="va">sc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">sc</span>, subset <span class="op">=</span> <span class="va">mito</span> <span class="op">&lt;</span> <span class="fl">50</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/spatValues.html" class="external-link">spatValues</a></span><span class="op">(</span><span class="va">sc</span>, feats <span class="op">=</span> <span class="st">"mito"</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"cells"</span>, y <span class="op">=</span> <span class="va">mito</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_violin.html" class="external-link">geom_violin</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/janesick_sc/2_mito.png" alt="" width="40%"></p>
 <p><strong>Pre-Process: Remove Doublets</strong></p>
@@ -1157,7 +1160,7 @@ single cell data processing
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/spatValues.html" class="external-link">spatValues</a></span><span class="op">(</span><span class="va">sc</span>, feats <span class="op">=</span> <span class="st">"doublet_scores"</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"cells"</span>, y <span class="op">=</span> <span class="va">doublet_scores</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_violin.html" class="external-link">geom_violin</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/janesick_sc/3_doublet.png" alt="" width="40%"></p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">sc</span>, subset <span class="op">=</span> <span class="va">doublet</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co"># remove 130 cells</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">sc</span>, subset <span class="op">=</span> <span class="va">doublet</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co"># remove 130 cells</span></span></code></pre></div>
 <p><strong>Process Data</strong></p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/filterCombinations.html">filterCombinations</a></span><span class="op">(</span><span class="va">sc</span>, </span>
@@ -1248,7 +1251,7 @@ single cell data processing
 <span>    cluster_column <span class="op">=</span> <span class="st">"major_clus"</span>, </span>
 <span>    method <span class="op">=</span> <span class="st">"scran"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">topgenes_scran</span> <span class="op">=</span> <span class="va">res_scran</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">2</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">'cluster'</span><span class="op">]</span></span>
+<span><span class="va">topgenes_scran</span> <span class="op">=</span> <span class="va">res_scran</span><span class="op">[</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">2</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">'cluster'</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/violinPlot.html" class="external-link">violinPlot</a></span><span class="op">(</span><span class="va">sc</span>, feats <span class="op">=</span> <span class="va">topgenes_scran</span><span class="op">$</span><span class="va">feats</span>, cluster_column <span class="op">=</span> <span class="st">"major_clus"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/janesick_sc/10_scran.png" alt="" width="100%"></p>
 <p><strong>Marker Detection: Gini</strong></p>
@@ -1257,7 +1260,7 @@ single cell data processing
 <span>    cluster_column <span class="op">=</span> <span class="st">"major_clus"</span>, </span>
 <span>    method <span class="op">=</span> <span class="st">"gini"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">topgenes_gini</span> <span class="op">=</span> <span class="va">res_gini</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">2</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">'cluster'</span><span class="op">]</span></span>
+<span><span class="va">topgenes_gini</span> <span class="op">=</span> <span class="va">res_gini</span><span class="op">[</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">2</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">'cluster'</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/violinPlot.html" class="external-link">violinPlot</a></span><span class="op">(</span><span class="va">sc</span>, feats <span class="op">=</span> <span class="va">topgenes_gini</span><span class="op">$</span><span class="va">feats</span>, cluster_column <span class="op">=</span> <span class="st">"major_clus"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/janesick_sc/11_gini.png" alt="" width="100%"></p>
 <p><strong>Annotate: Major Cell Types</strong></p>

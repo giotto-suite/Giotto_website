@@ -63,7 +63,7 @@ information."><meta name="robots" content="noindex"><!-- Global site tag (gtag.j
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.2.4</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,10 +90,13 @@ information."><meta name="robots" content="noindex"><!-- Global site tag (gtag.j
   </ul></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-examples" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Examples</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-examples"><li><h6 class="dropdown-header" data-toc-skip>In situ methods</h6></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-examples"><li><a class="dropdown-item" href="../articles/datasets.html">Browse all datasets</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>In situ methods</h6></li>
     <li><a class="dropdown-item" href="../articles/xenium_breast_cancer.html">Xenium — Human breast cancer</a></li>
     <li><a class="dropdown-item" href="../articles/nanostring_cosmx_lung_cancer.html">Nanostring CosMx — Subcellular lung cancer</a></li>
     <li><a class="dropdown-item" href="../articles/cosmx_pancreas.html">Nanostring CosMx — Human pancreas FFPE</a></li>
+    <li><a class="dropdown-item" href="../articles/cosmx_colon_wtx_giottodisk.html">Nanostring CosMx — Human colon (GiottoDisk)</a></li>
     <li><a class="dropdown-item" href="../articles/merfish_mouse_hypothalamic.html">MERFISH — Mouse hypothalamic preoptic region</a></li>
     <li><a class="dropdown-item" href="../articles/merfish_mouse_sagittal_bil.html">MERFISH — Whole mouse brain (BIL)</a></li>
     <li><a class="dropdown-item" href="../articles/vizgen_mouse_brain.html">Vizgen — Mouse brain receptor map</a></li>
@@ -215,6 +218,7 @@ information.</p>
 <span>  h <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  h_color <span class="op">=</span> <span class="st">"red"</span>,</span>
 <span>  show_dend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  tree <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -263,21 +267,48 @@ information.</p>
 <dd><p>show dendrogram</p></dd>
 
 
+<dt id="arg-tree">tree<a class="anchor" aria-label="anchor" href="#arg-tree"></a></dt>
+<dd><p>optional `hclust` from [calculateClusterTree()]. When supplied
+the tree is not rebuilt, so the splits, the dendrogram plot and any other
+consumer can share one.</p></dd>
+
+
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
 <dd><p>be verbose</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>data.table object</p>
+    <p>`data.table` with one row per internal node, ordered from highest
+node to lowest: `node_h` (numeric height), `tree_1` and `tree_2` (list
+columns of cluster labels either side of the split), and `nodeID` (the
+`hclust$merge` row the node corresponds to).</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Creates a data.table with three columns and each row represents a
-node in the dendrogram. For each node the height of the node is given
-together with the two subdendrograms. This information can be used to
-determine in a hierarchical manner differentially expressed marker genes at
-each node.</p>
+    <p>Creates a data.table where each row represents a node in the
+dendrogram. For each node the height of the node is given together with the
+two subdendrograms. This information can be used to determine in a
+hierarchical manner differentially expressed marker genes at each node.</p>
+<p>`nodeID` is the `merge` row index, so per-node results join back to the
+clustering. It was previously a row counter (`"node_1"`, `"node_2"`, ...)
+with no defined relationship to the tree.</p>
+<p>`tree_1` and `tree_2` are **list columns** of cluster labels, so feeding a
+node to a marker function needs `unlist()`:</p>
+<p>“`
+splits &lt;- getDendrogramSplits(g, cluster_column = "leiden_clus")
+findScranMarkers(g,
+    cluster_column = "leiden_clus",
+    group_1 = unlist(splits[1]$tree_1),
+    group_2 = unlist(splits[1]$tree_2)
+)
+“`</p>
+<p>Looping that over the rows gives differential expression at every node. Each
+call reads only the cells under its own node, so the total work is roughly
+the tree depth times one pass rather than one pass per node.</p>
+<p>The tree itself is built by [calculateClusterTree()]. Pass one in as `tree`
+to reuse the same tree across the splits, the dendrogram plot and any
+per-node analysis, instead of rebuilding it here.</p>
     </div>
 
     <div class="section level2">

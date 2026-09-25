@@ -87,6 +87,28 @@ marker detection results
 The gates are OR'd with `min_feats`, so tightening them shrinks the
 result toward `min_feats` per group and never below it.
 
+## detection_margin
+
+Both comparisons also return a `detection_margin` column: per (feature,
+group), how many percentage points more of that group's cells detect the
+feature than of the next-highest **single** group's.
+
+\$\$\LARGE \mathrm{margin}(g,k) = d\_{gk} - \max\_{j \neq k} d\_{gj}\$\$
+
+It answers a different question from the coefficients beside it. The
+gini columns rank features *within* a group; this measures whether a
+group has any feature of its own at all, which is what distinguishes a
+real population from an overclustered fragment. Two properties make it
+comparable across groups where `comb_score` is not: the contrast is
+against one other group rather than the pooled remainder, so it does not
+inherit the \\N - n_k\\ term that makes the one-vs-rest coefficients
+fall as a group grows; and it is not rescaled within group, so
+`max(detection_margin)` per group means the same thing in every group.
+
+It is measured in percentage points and is negative where another group
+detects the feature more often. A value of zero for a group's best
+feature means no feature is more detected there than everywhere else.
+
 Defaults here are
 [`findGiniMarkers()`](https://giottosuite.com/dev/reference/findGiniMarkers.md)'s.
 [`findGiniMarkers_one_vs_all()`](https://giottosuite.com/dev/reference/findGiniMarkers_one_vs_all.md)

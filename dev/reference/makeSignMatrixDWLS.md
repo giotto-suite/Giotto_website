@@ -1,10 +1,11 @@
-# makeSignMatrixDWLS
+# Build a DWLS signature matrix from a Giotto object
 
-Function to convert a matrix within a Giotto object into a format that
-can be used with
+Convert expression held in a Giotto object into the mean-expression
+reference
 [`runDWLSDeconv`](https://giottosuite.com/dev/reference/runDWLSDeconv.md)
-for deconvolution. A vector of cell types for parameter
-`cell_type_vector` can be created from the cell metadata
+expects: signature features by cell type, each entry the mean expression
+of that feature in that type. A vector for `cell_type_vector` can be
+taken from the cell metadata
 ([`pDataDT`](https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html)).
 
 ## Usage
@@ -27,19 +28,20 @@ makeSignMatrixDWLS(
 
 - gobject:
 
-  Giotto object of single cell
+  giotto object
 
 - spat_unit:
 
-  spatial unit
+  spatial unit (e.g. "cell")
 
 - feat_type:
 
-  feature type to use
+  feature type (e.g. "rna", "dna", "protein")
 
 - expression_values:
 
-  expression values to use
+  character. Which expression values to use, e.g. "normalized". A
+  method's own default is shown in its Usage section.
 
 - reverse_log:
 
@@ -51,7 +53,7 @@ makeSignMatrixDWLS(
 
 - sign_gene:
 
-  all of DE genes (signature)
+  features to use, typically differentially expressed ones
 
 - cell_type_vector:
 
@@ -63,11 +65,16 @@ makeSignMatrixDWLS(
 
 ## Value
 
-matrix
+matrix of mean expression, features by cell type
 
 ## See also
 
 [`runDWLSDeconv`](https://giottosuite.com/dev/reference/runDWLSDeconv.md)
+
+Other spatial deconvolution:
+[`makeSignMatrixDWLSfromMatrix()`](https://giottosuite.com/dev/reference/makeSignMatrixDWLSfromMatrix.md),
+[`runDWLSDeconv()`](https://giottosuite.com/dev/reference/runDWLSDeconv.md),
+[`runSpatialDeconv()`](https://giottosuite.com/dev/reference/runSpatialDeconv.md)
 
 ## Examples
 

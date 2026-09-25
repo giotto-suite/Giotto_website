@@ -1,8 +1,9 @@
-# makeSignMatrixRank
+# Build a rank signature matrix
 
-Function to convert a single-cell count matrix and a corresponding
-single-cell cluster vector into a rank matrix that can be used with the
-Rank enrichment option.
+Convert a single-cell count matrix and its cluster assignments into the
+rank matrix
+[`runRankEnrich()`](https://giottosuite.com/dev/reference/runRankEnrich.md)
+expects.
 
 ## Usage
 
@@ -27,12 +28,12 @@ makeSignMatrixRank(
 
 - ties_method:
 
-  how to handle rank ties
+  how to rank tied expression values, `"average"` (default) or `"max"`
 
 - gobject:
 
-  if giotto object is given then only genes present in both datasets
-  will be considered
+  giotto object. When given, only features present in both datasets are
+  kept.
 
 ## Value
 
@@ -40,7 +41,17 @@ matrix
 
 ## See also
 
-`rankEnrich`
+[`runRankEnrich`](https://giottosuite.com/dev/reference/runRankEnrich.md)
+
+Other feature set enrichment:
+[`enrich_hyper`](https://giottosuite.com/dev/reference/enrich_hyper.md),
+[`enrich_page`](https://giottosuite.com/dev/reference/enrich_page.md),
+[`enrich_param`](https://giottosuite.com/dev/reference/enrich_param.md),
+[`enrich_rank`](https://giottosuite.com/dev/reference/enrich_rank.md),
+[`enrichment_PAGE`](https://giottosuite.com/dev/reference/enrichment_PAGE.md),
+[`runHyperGeometricEnrich()`](https://giottosuite.com/dev/reference/runHyperGeometricEnrich.md),
+[`runRankEnrich()`](https://giottosuite.com/dev/reference/runRankEnrich.md),
+[`runSpatialEnrich()`](https://giottosuite.com/dev/reference/runSpatialEnrich.md)
 
 ## Examples
 

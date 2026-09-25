@@ -81,7 +81,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.2.4</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -114,10 +114,13 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-examples" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Examples</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-examples">
-<li><h6 class="dropdown-header" data-toc-skip>In situ methods</h6></li>
+<li><a class="dropdown-item" href="../articles/datasets.html">Browse all datasets</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>In situ methods</h6></li>
     <li><a class="dropdown-item" href="../articles/xenium_breast_cancer.html">Xenium — Human breast cancer</a></li>
     <li><a class="dropdown-item" href="../articles/nanostring_cosmx_lung_cancer.html">Nanostring CosMx — Subcellular lung cancer</a></li>
     <li><a class="dropdown-item" href="../articles/cosmx_pancreas.html">Nanostring CosMx — Human pancreas FFPE</a></li>
+    <li><a class="dropdown-item" href="../articles/cosmx_colon_wtx_giottodisk.html">Nanostring CosMx — Human colon (GiottoDisk)</a></li>
     <li><a class="dropdown-item" href="../articles/merfish_mouse_hypothalamic.html">MERFISH — Mouse hypothalamic preoptic region</a></li>
     <li><a class="dropdown-item" href="../articles/merfish_mouse_sagittal_bil.html">MERFISH — Whole mouse brain (BIL)</a></li>
     <li><a class="dropdown-item" href="../articles/vizgen_mouse_brain.html">Vizgen — Mouse brain receptor map</a></li>
@@ -249,7 +252,7 @@ is from an FFPE sample of non-small-cell lung cancer (NSCLC). This
 example works with Lung12.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed.</span></span>
-<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/Giotto"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -922,10 +925,10 @@ differential expression genes<a class="anchor" aria-label="anchor" href="#identi
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># First 5 results by cluster</span></span>
-<span><span class="va">markers_gini</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">5</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"cluster"</span><span class="op">]</span></span>
+<span><span class="va">markers_gini</span><span class="op">[</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">5</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"cluster"</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># violinplot</span></span>
-<span><span class="va">topgenes_gini</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">markers_gini</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">2</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"cluster"</span><span class="op">]</span><span class="op">$</span><span class="va">feats</span><span class="op">)</span></span>
+<span><span class="va">topgenes_gini</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">markers_gini</span><span class="op">[</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">2</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"cluster"</span><span class="op">]</span><span class="op">$</span><span class="va">feats</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/violinPlot.html" class="external-link">violinPlot</a></span><span class="op">(</span><span class="va">cosmx</span>,</span>
 <span>    feats <span class="op">=</span> <span class="va">topgenes_gini</span>,</span>
@@ -1030,7 +1033,7 @@ macrophages, dendritic cells, and granulocytes)</p>
 <p><img src="images/nanostring_cosmx_lung_cancer/30_spat_cd45.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># drop problematic FOV data</span></span>
-<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/dimPlot.html" class="external-link">dimPlot2D</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">cosmx</span>, subset <span class="op">=</span> <span class="op">!</span><span class="va">fov</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">11</span>,<span class="fl">12</span>,<span class="fl">14</span>,<span class="fl">15</span>,<span class="fl">16</span><span class="op">)</span><span class="op">)</span>,</span>
+<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/dimPlot.html" class="external-link">dimPlot2D</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">cosmx</span>, subset <span class="op">=</span> <span class="op">!</span><span class="va">fov</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">11</span>,<span class="fl">12</span>,<span class="fl">14</span>,<span class="fl">15</span>,<span class="fl">16</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"Mean.CD3"</span>,</span>
 <span>    color_as_factor <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>    cell_color_gradient <span class="op">=</span> <span class="va">custom_scale</span>,</span>
@@ -1090,7 +1093,7 @@ Annotation<a class="anchor" aria-label="anchor" href="#cell-type-annotation"></a
 <span>    <span class="st">"Plasmablast IgG2+"</span>,</span>
 <span>    <span class="st">"Plasmablast IgA1+"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">clusters_cell_types</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">9</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">clusters_cell_types</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">9</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ct_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="st">"CAF"</span> <span class="op">=</span> <span class="va">clus_colors</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>,</span>
@@ -1181,9 +1184,9 @@ interacting cell.</p>
 <span>    min_zscore <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">top_icf</span> <span class="op">&lt;-</span> <span class="va">icf_filtered</span><span class="op">$</span><span class="va">ICFscores</span><span class="op">[</span><span class="va">cell_type</span> <span class="op">==</span> <span class="st">"CAF"</span> <span class="op">&amp;</span> <span class="va">type_int</span> <span class="op">==</span> <span class="st">"hetero"</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">2</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">int_cell_type</span><span class="op">]</span></span>
+<span><span class="va">top_icf</span> <span class="op">&lt;-</span> <span class="va">icf_filtered</span><span class="op">$</span><span class="va">ICFscores</span><span class="op">[</span><span class="va">cell_type</span> <span class="op">==</span> <span class="st">"CAF"</span> <span class="op">&amp;</span> <span class="va">type_int</span> <span class="op">==</span> <span class="st">"hetero"</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">2</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">int_cell_type</span><span class="op">]</span></span>
 <span><span class="va">top_icf_feats</span> <span class="op">&lt;-</span> <span class="va">top_icf</span><span class="op">$</span><span class="va">feats</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">top_icf_feats</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">top_icf</span><span class="op">$</span><span class="va">int_cell_type</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">top_icf_feats</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">top_icf</span><span class="op">$</span><span class="va">int_cell_type</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/plotICF.html">plotICF</a></span><span class="op">(</span><span class="va">cosmx</span>,</span>
 <span>    icfObject <span class="op">=</span> <span class="va">icf_filtered</span>,</span>
@@ -1202,7 +1205,7 @@ to be repeated for each icf pair of interest.</p>
 <code class="sourceCode R"><span><span class="co"># find cell type markers</span></span>
 <span><span class="va">scran_markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/findMarkers_one_vs_all.html">findMarkers_one_vs_all</a></span><span class="op">(</span><span class="va">cosmx</span>, </span>
 <span>    cluster_column <span class="op">=</span> <span class="st">"cell_types"</span>, </span>
-<span>    min_feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">cosmx</span><span class="op">)</span> <span class="co"># do not remove any features</span></span>
+<span>    min_feats <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">cosmx</span><span class="op">)</span> <span class="co"># do not remove any features</span></span>
 <span><span class="op">)</span> </span>
 <span><span class="va">scran_markers_Cancer</span> <span class="op">&lt;-</span> <span class="va">scran_markers</span><span class="op">[</span><span class="va">cluster</span> <span class="op">==</span> <span class="st">"Cancer"</span><span class="op">]</span></span>
 <span></span>
@@ -1212,7 +1215,7 @@ to be repeated for each icf pair of interest.</p>
 <span></span>
 <span><span class="co"># select only shared features between markers and ICFs</span></span>
 <span><span class="va">cancer_feats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">intersect</a></span><span class="op">(</span><span class="va">scran_markers_Cancer</span><span class="op">$</span><span class="va">feats</span>, <span class="va">icf_table</span><span class="op">$</span><span class="va">feats</span><span class="op">)</span></span>
-<span><span class="va">icf_table_CAF_cancer</span> <span class="op">&lt;-</span> <span class="va">icf_table_CAF_cancer</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">cancer_feats</span>, <span class="va">feats</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">icf_table_CAF_cancer</span> <span class="op">&lt;-</span> <span class="va">icf_table_CAF_cancer</span><span class="op">[</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">cancer_feats</span>, <span class="va">feats</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co"># assign ranks to ICF values</span></span>
 <span><span class="va">icf_table_CAF_cancer</span><span class="op">[</span>, <span class="va">rank</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">.N</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
@@ -1228,7 +1231,7 @@ to be repeated for each icf pair of interest.</p>
 <span></span>
 <span><span class="co"># get features to use</span></span>
 <span><span class="va">cancer_feats_to_use</span> <span class="op">&lt;-</span> <span class="va">cancer_feats</span><span class="op">[</span><span class="va">center_diffs</span> <span class="op">&gt;</span> <span class="fl">150</span><span class="op">]</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">cancer_feats_to_use</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Cancer"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">cancer_feats_to_use</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">cancer_feats_to_use</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Cancer"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">cancer_feats_to_use</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/plotICF.html">plotICF</a></span><span class="op">(</span><span class="va">cosmx</span>,</span>
 <span>    icfObject <span class="op">=</span> <span class="va">icf</span>,</span>

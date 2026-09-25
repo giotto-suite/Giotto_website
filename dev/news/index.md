@@ -1,6 +1,229 @@
 # Changelog
 
-## Giotto 4.2.4 (in development)
+## Giotto 4.3.0 (in development)
+
+`gsource` moves to its own minor line. It was previously 4.2.4 against
+`suite_dev`’s 4.2.3, so the two shared a minor version and a downstream
+package could only tell them apart by patch. The accumulated changes
+below — new readers, the param families, and several results-changing
+fixes — are more than a patch’s worth, and a distinct minor makes
+`gsource` the visibly leading line.
+
+Downstream packages pinning a class or generic added here should require
+`Giotto (>= 4.3.0)`.
+
+Deprecation markers were retargeted only where the deprecation is unique
+to this line:
+[`calculateHVF()`](https://giottosuite.com/dev/reference/calculateHVF.md)’s
+`var_number` and the
+[`runUMAP()`](https://giottosuite.com/dev/reference/runUMAP.md) engine
+note now say 4.3.0. The
+[`findGiniMarkers()`](https://giottosuite.com/dev/reference/findGiniMarkers.md)
+/
+[`findMarkers()`](https://giottosuite.com/dev/reference/findMarkers.md)
+gini-threshold renames keep `when = "4.2.4"` — they are on `suite_dev`
+too, and will ship from there under that version.
+
+### bug fixes
+
+- **[`runUMAP()`](https://giottosuite.com/dev/reference/runUMAP.md) was
+  not reproducible**, despite carrying `set_seed = TRUE` and
+  `seed_number = 1234`. uwot ran its own approximate neighbour search,
+  and its HNSW index build races on insertion order — a C++ thread
+  interleaving the R RNG cannot reach, so the seed could never have
+  covered it. Two runs on a 169,528-cell Atera section gave embeddings
+  differing by a Procrustes RMSE of 7.3%, with kNN preservation
+  0.76–0.80. The new `nn_engine` argument defaults to `"giotto"`: the
+  neighbour graph comes from Giotto rather than from uwot’s own search,
+  and is handed over as `nn_method` so uwot runs no search at all. Where
+  [`createNearestNetwork()`](https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html)
+  has already run, that is the **stored** kNN (see the GiottoClass note
+  on `keep_knn`), so the embedding and the partition are built from one
+  search rather than from two that happen to agree; otherwise one is
+  built with
+  [`GiottoClass::hnswKNN()`](https://giotto-suite.github.io/GiottoClass/reference/hnswKNN.html),
+  whose index build is single-threaded. Neither depends on a seed.
+  `"annoy"` instead pins uwot to a backend whose trees are built from
+  the R RNG and whose threading covers only the search, also
+  reproducible in-process and across processes; `"uwot"` restores the
+  old behaviour.
+
+  On that section, reusing the stored graph costs **5.9s against the old
+  behaviour’s 6.8s** — reproducible and slightly faster, because
+  recovering the kNN takes 0.9s where repeating the search takes 13.8s.
+  Without a stored graph to reuse the same call is 19.6s, and `"annoy"`
+  is 16.6s. **Results change**: UMAP coordinates differ from previous
+  versions. Nothing downstream consumed the embedding — clustering runs
+  on the sNN graph — so this moves figures, not analyses. Threading is
+  not given up: `n_threads` still drives the smooth-kNN root find and,
+  under `batch = TRUE`, the SGD, both reproducible at any thread count.
+
+- **[`runIntegratedUMAP()`](https://giottosuite.com/dev/reference/runIntegratedUMAP.md)
+  built its embedding on the wrong graph.** It passed
+  [`dbscan::kNN()`](https://rdrr.io/pkg/dbscan/man/kNN.html) output to
+  uwot as `nn_method` unchanged, but
+  [`dbscan::kNN()`](https://rdrr.io/pkg/dbscan/man/kNN.html) removes
+  self-matches while uwot requires each cell to be its own first
+  neighbour and drops column 1 when fitting the local connectivity
+  offset. The integrated UMAP was therefore built from `k - 1`
+  neighbours with the nearest one discarded, against a `log2(k)` target
+  that assumed otherwise. uwot validates neither the self column nor the
+  ordering, so it ran without error. It now goes through
+  [`GiottoClass::nnToUwot()`](https://giotto-suite.github.io/GiottoClass/reference/nnToUwot.html).
+  **Results change.**
+
+- [`getDendrogramSplits()`](https://giottosuite.com/dev/reference/getDendrogramSplits.md)
+  returned a wrong set of splits whenever two merges of the cluster
+  dendrogram shared a height. The internal node walk located each node
+  by matching its height against a list it never removed split nodes
+  from, so a tie made it re-select a node it had already split: that
+  split was emitted twice and its true sibling never at all. The result
+  still had `k - 1` rows, so nothing errored. It now walks
+  `hclust$merge` directly, which also fixes two latent problems on the
+  same code path — heights were assumed to increase with merge order,
+  which `"centroid"` and `"median"` linkage violate, and the
+  candidate-list index advanced past entries the list had compacted
+  away. **Results change** on any dataset with tied merge heights, which
+  near-duplicate clusters readily produce.
+
+- [`getDendrogramSplits()`](https://giottosuite.com/dev/reference/getDendrogramSplits.md)
+  no longer prints one line per merge by default.
+
+### changes
+
+- [`runUMAP()`](https://giottosuite.com/dev/reference/runUMAP.md) gains
+  `nn_engine`, defaulting to `"giotto"`: where the neighbour graph comes
+  from. It reuses the kNN
+  [`createNearestNetwork()`](https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html)
+  stored when one is available, and builds one otherwise. `"uwot"`
+  restores uwot’s own choice, and any of uwot’s backend names — `"fnn"`,
+  `"annoy"`, `"hnsw"`, `"nndescent"` — selects that backend directly, so
+  all of them are reachable through one argument rather than through
+  `nn_method` in `...`. They are not equally reproducible: `"annoy"`
+  builds its trees from the R RNG and threads only the search, so
+  repeated calls agree bit for bit, while `"hnsw"` threads the index
+  build and does not.
+- [`runUMAP()`](https://giottosuite.com/dev/reference/runUMAP.md) gains
+  `nn_network_to_use` and `network_name`, spelled as
+  [`doLeidenCluster()`](https://giottosuite.com/dev/reference/doLeidenCluster.md)
+  spells them, naming the stored network to reuse. `network_name = NULL`
+  derives `<nn_network_to_use>.<dim_reduction_to_use>`. An object can
+  hold several kNN networks — one per reduction, or at different `k` —
+  so the graph is looked up by name and never guessed at: a derived name
+  that is absent falls back to building one and says so, while a name
+  given explicitly and not found is an error rather than a quiet
+  substitution.
+- [`getDendrogramSplits()`](https://giottosuite.com/dev/reference/getDendrogramSplits.md)
+  returns `node_h` as a numeric column rather than a list column, and
+  `nodeID` as the `hclust$merge` row index rather than a row counter, so
+  per-node results can be joined back to the tree.
+
+### new
+
+- [`writeClusterTreeQuery()`](https://giottosuite.com/dev/reference/writeClusterTreeQuery.md)
+  builds the annotation query for a cluster tree: the tree as an
+  indented outline, the markers separating each branch, and the
+  per-cluster markers with a specificity flag. `context` is a free-form
+  named list (`tissue`, `disease`, `assay`, …) rendered into the header.
+  Evidence the caller does not supply is computed for them. It runs no
+  LLM, like
+  [`writeChatGPTqueryDEG()`](https://giottosuite.com/dev/reference/writeChatGPTqueryDEG.md),
+  and returns the text invisibly rather than only writing a file.
+
+  The query asks for a label at **every internal node**, naming the
+  clade beneath it rather than describing the split. That is what makes
+  the answer cuttable afterwards without asking the model again.
+
+- [`annotateClusterTree()`](https://giottosuite.com/dev/reference/annotateClusterTree.md)
+  writes that answer onto the object at one or more granularities. `k` /
+  `h` mirror
+  [`doHclust()`](https://giottosuite.com/dev/reference/doHclust.md) and
+  each value produces its own annotation column, so a coarse and a fine
+  labelling of the same cells can be compared directly. It delegates the
+  metadata write to
+  [`GiottoClass::annotateGiotto()`](https://giotto-suite.github.io/GiottoClass/reference/annotateGiotto.html).
+
+  A real answer names only some nodes, so each group takes the first
+  label that resolves: its own node; the leaf itself when the group is a
+  single cluster; the nearest labelled ancestor; the majority leaf
+  label. The middle two are in that order deliberately – no internal
+  node spans a single leaf, so at the finest cut an ancestor-first
+  search returns labels coarser than the leaves it started from.
+
+- [`findScranMarkers_one_vs_all()`](https://giottosuite.com/dev/reference/findScranMarkers_one_vs_all.md)
+  (and so `findMarkers_one_vs_all(method = "scran")`) reports a `pi`
+  column – `logFC * -log10(p.value)`, effect size times significance –
+  and returns each cluster’s block ordered by it. The p-value is floored
+  at `.Machine$double.xmin` first: the strongest markers underflow to
+  exactly 0, and a table sorted on the resulting `Inf` is ordered by
+  whichever gene underflowed first. `ranking` is unchanged; it gates the
+  `min_feats` rescue and is not presentational. **Row order changes**
+  for callers that relied on the previous, undocumented order.
+
+- [`findNodeMarkers()`](https://giottosuite.com/dev/reference/findNodeMarkers.md)
+  runs differential expression at every branch point of a cluster tree,
+  rather than only between the leaf clusters. Each internal node
+  compares the clusters on one side of the merge against those on the
+  other, so the markers it returns are **conditional**: a gene that says
+  nothing at the root can be decisive deeper in the tree. Takes a tree
+  from
+  [`calculateClusterTree()`](https://giottosuite.com/dev/reference/calculateClusterTree.md)
+  and the splits from
+  [`getDendrogramSplits()`](https://giottosuite.com/dev/reference/getDendrogramSplits.md),
+  and returns `$markers` keyed by `nodeID` and `side` plus a `$nodes`
+  summary carrying each node’s height, cluster membership and count of
+  separating genes.
+
+  Any
+  [`findMarkers()`](https://giottosuite.com/dev/reference/findMarkers.md)
+  method works, because a node comparison is a `(group_1, group_2)`
+  relabelling and nothing about that is method-specific. Where the
+  statistic is a function of **additive** per-group accumulators the
+  work is shared instead: `"scran"` (`sum`, `sumsq`, `n`) and `"gini"`
+  (`sum`, `nnz`, `n`) take one grouped pass over the values and combine
+  it per node by arithmetic, while `"mast"` – and anything else needing
+  the per-cell values – falls back to one pass per node. On 169,528
+  cells and 36 clusters the pooled route runs the 35 nodes in 5.2 s
+  against ~35 s delegated for `"scran"`, and 15.4 s against ~70 s for
+  `"gini"`; it is sub-linear in node count, since only the pooling
+  grows.
+
+- [`calculateClusterTree()`](https://giottosuite.com/dev/reference/calculateClusterTree.md)
+  builds the cluster tree as a plain `hclust`, with the correlation
+  matrix and the settings used attached as attributes, so
+  [`cutree()`](https://rdrr.io/r/stats/cutree.html),
+  [`as.dendrogram()`](https://rdrr.io/r/stats/dendrogram.html),
+  `ggdendro` and `ape` all work on it unchanged.
+  [`getDendrogramSplits()`](https://giottosuite.com/dev/reference/getDendrogramSplits.md)
+  and
+  [`findNodeMarkers()`](https://giottosuite.com/dev/reference/findNodeMarkers.md)
+  take it as `tree`, and
+  [`GiottoVisuals::showClusterDendrogram()`](https://giotto-suite.github.io/GiottoVisuals/reference/showClusterDendrogram.html)
+  plots it — one tree behind all three, instead of three rebuilds free
+  to disagree.
+
+  The pseudobulk comes from `analyzeData(featStatsParam, groups = )`,
+  one pass on any backend including a disk-backed store, where
+  [`calculateMetaTable()`](https://giotto-suite.github.io/GiottoClass/reference/calculateMetaTable.html)
+  loops one `rowMeans` per cluster: 2.3 s against 18.0 s for 36 clusters
+  on 169,528 cells, agreeing to 2.7e-15. Cluster labels are ordered
+  naturally before the correlation is taken, because ward linkage breaks
+  near-ties by index and a lexically-ordered column gave 3 differing
+  splits out of 35 on that dataset.
+
+- [`findGiniMarkers()`](https://giottosuite.com/dev/reference/findGiniMarkers.md)
+  and
+  [`findGiniMarkers_one_vs_all()`](https://giottosuite.com/dev/reference/findGiniMarkers_one_vs_all.md)
+  gain a `detection_margin` column: per (feature, cluster), how many
+  percentage points more of that cluster’s cells detect the feature than
+  of the next-highest **single** cluster’s. Unlike the gini coefficients
+  it contrasts against one other cluster rather than the pooled
+  remainder, so it does not inherit the `N - n_k` pooling term that
+  makes those coefficients track cluster size; and unlike `comb_score`
+  it is not rescaled within cluster, so
+  [`max()`](https://rdrr.io/r/base/Extremes.html) per cluster is a
+  meaningful “does this cluster have a feature of its own”. Intended for
+  spotting overclustered fragments.
 
 ### Enhancements
 
@@ -18,13 +241,138 @@
 
 ### Bug fixes
 
+- [`cellProximityHeatmap()`](https://giottosuite.com/dev/reference/cellProximityHeatmap.md)
+  no longer adds `first_type` and `second_type` columns to the caller’s
+  own `CPscore$enrichm_res`. `data.table`’s `:=` modifies in place, so
+  the input object was being mutated as a side effect of plotting it.
+- [`cellProximityHeatmap()`](https://giottosuite.com/dev/reference/cellProximityHeatmap.md)
+  defaults to a diverging palette centred on zero. Enrichment is a
+  diverging quantity whose neutral point is 0; ComplexHeatmap’s default
+  is a sequential ramp fitted to the data range, which put the neutral
+  colour wherever the data happened to sit and made depletion hard to
+  distinguish from weak enrichment. `color_breaks`/`color_names` are
+  unchanged.
+- [`cellProximityNetwork()`](https://giottosuite.com/dev/reference/cellProximityNetwork.md)
+  draws node points before node labels. Reversed, every label was
+  rendered underneath its own node.
+- [`cellProximityBarplot()`](https://giottosuite.com/dev/reference/cellProximityBarplot.md)
+  encodes significance as bar outline weight, so a pair that just
+  cleared the threshold no longer looks identical to one that cleared it
+  by orders of magnitude, and uses an explicit palette rather than
+  ggplot2 defaults.
+- `@param name` no longer starts mid-sentence in the enrichment
+  functions. It read “to give to spatial enrichment results”, so
+  [`?runRankEnrich`](https://giottosuite.com/dev/reference/runRankEnrich.md)
+  rendered *“name: to give to spatial enrichment results”* – the word
+  the reader needs was the one missing.
+- [`runSpatialEnrich()`](https://giottosuite.com/dev/reference/runSpatialEnrich.md)
+  no longer documents `name`’s default as `PAGE`. It passes `NULL` and
+  each method picks its own, so the documented value was wrong for two
+  of the three.
+- [`makeSignMatrixRank()`](https://giottosuite.com/dev/reference/makeSignMatrixRank.md)’s
+  `@seealso` pointed at `rankEnrich`, which does not exist; it is
+  [`runRankEnrich()`](https://giottosuite.com/dev/reference/runRankEnrich.md).
+  That was the package’s last missing Rd cross-reference, and clearing
+  it takes `R CMD check`’s cross-reference result from WARNING to NOTE.
+- [`runRankEnrich()`](https://giottosuite.com/dev/reference/runRankEnrich.md)’s
+  `reverse_log_scale` and `logbase` are deprecated: they are ignored,
+  and could not work if they were not. The method ranks genes across
+  cells and then ranks those ranks within each cell, and ranking is
+  invariant to any monotonic per-gene transform, so no value of either
+  argument can move a single rank. The old code computed
+  `log(rowMeans(logbase^expr - 1) + 1)` and never read it – dead, and
+  expensive, since `logbase^expr` on a `dgCMatrix` returns dense (~460
+  MB allocated and discarded on a 377 x 151,782 store). Passing either
+  now warns; relying on the defaults is silent, and results are
+  unchanged.
+- `expression_values` is now resolved as
+  `match.arg(expression_values[[1L]], ...)` in the three enrichment
+  wrappers. `match.arg(x, choices)` returns the first choice only when
+  `x` is *identical* to `choices`, order included, so the previous idiom
+  depended on each caller’s default vector matching the hardcoded list
+  exactly.
+  [`runSpatialEnrich()`](https://giottosuite.com/dev/reference/runSpatialEnrich.md),
+  whose own default is shorter, did not – routing to rank with default
+  arguments errored.
+- [`runRankEnrich()`](https://giottosuite.com/dev/reference/runRankEnrich.md)
+  can be called with its default `expression_values`. The formal default
+  `c("normalized", "raw", "scaled", "custom")` was matched against the
+  same four values in a different order, and
+  [`match.arg()`](https://rdrr.io/r/base/match.arg.html) refuses a
+  length-4 argument that is not identical to its choices, so the
+  function errored with *‘arg’ must be of length 1* unless a value was
+  named explicitly.
+- [`runPAGEEnrich()`](https://giottosuite.com/dev/reference/enrichment_PAGE.md)
+  honours `output_enrichment`. The wrapper passed the literal
+  `c("original", "zscore")` down instead of the user’s value, so
+  `"zscore"` was silently ignored and PAGE always returned unscaled
+  scores – while recording the requested setting in `@misc`.
+- `runRankEnrich(p_value = TRUE)` returns p-values. The permutation
+  branch recursed without `return_gobject = FALSE`, so it fitted a gamma
+  distribution to a `giotto` object. Score columns are now also selected
+  by name rather than by position, which is what swept a character
+  `cell_ID` into the fit under any column ordering but the assumed one.
+- [`runSpatialEnrich()`](https://giottosuite.com/dev/reference/runSpatialEnrich.md)
+  forwards `min_overlap_genes`, `max_block` and `verbose` to the PAGE
+  method. All three were in its signature and documented, and none of
+  them reached the method.
+- [`runPAGEEnrich()`](https://giottosuite.com/dev/reference/enrichment_PAGE.md)
+  works on a disk-backed object, via a streaming method contributed by
+  GiottoDisk. Previously it densified the store and failed.
+- [`exportGiottoViewer()`](https://giottosuite.com/dev/reference/exportGiottoViewer.md)’s
+  documentation linked to `createSpatialEnrich()`, removed as
+  deprecated.
 - [`createGiottoXeniumObject()`](https://giottosuite.com/dev/reference/createGiottoXeniumObject.md)
   no longer errors on Xenium-format directories that ship no panel json;
   feature metadata is generated from the expression matrix when the
   panel is absent.
+- [`adjustGiottoMatrix()`](https://giottosuite.com/dev/reference/adjustGiottoMatrix.md),
+  [`runGiottoHarmony()`](https://giottosuite.com/dev/reference/runGiottoHarmony.md)
+  and
+  [`runDWLSDeconv()`](https://giottosuite.com/dev/reference/runDWLSDeconv.md)
+  key the cell metadata to the expression cell axis before using it. All
+  three pulled a metadata column and handed it to a routine that pairs
+  it with the expression columns **by position** –
+  [`limma::removeBatchEffect()`](https://rdrr.io/pkg/limma/man/removeBatchEffect.html),
+  `harmony::RunHarmony()` and the deconvolution solvers respectively –
+  while expression and metadata are fetched through independent
+  accessors with no shared-order guarantee. Where the two orders
+  differed, every cell was corrected, integrated or deconvolved against
+  another cell’s label, and the result looked entirely normal. **Results
+  will change** on any object whose metadata is not already on the
+  expression axis; the shipped mini visium object is one, where it
+  agrees at zero of 624 positions. A metadata table that does not cover
+  the expression columns is now an error rather than a silent recycle.
 
 ### Breaking changes
 
+- [`cellProximityEnrichment()`](https://giottosuite.com/dev/reference/cellProximityEnrichment.md)
+  now permutes cell type labels over the **nodes** of the spatial
+  network, so every cell carries one label across all of its edges.
+  Previously it pooled the two endpoint cell-type columns into one
+  vector and reshuffled that, which draws labels degree-weighted and
+  lets a cell take different labels on different edges — never the node
+  permutation the documentation described. The expected counts that
+  produced deviate from the exact node-permutation expectation by up to
+  13% on the mini Visium leiden labels, and by 50% when cell type tracks
+  node degree. **Enrichment scores and p-values will differ from
+  previous releases**, and there is no option to restore the old null.
+  Observed counts are unchanged. Empirical p-values now use the unbiased
+  `(1 + n) / (1 + number_of_simulations)` estimator and can no longer be
+  exactly zero, which the `PI_value` formula previously had to work
+  around. The simulation no longer materializes a
+  `number_of_simulations x n_edges` table: at 50,000 cells this is ~13x
+  faster and ~4x lower peak memory, and the function now runs at 170,000
+  cells where it previously exhausted memory. `enrichm_res` gains
+  `sd_sim` and `z`; every existing column keeps its name, class and
+  position, so
+  [`cellProximityBarplot()`](https://giottosuite.com/dev/reference/cellProximityBarplot.md),
+  [`cellProximityHeatmap()`](https://giottosuite.com/dev/reference/cellProximityHeatmap.md)
+  and
+  [`cellProximityNetwork()`](https://giottosuite.com/dev/reference/cellProximityNetwork.md)
+  are unaffected.
+  [`cellProximityEnrichmentSpots()`](https://giottosuite.com/dev/reference/cellProximityEnrichmentSpots.md)
+  is unchanged and still uses the old helper.
 - [`findScranMarkers_one_vs_all()`](https://giottosuite.com/dev/reference/findScranMarkers_one_vs_all.md)
   returns `cluster` as **character**. All
   [`findMarkers_one_vs_all()`](https://giottosuite.com/dev/reference/findMarkers_one_vs_all.md)
@@ -135,12 +483,55 @@
 
 ### Changes
 
+- The signature-based analysis functions are documented as **two
+  families** rather than one undifferentiated set.
+  `@family feature set enrichment` covers PAGE, rank, hypergeometric,
+  their router and their sign-matrix builders;
+  `@family spatial deconvolution` covers DWLS, its router and its
+  builders. They are separate because they answer different questions
+  and return different things – scores versus proportions – and because
+  `sign_matrix` is not the same object in both:
+  [`makeSignMatrixPAGE()`](https://giottosuite.com/dev/reference/enrichment_PAGE.md)
+  builds a binary membership matrix,
+  [`makeSignMatrixDWLS()`](https://giottosuite.com/dev/reference/makeSignMatrixDWLS.md)
+  builds mean expression per cell type.
+- Shared parameters are described once, in `R/dd.R`, following the
+  existing `data_access_params` pattern. `signature_analysis_params`
+  holds the six that genuinely mean the same thing in both families;
+  `enrichment_params` and `deconvolution_params` hold what is specific
+  to each.
+- All nine topics in these families gained a real title; they previously
+  repeated the function name.
+- [`doFeatureSetEnrichment()`](https://giottosuite.com/dev/reference/doFeatureSetEnrichment.md)
+  states plainly that it drives the external GSEA command-line
+  application over ranked files and is not one of Giotto’s spatial
+  enrichment methods – it takes no `giotto` object – and gained an
+  example.
+- Markdown is enabled across these topics. Only
+  [`runSpatialEnrich()`](https://giottosuite.com/dev/reference/runSpatialEnrich.md)
+  had `@md`, so backticks and `[fn()]` links rendered literally
+  elsewhere.
 - [`createGiottoXeniumObject()`](https://giottosuite.com/dev/reference/createGiottoXeniumObject.md)
   reads `ome.tif` morphology images directly and no longer converts them
   through python, so no `tif_exports/` directory is written next to the
   data. A converted tif left by an earlier run is still used if present.
   JPEG-2000 images, which is what 10x actually ships, are read through a
   GDAL VRT rather than decoded up front.
+- The three remaining metadata writes that relied on row position now
+  key on `cell_ID` instead.
+  [`addPolygonCells()`](https://giottosuite.com/dev/reference/addPolygonCells.md)
+  hands over the polygon column with its ids rather than re-sorting a
+  whole metadata table and dropping the key; the HMRF writer names the
+  class vector it has already aligned; and
+  [`exprCellCellcom()`](https://giottosuite.com/dev/reference/exprCellCellcom.md)’s
+  permutation loop, whose labels are a deliberate shuffle and therefore
+  belong to no cell, writes onto the `cellMetaObj` directly rather than
+  through a setter that aligns on ids. Results are unchanged in all
+  three – verified identical against the previous implementation for
+  [`exprCellCellcom()`](https://giottosuite.com/dev/reference/exprCellCellcom.md)
+  (same seed, 5 iterations) and
+  [`addPolygonCells()`](https://giottosuite.com/dev/reference/addPolygonCells.md)
+  – and the positional-cbind warning they emitted is gone.
 - gini `min_expr_gini_score` and `min_det_gini_score` renamed
   `min_expression` and `min_detection` — they gate mean expression and
   detection fraction, not the gini coefficients. Old names deprecated.
@@ -148,6 +539,77 @@
 
 ### New
 
+- [`cellProximityMotifs()`](https://giottosuite.com/dev/reference/cellProximityMotifs.md)
+  works on disk-backed projects. As of GiottoClass 0.6.0 a
+  `spatialNetworkObj`’s network slot may hold a GiottoDisk
+  `parquetEdgeStore` instead of an `igraph`, and both are handled. When
+  the store has no pending subset operations the backend reads its
+  parquet directly, skipping the igraph materialization entirely –
+  GiottoDisk already interned the node ids at write time, so no string
+  hashing happens on either side. A store carrying pending ops falls
+  back to the ordinary path, because the files on disk do not reflect a
+  pending subset and reading them raw would silently analyse the whole
+  network. Results are identical either way. No change to GiottoDisk is
+  required.
+- [`plotMotifEnrichment()`](https://giottosuite.com/dev/reference/plotMotifEnrichment.md),
+  [`plotMotifGlyphs()`](https://giottosuite.com/dev/reference/plotMotifGlyphs.md)
+  and
+  [`spatMotifPlot()`](https://giottosuite.com/dev/reference/spatMotifPlot.md)
+  visualize motif results. The triage plot deliberately defaults to
+  effect size against occurrence count rather than a volcano:
+  permutation p-values are floored at `1 / (n_perm + 1)`, so on a real
+  run most significant classes sit exactly on that floor and a volcano’s
+  y-axis collapses to a single uninformative line. `style = "volcano"`
+  keeps the conventional view.
+  [`plotMotifGlyphs()`](https://giottosuite.com/dev/reference/plotMotifGlyphs.md)
+  draws each motif as the little graph it is, nodes coloured by cell
+  type in canonical slot order, which makes an id like
+  `size4_paw_A-B-B-C` readable at a glance.
+  [`spatMotifPlot()`](https://giottosuite.com/dev/reference/spatMotifPlot.md)
+  shows where a motif’s occurrences sit in the tissue, switching to a
+  density surface above `density_threshold` cells so it stays legible on
+  a large section.
+- [`cellProximityMotifs()`](https://giottosuite.com/dev/reference/cellProximityMotifs.md)
+  extends cell-cell interaction analysis from pairs to **multicellular
+  motifs** – recurrent arrangements of 3 or 4 neighbouring cells,
+  distinguished by shape as well as composition, so a triangle of three
+  cell types is a different motif from a chain of the same three.
+  Alongside the usual label-permutation null it offers a **conditional**
+  null that holds the observed pairwise composition fixed: under the
+  ordinary null any motif built from an attracting pair looks enriched,
+  and the conditional null is what separates a real higher-order niche
+  from an echo of the pairwise signal. Results carry both tails
+  (`p_enrich`, `p_deplete`), an effect size, and `topology` plus a
+  `color_tuple` list column whose positions are structural roles rather
+  than a sort, so `A-B-B` and `B-A-A` stay distinct.
+- The motif engine is a pluggable backend rather than a fixed
+  dependency. `motifParam` is a VIRTUAL `analyzeParam` subclass defining
+  the contract and `smotifParam` is one implementation, the same
+  arrangement `pcaParam` has where GiottoDisk contributes
+  `gramEigenPcaParam` from outside the package. A second engine is a new
+  concrete subclass plus its own `analyzeData` method, contributable
+  from another package with no change to Giotto; a test attaches one to
+  prove it. Requires (`Suggests`), whose Rust backend is what makes size
+  4 tractable at scale.
+- [`enrichParam()`](https://giottosuite.com/dev/reference/enrich_param.md)
+  and the `pageEnrichParam` / `rankEnrichParam` / `hyperEnrichParam`
+  classes put sign-matrix enrichment on the
+  [`analyzeData()`](https://giottosuite.com/dev/reference/analyzeData.md)
+  verb, following `markersParam`. The arithmetic runs on a bare matrix –
+  `analyzeData(expr, enrichParam("rank"), sign_matrix = sm)` – with no
+  `giotto` object involved, and dispatches on the expression object, so
+  a backend can register a streaming implementation against the same
+  generic from another package.
+  [`runPAGEEnrich()`](https://giottosuite.com/dev/reference/enrichment_PAGE.md),
+  [`runRankEnrich()`](https://giottosuite.com/dev/reference/runRankEnrich.md),
+  [`runHyperGeometricEnrich()`](https://giottosuite.com/dev/reference/runHyperGeometricEnrich.md)
+  and
+  [`runSpatialEnrich()`](https://giottosuite.com/dev/reference/runSpatialEnrich.md)
+  keep their names, signatures and results, and become thin wrappers
+  over it.
+  [`runSpatialEnrich()`](https://giottosuite.com/dev/reference/runSpatialEnrich.md)
+  also gained `include_depletion` and `ties_method`, which were
+  reachable from neither it nor its documentation.
 - `importAtera()` and `createGiottoAteraObject()` read Atera output.
   `AteraReader` subclasses `XeniumReader` — the layouts are identical
   today, so it overrides only the platform label and inherits the rest,
@@ -173,8 +635,9 @@
   backend-managed `giotto` failed, because
   [`setGiotto()`](https://giotto-suite.github.io/GiottoClass/reference/setGiotto.html)
   has by then swapped the `SpatVector` for a `parquetGeomStore` and the
-  ID recompute calls [`unique()`](https://rdrr.io/r/base/unique.html) on
-  it.
+  ID recompute calls
+  [`unique()`](https://rspatial.github.io/terra/reference/unique.html)
+  on it.
 - The `method = "var_p_resid"` diagnostic plot is now decision-support
   rather than a bare scatter: a reference line at `var = 1` (the
   no-signal expectation for Pearson residuals, so the value the
@@ -1157,8 +1620,10 @@
 - New [`wrap()`](https://rspatial.github.io/terra/reference/wrap.html)
   and [`vect()`](https://rspatial.github.io/terra/reference/vect.html)
   generics for `giotto`, `giottoPoints`, and `giottoPolygons`
-- New `rotate()`, [`t()`](https://rdrr.io/r/base/t.html), and
-  `spatShift` generics for giotto subobject spatial manipulation
+- New
+  [`rotate()`](https://rspatial.github.io/terra/reference/rotate.html),
+  [`t()`](https://rdrr.io/r/base/t.html), and `spatShift` generics for
+  giotto subobject spatial manipulation
 - New
   [`spatIDs()`](https://giotto-suite.github.io/GiottoClass/reference/spatIDs-generic.html)
   and
@@ -1321,8 +1786,8 @@
   [general_help.R](https://github.com/drieslab/Giotto/blob/suite/R/general_help.R)
   - It saves a Giotto object into a folder using a specific structure.
     Essentially a wrapper around
-    [`saveRDS()`](https://rdrr.io/r/base/readRDS.html) that also works
-    with spatVector and spatRaster pointers.
+    [`saveRDS()`](https://rspatial.github.io/terra/reference/serialize.html)
+    that also works with spatVector and spatRaster pointers.
 - New `plotInteractivePolygon()` for plot\*interactive polygonal
   selection of points.
 - New polygon shape array creation through

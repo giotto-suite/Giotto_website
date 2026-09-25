@@ -130,21 +130,45 @@ Because you are on the `dev` branch, this only affects the development
 site. The change reaches <https://giottosuite.com> when `dev` is merged
 into `suite`.
 
-## 9 Check your work
+## 9 Tag the tutorial for the dataset browser
+
+[Browse datasets](https://giottosuite.com/dev/articles/datasets.md)
+filters tutorials by the tags in their YAML header. Tutorials under the
+Examples sections must have them; any other tutorial can opt in. Add a
+`tags:` block to the header:
+
+    tags:
+      packages: GiottoDisk        # only if it uses a Giotto Suite extension package
+      platform: CosMx
+      species: human
+      tissue: colon
+      condition: cancer
+      modality: RNA
+      resolution: subcellular
+
+`platform`, `modality` and `resolution` are required. Leave the others
+out when the dataset does not say, rather than guessing. Every value has
+to come from `pkgdown/tags.yml`; add a new one there if your dataset
+needs it. Then regenerate the browser page and commit it:
+
+    Rscript pkgdown/build-dataset-index.R
+
+## 10 Check your work
 
     Rscript pkgdown/check-site.R
 
 This takes about a second and needs no build. It reports an unregistered
 tutorial, a navbar link pointing at a file that does not exist, a broken
-section anchor, a missing `pkgdown: as_is: true` header, and any figure
-you referenced but did not commit. It also prints warnings, which are
+section anchor, a missing `pkgdown: as_is: true` header, any figure you
+referenced but did not commit, and tags that are missing, misspelled, or
+out of date with the browser page. It also prints warnings, which are
 informational — the current tree has 19 of them.
 
 If you have a clone of the package beside this repository, it
 additionally checks that every documented function is listed under
 `reference:`, which is the other way a build can fail outright.
 
-## 10 Preview locally
+## 11 Preview locally
 
     Rscript pkgdown/preview-sites.R --dev --quick
 
@@ -159,7 +183,7 @@ clone of the package beside it:
 
 or point at one you already have with `--pkg <path>`.
 
-## 11 Push the changes to Github
+## 12 Push the changes to Github
 
 Push your branch and open a Pull Request **against `dev`**.
 

@@ -81,7 +81,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.2.4</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -114,10 +114,13 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-examples" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Examples</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-examples">
-<li><h6 class="dropdown-header" data-toc-skip>In situ methods</h6></li>
+<li><a class="dropdown-item" href="../articles/datasets.html">Browse all datasets</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>In situ methods</h6></li>
     <li><a class="dropdown-item" href="../articles/xenium_breast_cancer.html">Xenium — Human breast cancer</a></li>
     <li><a class="dropdown-item" href="../articles/nanostring_cosmx_lung_cancer.html">Nanostring CosMx — Subcellular lung cancer</a></li>
     <li><a class="dropdown-item" href="../articles/cosmx_pancreas.html">Nanostring CosMx — Human pancreas FFPE</a></li>
+    <li><a class="dropdown-item" href="../articles/cosmx_colon_wtx_giottodisk.html">Nanostring CosMx — Human colon (GiottoDisk)</a></li>
     <li><a class="dropdown-item" href="../articles/merfish_mouse_hypothalamic.html">MERFISH — Mouse hypothalamic preoptic region</a></li>
     <li><a class="dropdown-item" href="../articles/merfish_mouse_sagittal_bil.html">MERFISH — Whole mouse brain (BIL)</a></li>
     <li><a class="dropdown-item" href="../articles/vizgen_mouse_brain.html">Vizgen — Mouse brain receptor map</a></li>
@@ -376,24 +379,49 @@ development site. The change reaches <a href="https://giottosuite.com" class="ur
 into <code>suite</code>.</p>
 </div>
 <div class="section level2" number="9">
+<h2 id="tag-the-tutorial-for-the-dataset-browser">
+<span class="header-section-number">9</span> Tag the tutorial for
+the dataset browser<a class="anchor" aria-label="anchor" href="#tag-the-tutorial-for-the-dataset-browser"></a>
+</h2>
+<p><a href="datasets.html">Browse datasets</a> filters tutorials by the
+tags in their YAML header. Tutorials under the Examples sections must
+have them; any other tutorial can opt in. Add a <code>tags:</code> block
+to the header:</p>
+<pre><code><span><span class="va">tags</span><span class="op">:</span></span>
+<span>  <span class="va">packages</span><span class="op">:</span> <span class="va">GiottoDisk</span>        <span class="co"># only if it uses a Giotto Suite extension package</span></span>
+<span>  <span class="va">platform</span><span class="op">:</span> <span class="va">CosMx</span></span>
+<span>  <span class="va">species</span><span class="op">:</span> <span class="va">human</span></span>
+<span>  <span class="va">tissue</span><span class="op">:</span> <span class="va">colon</span></span>
+<span>  <span class="va">condition</span><span class="op">:</span> <span class="va">cancer</span></span>
+<span>  <span class="va">modality</span><span class="op">:</span> <span class="va">RNA</span></span>
+<span>  <span class="va">resolution</span><span class="op">:</span> <span class="va">subcellular</span></span></code></pre>
+<p><code>platform</code>, <code>modality</code> and
+<code>resolution</code> are required. Leave the others out when the
+dataset does not say, rather than guessing. Every value has to come from
+<code>pkgdown/tags.yml</code>; add a new one there if your dataset needs
+it. Then regenerate the browser page and commit it:</p>
+<pre><code>Rscript pkgdown/build-dataset-index.R</code></pre>
+</div>
+<div class="section level2" number="10">
 <h2 id="check-your-work">
-<span class="header-section-number">9</span> Check your work<a class="anchor" aria-label="anchor" href="#check-your-work"></a>
+<span class="header-section-number">10</span> Check your work<a class="anchor" aria-label="anchor" href="#check-your-work"></a>
 </h2>
 <pre><code>Rscript pkgdown/check-site.R</code></pre>
 <p>This takes about a second and needs no build. It reports an
 unregistered tutorial, a navbar link pointing at a file that does not
 exist, a broken section anchor, a missing
-<code>pkgdown: as_is: true</code> header, and any figure you referenced
-but did not commit. It also prints warnings, which are informational —
-the current tree has 19 of them.</p>
+<code>pkgdown: as_is: true</code> header, any figure you referenced but
+did not commit, and tags that are missing, misspelled, or out of date
+with the browser page. It also prints warnings, which are informational
+— the current tree has 19 of them.</p>
 <p>If you have a clone of the package beside this repository, it
 additionally checks that every documented function is listed under
 <code>reference:</code>, which is the other way a build can fail
 outright.</p>
 </div>
-<div class="section level2" number="10">
+<div class="section level2" number="11">
 <h2 id="preview-locally">
-<span class="header-section-number">10</span> Preview locally<a class="anchor" aria-label="anchor" href="#preview-locally"></a>
+<span class="header-section-number">11</span> Preview locally<a class="anchor" aria-label="anchor" href="#preview-locally"></a>
 </h2>
 <pre><code>Rscript pkgdown/preview-sites.R --dev --quick</code></pre>
 <p>This builds the site and opens it in a browser, running the checks
@@ -405,9 +433,9 @@ clone of the package beside it:</p>
 <p>or point at one you already have with
 <code>--pkg &lt;path&gt;</code>.</p>
 </div>
-<div class="section level2" number="11">
+<div class="section level2" number="12">
 <h2 id="push-the-changes-to-github">
-<span class="header-section-number">11</span> Push the changes to
+<span class="header-section-number">12</span> Push the changes to
 Github<a class="anchor" aria-label="anchor" href="#push-the-changes-to-github"></a>
 </h2>
 <p>Push your branch and open a Pull Request <strong>against
