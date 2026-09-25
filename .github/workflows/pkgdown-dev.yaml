@@ -79,4 +79,7 @@ jobs:
         giotto-suite/GiottoUtils@main
         giotto-suite/GiottoVisuals@gsource
         giotto-suite/GiottoClass@gsource
-      expect-versions: "GiottoClass=0.6.0,Giotto=4.2.4"
+      # Floors, not exact versions: the failure being guarded against is main
+      # (GiottoClass 0.5.1) or suite (Giotto 4.2.3) displacing the pins, and an
+      # exact version failed every time gsource bumped its own.
+      expect-versions: "GiottoClass>=0.6.0,Giotto>=4.2.4"
