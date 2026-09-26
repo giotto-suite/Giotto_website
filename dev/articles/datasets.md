@@ -1,10 +1,5 @@
 # Browse datasets
 
-Filter the example tutorials by platform, species, tissue and more.
-Within one filter, any checked value matches; across filters, all must
-match. The page address keeps your selection, so a filtered view can be
-shared as a link.
-
 Filters
 
 Uses
@@ -30,6 +25,12 @@ Spatial proteomics 1
 Spatial multi-omics 3
 
 Single cell RNA sequencing (non-spatial) 3
+
+Dataset size
+
+full 32
+
+mini 2
 
 Platform
 
@@ -78,6 +79,18 @@ Spatial ATAC-RNA-seq 1
 Chromium 2
 
 Smart-seq2 1
+
+Panel size
+
+Panel tier. 0-500 is e.g. MERSCOPE; 500-5,000 e.g. Xenium Prime 5K, with
+or without add-on genes; 5,000+ is whole transcriptome, e.g. Atera WTA,
+CosMx WTx, Visium.
+
+0–500 8
+
+500–5,000 2
+
+5,000+ 22
 
 Species
 
@@ -141,106 +154,106 @@ spot 14
 Clear filters
 
 [In situ methods Xenium Human Breast Cancer Pre-Release Xenium · human ·
-breast · cancer
-RNAsubcellular](https://giottosuite.com/dev/articles/xenium_breast_cancer.md)
+breast · cancer RNA0–500
+genessubcellular](https://giottosuite.com/dev/articles/xenium_breast_cancer.md)
 [In situ methods Nanostring CosMx Subcellular Lung Cancer CosMx · human
-· lung · cancer
-RNAsubcellular](https://giottosuite.com/dev/articles/nanostring_cosmx_lung_cancer.md)
+· lung · cancer RNA500–5,000
+genessubcellular](https://giottosuite.com/dev/articles/nanostring_cosmx_lung_cancer.md)
 [In situ methods Whole transcriptome CosMx Human Pancreas FFPE Dataset
-CosMx · human · pancreas
-RNAsubcellular](https://giottosuite.com/dev/articles/cosmx_pancreas.md)
+CosMx · human · pancreas RNA5,000+
+genessubcellular](https://giottosuite.com/dev/articles/cosmx_pancreas.md)
 [In situ methods CosMx Whole Transcriptome with GiottoDisk CosMx · human
-· colon · cancer
-GiottoDiskRNAsubcellular](https://giottosuite.com/dev/articles/cosmx_colon_wtx_giottodisk.md)
+· colon · cancer GiottoDiskRNA5,000+
+genessubcellular](https://giottosuite.com/dev/articles/cosmx_colon_wtx_giottodisk.md)
 [In situ methods CosMx Whole Transcriptome: Human Colon Mini Dataset
-CosMx · human · colon · cancer
-RNAsubcellular](https://giottosuite.com/dev/articles/cosmx_mini_colon_wtx.md)
+CosMx · human · colon · cancer miniRNA5,000+
+genessubcellular](https://giottosuite.com/dev/articles/cosmx_mini_colon_wtx.md)
 [In situ methods MERFISH Mouse Hypothalamic Preoptic Region MERFISH ·
-mouse · brain · normal RNAsingle
+mouse · brain · normal RNA0–500 genessingle
 cell](https://giottosuite.com/dev/articles/merfish_mouse_hypothalamic.md)
 [In situ methods MERFISH whole mouse brain from BIL MERFISH · mouse ·
-brain · normal RNAsingle
+brain · normal RNA500–5,000 genessingle
 cell](https://giottosuite.com/dev/articles/merfish_mouse_sagittal_bil.md)
 [In situ methods Vizgen Mouse Brain Receptor Map MERSCOPE · mouse ·
-brain · normal
-RNAsubcellular](https://giottosuite.com/dev/articles/vizgen_mouse_brain.md)
+brain · normal RNA0–500
+genessubcellular](https://giottosuite.com/dev/articles/vizgen_mouse_brain.md)
 [Sequencing-based methods Visium Mouse Kidney Visium · mouse · kidney ·
-normal
-RNAspot](https://giottosuite.com/dev/articles/visium_mouse_kidney.md)
+normal RNA5,000+
+genesspot](https://giottosuite.com/dev/articles/visium_mouse_kidney.md)
 [Sequencing-based methods Visium Mouse Brain Visium · mouse · brain ·
-normal
-RNAspot](https://giottosuite.com/dev/articles/visium_mouse_brain.md)
+normal RNA5,000+
+genesspot](https://giottosuite.com/dev/articles/visium_mouse_brain.md)
 [Sequencing-based methods Visium Prostate Integration Visium · human ·
-prostate · cancer · normal
-RNAspot](https://giottosuite.com/dev/articles/visium_prostate_integration.md)
+prostate · cancer · normal RNA5,000+
+genesspot](https://giottosuite.com/dev/articles/visium_prostate_integration.md)
 [Sequencing-based methods Visium CytAssist Human Lung Cancer Visium
-CytAssist · human · lung · cancer
-RNAspot](https://giottosuite.com/dev/articles/visium_cytassist_lungcancer.md)
+CytAssist · human · lung · cancer RNA5,000+
+genesspot](https://giottosuite.com/dev/articles/visium_cytassist_lungcancer.md)
 [Sequencing-based methods Visium CytAssist Multi-omics Human
-Glioblastoma Visium CytAssist · human · brain · cancer
-RNAproteinspot](https://giottosuite.com/dev/articles/visium_cytassist_human_glioblastoma.md)
+Glioblastoma Visium CytAssist · human · brain · cancer RNAprotein5,000+
+genesspot](https://giottosuite.com/dev/articles/visium_cytassist_human_glioblastoma.md)
 [Sequencing-based methods VisiumHD Human Colorectal Cancer Visium HD ·
-human · colon · cancer
-RNAspot](https://giottosuite.com/dev/articles/VisiumHD_Human_Colorectal_Cancer.md)
+human · colon · cancer RNA5,000+
+genesspot](https://giottosuite.com/dev/articles/VisiumHD_Human_Colorectal_Cancer.md)
 [Sequencing-based methods VisiumHD Rhesus Macaque Kidney Visium HD ·
-rhesus macaque · kidney · normal
-RNAspot](https://giottosuite.com/dev/articles/VisiumHD_Convenience_Function_Kidney.md)
-[Sequencing-based methods Stereo-seq Data Import Stereo-seq
-RNAspotsingle
+rhesus macaque · kidney · normal RNA5,000+
+genesspot](https://giottosuite.com/dev/articles/VisiumHD_Convenience_Function_Kidney.md)
+[Sequencing-based methods Stereo-seq Data Import Stereo-seq RNA5,000+
+genesspotsingle
 cell](https://giottosuite.com/dev/articles/stereoseq_importer.md)
 [Sequencing-based methods Stereo-seq Mouse eyeball Stereo-seq · mouse ·
-eye · normal
-RNAspot](https://giottosuite.com/dev/articles/stereoseq_mouse_eyeball.md)
+eye · normal RNA5,000+
+genesspot](https://giottosuite.com/dev/articles/stereoseq_mouse_eyeball.md)
 [Spatial in situ transcriptomics Spatial Genomics Mouse Kidney GenePS ·
-mouse · kidney · normal
-RNAsubcellular](https://giottosuite.com/dev/articles/spatial_genomics_mouse_kidney.md)
+mouse · kidney · normal RNA0–500
+genessubcellular](https://giottosuite.com/dev/articles/spatial_genomics_mouse_kidney.md)
 [Spatial in situ transcriptomics mini seqFISH seqFISH+ · mouse · brain ·
-normal RNAsingle
+normal miniRNAsingle
 cell](https://giottosuite.com/dev/articles/mini_seqfish.md) [Spatial in
 situ transcriptomics SeqFish+ Mouse Cortex Example seqFISH+ · mouse ·
-brain · normal RNAsingle
+brain · normal RNA5,000+ genessingle
 cell](https://giottosuite.com/dev/articles/seqfish_cortex.md) [Spatial
 in situ transcriptomics osmFISH Mouse SS Cortex osmFISH · mouse · brain
-· normal RNAsingle
+· normal RNA0–500 genessingle
 cell](https://giottosuite.com/dev/articles/osmfish_mouse_ss_cortex.md)
 [Spatial in situ transcriptomics STARmap mouse cortex STARmap · mouse ·
-brain · normal RNAsingle
+brain · normal RNA0–500 genessingle
 cell](https://giottosuite.com/dev/articles/starmap_mouse_cortex.md)
 [Spatial in situ transcriptomics Resolve Bioscience Breast Cancer
 Subcellular Molecular Cartography · human · breast · cancer
 RNAsubcellular](https://giottosuite.com/dev/articles/resolve_biosciences.md)
 [Spatial in situ transcriptomics Resolve Bioscience Human lung
-Subcellular Molecular Cartography · human · lung
-RNAsubcellular](https://giottosuite.com/dev/articles/resolve_biosciences_human_lung.md)
+Subcellular Molecular Cartography · human · lung RNA0–500
+genessubcellular](https://giottosuite.com/dev/articles/resolve_biosciences_human_lung.md)
 [Spatial sequencing transcriptomics Slide-seq Mouse brain Slide-seq ·
-mouse · brain · normal
-RNAspot](https://giottosuite.com/dev/articles/slideseq_mouse_brain.md)
+mouse · brain · normal RNA5,000+
+genesspot](https://giottosuite.com/dev/articles/slideseq_mouse_brain.md)
 [Spatial sequencing transcriptomics Open-ST Mouse Hippocampus Open-ST ·
-mouse · brain · normal RNAsingle
+mouse · brain · normal RNA5,000+ genessingle
 cell](https://giottosuite.com/dev/articles/openst_mouse_hippocampus.md)
 [Spatial sequencing transcriptomics Seq-Scope Mouse liver Seq-Scope ·
-mouse · liver
-RNAspot](https://giottosuite.com/dev/articles/seqscope_mouse_liver.md)
+mouse · liver RNA5,000+
+genesspot](https://giottosuite.com/dev/articles/seqscope_mouse_liver.md)
 [Spatial proteomics Codex Mouse Spleen CODEX · mouse · spleen · normal
-proteinsingle
+protein0–500 genessingle
 cell](https://giottosuite.com/dev/articles/codex_mouse_spleen.md)
 [Spatial multi-omics Multi-omics Mouse Embryo DBiT-Seq DBiT-seq · mouse
-· embryo · normal
-RNAproteinspot](https://giottosuite.com/dev/articles/mouse_embryo_dbitseq.md)
+· embryo · normal RNAprotein5,000+
+genesspot](https://giottosuite.com/dev/articles/mouse_embryo_dbitseq.md)
 [Spatial multi-omics Multi-omics Spatial CITE-Seq Human skin Spatial
-CITE-seq · human · skin
-RNAproteinspot](https://giottosuite.com/dev/articles/spatial_citeseq_human_skin.md)
+CITE-seq · human · skin RNAprotein5,000+
+genesspot](https://giottosuite.com/dev/articles/spatial_citeseq_human_skin.md)
 [Spatial multi-omics Multi-omics spatial RNA-ATAC seq Mouse Embryo
-Spatial ATAC-RNA-seq · mouse · embryo · normal
-RNAATACspot](https://giottosuite.com/dev/articles/multiomics_rna_atac_me13.md)
+Spatial ATAC-RNA-seq · mouse · embryo · normal RNAATAC5,000+
+genesspot](https://giottosuite.com/dev/articles/multiomics_rna_atac_me13.md)
 [Single cell RNA sequencing (non-spatial) 10X Single Cell RNA Sequencing
-Chromium · human · prostate · cancer RNAsingle
+Chromium · human · prostate · cancer RNA5,000+ genessingle
 cell](https://giottosuite.com/dev/articles/singlecell_prostate_standard.md)
 [Single cell RNA sequencing (non-spatial) Integration of single cell
-datasets Chromium · human · prostate · cancer RNAsingle
+datasets Chromium · human · prostate · cancer RNA5,000+ genessingle
 cell](https://giottosuite.com/dev/articles/singlecell_prostate_integration.md)
 [Single cell RNA sequencing (non-spatial) Single Cell Human Lung
-Adenocarcinoma Smart-seq2 · human · lung · cancer RNAsingle
+Adenocarcinoma Smart-seq2 · human · lung · cancer RNA5,000+ genessingle
 cell](https://giottosuite.com/dev/articles/singlecell_lung_adenocarcinoma.md)
 
 No tutorials match these filters.
