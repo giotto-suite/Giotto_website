@@ -17,7 +17,7 @@ GiottoLens 0
 
 Category
 
-In situ methods 7
+In situ methods 8
 
 Sequencing-based methods 9
 
@@ -37,7 +37,7 @@ Xenium 1
 
 Atera 0
 
-CosMx 3
+CosMx 4
 
 MERFISH 2
 
@@ -81,7 +81,7 @@ Smart-seq2 1
 
 Species
 
-human 14
+human 15
 
 mouse 17
 
@@ -93,7 +93,7 @@ brain 11
 
 breast 2
 
-colon 2
+colon 3
 
 embryo 2
 
@@ -115,13 +115,13 @@ spleen 1
 
 Condition
 
-cancer 11
+cancer 12
 
 normal 18
 
 Modality
 
-RNA 32
+RNA 33
 
 protein 4
 
@@ -132,7 +132,7 @@ Resolution
 What the tutorial analyzes -- transcript points, segmented cells, or
 multi-cell spots and bins.
 
-subcellular 8
+subcellular 9
 
 single cell 12
 
@@ -152,6 +152,9 @@ RNAsubcellular](https://giottosuite.com/dev/articles/cosmx_pancreas.md)
 [In situ methods CosMx Whole Transcriptome with GiottoDisk CosMx · human
 · colon · cancer
 GiottoDiskRNAsubcellular](https://giottosuite.com/dev/articles/cosmx_colon_wtx_giottodisk.md)
+[In situ methods CosMx Whole Transcriptome: Human Colon Mini Dataset
+CosMx · human · colon · cancer
+RNAsubcellular](https://giottosuite.com/dev/articles/cosmx_mini_colon_wtx.md)
 [In situ methods MERFISH Mouse Hypothalamic Preoptic Region MERFISH ·
 mouse · brain · normal RNAsingle
 cell](https://giottosuite.com/dev/articles/merfish_mouse_hypothalamic.md)

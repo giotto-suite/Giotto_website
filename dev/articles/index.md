@@ -178,6 +178,8 @@ Imaging-based in situ platforms. Most users arrive with one of these.
   Dataset](https://giottosuite.com/dev/articles/cosmx_pancreas.md):
 - [CosMx Whole Transcriptome with
   GiottoDisk](https://giottosuite.com/dev/articles/cosmx_colon_wtx_giottodisk.md):
+- [CosMx Whole Transcriptome: Human Colon Mini
+  Dataset](https://giottosuite.com/dev/articles/cosmx_mini_colon_wtx.md):
 - [MERFISH Mouse Hypothalamic Preoptic
   Region](https://giottosuite.com/dev/articles/merfish_mouse_hypothalamic.md):
 - [MERFISH whole mouse brain from
