@@ -26,7 +26,8 @@ importVisiumHD(
   pxl_subset_row = NULL,
   pxl_subset_col = NULL,
   filter = NULL,
-  filter_coverage_cutoff = 0.5
+  filter_coverage_cutoff = 0.5,
+  backend = NULL
 )
 
 # S4 method for class 'VisiumHDReader,missing'
@@ -100,6 +101,12 @@ plot(x, image = FALSE, ...)
   numeric between 0 and 1. Minimal fraction of pixel coverage by
   \`filter\` in order to be selected.
 
+- backend:
+
+  (optional) a \`gsource\`-inheriting project backend (typically
+  produced by \`GiottoDisk::sourceCreate()\`). When provided, creates
+  the \`giotto\` object as a managed on-disk project.
+
 - x:
 
   \`VisiumHDReader\`
@@ -114,7 +121,8 @@ plot(x, image = FALSE, ...)
 
 ## Value
 
-\`VisiumHDReader\` object
+\`VisiumHDReader\` object, or \`VisiumHDDiskReader\` when \`backend\` is
+set
 
 ## Details
 

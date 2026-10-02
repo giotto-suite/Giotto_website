@@ -1,0 +1,339 @@
+# Interactive viewing with GiottoLens
+
+## 1 Overview
+
+GiottoLens is an interactive browser viewer for GiottoDisk-backed Giotto
+objects. It draws every transcript and every cell polygon of a whole
+section at interactive frame rates, and stays connected to your R
+session: metadata is pushed from R into the viewer, and cell selections
+and drawn regions come back from the viewer into R.
+
+This tutorial continues from the [Atera Human Breast
+Cancer](https://giottosuite.com/dev/articles/atera_human_breast_cancer.md)
+example, using the clustered object saved at the end of it. It covers:
+
+- launching the viewer on a backed Giotto object
+- coloring cells by clusters and other metadata, with a linked UMAP
+  panel
+- selecting cells in the viewer and using the selection in R
+- drawing regions and bringing them back as `SpatVector` polygons
+- pushing selections and polygons from R into the viewer
+
+## 2 How it works
+
+`launch_lens()` starts a small local web server from R and opens the
+viewer in your browser or the IDE viewer pane. The viewer reads the
+transcript and polygon parquet files that GiottoDisk already wrote to
+the project directory, so launching does not copy or convert the data.
+All rendering and querying happens in the browser (deck.gl for drawing,
+DuckDB WASM for queries), and the viewer bundles everything it needs, so
+it runs offline and on HPC nodes.
+
+Because the viewer reads GiottoDisk’s on-disk stores directly, it needs
+a **backed** Giotto object. An in-memory object has no files for it to
+read.
+
+## 3 Install
+
+``` r
+
+# GiottoDisk, if it is not installed yet
+GiottoUtils::suite_install("GiottoDisk")
+
+# GiottoLens
+remotes::install_github("giotto-suite/GiottoLens")
+```
+
+## 4 Setup
+
+Load the clustered object saved at the end of the [Atera
+example](https://giottosuite.com/dev/articles/atera_human_breast_cancer.md).
+
+``` r
+
+library(arrow) # this must be libraried before terra or GiottoClass
+library(Giotto)
+library(GiottoDisk)
+library(GiottoLens)
+
+project_dir <- "path/to/atera_project"
+
+g <- loadGiotto(project_dir, name = "clustered")
+```
+
+## 5 Launch the viewer
+
+``` r
+
+viewer <- launch_lens(g)
+viewer
+```
+
+    LensViewer
+      url:          http://localhost:3000
+      connected:    TRUE
+      selection:    0 cell(s)
+      annotations:  0 polygon(s)
+
+By default the viewer shows the `"rna"` transcripts and the `"cell"`
+polygons. Choose others with `feat_type =` and `spat_unit =`. Use
+`port =` if 3000 is already taken.
+
+`launch_lens()` returns straight away. The server keeps running in the
+background, so you can keep working in the R console while the viewer is
+open.
+
+### 5.1 Running on a remote machine
+
+On an HPC node or a remote server, launch without opening a browser and
+forward the port to your own machine:
+
+``` r
+
+viewer <- launch_lens(g, open = FALSE, port = 3000)
+```
+
+``` sh
+# on your own machine
+ssh -L 3000:localhost:3000 user@remote-host
+```
+
+Then open `http://localhost:3000/lens/` in your local browser.
+
+## 6 Finding your way around
+
+The layers switch on as you zoom in:
+
+| Layer | Shown |
+|----|----|
+| Density overview | at low zoom; follows the gene selection |
+| Cell centroids | at all zooms, once polygons load |
+| Cell outlines | past the polygon zoom threshold |
+| Transcripts | past the transcript zoom threshold, subsampled until fully zoomed in |
+
+Every layer has its own visibility toggle and opacity slider in the
+sidebar. Pick genes in the sidebar to show only their transcripts, and
+the density overview follows the same selection.
+
+Keyboard shortcuts:
+
+| Key       | Action                                       |
+|-----------|----------------------------------------------|
+| `Space`   | switch to pan                                |
+| `Esc`     | cancel the current drawing and return to pan |
+| `c`       | clear selection filters                      |
+| `x`       | clear the ruler and transcript lasso         |
+| `[` / `]` | shrink / grow the brush                      |
+| `Delete`  | delete the selected annotation               |
+
+The camera button in the toolbar saves the current view as a PNG.
+
+# An error occurred.
+
+Unable to execute JavaScript.
+
+## 7 Color cells by metadata
+
+Push cell metadata from R to color the polygons by it. Adding a
+dimension reduction also fills the linked UMAP panel.
+
+This can be done directly from the gobject or from the output of
+`prep_meta` which lets you preview and modify the metadata before it is
+sent.
+
+Name each column with the type the viewer should treat it as:
+`"categorical"` or `"continuous"`.
+
+``` r
+
+meta <- prep_meta(g,
+    list(
+        leiden_clus = "categorical",
+        total_expr  = "continuous",
+        nr_feats    = "continuous"
+    ),
+    dimreds = "umap"
+)
+head(meta)
+```
+
+         cell_ID leiden_clus total_expr nr_feats     umap_1      umap_2
+    1 aaaajgij-1           1       5460     3410 -1.3395577 -0.59741985
+    2 aaaandia-1           1       6471     3746 -1.4628397 -0.57696640
+    3 aaabalki-1           2       1609     1377  1.4673266 -2.73528539
+    4 aaabchln-1           2        809      742  2.3197617 -2.44874393
+    5 aaaccnnp-1           1       2855     2000 -0.5828114 -0.38163435
+    6 aaacdfgp-1           1       4108     2571 -1.5705419 -0.07051479
+
+``` r
+
+viewer$push_metadata(meta)
+```
+
+The color-by selector in the sidebar now lists the pushed columns.
+Categorical columns get a legend, and continuous columns get a gradient.
+Columns given without a type keep their R type: factors, characters and
+integers are categorical, other numbers are continuous. The UMAP panel
+uses the same colors as the spatial view.
+
+Hover over a cell, as a centroid or an outline, to see its metadata in a
+pop-up. The column you are coloring by is listed first, then the other
+pushed columns, up to 12 in all. Before any metadata is pushed, the
+pop-up shows only the cell ID. It is hidden while you lasso, brush or
+draw.
+
+Column names are cleaned up to letters, digits and underscores on the
+way in, so `umap.projection_1` shows up as `umap_projection_1`.
+
+## 8 Select cells
+
+# An error occurred.
+
+Unable to execute JavaScript.
+
+The select tools in the toolbar:
+
+- **Lasso**: draw around cells
+- **Brush**: paint cells in or out; `[` and `]` resize it
+- **Invert**: flip the current selection
+- **Select by metadata**: pick cells by a column value
+
+Selections are linked across panels. Lasso on the UMAP and the matching
+cells light up in the tissue, and the reverse. With **cross-filter**
+mode on, a spatial selection and a UMAP or histogram selection
+intersect, so you can ask for “cluster 3, but only inside this duct”.
+
+### 8.1 Use the selection in R
+
+The current selection is always available as `viewer$selection`, a
+character vector of cell IDs that updates as you select:
+
+``` r
+
+ids <- viewer$selection
+length(ids)
+```
+
+From there it is a regular set of cell IDs. For example, record it as a
+metadata column and push it back so it can be colored by:
+
+``` r
+
+g <- addCellMetadata(g,
+    new_metadata = data.frame(
+        cell_ID = spatIDs(g),
+        lens_selection = ifelse(spatIDs(g) %in% ids, "selected", "other")
+    ),
+    by_column = TRUE,
+    column_cell_ID = "cell_ID"
+)
+
+meta <- prep_meta(g,
+    list(
+        leiden_clus    = "categorical",
+        total_expr     = "continuous",
+        nr_feats       = "continuous",
+        lens_selection = "categorical"
+    ),
+    dimreds = "umap"
+)
+
+viewer$push_metadata(meta)
+```
+
+Or compare the selected cells against everything else:
+
+``` r
+
+markers <- findMarkers(g,
+    method = "scran",
+    expression_values = "normalized",
+    cluster_column = "lens_selection",
+    group_1 = "selected",
+    group_2 = "other"
+)
+```
+
+### 8.2 Push a selection from R
+
+`set_selection()` goes the other way, highlighting cells chosen in R.
+This turns off cross-filter mode so the pushed cells show exactly as
+given.
+
+``` r
+
+cx <- pDataDT(g)
+viewer$set_selection(cx[leiden_clus == 3]$cell_ID)
+
+# an empty vector clears it
+viewer$set_selection(character(0))
+```
+
+## 9 Draw regions
+
+The draw tools (polygon, rectangle and freehand) make named, persistent
+annotations, listed in the sidebar. Each is returned to R in
+`viewer$annotations` as GeoJSON:
+
+``` r
+
+annots <- viewer$annotations
+```
+
+Convert them to a `SpatVector` for use with terra or Giotto’s spatial
+tools. Coordinates are in the same space as the Giotto object, so no
+transform is needed:
+
+``` r
+
+regions <- lapply(annots, function(a) {
+    v <- terra::vect(a$geojson, crs = "local")
+    v$name <- a$name
+    v
+})
+regions <- do.call(rbind, regions)
+
+plot(regions)
+```
+
+### 9.1 Push polygons from R
+
+`push_polygons()` shows any polygons from R as a semi-transparent layer,
+above the density overview and below the cell outlines. It accepts a
+`SpatVector`, an `sf` object, or WKT strings, and is useful for spatial
+domains, tissue regions or anything else in the object’s coordinate
+space.
+
+``` r
+
+viewer$push_polygons(regions, names = regions$name)
+```
+
+## 10 Measure
+
+The measure tools:
+
+- **Ruler**: click a start and an end point; the distance is shown in μm
+  or mm
+- **Transcript lasso**: draw a region to list its 50 most abundant
+  genes. This counts every transcript in the region, not the subsample
+  drawn at lower zoom levels.
+
+Measurements stay on screen when you switch tools until you clear them
+with the measure group’s clear button or `x`.
+
+## 11 Close the viewer
+
+``` r
+
+viewer$close()
+```
+
+The server also stops when the R session ends.
+
+## 12 Session info
+
+``` r
+
+sessionInfo()
+```

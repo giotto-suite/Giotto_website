@@ -19,9 +19,7 @@ The statistic depends on the values only through the per-(feature,
 group) mean and detection fraction, so the expression matrix is visited
 once regardless of how many groups there are. That is what lets a
 streaming backend supply gini markers with no code of its own — the pass
-is
-[featStatsParam](https://giottosuite.com/dev/reference/analyze_param.md),
-and this method consumes its output.
+is featStatsParam, and this method consumes its output.
 
 Gini is **scale-free**: a 0.001 vs 0.0001 difference between groups
 scores identically to 100 vs 10. It therefore carries no magnitude term
@@ -121,7 +119,7 @@ you.
 [analyze_param](https://giottosuite.com/dev/reference/analyze_param.md),
 [`markersParam()`](https://giottosuite.com/dev/reference/analyze_param.md),
 [`findGiniMarkers()`](https://giottosuite.com/dev/reference/findGiniMarkers.md),
-[featStatsParam](https://giottosuite.com/dev/reference/analyze_param.md)
+featStatsParam
 
 Other marker detection parameters:
 [`markers_scran`](https://giottosuite.com/dev/reference/markers_scran.md)

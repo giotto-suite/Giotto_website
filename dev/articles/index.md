@@ -70,6 +70,8 @@ Feature selection, dimension reduction, clustering and enrichment.
   Construction](https://giottosuite.com/dev/articles/networks.md):
 - [Finding Differential Expressed
   Genes](https://giottosuite.com/dev/articles/find_degs.md):
+- [Cell typing with a cluster
+  tree](https://giottosuite.com/dev/articles/cell_typing_cluster_tree.md):
 - [Deconvolution](https://giottosuite.com/dev/articles/deconvolution.md):
 - [PAGE and Rank
   Enrichment](https://giottosuite.com/dev/articles/page_rank_enrichment.md):
@@ -127,6 +129,8 @@ Interactive selection and exploration.
   vitessceR](https://giottosuite.com/dev/articles/interactive_giotto_vitessceR.md):
 - [Interactive region selection on large
   datasets](https://giottosuite.com/dev/articles/interactive_selection_cosmx.md):
+- [Interactive viewing with
+  GiottoLens](https://giottosuite.com/dev/articles/giottolens.md):
 
 ### Saving and loading
 
@@ -172,6 +176,8 @@ Imaging-based in situ platforms. Most users arrive with one of these.
 
 - [Xenium Human Breast Cancer
   Pre-Release](https://giottosuite.com/dev/articles/xenium_breast_cancer.md):
+- [Atera Human Breast
+  Cancer](https://giottosuite.com/dev/articles/atera_human_breast_cancer.md):
 - [Nanostring CosMx Subcellular Lung
   Cancer](https://giottosuite.com/dev/articles/nanostring_cosmx_lung_cancer.md):
 - [Whole transcriptome CosMx Human Pancreas FFPE

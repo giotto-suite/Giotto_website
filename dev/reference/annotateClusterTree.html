@@ -94,6 +94,7 @@ more levels of granularity, from a single set of labels."><meta name="robots" co
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>In situ methods</h6></li>
     <li><a class="dropdown-item" href="../articles/xenium_breast_cancer.html">Xenium — Human breast cancer</a></li>
+    <li><a class="dropdown-item" href="../articles/atera_human_breast_cancer.html">Atera — Human breast cancer</a></li>
     <li><a class="dropdown-item" href="../articles/nanostring_cosmx_lung_cancer.html">Nanostring CosMx — Subcellular lung cancer</a></li>
     <li><a class="dropdown-item" href="../articles/cosmx_pancreas.html">Nanostring CosMx — Human pancreas FFPE</a></li>
     <li><a class="dropdown-item" href="../articles/cosmx_colon_wtx_giottodisk.html">Nanostring CosMx — Human colon (GiottoDisk)</a></li>
@@ -142,6 +143,7 @@ more levels of granularity, from a single set of labels."><meta name="robots" co
     <li><a class="dropdown-item" href="../articles/dimension_reduction.html">Dimension reduction</a></li>
     <li><a class="dropdown-item" href="../articles/networks.html">Spatial and feature networks</a></li>
     <li><a class="dropdown-item" href="../articles/find_degs.html">Finding differentially expressed genes</a></li>
+    <li><a class="dropdown-item" href="../articles/cell_typing_cluster_tree.html">Cell typing with a cluster tree</a></li>
     <li><a class="dropdown-item" href="../articles/deconvolution.html">Deconvolution</a></li>
     <li><a class="dropdown-item" href="../articles/page_rank_enrichment.html">PAGE and rank enrichment</a></li>
     <li><a class="dropdown-item" href="../articles/kriging.html">Kriging</a></li>
@@ -210,11 +212,11 @@ more levels of granularity, from a single set of labels.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">annotateClusterTree</span><span class="op">(</span></span>
 <span>  <span class="va">gobject</span>,</span>
-<span>  spat_unit <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  feat_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">tree</span>,</span>
 <span>  <span class="va">labels</span>,</span>
-<span>  <span class="va">cluster_column</span>,</span>
+<span>  spat_unit <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  feat_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cluster_column <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  k <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  h <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -230,16 +232,9 @@ more levels of granularity, from a single set of labels.</p>
 <dd><p>giotto object</p></dd>
 
 
-<dt id="arg-spat-unit">spat_unit<a class="anchor" aria-label="anchor" href="#arg-spat-unit"></a></dt>
-<dd><p>spatial unit</p></dd>
-
-
-<dt id="arg-feat-type">feat_type<a class="anchor" aria-label="anchor" href="#arg-feat-type"></a></dt>
-<dd><p>feature type</p></dd>
-
-
 <dt id="arg-tree">tree<a class="anchor" aria-label="anchor" href="#arg-tree"></a></dt>
-<dd><p>an `hclust` over the clusters, from [calculateClusterTree()]</p></dd>
+<dd><p>a `giottoTree` from [calculateClusterTree()], or any `hclust`
+over the clusters</p></dd>
 
 
 <dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>
@@ -248,8 +243,10 @@ and optionally `nodes` (one label per internal node). Both may be named
 character vectors or `data.frame`s; see details.</p></dd>
 
 
-<dt id="arg-cluster-column">cluster_column<a class="anchor" aria-label="anchor" href="#arg-cluster-column"></a></dt>
-<dd><p>name of the cell metadata column holding the clusters</p></dd>
+<dt id="arg-spat-unit-feat-type-cluster-column">spat_unit, feat_type, cluster_column<a class="anchor" aria-label="anchor" href="#arg-spat-unit-feat-type-cluster-column"></a></dt>
+<dd><p>default to those recorded on a
+`giottoTree`; see the giottoTree section of [calculateClusterTree()].
+`cluster_column` is required for a plain `hclust`.</p></dd>
 
 
 <dt id="arg-k-h">k, h<a class="anchor" aria-label="anchor" href="#arg-k-h"></a></dt>

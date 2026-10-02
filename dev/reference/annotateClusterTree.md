@@ -8,11 +8,11 @@ levels of granularity, from a single set of labels.
 ``` r
 annotateClusterTree(
   gobject,
-  spat_unit = NULL,
-  feat_type = NULL,
   tree,
   labels,
-  cluster_column,
+  spat_unit = NULL,
+  feat_type = NULL,
+  cluster_column = NULL,
   k = NULL,
   h = NULL,
   name = NULL,
@@ -26,17 +26,10 @@ annotateClusterTree(
 
   giotto object
 
-- spat_unit:
-
-  spatial unit
-
-- feat_type:
-
-  feature type
-
 - tree:
 
-  an \`hclust\` over the clusters, from \[calculateClusterTree()\]
+  a \`giottoTree\` from \[calculateClusterTree()\], or any \`hclust\`
+  over the clusters
 
 - labels:
 
@@ -44,9 +37,11 @@ annotateClusterTree(
   optionally \`nodes\` (one label per internal node). Both may be named
   character vectors or \`data.frame\`s; see details.
 
-- cluster_column:
+- spat_unit, feat_type, cluster_column:
 
-  name of the cell metadata column holding the clusters
+  default to those recorded on a \`giottoTree\`; see the giottoTree
+  section of \[calculateClusterTree()\]. \`cluster_column\` is required
+  for a plain \`hclust\`.
 
 - k, h:
 

@@ -6,13 +6,17 @@ Uses
 
 Tutorials built on a Giotto Suite extension package.
 
-GiottoDisk 1
+GiottoDisk 4
 
-GiottoLens 0
+GiottoLens 1
 
 Category
 
-In situ methods 8
+Analysis 1
+
+Interactivity 1
+
+In situ methods 9
 
 Sequencing-based methods 9
 
@@ -28,7 +32,7 @@ Single cell RNA sequencing (non-spatial) 3
 
 Dataset size
 
-full 32
+full 35
 
 mini 2
 
@@ -36,7 +40,7 @@ Platform
 
 Xenium 1
 
-Atera 0
+Atera 3
 
 CosMx 4
 
@@ -90,11 +94,11 @@ CosMx WTx, Visium.
 
 500–5,000 2
 
-5,000+ 22
+5,000+ 25
 
 Species
 
-human 15
+human 18
 
 mouse 17
 
@@ -104,7 +108,7 @@ Tissue
 
 brain 11
 
-breast 2
+breast 5
 
 colon 3
 
@@ -128,13 +132,13 @@ spleen 1
 
 Condition
 
-cancer 12
+cancer 15
 
 normal 18
 
 Modality
 
-RNA 33
+RNA 36
 
 protein 4
 
@@ -147,15 +151,24 @@ multi-cell spots and bins.
 
 subcellular 9
 
-single cell 12
+single cell 15
 
 spot 14
 
 Clear filters
 
-[In situ methods Xenium Human Breast Cancer Pre-Release Xenium · human ·
-breast · cancer RNA0–500
+[Analysis Cell typing with a cluster tree Atera · human · breast ·
+cancer GiottoDiskRNA5,000+ genessingle
+cell](https://giottosuite.com/dev/articles/cell_typing_cluster_tree.md)
+[Interactivity Interactive viewing with GiottoLens Atera · human ·
+breast · cancer GiottoDiskGiottoLensRNA5,000+ genessingle
+cell](https://giottosuite.com/dev/articles/giottolens.md) [In situ
+methods Xenium Human Breast Cancer Pre-Release Xenium · human · breast ·
+cancer RNA0–500
 genessubcellular](https://giottosuite.com/dev/articles/xenium_breast_cancer.md)
+[In situ methods Atera Human Breast Cancer Atera · human · breast ·
+cancer GiottoDiskRNA5,000+ genessingle
+cell](https://giottosuite.com/dev/articles/atera_human_breast_cancer.md)
 [In situ methods Nanostring CosMx Subcellular Lung Cancer CosMx · human
 · lung · cancer RNA500–5,000
 genessubcellular](https://giottosuite.com/dev/articles/nanostring_cosmx_lung_cancer.md)

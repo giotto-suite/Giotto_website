@@ -9,12 +9,12 @@ markers with a specificity flag.
 ``` r
 writeClusterTreeQuery(
   gobject,
+  tree,
   spat_unit = NULL,
   feat_type = NULL,
   expression_values = c("normalized", "scaled", "custom"),
-  cluster_column,
-  tree,
-  splits = NULL,
+  cluster_column = NULL,
+  view = NULL,
   markers = NULL,
   gini_markers = NULL,
   node_markers = NULL,
@@ -33,32 +33,19 @@ writeClusterTreeQuery(
 
   giotto object
 
-- spat_unit:
-
-  spatial unit
-
-- feat_type:
-
-  feature type
-
-- expression_values:
-
-  feature expression values to use. Consulted only for evidence layers
-  this function has to compute itself; one supplied by the caller was
-  already built on some choice of values.
-
-- cluster_column:
-
-  name of the cell metadata column holding the clusters
-
 - tree:
 
-  an \`hclust\` over the clusters, from \[calculateClusterTree()\]
+  a \`giottoTree\` from \[calculateClusterTree()\], or any \`hclust\`
+  over the clusters
 
-- splits:
+- spat_unit, feat_type, expression_values, cluster_column, view:
 
-  the node table for \`tree\`, from \[getDendrogramSplits()\]. Derived
-  from \`tree\` when not supplied.
+  default to those recorded on a \`giottoTree\`; see the giottoTree
+  section of \[calculateClusterTree()\]. An explicit value overrides the
+  tree's, with a warning when they differ. \`cluster_column\` is
+  required for a plain \`hclust\`. \`expression_values\` and \`view\`
+  apply only to the evidence layers this function computes itself: cell
+  counts and any marker table not supplied.
 
 - markers:
 
@@ -72,7 +59,7 @@ writeClusterTreeQuery(
 
 - node_markers:
 
-  output of \[findNodeMarkers()\]. Computed when not supplied.
+  output of \[findClusterTreeMarkers()\]. Computed when not supplied.
 
 - context:
 
@@ -110,7 +97,7 @@ afterwards without asking the model again.
 
 ## See also
 
-\[calculateClusterTree()\], \[findNodeMarkers()\],
+\[calculateClusterTree()\], \[findClusterTreeMarkers()\],
 \[annotateClusterTree()\]
 
 ## Examples
@@ -119,8 +106,7 @@ afterwards without asking the model again.
 g <- GiottoData::loadGiottoMini("visium")
 
 tree <- calculateClusterTree(g, cluster_column = "leiden_clus")
-q <- writeClusterTreeQuery(g,
-    cluster_column = "leiden_clus", tree = tree,
+q <- writeClusterTreeQuery(g, tree,
     context = list(tissue = "mouse brain")
 )
 head(q, 20)

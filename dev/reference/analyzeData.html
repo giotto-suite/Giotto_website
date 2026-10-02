@@ -98,6 +98,7 @@ thresholding or selection is a separate step."><meta name="robots" content="noin
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>In situ methods</h6></li>
     <li><a class="dropdown-item" href="../articles/xenium_breast_cancer.html">Xenium — Human breast cancer</a></li>
+    <li><a class="dropdown-item" href="../articles/atera_human_breast_cancer.html">Atera — Human breast cancer</a></li>
     <li><a class="dropdown-item" href="../articles/nanostring_cosmx_lung_cancer.html">Nanostring CosMx — Subcellular lung cancer</a></li>
     <li><a class="dropdown-item" href="../articles/cosmx_pancreas.html">Nanostring CosMx — Human pancreas FFPE</a></li>
     <li><a class="dropdown-item" href="../articles/cosmx_colon_wtx_giottodisk.html">Nanostring CosMx — Human colon (GiottoDisk)</a></li>
@@ -146,6 +147,7 @@ thresholding or selection is a separate step."><meta name="robots" content="noin
     <li><a class="dropdown-item" href="../articles/dimension_reduction.html">Dimension reduction</a></li>
     <li><a class="dropdown-item" href="../articles/networks.html">Spatial and feature networks</a></li>
     <li><a class="dropdown-item" href="../articles/find_degs.html">Finding differentially expressed genes</a></li>
+    <li><a class="dropdown-item" href="../articles/cell_typing_cluster_tree.html">Cell typing with a cluster tree</a></li>
     <li><a class="dropdown-item" href="../articles/deconvolution.html">Deconvolution</a></li>
     <li><a class="dropdown-item" href="../articles/page_rank_enrichment.html">PAGE and rank enrichment</a></li>
     <li><a class="dropdown-item" href="../articles/kriging.html">Kriging</a></li>
@@ -214,16 +216,7 @@ thresholding or selection is a separate step.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'exprObj,analyzeParam'</span></span>
-<span><span class="fu">analyzeData</span><span class="op">(</span><span class="va">x</span>, <span class="va">param</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S4 method for class 'allMatrix,featStatsParam'</span></span>
-<span><span class="fu">analyzeData</span><span class="op">(</span><span class="va">x</span>, <span class="va">param</span>, <span class="va">...</span>, groups <span class="op">=</span> <span class="cn">NULL</span>, stats <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S4 method for class 'allMatrix,cellStatsParam'</span></span>
-<span><span class="fu">analyzeData</span><span class="op">(</span><span class="va">x</span>, <span class="va">param</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S4 method for class 'allMatrix,covGroupsParam'</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'allMatrix,covGroupsParam'</span></span>
 <span><span class="fu">analyzeData</span><span class="op">(</span><span class="va">x</span>, <span class="va">param</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'allMatrix,covLoessParam'</span></span>
@@ -248,19 +241,6 @@ operation and its settings</p></dd>
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>additional params passed to specific methods</p></dd>
-
-
-<dt id="arg-groups">groups<a class="anchor" aria-label="anchor" href="#arg-groups"></a></dt>
-<dd><p>optional vector of group assignments, one per column of `x`,
-`NA` to exclude. When supplied, the statistics are taken per
-(feature, group) instead of over every cell, and the result gains `group`
-and `n_cells` columns.</p></dd>
-
-
-<dt id="arg-stats">stats<a class="anchor" aria-label="anchor" href="#arg-stats"></a></dt>
-<dd><p>optional character vector of accumulators to compute, any of
-`"sum"`, `"sumsq"`, `"nnz"`, `"sum_det"`. Grouped path only; emitted columns
-are whichever the requested accumulators support.</p></dd>
 
 </dl></div>
     <div class="section level2">

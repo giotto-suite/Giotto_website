@@ -91,6 +91,51 @@ too, and will ship from there under that version.
 
 ### changes
 
+- A `giottoTree` records the features it was built from as
+  `params$feats` (`NULL` when every feature was used), so a consumer
+  recomputing over the same features can default to them.
+- **[`calculateClusterTree()`](https://giottosuite.com/dev/reference/calculateClusterTree.md)
+  returns a `giottoTree`**, class `c("giottoTree", "hclust")`: still an
+  `hclust` to [`cutree()`](https://rdrr.io/r/stats/cutree.html),
+  [`as.dendrogram()`](https://rdrr.io/r/stats/dendrogram.html),
+  [`plot()`](https://rdrr.io/r/base/plot.html) and the rest, now
+  recording the `cluster_column`, `spat_unit`, `feat_type`,
+  `expression_values` and `view` it was built from. Functions that
+  analyse along a tree take those as their defaults; an explicit
+  argument always wins, with a warning when it differs from the tree’s,
+  since the results then describe different data than the splits. A
+  plain `hclust` works with the arguments passed explicitly. A tree
+  whose leaves do not match the clusters in the data is an error rather
+  than silently empty or skipped groups.
+  [`as.data.frame()`](https://rspatial.github.io/terra/reference/as.data.frame.html)
+  /
+  [`data.table::as.data.table()`](https://rdrr.io/pkg/data.table/man/as.data.table.html)
+  on a `giottoTree` give one row per split (`nodeID`, `node_h`, `left`,
+  `right`).
+- `findNodeMarkers()` is renamed
+  **[`findClusterTreeMarkers()`](https://giottosuite.com/dev/reference/findClusterTreeMarkers.md)**.
+  It requires a tree and no longer builds one (`cor`, `distance` and
+  `splits` are removed), and gains `view =`.
+  [`writeClusterTreeQuery()`](https://giottosuite.com/dev/reference/writeClusterTreeQuery.md)
+  likewise drops `splits` and gains `view =`. In both, and in
+  [`annotateClusterTree()`](https://giottosuite.com/dev/reference/annotateClusterTree.md),
+  `tree` is now the second argument and `cluster_column` defaults to the
+  tree’s.
+- [`getDendrogramSplits()`](https://giottosuite.com/dev/reference/getDendrogramSplits.md)
+  is deprecated in favour of `data.table::as.data.table(tree)`; it still
+  returns its old table.
+- [`calculateClusterTree()`](https://giottosuite.com/dev/reference/calculateClusterTree.md)
+  gains `view =`. The tree is built from the cells that survive the
+  view: per-cluster means are taken over those cells only, and a cluster
+  with none left is not a leaf. The view is recorded in the tree’s
+  `params` attribute.
+- `allMatrix`, `featStatsParam`, `cellStatsParam` and the
+  [`analyzeData()`](https://giottosuite.com/dev/reference/analyzeData.md)
+  methods for the two stats params now live in GiottoClass (\>= 0.7.4),
+  which Giotto requires. `analyzeParam("feat_stats")` /
+  `analyzeParam("cell_stats")` build them as before, and results are
+  unchanged. Packages that imported these classes from Giotto should
+  import them from GiottoClass.
 - [`runUMAP()`](https://giottosuite.com/dev/reference/runUMAP.md) gains
   `nn_engine`, defaulting to `"giotto"`: where the neighbour graph comes
   from. It reuses the kNN
@@ -119,6 +164,13 @@ too, and will ship from there under that version.
   per-node results can be joined back to the tree.
 
 ### new
+
+- [`importVisiumHD()`](https://giottosuite.com/dev/reference/importVisiumHD.md),
+  [`createGiottoVisiumHDObjectBin()`](https://giottosuite.com/dev/reference/createGiottoVisiumHDObjectBin.md)
+  and
+  [`createGiottoVisiumHDObjectCell()`](https://giottosuite.com/dev/reference/createGiottoVisiumHDObjectCell.md)
+  gain `backend =`, routing to `GiottoDisk::importVisiumHDDisk()` as the
+  Stereo-seq readers do. Without it, nothing changes.
 
 - [`writeClusterTreeQuery()`](https://giottosuite.com/dev/reference/writeClusterTreeQuery.md)
   builds the annotation query for a cluster tree: the tree as an
@@ -160,13 +212,12 @@ too, and will ship from there under that version.
   `min_feats` rescue and is not presentational. **Row order changes**
   for callers that relied on the previous, undocumented order.
 
-- [`findNodeMarkers()`](https://giottosuite.com/dev/reference/findNodeMarkers.md)
-  runs differential expression at every branch point of a cluster tree,
-  rather than only between the leaf clusters. Each internal node
-  compares the clusters on one side of the merge against those on the
-  other, so the markers it returns are **conditional**: a gene that says
-  nothing at the root can be decisive deeper in the tree. Takes a tree
-  from
+- `findNodeMarkers()` runs differential expression at every branch point
+  of a cluster tree, rather than only between the leaf clusters. Each
+  internal node compares the clusters on one side of the merge against
+  those on the other, so the markers it returns are **conditional**: a
+  gene that says nothing at the root can be decisive deeper in the tree.
+  Takes a tree from
   [`calculateClusterTree()`](https://giottosuite.com/dev/reference/calculateClusterTree.md)
   and the splits from
   [`getDendrogramSplits()`](https://giottosuite.com/dev/reference/getDendrogramSplits.md),
@@ -195,9 +246,7 @@ too, and will ship from there under that version.
   [`as.dendrogram()`](https://rdrr.io/r/stats/dendrogram.html),
   `ggdendro` and `ape` all work on it unchanged.
   [`getDendrogramSplits()`](https://giottosuite.com/dev/reference/getDendrogramSplits.md)
-  and
-  [`findNodeMarkers()`](https://giottosuite.com/dev/reference/findNodeMarkers.md)
-  take it as `tree`, and
+  and `findNodeMarkers()` take it as `tree`, and
   [`GiottoVisuals::showClusterDendrogram()`](https://giotto-suite.github.io/GiottoVisuals/reference/showClusterDendrogram.html)
   plots it — one tree behind all three, instead of three rebuilds free
   to disagree.

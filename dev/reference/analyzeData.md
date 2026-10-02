@@ -8,15 +8,6 @@ any downstream thresholding or selection is a separate step.
 ## Usage
 
 ``` r
-# S4 method for class 'exprObj,analyzeParam'
-analyzeData(x, param, ...)
-
-# S4 method for class 'allMatrix,featStatsParam'
-analyzeData(x, param, ..., groups = NULL, stats = NULL)
-
-# S4 method for class 'allMatrix,cellStatsParam'
-analyzeData(x, param, ...)
-
 # S4 method for class 'allMatrix,covGroupsParam'
 analyzeData(x, param, ...)
 
@@ -41,19 +32,6 @@ analyzeData(x, param, ...)
 - ...:
 
   additional params passed to specific methods
-
-- groups:
-
-  optional vector of group assignments, one per column of \`x\`, \`NA\`
-  to exclude. When supplied, the statistics are taken per (feature,
-  group) instead of over every cell, and the result gains \`group\` and
-  \`n_cells\` columns.
-
-- stats:
-
-  optional character vector of accumulators to compute, any of
-  \`"sum"\`, \`"sumsq"\`, \`"nnz"\`, \`"sum_det"\`. Grouped path only;
-  emitted columns are whichever the requested accumulators support.
 
 ## Value
 

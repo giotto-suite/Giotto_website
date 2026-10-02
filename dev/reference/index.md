@@ -408,10 +408,7 @@ Data Processing Functions
   : Composable Data Processing
 - [`processGiotto()`](https://giottosuite.com/dev/reference/processGiotto.md)
   : processGiotto
-- [`analyzeData(`*`<exprObj>`*`,`*`<analyzeParam>`*`)`](https://giottosuite.com/dev/reference/analyzeData.md)
-  [`analyzeData(`*`<allMatrix>`*`,`*`<featStatsParam>`*`)`](https://giottosuite.com/dev/reference/analyzeData.md)
-  [`analyzeData(`*`<allMatrix>`*`,`*`<cellStatsParam>`*`)`](https://giottosuite.com/dev/reference/analyzeData.md)
-  [`analyzeData(`*`<allMatrix>`*`,`*`<covGroupsParam>`*`)`](https://giottosuite.com/dev/reference/analyzeData.md)
+- [`analyzeData(`*`<allMatrix>`*`,`*`<covGroupsParam>`*`)`](https://giottosuite.com/dev/reference/analyzeData.md)
   [`analyzeData(`*`<allMatrix>`*`,`*`<covLoessParam>`*`)`](https://giottosuite.com/dev/reference/analyzeData.md)
   [`analyzeData(`*`<allMatrix>`*`,`*`<varParam>`*`)`](https://giottosuite.com/dev/reference/analyzeData.md)
   : Data Analysis via Parameter Dispatch
@@ -537,6 +534,9 @@ Functions to cluster cells.
   : calculateClusterTree
 - [`annotateClusterTree()`](https://giottosuite.com/dev/reference/annotateClusterTree.md)
   : annotateClusterTree
+- [`as.data.frame(`*`<giottoTree>`*`)`](https://giottosuite.com/dev/reference/as.data.frame.giottoTree.md)
+  [`as.data.table(`*`<giottoTree>`*`)`](https://giottosuite.com/dev/reference/as.data.frame.giottoTree.md)
+  : Splits of a cluster tree as a table
 - [`doClusterProjection()`](https://giottosuite.com/dev/reference/doClusterProjection.md)
   : Projection of cluster labels
 - [`doGiottoClustree()`](https://giottosuite.com/dev/reference/doGiottoClustree.md)
@@ -598,8 +598,8 @@ Functions to detect cell type / cluster specific marker genes.
   [`analyzeData(`*`<Matrix>`*`,`*`<scranMarkersParam>`*`)`](https://giottosuite.com/dev/reference/markers_scran.md)
   [`analyzeData(`*`<DelayedMatrix>`*`,`*`<scranMarkersParam>`*`)`](https://giottosuite.com/dev/reference/markers_scran.md)
   : Pairwise Marker Detection (scran)
-- [`findNodeMarkers()`](https://giottosuite.com/dev/reference/findNodeMarkers.md)
-  : findNodeMarkers
+- [`findClusterTreeMarkers()`](https://giottosuite.com/dev/reference/findClusterTreeMarkers.md)
+  : findClusterTreeMarkers
 - [`writeClusterTreeQuery()`](https://giottosuite.com/dev/reference/writeClusterTreeQuery.md)
   : writeClusterTreeQuery
 

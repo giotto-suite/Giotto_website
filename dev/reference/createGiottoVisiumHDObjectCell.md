@@ -35,7 +35,8 @@ createGiottoVisiumHDObjectCell(
   image_path = NULL,
   geojson_path = NULL,
   instructions = NULL,
-  verbose = NULL
+  verbose = NULL,
+  backend = NULL
 )
 ```
 
@@ -127,6 +128,13 @@ createGiottoVisiumHDObjectCell(
 - verbose:
 
   verbosity
+
+- backend:
+
+  (optional) a \`gsource\`-inheriting project backend (typically
+  produced by \`GiottoDisk::sourceCreate()\`). When provided, the
+  \`giotto\` object is created as a managed on-disk project; see
+  \[importVisiumHD()\].
 
 ## Value
 

@@ -44,7 +44,8 @@ createGiottoVisiumHDObjectBin(
   force_untar = FALSE,
   untar_params = list(),
   instructions = NULL,
-  verbose = NULL
+  verbose = NULL,
+  backend = NULL
 )
 ```
 
@@ -203,6 +204,13 @@ createGiottoVisiumHDObjectBin(
 - verbose:
 
   verbosity
+
+- backend:
+
+  (optional) a \`gsource\`-inheriting project backend (typically
+  produced by \`GiottoDisk::sourceCreate()\`). When provided, the
+  \`giotto\` object is created as a managed on-disk project; see
+  \[importVisiumHD()\].
 
 ## Value
 
