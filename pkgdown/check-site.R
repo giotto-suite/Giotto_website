@@ -275,13 +275,31 @@ if (!file.exists(file.path(pkg_src, "DESCRIPTION"))) {
   rds <- list.files(file.path(pkg_src, "man"), pattern = "\\.[Rr]d$",
                     full.names = TRUE)
   missing <- character()
+  known   <- character()
   for (rd in rds) {
     txt <- readLines(rd, warn = FALSE)
+    nm  <- unlist(regmatches(txt, gregexpr("\\\\(name|alias)\\{[^}]+\\}", txt)))
+    known <- c(known, sub("^\\\\(name|alias)\\{", "", sub("\\}$", "", nm)))
     if (any(grepl("^\\s*\\\\keyword\\{internal\\}", txt))) next
     al <- unlist(regmatches(txt, gregexpr("\\\\alias\\{[^}]+\\}", txt)))
     al <- sub("\\\\alias\\{", "", sub("\\}$", "", al))
     # A topic counts as indexed if any one of its aliases is listed.
     if (length(al) && !any(al %in% indexed)) missing <- c(missing, al[[1]])
+  }
+  # The reverse failure: a listed name the package no longer documents, e.g.
+  # after a rename. pkgdown aborts with "must be a known topic name or alias"
+  # once it reaches the reference index, minutes into the build. Internal
+  # topics still count as known. Selectors like starts_with("x") are skipped.
+  unknown <- setdiff(indexed[!grepl("\\(", indexed)], known)
+  if (length(unknown)) {
+    err(paste0("%d `reference:` entr%s in _pkgdown.yml match%s no topic in %s:",
+               " %s.\n",
+               "         pkgdown will abort with \"must be a known topic name or",
+               " alias\".\n",
+               "         Remove or rename them; check the package NEWS for renames."),
+        length(unknown), if (length(unknown) == 1) "y" else "ies",
+        if (length(unknown) == 1) "es" else "", pkg_src,
+        paste(sort(unknown), collapse = ", "))
   }
   if (length(missing)) {
     err(paste0("%d documented topic%s missing from `reference:` in _pkgdown.yml:",
