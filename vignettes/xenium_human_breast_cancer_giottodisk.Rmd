@@ -32,19 +32,17 @@ set.seed(42)
 # 1. Overview
 
 This tutorial reads a 10x Xenium In Situ export as an on-disk GiottoDisk
-project, builds the expression matrix by aggregating transcripts onto
-segmentation polygons rather than reading the vendor matrix, and carries that
-through filtering, clustering, cell typing and spatial niches. The export here
-ships only zarr archives, and nothing is held in memory: the matrix and the
-142.7 million transcripts stay on disk throughout.
+project. The expression matrix is built by aggregating transcripts onto
+segmentation polygons, and proceeds through filtering, clustering, cell typing
+and spatial niches. Nothing is held in
+memory: the matrix and the 142.7 million transcripts stay on disk throughout.
 
 # 2. Packages
 
 ## 2.1 arrow
 
 GiottoDisk writes its parquet cache with zstd compression, so arrow has to be
-built with zstd support. Install it before Giotto, or the Giotto install will
-pull a binary that may not have it.
+built with zstd support. Install it before Giotto.
 
 ```r
 has_arrow <- requireNamespace("arrow", quietly = TRUE)
@@ -59,7 +57,7 @@ if (!has_arrow || !zstd) {
 }
 ```
 
-## 2.2 Giotto and the rest
+## 2.2 Giotto and other packages
 
 ```r
 remotes::install_github("giotto-suite/GiottoUtils", ref = "dev")
@@ -104,26 +102,18 @@ Bundle (Xenium Explorer subset)**, or fetch it directly:
 curl -O https://cf.10xgenomics.com/samples/xenium/4.0.0/Human_Breast_Biomarkers_S1_Bot/Human_Breast_Biomarkers_S1_Bot_xe_outs.zip
 ```
 
-That is 5.9 GB zipped and holds `experiment.xenium`, `gene_panel.json`,
-`morphology_focus/` and four `*.zarr.zip` archives. The per-file outputs
-(`transcripts.parquet`, `cells.parquet`, `cell_feature_matrix.h5`) are in the
-larger **Xenium Output Bundle** instead, and GiottoDisk reads the archives
-without them.
+That is 5.9 GB zipped, 5.6 GB unpacked, and holds `experiment.xenium`,
+`gene_panel.json`, `morphology_focus/` and four `*.zarr.zip` archives.
 
-**The expression matrix is built here.** Every transcript is assigned to a
-segmentation polygon and aggregated into counts. The vendor's matrix is loaded
-once to check that aggregation (section 6), then dropped.
-
-| zarr product | what it holds | size |
+| relevant zarr product | what it holds | size |
 |---|---|---:|
 | `transcripts.zarr.zip` | 142.7 M decoded detections in a 7-level tile grid | 2.72 GB |
 | `cells.zarr.zip` | centroids, areas, and cell + nucleus boundary vertices | 300 MB |
 | `cell_feature_matrix.zarr.zip` | vendor cell x gene CSC matrix | 43 MB |
-| `analysis.zarr.zip` | 10x's own clustering and UMAP | 2 MB |
 
-`gene_panel.json` and `experiment.xenium` carry the panel and run metadata.
-The DAPI channel of `morphology_focus/` is the backdrop for the zoom figures
-later on.
+`gene_panel.json` carries the panel. `experiment.xenium` supplies the micron
+scaling. The DAPI channel of `morphology_focus/` is the backdrop for the zoom
+figures later on.
 
 # 4. Setup
 
@@ -312,6 +302,9 @@ g_xen <- addStatistics(g_xen, feat_type = "NegControlProbe",
                        stats = "cell", expression_values = "raw")
 ```
 
+<details>
+<summary>Negative-control probe statistics</summary>
+
 ```{r negprobe-stats, eval = FALSE}
 neg <- pDataDT(g_xen, feat_type = "NegControlProbe")
 rna <- pDataDT(g_xen)
@@ -331,10 +324,12 @@ data.table(
              if (neg_per_feat > 0) round(rna_per_feat / neg_per_feat, 1) else NA_real_))
 ```
 
-Control probes target nothing, so any count on one is a decoding error and
-their rate is the noise floor. Real genes are detected about a thousand times
-more often, and most cells carry no control count at all, so no background
-correction is needed.
+Control probes carry no real target, so a count on one is non-specific binding
+rather than true signal, and their rate is the probe-level noise floor. Real
+genes are detected about a thousand times more often, and most cells carry no
+control count at all, so no background correction is needed.
+
+</details>
 
 ```{r spatial-overview, fig.cap="Every cell in the section, colored by genes detected. Centroids come from the segmentation polygons.", fig.width=8, fig.height=7, dpi=150, eval = FALSE}
 gene_limits <- quantile(pDataDT(g_xen)$nr_feats, c(0.01, 0.99), na.rm = TRUE)
@@ -355,7 +350,7 @@ all_plots_save_function(g_xen, p_section, save_name = "section_genes_per_cell")
 knitr::include_graphics("images/xenium_human_breast_cancer_giottodisk/02_spatial-overview.png")
 ```
 
-```{r qc-figs, fig.cap="Counts and genes per cell before filtering, with the gene threshold drawn.", fig.width=10.6, fig.height=3.4, eval = FALSE}
+```{r qc-figs, fig.cap="Counts and genes per cell before filtering, with the gene threshold drawn in red.", fig.width=10.6, fig.height=3.4, eval = FALSE}
 qc_md <- pDataDT(g_xen)[, .(counts = median(total_expr, na.rm = TRUE),
                             genes  = median(nr_feats,   na.rm = TRUE))]
 
@@ -538,7 +533,7 @@ cluster_table[]
 ```
 
 | cluster | cells | top markers |
-|---:|---:|---|
+|--------:|--------:|----------------------------------------------------------------------------------|
 | 1 | 26,082 | MYLK, KRT14, KRT5, TAGLN, ACTA2, COL17A1, KRT17, SEMA3C, DSP, SLC39A6 |
 | 2 | 6,034 | S100A14, CD24, TAGLN, SEMA3C, ACTA2, KRT14, VTCN1, OXTR, COL17A1, SERPINA3 |
 | 3 | 19,997 | GATA3, TYMS, SLC39A6, HMGB2, FOXA1, EPCAM, MLPH, FADS2, RRM2, DSP |
@@ -571,13 +566,13 @@ cluster_table[]
 # 10. Naming the clusters
 
 Two sources of evidence: the de novo markers above, and the dot plot of curated
-panel genes below, which checks the labels against genes chosen independently
-of this clustering.
+panel genes below, which checks the labels against marker genes chosen
+independently of this clustering.
 
 ## 10.1 Curated marker panels
 
 One curated gene set per broad cell type, restricted to what this 280-gene
-breast panel actually carries.
+the 280-gene breast panel.
 
 ```{r panels-data, eval = FALSE}
 breast_markers_l1 <- list(
@@ -683,11 +678,6 @@ cell_metadata <- merge(cell_metadata,
 CELLTYPES       <- intersect(names(broad_palette), unique(BROAD))
 CELLTYPE_COLORS <- broad_palette[CELLTYPES]
 cell_metadata[, celltype := factor(cell_type_broad, levels = CELLTYPES)]
-
-STAMP <- sprintf("S1_Bot | %s cells | %d clusters | %d cell types",
-                 format(nrow(cell_metadata), big.mark = ","),
-                 length(CLUS_LEVELS), length(CELLTYPES))
-STAMP
 ```
 
 ```{r dot-broad, fig.cap="Up to three curated panel genes per cell type: color is mean normalized expression, size is the percent of cells detecting the gene.", fig.width=9, fig.height=8, eval = FALSE}
@@ -763,6 +753,10 @@ knitr::include_graphics("images/xenium_human_breast_cancer_giottodisk/10_umap-ce
 ```
 
 ```{r spatial-celltype, fig.cap="The whole section by cell type.", fig.width=9, fig.height=7.6, dpi=150, eval = FALSE}
+STAMP <- sprintf("S1_Bot | %s cells | %d clusters | %d cell types",
+                 format(nrow(cell_metadata), big.mark = ","),
+                 length(CLUS_LEVELS), length(CELLTYPES))
+
 spatPlot2D(g_xen, cell_color = "cell_type_broad",
                                 cell_color_code = CELLTYPE_COLORS,
                                 point_size = 0.25, point_shape = "border",
@@ -821,7 +815,7 @@ spatInSituPlotPoints(g_zoom,
                      polygon_fill_code = CELLTYPE_COLORS,
                      polygon_alpha = 0.6,
                      polygon_color = "gray30", polygon_line_size = 0.06,
-                     legend_text = 11, background_color = "white",
+                     legend_text = 11, background_color = "black",
                      view = "roi")
 ```
 
@@ -845,7 +839,7 @@ spatInSituPlotPoints(g_zoom,
                      polygon_fill_code = CELLTYPE_COLORS, polygon_alpha = 0.6,
                      polygon_color = "gray40", polygon_line_size = 0.04,
                      point_size = 0.75, legend_text = 11,
-                     background_color = "white", view = "roi")
+                     background_color = "black", view = "roi")
 ```
 
 ```{r transcripts-in-place-fig, echo = FALSE, out.width = "100%"}
@@ -855,8 +849,8 @@ knitr::include_graphics("images/xenium_human_breast_cancer_giottodisk/14_transcr
 # 13. Spatial niches
 
 Two cells share a niche when the mix of cell types *around* them looks the
-same, however different the two cells are themselves. Building one takes three
-steps: a spatial graph, the composition of labels over that graph, and a
+same, however different the two cells are themselves. Building a spatial niche
+takes 3 general steps: a spatial graph, the composition of labels over that graph, and a
 clustering of those composition vectors.
 
 ```{r niche-network, eval = FALSE}
@@ -966,7 +960,7 @@ p_niche_spat <- spatPlot2D(g_xen, cell_color = "niche_annot",
                       cell_color_code = ANNOT_PAL,
                       point_size = 0.3, point_shape = "border",
                       point_border_stroke = 0, coord_fix_ratio = 1,
-                      background_color = "white", return_plot = TRUE,
+                      background_color = "black", return_plot = TRUE,
                       show_plot = FALSE, save_plot = FALSE,
                       title = sprintf("Spatial niches (k = %d, neighbors.k = 30)", NICHE_K)) +
   guides(fill = guide_legend(nrow = 3, byrow = TRUE,
@@ -992,7 +986,7 @@ as.data.frame.matrix(niche_by_celltype)
 ```
 
 | cell type | niche_01<br>TLS | niche_02<br>tumor core (basal) | niche_03<br>tumor core (luminal) | niche_04<br>tumor-duct interface | niche_05<br>vascular immune stroma | niche_06<br>duct basal layer | niche_07<br>fibroblast-rich stroma |
-|---|---:|---:|---:|---:|---:|---:|---:|
+|------------------|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|
 | epithelial_luminal | 163 | 3,372 | 55,595 | 28,368 | 524 | 4,603 | 259 |
 | epithelial_basal | 6 | 6,805 | 1,564 | 680 | 52 | 462 | 37 |
 | proliferating | 30 | 55 | 976 | 1,955 | 74 | 755 | 19 |
@@ -1008,7 +1002,6 @@ as.data.frame.matrix(niche_by_celltype)
 | mast | 206 | 2 | 10 | 111 | 990 | 392 | 1,022 |
 | adipocyte | 23 | 87 | 1,352 | 547 | 158 | 91 | 220 |
 | unassigned | 100 | 107 | 720 | 1,443 | 421 | 814 | 227 |
-
 
 ```{r niche-composition-bar, fig.cap="What each niche is made of: one stacked bar per niche, split by the mean neighborhood proportion of each cell type.", fig.width=9.5, fig.height=5, eval = FALSE}
 niche_profile <- niche_mean
