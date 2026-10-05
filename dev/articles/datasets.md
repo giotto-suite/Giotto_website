@@ -6,7 +6,7 @@ Uses
 
 Tutorials built on a Giotto Suite extension package.
 
-GiottoDisk 4
+GiottoDisk 5
 
 GiottoLens 1
 
@@ -16,7 +16,7 @@ Analysis 1
 
 Interactivity 1
 
-In situ methods 9
+In situ methods 10
 
 Sequencing-based methods 9
 
@@ -32,13 +32,13 @@ Single cell RNA sequencing (non-spatial) 3
 
 Dataset size
 
-full 35
+full 36
 
 mini 2
 
 Platform
 
-Xenium 1
+Xenium 2
 
 Atera 3
 
@@ -90,7 +90,7 @@ Panel tier. 0-500 is e.g. MERSCOPE; 500-5,000 e.g. Xenium Prime 5K, with
 or without add-on genes; 5,000+ is whole transcriptome, e.g. Atera WTA,
 CosMx WTx, Visium.
 
-0–500 8
+0–500 9
 
 500–5,000 2
 
@@ -98,7 +98,7 @@ CosMx WTx, Visium.
 
 Species
 
-human 18
+human 19
 
 mouse 17
 
@@ -108,7 +108,7 @@ Tissue
 
 brain 11
 
-breast 5
+breast 6
 
 colon 3
 
@@ -132,13 +132,13 @@ spleen 1
 
 Condition
 
-cancer 15
+cancer 16
 
 normal 18
 
 Modality
 
-RNA 36
+RNA 37
 
 protein 4
 
@@ -149,7 +149,7 @@ Resolution
 What the tutorial analyzes -- transcript points, segmented cells, or
 multi-cell spots and bins.
 
-subcellular 9
+subcellular 10
 
 single cell 15
 
@@ -166,6 +166,9 @@ cell](https://giottosuite.com/dev/articles/giottolens.md) [In situ
 methods Xenium Human Breast Cancer Pre-Release Xenium · human · breast ·
 cancer RNA0–500
 genessubcellular](https://giottosuite.com/dev/articles/xenium_breast_cancer.md)
+[In situ methods Xenium Human Breast Cancer (GiottoDisk) Xenium · human
+· breast · cancer GiottoDiskRNA0–500
+genessubcellular](https://giottosuite.com/dev/articles/xenium_human_breast_cancer_giottodisk.md)
 [In situ methods Atera Human Breast Cancer Atera · human · breast ·
 cancer GiottoDiskRNA5,000+ genessingle
 cell](https://giottosuite.com/dev/articles/atera_human_breast_cancer.md)

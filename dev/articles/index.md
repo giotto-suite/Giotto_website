@@ -176,6 +176,8 @@ Imaging-based in situ platforms. Most users arrive with one of these.
 
 - [Xenium Human Breast Cancer
   Pre-Release](https://giottosuite.com/dev/articles/xenium_breast_cancer.md):
+- [Xenium Human Breast Cancer
+  (GiottoDisk)](https://giottosuite.com/dev/articles/xenium_human_breast_cancer_giottodisk.md):
 - [Atera Human Breast
   Cancer](https://giottosuite.com/dev/articles/atera_human_breast_cancer.md):
 - [Nanostring CosMx Subcellular Lung
