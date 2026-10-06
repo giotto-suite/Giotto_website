@@ -1,6 +1,6 @@
 # Xenium Human Breast Cancer (GiottoDisk)
 
-## 1 1. Overview
+## 1 Overview
 
 This tutorial reads a 10x Xenium In Situ export as an on-disk GiottoDisk
 project. The expression matrix is built by aggregating transcripts onto
@@ -8,9 +8,9 @@ segmentation polygons, and proceeds through filtering, clustering, cell
 typing and spatial niches. Nothing is held in memory: the matrix and the
 142.7 million transcripts stay on disk throughout.
 
-## 2 2. Packages
+## 2 Packages
 
-### 2.1 2.1 arrow
+### 2.1 arrow
 
 GiottoDisk writes its parquet cache with zstd compression, so arrow has
 to be built with zstd support. Install it before Giotto.
@@ -29,7 +29,7 @@ if (!has_arrow || !zstd) {
 }
 ```
 
-### 2.2 2.2 Giotto and other packages
+### 2.2 Giotto and other packages
 
 ``` r
 
@@ -39,7 +39,7 @@ BiocManager::install(c("scran", "Rarr"))
 install.packages(c("duckdb", "DBI", "dbplyr", "wk", "ggdendro"))
 ```
 
-## 3 3. The dataset
+## 3 The dataset
 
 10x Genomics **Xenium In Situ** on FFPE human breast cancer. The
 published dataset covers three sections of sample S1; **this tutorial
@@ -80,7 +80,7 @@ That is 5.9 GB zipped, 5.6 GB unpacked, and holds `experiment.xenium`,
 micron scaling. The DAPI channel of `morphology_focus/` is the backdrop
 for the zoom figures later on.
 
-## 4 4. Setup
+## 4 Setup
 
 ``` r
 
@@ -106,9 +106,9 @@ instructions   <- createGiottoInstructions(save_dir = results_folder,
                                            return_plot = FALSE)
 ```
 
-## 5 5. Ingest
+## 5 Ingest
 
-### 5.1 5.1 Set up the disk backend
+### 5.1 Set up the disk backend
 
 142.7 million transcripts and 254,480 cells are too large to hold in
 memory, so this runs as a GiottoDisk disk-backed project.
@@ -121,12 +121,12 @@ giotto_source <- sourceCreate(PROJECT_DIR, type = "gDirSource")
 setArtifactDumpDir(giotto_source)
 ```
 
-### 5.2 5.2 Reading a zarr export
+### 5.2 Reading a zarr export
 
 All four archives are read in place without unpacking, and each product
 is converted to parquet once and cached in the project directory.
 
-### 5.3 5.3 Create the giotto object
+### 5.3 Create the giotto object
 
 ``` r
 
@@ -143,7 +143,28 @@ g_xen <- createGiottoXeniumObject(
 g_xen
 ```
 
-### 5.4 5.4 Save checkpoint
+    ## An object of class giotto 
+    ## >Active spat_unit:  cell 
+    ## >Active feat_type:  rna 
+    ## dimensions    : 280, 254480 (features, cells)
+    ## [SUBCELLULAR INFO]
+    ## polygons      : cell 
+    ## features      : rna NegControlProbe UnassignedCodeword NegControlCodeword 
+    ## [AGGREGATE INFO]
+    ## expression -----------------------
+    ##   [cell][rna] raw
+    ##   [cell][NegControlProbe] raw
+    ##   [cell][NegControlCodeword] raw
+    ##   [cell][UnassignedCodeword] raw
+    ## spatial locations ----------------
+    ##   [cell] raw
+    ## attached images ------------------
+    ## images      : 4 items...
+    ## 
+    ## 
+    ## Use objHistory() to see steps and params used
+
+### 5.4 Save checkpoint
 
 A backed project writes named snapshots into the project directory.
 
@@ -162,10 +183,22 @@ class(g_xen@feat_info$rna@spatVector)
 list_spatial_info(g_xen)
 ```
 
+    ## [1] "parquetExprStore"
+    ## attr(,"package")
+    ## [1] "GiottoDisk"
+
+    ## [1] "parquetGeomTileStore"
+    ## attr(,"package")
+    ## [1] "GiottoDisk"
+
+| spat_info |
+|-----------|
+| cell      |
+
 Only `cell` boundaries are loaded; the archive also carries nucleus
 boundaries, unused here.
 
-### 5.5 5.5 Aggregating transcripts into expression
+### 5.5 Aggregating transcripts into expression
 
 The transcripts carry no cell assignment, so it is computed here by
 overlapping the detections with the segmentation polygons.
@@ -191,9 +224,17 @@ g_xen <- aggregateFeatures(g_xen, spat_info = "cell", feat_info = "rna",
 list_expression(g_xen)
 ```
 
-## 6 6. Quality control and filtering
+| spat_unit | feat_type          | name       |
+|-----------|--------------------|------------|
+| cell      | rna                | raw        |
+| cell      | rna                | vendor_raw |
+| cell      | NegControlProbe    | raw        |
+| cell      | NegControlCodeword | raw        |
+| cell      | UnassignedCodeword | raw        |
 
-### 6.1 6.1 Checking the aggregation against the vendor matrix
+## 6 Quality control and filtering
+
+### 6.1 Checking the aggregation against the vendor matrix
 
 Vendor counts against transcript-derived counts
 
@@ -213,6 +254,11 @@ totals <- rbindlist(lapply(list(vendor_store, derived_store), function(x)
 totals[, source := c("vendor cell_feature_matrix", "aggregated from transcripts")]
 totals[, .(source, counts, nonzeros)]
 ```
+
+| source                      | counts   | nonzeros |
+|-----------------------------|----------|----------|
+| vendor cell_feature_matrix  | 89353891 | 20988462 |
+| aggregated from transcripts | 86316180 | 20653522 |
 
 The totals should not match exactly: 10x applies nucleus-expansion rules
 where this aggregation is a plain point-in-polygon test at `qv > 20`.
@@ -255,7 +301,7 @@ g_xen <- GiottoClass::setExpression(g_xen, NULL, name = "vendor_raw", spat_unit 
                        feat_type = "rna")
 ```
 
-### 6.2 6.2 Filtering
+### 6.2 Filtering
 
 ``` r
 
@@ -288,6 +334,13 @@ data.table(
              round(100 * mean(neg$total_expr > 0, na.rm = TRUE), 1),
              if (neg_per_feat > 0) round(rna_per_feat / neg_per_feat, 1) else NA_real_))
 ```
+
+| metric                                      | value    |
+|---------------------------------------------|----------|
+| mean counts / cell, 280-gene panel          | 339.200  |
+| mean counts / cell, negative-control probes | 0.023    |
+| cells with any control-probe count (%)      | 2.200    |
+| signal-to-noise, per feature                | 1036.900 |
 
 Control probes carry no real target, so a count on one is non-specific
 binding rather than true signal, and their rate is the probe-level noise
@@ -353,7 +406,7 @@ g_xen <- filterGiotto(g_xen,
 g_xen
 ```
 
-## 7 7. Normalization and dimension reduction
+## 7 Normalization and dimension reduction
 
 ``` r
 
@@ -413,7 +466,9 @@ PCS_USE <- if (pc_depth_cor$abs_cor[1] > 0.5) 2:30 else 1:30
 cat("dimensions_to_use =", deparse(PCS_USE), "\n")
 ```
 
-## 8 8. Neighbors, UMAP, clustering
+    ## dimensions_to_use = 2:30
+
+## 8 Neighbors, UMAP, clustering
 
 ``` r
 
@@ -468,7 +523,7 @@ all_plots_save_function(g_xen, p_clusters, save_name = "umap_clusters")
 
 ![](images/xenium_human_breast_cancer_giottodisk/06_cluster-figs.png)
 
-## 9 9. Markers
+## 9 Markers
 
 ``` r
 
@@ -486,6 +541,14 @@ markers_de <- markers_de[logFC >= 0.25 & FDR <= 0.05][order(cluster, ranking)]
 
 head(markers_de, 5)
 ```
+
+| feats | cluster | logFC    | p_value | FDR | ranking |
+|-------|---------|----------|---------|-----|---------|
+| MYLK  | 1       | 3.794006 | 0       | 0   | 1       |
+| KRT14 | 1       | 3.688197 | 0       | 0   | 2       |
+| KRT5  | 1       | 3.608897 | 0       | 0   | 3       |
+| TAGLN | 1       | 3.560326 | 0       | 0   | 4       |
+| ACTA2 | 1       | 3.423206 | 0       | 0   | 5       |
 
 ``` r
 
@@ -531,13 +594,13 @@ cluster_table[]
 | 27 | 8,136 | S100A14, ANKRD30A, CD24, VTCN1, SERPINA3, KRT19, MLPH, LYPD3, PIP, MDM2 |
 | 28 | 166 | PIP, ANKRD30A, TFPI2, FASN, LDHB, PGR, LTF, MLPH, SCUBE2, IL1R1 |
 
-## 10 10. Naming the clusters
+## 10 Naming the clusters
 
 Two sources of evidence: the de novo markers above, and the dot plot of
 curated panel genes below, which checks the labels against marker genes
 chosen independently of this clustering.
 
-### 10.1 10.1 Curated marker panels
+### 10.1 Curated marker panels
 
 One curated gene set per broad cell type, restricted to what this
 280-gene the 280-gene breast panel.
@@ -575,7 +638,7 @@ breast_markers_l1 <- list(
 )
 ```
 
-### 10.2 10.2 Attaching labels
+### 10.2 Attaching labels
 
 This section is DCIS, so malignant cells sit inside ducts that still
 carry a myoepithelial layer, alongside normal luminal epithelium.
@@ -706,7 +769,7 @@ all_plots_save_function(g_xen, p_counts_bar, save_name = "celltype_counts")
 
 ![](images/xenium_human_breast_cancer_giottodisk/09_celltype-counts.png)
 
-## 11 11. The annotated section
+## 11 The annotated section
 
 ``` r
 
@@ -751,7 +814,7 @@ all_plots_save_function(g_xen, p_facets, save_name = "celltype_facets")
 
 ![](images/xenium_human_breast_cancer_giottodisk/12_spatial-facets.png)
 
-## 12 12. Segmentation boundaries and transcripts in place
+## 12 Segmentation boundaries and transcripts in place
 
 ``` r
 
@@ -809,7 +872,7 @@ spatInSituPlotPoints(g_zoom,
 
 ![](images/xenium_human_breast_cancer_giottodisk/14_transcripts-in-place.png)
 
-## 13 13. Spatial niches
+## 13 Spatial niches
 
 Two cells share a niche when the mix of cell types *around* them looks
 the same, however different the two cells are themselves. Building a
@@ -833,6 +896,10 @@ g_xen <- calculateLabelProportions(
 list_spatial_enrichments(g_xen)
 ```
 
+| spat_unit | feat_type | name        |
+|-----------|-----------|-------------|
+| cell      | rna       | niche_props |
+
 ``` r
 
 niche_dt <- getSpatialEnrichment(g_xen, name = "niche_props",
@@ -843,7 +910,7 @@ rownames(comp_mat) <- niche_dt$cell_ID
 dim(comp_mat)
 ```
 
-### 13.1 13.1 Choosing the number of niches
+### 13.1 Choosing the number of niches
 
 Pick `k` from the data. The sweep runs k-means over a range of `k` and
 records the total within-cluster sum of squares, which always falls as
@@ -882,6 +949,8 @@ p_elbow <- ggplot(data.table(k = K_RANGE, wss = wss), aes(k, wss)) +
 p_elbow
 all_plots_save_function(g_xen, p_elbow, save_name = "niche_elbow")
 ```
+
+    ## chosen NICHE_K = 7
 
 ![](images/xenium_human_breast_cancer_giottodisk/15_niche-k.png)
 
@@ -996,7 +1065,7 @@ all_plots_save_function(g_xen, p_niche_bar, save_name = "niche_composition_bar")
 
 ![](images/xenium_human_breast_cancer_giottodisk/17_niche-composition-bar.png)
 
-## 14 14. Session information
+## 14 Session information
 
 ``` r
 
@@ -1008,5 +1077,104 @@ future::plan(future::sequential)
 
 sessionInfo()
 ```
+
+    ## R version 4.5.2 (2025-10-31)
+    ## Platform: x86_64-pc-linux-gnu
+    ## Running under: AlmaLinux 8.10 (Cerulean Leopard)
+    ## 
+    ## Matrix products: default
+    ## BLAS/LAPACK: FlexiBLAS NETLIB;  LAPACK version 3.12.0
+    ## 
+    ## locale:
+    ##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+    ##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+    ##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+    ##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+    ##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+    ## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+    ## 
+    ## time zone: America/New_York
+    ## tzcode source: system (glibc)
+    ## 
+    ## attached base packages:
+    ## [1] stats     graphics  grDevices utils     datasets  methods   base     
+    ## 
+    ## other attached packages:
+    ## [1] future_1.70.0        cowplot_1.2.0        ggplot2_4.0.2       
+    ## [4] data.table_1.18.4    GiottoDisk_0.0.0.3   GiottoVisuals_0.2.16
+    ## [7] Giotto_4.3.0         GiottoClass_0.7.7   
+    ## 
+    ## loaded via a namespace (and not attached):
+    ##   [1] RColorBrewer_1.1-3          ggdendro_0.2.0             
+    ##   [3] wk_0.9.4                    jsonlite_2.0.0             
+    ##   [5] magrittr_2.0.5              magick_2.9.0               
+    ##   [7] farver_2.1.2                rmarkdown_2.30             
+    ##   [9] ragg_1.5.0                  vctrs_0.7.1                
+    ##  [11] memoise_2.0.1               GiottoUtils_0.2.7          
+    ##  [13] terra_1.8-93                htmltools_0.5.9            
+    ##  [15] S4Arrays_1.10.1             curl_7.0.0                 
+    ##  [17] BiocNeighbors_2.4.0         SparseArray_1.10.8         
+    ##  [19] sass_0.4.10                 parallelly_1.47.0          
+    ##  [21] bslib_0.10.0                htmlwidgets_1.6.4          
+    ##  [23] httr2_1.2.1                 plotly_4.12.0              
+    ##  [25] cachem_1.1.0                igraph_2.2.1               
+    ##  [27] lifecycle_1.0.5             pkgconfig_2.0.3            
+    ##  [29] rsvd_1.0.5                  Matrix_1.7-4               
+    ##  [31] R6_2.6.1                    fastmap_1.2.0              
+    ##  [33] MatrixGenerics_1.22.0       digest_0.6.39              
+    ##  [35] colorspace_2.1-2            S4Vectors_0.48.0           
+    ##  [37] paws.storage_0.9.0          dqrng_0.4.1                
+    ##  [39] irlba_2.3.7                 textshaping_1.0.4          
+    ##  [41] GenomicRanges_1.62.1        beachmat_2.26.0            
+    ##  [43] labeling_0.4.3              filelock_1.0.3             
+    ##  [45] progressr_0.18.0            Rarr_1.10.1                
+    ##  [47] httr_1.4.8                  polyclip_1.10-7            
+    ##  [49] abind_1.4-8                 compiler_4.5.2             
+    ##  [51] bit64_4.6.0-1               withr_3.0.2                
+    ##  [53] S7_0.2.1                    backports_1.5.0            
+    ##  [55] BiocParallel_1.44.0         DBI_1.3.0                  
+    ##  [57] viridis_0.6.5               ggforce_0.5.0              
+    ##  [59] R.utils_2.13.0              duckdb_1.5.2               
+    ##  [61] MASS_7.3-65                 rappdirs_0.3.4             
+    ##  [63] DelayedArray_0.36.0         rjson_0.2.23               
+    ##  [65] bluster_1.20.0              gtools_3.9.5               
+    ##  [67] tools_4.5.2                 otel_0.2.0                 
+    ##  [69] future.apply_1.20.0         R.oo_1.27.1                
+    ##  [71] glue_1.8.0                  dbscan_1.2.4               
+    ##  [73] grid_4.5.2                  checkmate_2.3.4            
+    ##  [75] cluster_2.1.8.3             generics_0.1.4             
+    ##  [77] gtable_0.3.6                R.methodsS3_1.8.2          
+    ##  [79] tidyr_1.3.2                 metapod_1.18.0             
+    ##  [81] BiocSingular_1.26.1         tidygraph_1.3.1            
+    ##  [83] ScaledMatrix_1.18.0         xml2_1.5.0                 
+    ##  [85] XVector_0.50.0              RcppAnnoy_0.0.23           
+    ##  [87] BiocGenerics_0.56.0         tilework_1.0.0             
+    ##  [89] ggrepel_0.9.6               pillar_1.11.1              
+    ##  [91] limma_3.66.0                RcppHNSW_0.6.0             
+    ##  [93] dplyr_1.2.0                 tweenr_2.0.3               
+    ##  [95] lattice_0.22-7              bit_4.6.0                  
+    ##  [97] tidyselect_1.2.1            paws.common_0.8.5          
+    ##  [99] locfit_1.5-9.12             SingleCellExperiment_1.32.0
+    ## [101] scuttle_1.20.0              knitr_1.51                 
+    ## [103] gridExtra_2.3               IRanges_2.44.0             
+    ## [105] Seqinfo_1.0.0               edgeR_4.8.2                
+    ## [107] SummarizedExperiment_1.40.0 scattermore_1.2            
+    ## [109] stats4_4.5.2                xfun_0.56                  
+    ## [111] graphlayouts_1.2.3          Biobase_2.70.0             
+    ## [113] statmod_1.5.1               matrixStats_1.5.0          
+    ## [115] lazyeval_0.2.2              yaml_2.3.12                
+    ## [117] evaluate_1.0.5              codetools_0.2-20           
+    ## [119] ggraph_2.2.2                tibble_3.3.1               
+    ## [121] colorRamp2_0.1.0            cli_3.6.6                  
+    ## [123] uwot_0.2.4                  arrow_25.0.0               
+    ## [125] reticulate_1.45.0           systemfonts_1.3.1          
+    ## [127] jquerylib_0.1.4             dichromat_2.0-0.1          
+    ## [129] Rcpp_1.1.1-1.1              globals_0.19.1             
+    ## [131] dbplyr_2.5.1                png_0.1-8                  
+    ## [133] parallel_4.5.2              assertthat_0.2.1           
+    ## [135] scran_1.38.1                listenv_0.10.1             
+    ## [137] SpatialExperiment_1.20.0    viridisLite_0.4.3          
+    ## [139] scales_1.4.0                purrr_1.2.1                
+    ## [141] crayon_1.5.3                rlang_1.2.0
 
 NA \`\`\`

@@ -60,10 +60,10 @@ too, and will ship from there under that version.
 
 - **[`runIntegratedUMAP()`](https://giottosuite.com/dev/reference/runIntegratedUMAP.md)
   built its embedding on the wrong graph.** It passed
-  [`dbscan::kNN()`](https://rdrr.io/pkg/dbscan/man/kNN.html) output to
-  uwot as `nn_method` unchanged, but
-  [`dbscan::kNN()`](https://rdrr.io/pkg/dbscan/man/kNN.html) removes
-  self-matches while uwot requires each cell to be its own first
+  [`dbscan::kNN()`](http://michael.hahsler.net/dbscan/reference/kNN.md)
+  output to uwot as `nn_method` unchanged, but
+  [`dbscan::kNN()`](http://michael.hahsler.net/dbscan/reference/kNN.md)
+  removes self-matches while uwot requires each cell to be its own first
   neighbour and drops column 1 when fitting the local connectivity
   offset. The integrated UMAP was therefore built from `k - 1`
   neighbours with the nearest one discarded, against a `log2(k)` target
