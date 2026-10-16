@@ -81,7 +81,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.0</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -251,6 +251,10 @@ provides ways to calculate enrichment of specific cell-type signature
 gene lists.</p>
 <p>Spatial Dampened Weighted Least Squares (DWLS) estimates the
 proportions of different cell types across spots in a tissue.</p>
+<p>Giotto runs DWLS through the <a href="https://drieslab.github.io/spatialDWLS/" class="external-link">spatialDWLS</a> package,
+which <code><a href="../reference/runDWLSDeconv.html">runDWLSDeconv()</a></code> calls for you; install it once with
+<code>pak::pkg_install("drieslab/spatialDWLS")</code>. The same call
+works on objects whose expression is stored on disk with GiottoDisk.</p>
 <div class="section level2" number="1">
 <h2 id="setup-and-load-example-dataset">
 <span class="header-section-number">1</span> Setup and load example
@@ -260,6 +264,11 @@ dataset<a class="anchor" aria-label="anchor" href="#setup-and-load-example-datas
 <code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/Giotto"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># Ensure spatialDWLS, the engine behind runDWLSDeconv(), is installed</span></span>
+<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"spatialDWLS"</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"drieslab/spatialDWLS"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Ensure Giotto Data is installed</span></span>
@@ -349,7 +358,9 @@ matrix<a class="anchor" aria-label="anchor" href="#create-the-signature-matrix">
 <span class="header-section-number">6</span> Run the DWLS
 Deconvolution<a class="anchor" aria-label="anchor" href="#run-the-dwls-deconvolution"></a>
 </h2>
-<p>This step may take a couple of minutes to run.</p>
+<p>This takes seconds for a Visium section. For larger datasets, pass a
+<code>BPPARAM</code> (e.g. <code>BiocParallel::MulticoreParam(8)</code>)
+to solve the spots in parallel; the result is the same.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDWLSDeconv.html">runDWLSDeconv</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    sign_matrix <span class="op">=</span> <span class="va">sign_matrix</span></span>
@@ -363,8 +374,7 @@ Deconvolution<a class="anchor" aria-label="anchor" href="#run-the-dwls-deconvolu
 the proportion of each cell type per spot.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatDeconvPlot.html" class="external-link">spatDeconvPlot</a></span><span class="op">(</span><span class="va">g</span>, </span>
-<span>    show_image <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>    radius <span class="op">=</span> <span class="fl">50</span></span>
+<span>    show_image <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/deconvolution/0-spatDeconvPlot.png" alt="" width="80%" style="display: block; margin: auto;"></p>
 </div>

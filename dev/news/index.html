@@ -61,7 +61,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.0</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -202,7 +202,52 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="4.3.0" id="giotto-430-in-development">Giotto 4.3.0 (in development)<a class="anchor" aria-label="anchor" href="#giotto-430-in-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="4.3.2" id="giotto-432-in-development">Giotto 4.3.2 (in development)<a class="anchor" aria-label="anchor" href="#giotto-432-in-development"></a></h2>
+<p>spatialDWLS moves to its own package, <a href="https://github.com/drieslab/spatialDWLS" class="external-link">spatialDWLS</a> (drieslab), which Giotto now suggests, the way the motif layer suggests smotif. <code><a href="../reference/runDWLSDeconv.html">runDWLSDeconv()</a></code> and <code><a href="../reference/runSpatialDeconv.html">runSpatialDeconv()</a></code> keep their arguments and call it; install it with <code>remotes::install_github("drieslab/spatialDWLS")</code>. Downstream packages that import <code>dwlsDeconvParam</code> or provide an <code><a href="../reference/analyzeData.html">analyzeData()</a></code> method for it should require <code>Giotto (&gt;= 4.3.2)</code>.</p>
+<div class="section level3">
+<h3 id="new-4-3-2">new<a class="anchor" aria-label="anchor" href="#new-4-3-2"></a></h3>
+<ul><li>
+<code><a href="../reference/deconv_param.html">deconvParam()</a></code> / <code>dwlsDeconvParam</code>: deconvolution as an <code><a href="../reference/analyzeData.html">analyzeData()</a></code> verb, the sibling of <code><a href="../reference/enrich_param.html">enrichParam()</a></code>. Dispatching on the expression object lets a disk-backed store (GiottoDisk) supply its own streaming method.</li>
+<li>
+<code><a href="../reference/runDWLSDeconv.html">runDWLSDeconv()</a></code> / <code><a href="../reference/runSpatialDeconv.html">runSpatialDeconv()</a></code> gain <code>BPPARAM</code> (per-spot solves in parallel; defaults to <code>getOption("giotto.bpparam")</code>) and <code>na_as_zero</code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="changes-4-3-2">changes<a class="anchor" aria-label="anchor" href="#changes-4-3-2"></a></h3>
+<ul><li>DWLS is 12-22x faster on 600-20,000 spots serially. Results match 4.3.1 to ~1e-15 except for the fixes below.</li>
+<li>
+<code>quadprog</code> and <code>Rfast</code> are no longer suggested; spatialDWLS brings <code>quadprog</code>.</li>
+<li>The <code>cutoff</code> argument is documented as what it is: the PAGE z-score a cell type must reach in a cluster to be a candidate there, not an expression cutoff.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-4-3-2">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-4-3-2"></a></h3>
+<ul><li>Visium HD (<code><a href="../reference/importVisiumHD.html">importVisiumHD()</a></code> and its wrappers):
+<ul><li>
+<code>load_transcripts = TRUE</code> at 8 or 16 um no longer leaves the bins with empty cell metadata.</li>
+<li>cell metadata rows follow the expression barcodes instead of arrow scan order;</li>
+<li>a direct <code>.h5</code> or matrix-market <code>expression_path</code> loads;</li>
+<li>an <code>.h5</code> source gives the <code>rna</code> feat_type as an mtx one does;</li>
+<li>the class default <code>feature_id_type</code> is <code>"symbol"</code>, the value it accepts.</li>
+</ul></li>
+<li>
+<code>get10Xmatrix_h5(gene_ids = "symbols", split_by_type = FALSE)</code> returns gene symbols; it returned Ensembl IDs.</li>
+<li>
+<code><a href="../reference/runDWLSDeconv.html">runDWLSDeconv()</a></code>: a cluster with a single candidate cell type in the spot round now assigns that type proportion 1; it was left at 0 (an <code>==</code> where an assignment was meant). On a simulation with single-type niches and <code>n_cell = 5</code> this lowers the RMSE against the true proportions from 0.167 to 0.045. With the default <code>n_cell = 50</code> it rarely triggers.</li>
+<li>
+<code><a href="../reference/runDWLSDeconv.html">runDWLSDeconv()</a></code>: small negative values from the constrained solver are clipped for every cell type, not only the last one.</li>
+<li>
+<code><a href="../reference/runDWLSDeconv.html">runDWLSDeconv()</a></code> no longer leaves the session’s random number generator in a fixed state.</li>
+<li>
+<code><a href="../reference/cellProximityEnrichmentSpots.html">cellProximityEnrichmentSpots()</a></code> selects the cell type columns by name. It dropped the first column assuming it was <code>cell_ID</code>, which the stored result keeps last, and failed with “non-numeric argument to binary operator”.</li>
+<li>
+<code>test-spatial-deconv.R</code>: the pinned DWLS values predated f8fa23b5 (cluster keyed to the expression columns) and failed on <code>gsource</code>; they are re-pinned.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="4.3.1" id="giotto-431">Giotto 4.3.1<a class="anchor" aria-label="anchor" href="#giotto-431"></a></h2>
+<p>Version-only bump. The multicellular motif layer – <code><a href="../reference/cellProximityMotifs.html">cellProximityMotifs()</a></code>, <code>motifParam</code> and its subclasses, and <code><a href="../reference/analyzeData.html">analyzeData()</a></code> handing a backed network to the method registered for its class – is listed under 4.3.0 below but landed on <code>gsource</code> after it had moved to 4.3.0, so a 4.3.0 install may predate it. Downstream packages that import the motif param classes, or provide an <code><a href="../reference/analyzeData.html">analyzeData()</a></code> method for a backed network carrier, should require <code>Giotto (&gt;= 4.3.1)</code>.</p>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="4.3.0" id="giotto-430">Giotto 4.3.0<a class="anchor" aria-label="anchor" href="#giotto-430"></a></h2>
 <p><code>gsource</code> moves to its own minor line. It was previously 4.2.4 against <code>suite_dev</code>’s 4.2.3, so the two shared a minor version and a downstream package could only tell them apart by patch. The accumulated changes below — new readers, the param families, and several results-changing fixes — are more than a patch’s worth, and a distinct minor makes <code>gsource</code> the visibly leading line.</p>
 <p>Downstream packages pinning a class or generic added here should require <code>Giotto (&gt;= 4.3.0)</code>.</p>
 <p>Deprecation markers were retargeted only where the deprecation is unique to this line: <code><a href="../reference/calculateHVF.html">calculateHVF()</a></code>’s <code>var_number</code> and the <code><a href="../reference/runUMAP.html">runUMAP()</a></code> engine note now say 4.3.0. The <code><a href="../reference/findGiniMarkers.html">findGiniMarkers()</a></code> / <code><a href="../reference/findMarkers.html">findMarkers()</a></code> gini-threshold renames keep <code>when = "4.2.4"</code> — they are on <code>suite_dev</code> too, and will ship from there under that version.</p>
@@ -340,7 +385,7 @@
 <div class="section level3">
 <h3 id="new-4-3-0-1">New<a class="anchor" aria-label="anchor" href="#new-4-3-0-1"></a></h3>
 <ul><li>
-<code><a href="../reference/cellProximityMotifs.html">cellProximityMotifs()</a></code> works on disk-backed projects. As of GiottoClass 0.6.0 a <code>spatialNetworkObj</code>’s network slot may hold a GiottoDisk <code>parquetEdgeStore</code> instead of an <code>igraph</code>, and both are handled. When the store has no pending subset operations the backend reads its parquet directly, skipping the igraph materialization entirely – GiottoDisk already interned the node ids at write time, so no string hashing happens on either side. A store carrying pending ops falls back to the ordinary path, because the files on disk do not reflect a pending subset and reading them raw would silently analyse the whole network. Results are identical either way. No change to GiottoDisk is required.</li>
+<code><a href="../reference/cellProximityMotifs.html">cellProximityMotifs()</a></code> works on disk-backed projects. As of GiottoClass 0.6.0 a <code>spatialNetworkObj</code>’s network slot may hold a backed store instead of an <code>igraph</code>, and both are handled. The router hands the engine the network as it is held, with labels named by node ID: the package that owns a backed network class supplies the <code><a href="../reference/analyzeData.html">analyzeData()</a></code> methods that read it, so the same engine runs on the store in place, honouring any pending subset. <code>method = "auto"</code> resolves the engine without regard to the network type and dispatches again on it. The earlier fast path that opened the store’s parquet files by path – and so had to decline a subsetted store or one written across several files – is removed.</li>
 <li>
 <code><a href="../reference/plotMotifEnrichment.html">plotMotifEnrichment()</a></code>, <code><a href="../reference/plotMotifGlyphs.html">plotMotifGlyphs()</a></code> and <code><a href="../reference/spatMotifPlot.html">spatMotifPlot()</a></code> visualize motif results. The triage plot deliberately defaults to effect size against occurrence count rather than a volcano: permutation p-values are floored at <code>1 / (n_perm + 1)</code>, so on a real run most significant classes sit exactly on that floor and a volcano’s y-axis collapses to a single uninformative line. <code>style = "volcano"</code> keeps the conventional view. <code><a href="../reference/plotMotifGlyphs.html">plotMotifGlyphs()</a></code> draws each motif as the little graph it is, nodes coloured by cell type in canonical slot order, which makes an id like <code>size4_paw_A-B-B-C</code> readable at a glance. <code><a href="../reference/spatMotifPlot.html">spatMotifPlot()</a></code> shows where a motif’s occurrences sit in the tissue, switching to a density surface above <code>density_threshold</code> cells so it stays legible on a large section.</li>
 <li>
@@ -663,7 +708,7 @@
 <div class="section level3">
 <h3 id="bug-fixes-4-1-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-4-1-0"></a></h3>
 <ul><li>Fix error in <code><a href="../reference/plotInteractivePolygons.html">plotInteractivePolygons()</a></code> when providing a spatial plot with a continuous scale <a href="https://github.com/drieslab/Giotto/issues/964" class="external-link">#964</a> by jweis3</li>
-<li>Fix error in DWLS <code><a href="../reference/find_dampening_constant.html">find_dampening_constant()</a></code> when <code>S[subset, ]</code> produces only 1 gene.</li>
+<li>Fix error in DWLS <code>find_dampening_constant()</code> when <code>S[subset, ]</code> produces only 1 gene.</li>
 <li>Fix error in <code>interpolateFeatures()</code> where feature names with <code>-</code> or starting with numbers did not work</li>
 <li>Add catch in <code><a href="../reference/runPCAprojectionBatch.html">runPCAprojectionBatch()</a></code> for when ncp requested exceeds number of feats used</li>
 <li>Make <code><a href="../reference/spatCellCellcom.html">spatCellCellcom()</a></code> respect <code>verbose</code> flag <a href="https://github.com/drieslab/Giotto/issues/949" class="external-link">#949</a> by rbutleriii</li>

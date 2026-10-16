@@ -24,12 +24,15 @@ Params documentation template: deconvolution_params
 
 - n_cell:
 
-  numeric. Number of cells per spot (default = 50).
+  numeric. Expected number of cells per spot (default = 50). In the
+  second round a cell type is kept for a spot only when its first-round
+  proportion is at least `1 / n_cell`.
 
 - cutoff:
 
-  numeric. Expression cutoff below which a value is treated as absent
-  (default = 2).
+  numeric. PAGE enrichment z-score a cell type must reach in at least
+  one spot of a cluster to be a candidate for that cluster (default =
+  2). The two highest-scoring types are always candidates.
 
 ## Value
 

@@ -29,6 +29,11 @@ if(!"Giotto" %in% installed.packages()) {
   pak::pkg_install("giotto-suite/Giotto")
 }
 
+# Ensure spatialDWLS, the engine behind runDWLSDeconv(), is installed
+if(!"spatialDWLS" %in% installed.packages()) {
+  pak::pkg_install("drieslab/spatialDWLS")
+}
+
 # Ensure the Python environment for Giotto has been installed
 genv_exists <- Giotto::checkGiottoEnvironment()
 if(!genv_exists){
@@ -682,7 +687,6 @@ information to create a pie plot per spot.
 # Plot DWLS deconvolution result with Pie plots dataset 1
 spatDeconvPlot(giottoObject,
                show_image = FALSE,
-               radius = 0.5,
                return_plot = TRUE,
                save_plot = TRUE,
                save_param = list(save_name = "integrated_deconvolution"),

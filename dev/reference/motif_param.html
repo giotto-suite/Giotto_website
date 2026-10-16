@@ -3,15 +3,19 @@
 VIRTUAL contract; concrete subclasses select an engine. `motifParam()` is
 the factory.
 A backend supplies a concrete subclass and an `analyzeData` method on it.
-The method receives an `igraph` whose vertex names are cell IDs, plus the
-cell type labels, and must return the result contract described in
-[cellProximityMotifs()]."><meta property="og:description" content="Parameter classes for [analyzeData()] motif enrichment. `motifParam` is the
+The method receives the network carrier, plus the cell type labels named by
+node ID, and must return the result contract described in
+[cellProximityMotifs()]. The carrier is what the spatial network holds: an
+`igraph` whose vertex names are cell IDs, or a backed store, whose methods
+come from the package that owns its class."><meta property="og:description" content="Parameter classes for [analyzeData()] motif enrichment. `motifParam` is the
 VIRTUAL contract; concrete subclasses select an engine. `motifParam()` is
 the factory.
 A backend supplies a concrete subclass and an `analyzeData` method on it.
-The method receives an `igraph` whose vertex names are cell IDs, plus the
-cell type labels, and must return the result contract described in
-[cellProximityMotifs()]."><meta name="robots" content="noindex"><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=G-2V1K0KPLJC"></script><script>
+The method receives the network carrier, plus the cell type labels named by
+node ID, and must return the result contract described in
+[cellProximityMotifs()]. The carrier is what the spatial network holds: an
+`igraph` whose vertex names are cell IDs, or a backed store, whose methods
+come from the package that owns its class."><meta name="robots" content="noindex"><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=G-2V1K0KPLJC"></script><script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
@@ -73,7 +77,7 @@ cell type labels, and must return the result contract described in
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.0</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -219,9 +223,11 @@ cell type labels, and must return the result contract described in
 VIRTUAL contract; concrete subclasses select an engine. `motifParam()` is
 the factory.</p>
 <p>A backend supplies a concrete subclass and an `analyzeData` method on it.
-The method receives an `igraph` whose vertex names are cell IDs, plus the
-cell type labels, and must return the result contract described in
-[cellProximityMotifs()].</p>
+The method receives the network carrier, plus the cell type labels named by
+node ID, and must return the result contract described in
+[cellProximityMotifs()]. The carrier is what the spatial network holds: an
+`igraph` whose vertex names are cell IDs, or a backed store, whose methods
+come from the package that owns its class.</p>
     </div>
 
     <div class="section level2">
@@ -289,15 +295,18 @@ is enriched beyond what its constituent pairs already explain.</p></dd>
 
 
 <dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>a `giotto` object or an `igraph`</p></dd>
+<dd><p>a `giotto` object, or a network carrier (an `igraph`, or a backed
+store)</p></dd>
 
 
 <dt id="arg-cell-type">cell_type<a class="anchor" aria-label="anchor" href="#arg-cell-type"></a></dt>
-<dd><p>cell type labels, one per vertex (igraph method only)</p></dd>
+<dd><p>cell type labels, one per node, named by node ID
+(carrier methods only)</p></dd>
 
 
 <dt id="arg-strata">strata<a class="anchor" aria-label="anchor" href="#arg-strata"></a></dt>
-<dd><p>optional strata, one per vertex (igraph method only)</p></dd>
+<dd><p>optional strata, one per node, named by node ID (carrier
+methods only)</p></dd>
 
 
 <dt id="arg-anchored-on">anchored_on<a class="anchor" aria-label="anchor" href="#arg-anchored-on"></a></dt>

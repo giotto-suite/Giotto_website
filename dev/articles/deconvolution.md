@@ -7,6 +7,13 @@ calculate enrichment of specific cell-type signature gene lists.
 Spatial Dampened Weighted Least Squares (DWLS) estimates the proportions
 of different cell types across spots in a tissue.
 
+Giotto runs DWLS through the
+[spatialDWLS](https://drieslab.github.io/spatialDWLS/) package, which
+[`runDWLSDeconv()`](https://giottosuite.com/dev/reference/runDWLSDeconv.md)
+calls for you; install it once with
+`pak::pkg_install("drieslab/spatialDWLS")`. The same call works on
+objects whose expression is stored on disk with GiottoDisk.
+
 ## 1 Setup and load example dataset
 
 ``` r
@@ -14,6 +21,11 @@ of different cell types across spots in a tissue.
 # Ensure Giotto Suite is installed
 if(!"Giotto" %in% installed.packages()) {
   pak::pkg_install("giotto-suite/Giotto")
+}
+
+# Ensure spatialDWLS, the engine behind runDWLSDeconv(), is installed
+if(!"spatialDWLS" %in% installed.packages()) {
+  pak::pkg_install("drieslab/spatialDWLS")
 }
 
 # Ensure Giotto Data is installed
@@ -100,7 +112,9 @@ sign_matrix <- makeSignMatrixDWLSfromMatrix(
 
 ## 6 Run the DWLS Deconvolution
 
-This step may take a couple of minutes to run.
+This takes seconds for a Visium section. For larger datasets, pass a
+`BPPARAM` (e.g. `BiocParallel::MulticoreParam(8)`) to solve the spots in
+parallel; the result is the same.
 
 ``` r
 
@@ -117,8 +131,7 @@ proportion of each cell type per spot.
 ``` r
 
 spatDeconvPlot(g, 
-    show_image = FALSE,
-    radius = 50
+    show_image = FALSE
 )
 ```
 

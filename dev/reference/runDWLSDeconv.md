@@ -19,7 +19,9 @@ runDWLSDeconv(
   n_cell = 50,
   cutoff = 2,
   name = NULL,
-  return_gobject = TRUE
+  return_gobject = TRUE,
+  na_as_zero = FALSE,
+  BPPARAM = NULL
 )
 ```
 
@@ -62,12 +64,15 @@ runDWLSDeconv(
 
 - n_cell:
 
-  numeric. Number of cells per spot (default = 50).
+  numeric. Expected number of cells per spot (default = 50). In the
+  second round a cell type is kept for a spot only when its first-round
+  proportion is at least `1 / n_cell`.
 
 - cutoff:
 
-  numeric. Expression cutoff below which a value is treated as absent
-  (default = 2).
+  numeric. PAGE enrichment z-score a cell type must reach in at least
+  one spot of a cluster to be a candidate for that cluster (default =
+  2). The two highest-scoring types are always candidates.
 
 - name:
 
@@ -80,9 +85,29 @@ runDWLSDeconv(
   logical. Return the giotto object with the result added (default =
   TRUE), or the result object on its own.
 
+- na_as_zero:
+
+  logical. Positions with no signal on the signature features cannot be
+  solved and are `NA` by default; `TRUE` returns them as 0 instead.
+
+- BPPARAM:
+
+  a `BiocParallelParam` used for the per-position solves. `NULL`
+  (default) uses `getOption("giotto.bpparam")` when that is a parallel
+  param and runs serially otherwise.
+
 ## Value
 
 giotto object or deconvolution results
+
+## Details
+
+The work is done by
+[`analyzeData()`](https://giottosuite.com/dev/reference/analyzeData.md)
+with a
+[`deconvParam()`](https://giottosuite.com/dev/reference/deconv_param.md),
+dispatched on the expression object, so a disk-backed expression store
+can supply its own streaming implementation.
 
 ## See also
 
@@ -92,6 +117,8 @@ method, and
 for *spatialDWLS*, the spatial implementation used here.
 
 Other spatial deconvolution:
+[`deconv_dwls`](https://giottosuite.com/dev/reference/deconv_dwls.md),
+[`deconv_param`](https://giottosuite.com/dev/reference/deconv_param.md),
 [`makeSignMatrixDWLS()`](https://giottosuite.com/dev/reference/makeSignMatrixDWLS.md),
 [`makeSignMatrixDWLSfromMatrix()`](https://giottosuite.com/dev/reference/makeSignMatrixDWLSfromMatrix.md),
 [`runSpatialDeconv()`](https://giottosuite.com/dev/reference/runSpatialDeconv.md)

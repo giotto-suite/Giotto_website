@@ -81,6 +81,11 @@ if(!"Giotto" %in% installed.packages()) {
   pak::pkg_install("giotto-suite/Giotto")
 }
 
+# Ensure spatialDWLS, the engine behind runDWLSDeconv(), is installed
+if(!"spatialDWLS" %in% installed.packages()) {
+  pak::pkg_install("drieslab/spatialDWLS")
+}
+
 # Ensure the Python environment for Giotto has been installed.
 genv_exists <- Giotto::checkGiottoEnvironment()
 if(!genv_exists){
@@ -1001,8 +1006,7 @@ types.](images/visium_mouse_brain/29-spatCellPlot2D.png)
 ``` r
 
 spatDeconvPlot(visium_brain, 
-               show_image = TRUE,
-               radius = 50)
+               show_image = TRUE)
 ```
 
 ![Spatial deconvolution plot showing the proportion of cell types per

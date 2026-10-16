@@ -1,6 +1,93 @@
 # Changelog
 
-## Giotto 4.3.0 (in development)
+## Giotto 4.3.2 (in development)
+
+spatialDWLS moves to its own package,
+[spatialDWLS](https://github.com/drieslab/spatialDWLS) (drieslab), which
+Giotto now suggests, the way the motif layer suggests smotif.
+[`runDWLSDeconv()`](https://giottosuite.com/dev/reference/runDWLSDeconv.md)
+and
+[`runSpatialDeconv()`](https://giottosuite.com/dev/reference/runSpatialDeconv.md)
+keep their arguments and call it; install it with
+`remotes::install_github("drieslab/spatialDWLS")`. Downstream packages
+that import `dwlsDeconvParam` or provide an
+[`analyzeData()`](https://giottosuite.com/dev/reference/analyzeData.md)
+method for it should require `Giotto (>= 4.3.2)`.
+
+### new
+
+- [`deconvParam()`](https://giottosuite.com/dev/reference/deconv_param.md)
+  / `dwlsDeconvParam`: deconvolution as an
+  [`analyzeData()`](https://giottosuite.com/dev/reference/analyzeData.md)
+  verb, the sibling of
+  [`enrichParam()`](https://giottosuite.com/dev/reference/enrich_param.md).
+  Dispatching on the expression object lets a disk-backed store
+  (GiottoDisk) supply its own streaming method.
+- [`runDWLSDeconv()`](https://giottosuite.com/dev/reference/runDWLSDeconv.md)
+  /
+  [`runSpatialDeconv()`](https://giottosuite.com/dev/reference/runSpatialDeconv.md)
+  gain `BPPARAM` (per-spot solves in parallel; defaults to
+  `getOption("giotto.bpparam")`) and `na_as_zero`.
+
+### changes
+
+- DWLS is 12-22x faster on 600-20,000 spots serially. Results match
+  4.3.1 to ~1e-15 except for the fixes below.
+- `quadprog` and `Rfast` are no longer suggested; spatialDWLS brings
+  `quadprog`.
+- The `cutoff` argument is documented as what it is: the PAGE z-score a
+  cell type must reach in a cluster to be a candidate there, not an
+  expression cutoff.
+
+### bug fixes
+
+- Visium HD
+  ([`importVisiumHD()`](https://giottosuite.com/dev/reference/importVisiumHD.md)
+  and its wrappers):
+  - `load_transcripts = TRUE` at 8 or 16 um no longer leaves the bins
+    with empty cell metadata.
+  - cell metadata rows follow the expression barcodes instead of arrow
+    scan order;
+  - a direct `.h5` or matrix-market `expression_path` loads;
+  - an `.h5` source gives the `rna` feat_type as an mtx one does;
+  - the class default `feature_id_type` is `"symbol"`, the value it
+    accepts.
+- `get10Xmatrix_h5(gene_ids = "symbols", split_by_type = FALSE)` returns
+  gene symbols; it returned Ensembl IDs.
+- [`runDWLSDeconv()`](https://giottosuite.com/dev/reference/runDWLSDeconv.md):
+  a cluster with a single candidate cell type in the spot round now
+  assigns that type proportion 1; it was left at 0 (an `==` where an
+  assignment was meant). On a simulation with single-type niches and
+  `n_cell = 5` this lowers the RMSE against the true proportions from
+  0.167 to 0.045. With the default `n_cell = 50` it rarely triggers.
+- [`runDWLSDeconv()`](https://giottosuite.com/dev/reference/runDWLSDeconv.md):
+  small negative values from the constrained solver are clipped for
+  every cell type, not only the last one.
+- [`runDWLSDeconv()`](https://giottosuite.com/dev/reference/runDWLSDeconv.md)
+  no longer leaves the session’s random number generator in a fixed
+  state.
+- [`cellProximityEnrichmentSpots()`](https://giottosuite.com/dev/reference/cellProximityEnrichmentSpots.md)
+  selects the cell type columns by name. It dropped the first column
+  assuming it was `cell_ID`, which the stored result keeps last, and
+  failed with “non-numeric argument to binary operator”.
+- `test-spatial-deconv.R`: the pinned DWLS values predated f8fa23b5
+  (cluster keyed to the expression columns) and failed on `gsource`;
+  they are re-pinned.
+
+## Giotto 4.3.1
+
+Version-only bump. The multicellular motif layer –
+[`cellProximityMotifs()`](https://giottosuite.com/dev/reference/cellProximityMotifs.md),
+`motifParam` and its subclasses, and
+[`analyzeData()`](https://giottosuite.com/dev/reference/analyzeData.md)
+handing a backed network to the method registered for its class – is
+listed under 4.3.0 below but landed on `gsource` after it had moved to
+4.3.0, so a 4.3.0 install may predate it. Downstream packages that
+import the motif param classes, or provide an
+[`analyzeData()`](https://giottosuite.com/dev/reference/analyzeData.md)
+method for a backed network carrier, should require `Giotto (>= 4.3.1)`.
+
+## Giotto 4.3.0
 
 `gsource` moves to its own minor line. It was previously 4.2.4 against
 `suite_dev`’s 4.2.3, so the two shared a minor version and a downstream
@@ -590,16 +677,17 @@ too, and will ship from there under that version.
 
 - [`cellProximityMotifs()`](https://giottosuite.com/dev/reference/cellProximityMotifs.md)
   works on disk-backed projects. As of GiottoClass 0.6.0 a
-  `spatialNetworkObj`’s network slot may hold a GiottoDisk
-  `parquetEdgeStore` instead of an `igraph`, and both are handled. When
-  the store has no pending subset operations the backend reads its
-  parquet directly, skipping the igraph materialization entirely –
-  GiottoDisk already interned the node ids at write time, so no string
-  hashing happens on either side. A store carrying pending ops falls
-  back to the ordinary path, because the files on disk do not reflect a
-  pending subset and reading them raw would silently analyse the whole
-  network. Results are identical either way. No change to GiottoDisk is
-  required.
+  `spatialNetworkObj`’s network slot may hold a backed store instead of
+  an `igraph`, and both are handled. The router hands the engine the
+  network as it is held, with labels named by node ID: the package that
+  owns a backed network class supplies the
+  [`analyzeData()`](https://giottosuite.com/dev/reference/analyzeData.md)
+  methods that read it, so the same engine runs on the store in place,
+  honouring any pending subset. `method = "auto"` resolves the engine
+  without regard to the network type and dispatches again on it. The
+  earlier fast path that opened the store’s parquet files by path – and
+  so had to decline a subsetted store or one written across several
+  files – is removed.
 - [`plotMotifEnrichment()`](https://giottosuite.com/dev/reference/plotMotifEnrichment.md),
   [`plotMotifGlyphs()`](https://giottosuite.com/dev/reference/plotMotifGlyphs.md)
   and
@@ -1129,9 +1217,8 @@ too, and will ship from there under that version.
   [`plotInteractivePolygons()`](https://giottosuite.com/dev/reference/plotInteractivePolygons.md)
   when providing a spatial plot with a continuous scale
   [\#964](https://github.com/drieslab/Giotto/issues/964) by jweis3
-- Fix error in DWLS
-  [`find_dampening_constant()`](https://giottosuite.com/dev/reference/find_dampening_constant.md)
-  when `S[subset, ]` produces only 1 gene.
+- Fix error in DWLS `find_dampening_constant()` when `S[subset, ]`
+  produces only 1 gene.
 - Fix error in `interpolateFeatures()` where feature names with `-` or
   starting with numbers did not work
 - Add catch in

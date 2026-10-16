@@ -34,6 +34,8 @@ matrix of mean expression, features by cell type
 [`runDWLSDeconv`](https://giottosuite.com/dev/reference/runDWLSDeconv.md)
 
 Other spatial deconvolution:
+[`deconv_dwls`](https://giottosuite.com/dev/reference/deconv_dwls.md),
+[`deconv_param`](https://giottosuite.com/dev/reference/deconv_param.md),
 [`makeSignMatrixDWLS()`](https://giottosuite.com/dev/reference/makeSignMatrixDWLS.md),
 [`runDWLSDeconv()`](https://giottosuite.com/dev/reference/runDWLSDeconv.md),
 [`runSpatialDeconv()`](https://giottosuite.com/dev/reference/runSpatialDeconv.md)
