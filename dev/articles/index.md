@@ -211,6 +211,12 @@ Capture- and barcoding-based platforms read out by sequencing.
   Glioblastoma](https://giottosuite.com/dev/articles/visium_cytassist_human_glioblastoma.md):
 - [VisiumHD Human Colorectal
   Cancer](https://giottosuite.com/dev/articles/VisiumHD_Human_Colorectal_Cancer.md):
+- [Visium HD Human Colorectal Cancer: Segmented Cells
+  (GiottoDisk)](https://giottosuite.com/dev/articles/visiumhd_crc_cells_giottodisk.md):
+- [Visium HD Human Colorectal Cancer: 8 µm Bins
+  (GiottoDisk)](https://giottosuite.com/dev/articles/visiumhd_crc_bins_giottodisk.md):
+- [Visium HD Human Colorectal Cancer: 2 µm Bins into Your Own Polygons
+  (GiottoDisk)](https://giottosuite.com/dev/articles/visiumhd_crc_own_polygons_giottodisk.md):
 - [VisiumHD Rhesus Macaque
   Kidney](https://giottosuite.com/dev/articles/VisiumHD_Convenience_Function_Kidney.md):
 - [Stereo-seq Data

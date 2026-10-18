@@ -1,6 +1,71 @@
 # Changelog
 
-## Giotto 4.3.2 (in development)
+## Giotto 4.3.3 (in development)
+
+Downstream packages that import `spatAutoCorParam`,
+[`histThreshold()`](https://giottosuite.com/dev/reference/histThreshold.md)
+or provide an
+[`analyzeData()`](https://giottosuite.com/dev/reference/analyzeData.md)
+method for `edgeStatsParam` should require `Giotto (>= 4.3.3)`.
+
+### new
+
+- `thresholdParam("binarize")` takes a per-feature threshold on
+  matrices: one value per row, or the rule `"kmeans"` (exact 1-D
+  2-means, Otsu’s split) or `"rank"` (top `percentage_rank` percent).
+  [`histThreshold()`](https://giottosuite.com/dev/reference/histThreshold.md)
+  is that rule on a value histogram, so a streaming backend makes the
+  same call; the raster Otsu threshold uses it too.
+- [`spatAutoCorParam()`](https://giottosuite.com/dev/reference/spatAutoCorParam.md):
+  Moran’s I, Geary’s C and binSpect’s join count as parameter classes,
+  with significance from the closed-form randomisation null instead of
+  shuffling. The statistics are computed from GiottoClass’s
+  [`edgeStatsParam()`](https://giotto-suite.github.io/GiottoClass/reference/edgeStatsParam.html)
+  sums, so any backend providing those gets all three.
+  [`analyzeData()`](https://giottosuite.com/dev/reference/analyzeData.md)
+  runs them on a matrix, a GiottoDisk store or a `giotto` object
+  (`return_gobject = TRUE` adds the results to feature metadata).
+  `null = "covariate"` conditions Moran’s I and binSpect on a cell
+  grouping (library-size quantiles by default, or a cell metadata
+  column), so genes that only follow sequencing depth or composition
+  stop scoring as spatial.
+- [`spatialAutoCor()`](https://giottosuite.com/dev/reference/spatialAutoCor.md):
+  the one command for spatially autocorrelated features,
+  `method = "moran"`, `"geary"` or `"binspect"` (also `"joincount"`, the
+  same test), with `null = "permutation"` or `"covariate"`. It is a thin
+  wrapper over `analyzeData(gobject, spatAutoCorParam(...))`. The help
+  topic for
+  [`spatialAutoCorGlobal()`](https://giottosuite.com/dev/reference/spatialAutoCorGlobalLocal.md)
+  and
+  [`spatialAutoCorLocal()`](https://giottosuite.com/dev/reference/spatialAutoCorGlobalLocal.md)
+  is now `spatialAutoCorGlobalLocal`.
+- `binSpect(implementation = "fast")` runs binSpect as that join-count
+  test: sparse throughout, exact 2-means or rank binarization, and works
+  on GiottoDisk-backed objects.
+- `spatialAutoCorGlobal(test_method = "analytic")`: closed-form
+  significance for Moran’s I and Geary’s C in place of Monte Carlo
+  permutations.
+
+### changes
+
+- [`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md) now
+  runs the fast join-count test by default (`implementation = "fast"`,
+  as in `spatialAutoCor(method = "binspect")`). Its p-values come from
+  the randomisation null instead of a Fisher test that treated edges as
+  independent, so they are calibrated and far fewer genes reach p ~ 0;
+  the result has `statistic`, `z`, `p.value`, `adj.p.value`, `n_on` and
+  `odds_ratio`, ordered by `z` (legacy `estimate` is `odds_ratio`,
+  `high_expr` is `n_on`). `binSpect.pval` is still written, so HMRF
+  works, but fewer genes pass its 0.01 cut.
+  `implementation = "data.table"` restores the old results exactly;
+  `spatial_network_k`, `bin_matrix`, `calc_hub = TRUE`,
+  `do_fisher_test = FALSE` and a non-default `kmeans_algo` select it
+  automatically, with a message. `subset_feats` now works on the fast
+  path, and
+  [`spatialAutoCor()`](https://giottosuite.com/dev/reference/spatialAutoCor.md)
+  gains `feats`.
+
+## Giotto 4.3.2
 
 spatialDWLS moves to its own package,
 [spatialDWLS](https://github.com/drieslab/spatialDWLS) (drieslab), which
@@ -41,6 +106,21 @@ method for it should require `Giotto (>= 4.3.2)`.
 
 ### bug fixes
 
+- [`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md) with
+  `spatial_network_k` failed before running (its network sizes were
+  split into separate arguments), and so did passing `bin_matrix`; with
+  `return_gobject = TRUE` it also wrote no p-values. All three work.
+- [`binSpectMulti()`](https://giottosuite.com/dev/reference/binSpect.md)
+  combined p-values over `df = k` instead of `2k` in Fisher’s method, so
+  its combined p-values were too small. It now also combines unadjusted
+  p-values by default (`summarize = "p.value"`), as
+  [`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md)
+  already did.
+- binSpect’s `"matrix"` implementation failed when run serially, and
+  dropped edges between cells at distance 0.
+- kmeans binarization calls a constant feature off instead of failing,
+  and `kmeans_algo = "kmeans_arma_subset"` draws its subset under the
+  seed and works with fewer cells than the subset size.
 - Visium HD
   ([`importVisiumHD()`](https://giottosuite.com/dev/reference/importVisiumHD.md)
   and its wrappers):
@@ -52,6 +132,12 @@ method for it should require `Giotto (>= 4.3.2)`.
   - an `.h5` source gives the `rna` feat_type as an mtx one does;
   - the class default `feature_id_type` is `"symbol"`, the value it
     accepts.
+  - `load_expression()` on a `NNNum_outputs.tar` that is not extracted
+    yet extracts it; it errored unless the spatial loaders had run
+    first.
+  - `micron = TRUE` works with the detected paths; it required
+    `scalefactors_path` to be a file, so it errored unless one was
+    given.
 - `get10Xmatrix_h5(gene_ids = "symbols", split_by_type = FALSE)` returns
   gene symbols; it returned Ensembl IDs.
 - [`runDWLSDeconv()`](https://giottosuite.com/dev/reference/runDWLSDeconv.md):
@@ -1721,9 +1807,9 @@ too, and will ship from there under that version.
   [`spatialExperimentToGiotto()`](https://giotto-suite.github.io/GiottoClass/reference/spatialExperimentToGiotto.html)
   to convert between Giotto and SpatialExperiment
 - New
-  [`spatialAutoCorLocal()`](https://giottosuite.com/dev/reference/spatialAutoCor.md)
+  [`spatialAutoCorLocal()`](https://giottosuite.com/dev/reference/spatialAutoCorGlobalLocal.md)
   and
-  [`spatialAutoCorGlobal()`](https://giottosuite.com/dev/reference/spatialAutoCor.md)
+  [`spatialAutoCorGlobal()`](https://giottosuite.com/dev/reference/spatialAutoCorGlobalLocal.md)
   functions to find spatial autocorrelations from expression and cell
   metadata information
 - New

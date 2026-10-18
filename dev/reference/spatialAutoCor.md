@@ -1,56 +1,29 @@
-# Spatial autocorrelation
+# Spatially autocorrelated features
 
-Find spatial autocorrelation. Note that `spatialAutoCorGlobal` will
-return values as a data.table instead of appending information to the
-gobject. `spatialAutoCorLocal` will append the results as a spatial
-enrichment object by default.  
-If providing external data using either the `node_values` and/or
-`weight_matrix` params, the order of values provided should be the same
-as the ordering of the columns and rows of the weight matrix.
+Tests every feature of a \`giotto\` object for spatial autocorrelation
+over a spatial network: Moran's I, Geary's C, or binSpect (the
+black-black join count on binarized features, also available as
+\`"joincount"\`). Significance is the closed-form randomisation null, or
+with \`null = "covariate"\` a null conditioned on a cell grouping such
+as library size. Runs on in-memory and GiottoDisk-backed objects alike;
+with GiottoKernels installed the edge sums run in compiled code. See
+\[spatAutoCorParam()\] for the methods.
 
 ## Usage
 
 ``` r
-spatialAutoCorGlobal(
-  gobject = NULL,
+spatialAutoCor(
+  gobject,
+  method = c("moran", "geary", "binspect", "joincount"),
+  null = c("permutation", "covariate"),
+  covariate = "libsize",
   spat_unit = NULL,
   feat_type = NULL,
+  expression_values = "normalized",
+  spatial_network_name = "Delaunay_network",
   feats = NULL,
-  method = c("moran", "geary"),
-  data_to_use = c("expression", "cell_meta"),
-  expression_values = c("normalized", "scaled", "custom"),
-  meta_cols = NULL,
-  spatial_network_to_use = "kNN_network",
-  wm_method = c("distance", "adjacency"),
-  wm_name = "spat_weights",
-  node_values = NULL,
-  weight_matrix = NULL,
-  test_method = c("none", "monte_carlo"),
-  mc_nsim = 99,
-  cor_name = NULL,
-  return_gobject = FALSE,
-  verbose = TRUE
-)
-
-spatialAutoCorLocal(
-  gobject = NULL,
-  spat_unit = NULL,
-  feat_type = NULL,
-  feats = NULL,
-  method = c("moran", "gi", "gi*", "mean"),
-  data_to_use = c("expression", "cell_meta"),
-  expression_values = c("normalized", "scaled", "custom"),
-  meta_cols = NULL,
-  spatial_network_to_use = "kNN_network",
-  wm_method = c("distance", "adjacency"),
-  wm_name = "spat_weights",
-  node_values = NULL,
-  weight_matrix = NULL,
-  test_method = c("none"),
-  enrich_name = NULL,
   return_gobject = TRUE,
-  output = c("spatEnrObj", "data.table"),
-  verbose = TRUE
+  ...
 )
 ```
 
@@ -58,115 +31,81 @@ spatialAutoCorLocal(
 
 - gobject:
 
-  giotto object
-
-- spat_unit:
-
-  spatial unit
-
-- feat_type:
-
-  feature type
-
-- feats:
-
-  features (expression) on which to run autocorrelation. (leaving as
-  NULL means that all features will be tested)
+  a \`giotto\` object
 
 - method:
 
-  method of autocorrelation. See details (default = 'moran')
+  one of \`"moran"\`, \`"geary"\`, \`"binspect"\`; \`"joincount"\` is
+  another name for \`"binspect"\` (the same test, the same result
+  columns).
 
-- data_to_use:
+- null:
 
-  if using data from gobject, whether to test using expression
-  ('expression') or cell metadata ('cell_meta')
+  \`"permutation"\` (default) or \`"covariate"\`. The covariate null
+  asks whether a feature clusters beyond what a cell grouping explains:
+  cells are grouped by \`covariate\`, and Moran's I is taken of each
+  value minus its group's mean, or binSpect's join count is compared
+  with cells switching on at their group's rate. Use it when something
+  other than location – sequencing depth, cell type – varies across the
+  tissue and would otherwise make many features look spatial. Not
+  available for \`"geary"\`; binSpect needs an unweighted network.
+
+- covariate:
+
+  for \`null = "covariate"\` on a \`giotto\` object: \`"libsize"\` (the
+  cells' total raw counts) or a cell metadata column. A numeric
+  covariate is cut into \`n_groups\` quantile groups; a categorical one
+  is used as is. Matrix and store inputs take the grouping directly as
+  \`groups =\`.
+
+- spat_unit, feat_type:
+
+  spatial unit and feature type
 
 - expression_values:
 
-  name of expression information to use
+  expression values to use
 
-- meta_cols:
+- spatial_network_name:
 
-  columns in cell metadata to test
+  name of the spatial network to use
 
-- spatial_network_to_use:
+- feats:
 
-  spatial network to use
-
-- wm_method:
-
-  type of weight matrix to generate from spatial network if no weight
-  matrix is found attached to the spatial network
-
-- wm_name:
-
-  name of attached weight matrix to use
-
-- node_values:
-
-  alternative method of directly supplying a set of node values
-
-- weight_matrix:
-
-  alternative method of directly supplying a spatial weight matrix
-
-- test_method:
-
-  method to test values for significance (default is no testing)
-
-- mc_nsim:
-
-  when `test_method = 'monte_carlo'` this is number of simulations to
-  perform
-
-- cor_name:
-
-  name to assign the results in global autocorrelation output
+  optional feature IDs to test; \`NULL\` tests every feature. Each
+  feature's statistic does not depend on the others, but the p-value
+  adjustment counts only the features tested.
 
 - return_gobject:
 
-  (default = FALSE) whether to return results appended to
+  logical. Add the results to the feature metadata (\`\<method\>.z\`,
+  \`\<method\>.p\`, \`\<method\>.padj\`, plus \`binSpect.pval\` for
+  binSpect) and return the \`giotto\` object; otherwise return the
+  table.
 
-- verbose:
+- ...:
 
-  be verbose
-
-- enrich_name:
-
-  name to assign local autocorrelation spatial enrichment results
-
-- output:
-
-  'spatEnrObj' or 'data.table' metadata in the giotto object or as a
-  data.table
+  further settings passed to \[spatAutoCorParam()\]: \`weighted\`,
+  \`adjust_method\`, \`n_groups\`, and for binSpect \`bin_method\` and
+  \`percentage_rank\`.
 
 ## Value
 
-spatial autocorrelation
+the \`giotto\` object, or with \`return_gobject = FALSE\` a
+\`data.table\` with one row per feature ordered by decreasing \`z\`:
+\`feats\`, \`statistic\`, \`expected\`, \`variance\`, \`z\`,
+\`p.value\`, \`adj.p.value\` (binSpect adds \`n_on\` and
+\`odds_ratio\`).
 
-## Details
+## See also
 
-**Global Methods:**
+\[spatAutoCorParam()\], \[binSpect()\], and \[spatialAutoCorGlobal()\]
+for a custom spatial weight matrix
 
-- *Moran's I* 'moran'
+## Examples
 
-- *Geary's C* 'geary'
-
-**Local Methods:**
-
-- *Local Moran's I* 'moran'
-
-- *Getis-Ord Gi* 'Gi'
-
-- *Getis-Ord Gi\** 'Gi\*'
-
-- *Local mean* 'mean'
-
-## Functions
-
-- `spatialAutoCorGlobal()`: Global autocorrelation (single value
-  returned)
-
-- `spatialAutoCorLocal()`: Local autocorrelation (values generated for
-  each spatial ID)
+``` r
+g <- GiottoData::loadGiottoMini("visium")
+res <- spatialAutoCor(g, method = "moran", return_gobject = FALSE)
+g <- spatialAutoCor(g, method = "joincount", null = "covariate")
+```

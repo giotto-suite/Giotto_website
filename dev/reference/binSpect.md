@@ -34,7 +34,7 @@ binSpect(
   hub_min_int = 3,
   get_av_expr = TRUE,
   get_high_expr = TRUE,
-  implementation = c("data.table", "simple", "matrix"),
+  implementation = c("fast", "data.table", "simple", "matrix"),
   group_size = "automatic",
   do_parallel = TRUE,
   cores = NA,
@@ -227,7 +227,19 @@ binSpectMulti(
 
 - implementation:
 
-  enrichment implementation (data.table, simple, matrix)
+  `"fast"` (default), or a legacy implementation: `"data.table"`,
+  `"simple"` or `"matrix"`. `"fast"` runs the join-count test of
+  [`spatialAutoCor()`](https://giottosuite.com/dev/reference/spatialAutoCor.md)
+  (`method = "binspect"`): an exact 2-means or rank binarization and the
+  closed-form randomisation null instead of a Fisher test on edges, on
+  in-memory and GiottoDisk-backed objects. Its result has `statistic`,
+  `z`, `p.value`, `adj.p.value`, `n_on` and `odds_ratio`, ordered by
+  `z`. The kmeans tuning arguments do not apply to it.
+  `spatial_network_k`, `bin_matrix`, `calc_hub = TRUE`,
+  `do_fisher_test = FALSE` and a non-default `kmeans_algo` need a legacy
+  implementation, so with any of them binSpect uses `"data.table"` and
+  says so. The legacy implementations return `p.value`, `estimate`,
+  `score`, `av_expr` and `high_expr`.
 
 - group_size:
 

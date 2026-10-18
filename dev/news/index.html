@@ -61,7 +61,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.2</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -109,6 +109,9 @@
     <li><a class="dropdown-item" href="../articles/visium_cytassist_lungcancer.html">Visium CytAssist — Human lung cancer</a></li>
     <li><a class="dropdown-item" href="../articles/visium_cytassist_human_glioblastoma.html">Visium CytAssist — Human glioblastoma</a></li>
     <li><a class="dropdown-item" href="../articles/VisiumHD_Human_Colorectal_Cancer.html">VisiumHD — Human colorectal cancer</a></li>
+    <li><a class="dropdown-item" href="../articles/visiumhd_crc_cells_giottodisk.html">VisiumHD — Human colorectal cancer, segmented cells (GiottoDisk)</a></li>
+    <li><a class="dropdown-item" href="../articles/visiumhd_crc_bins_giottodisk.html">VisiumHD — Human colorectal cancer, 8 µm bins (GiottoDisk)</a></li>
+    <li><a class="dropdown-item" href="../articles/visiumhd_crc_own_polygons_giottodisk.html">VisiumHD — Human colorectal cancer, 2 µm bins into polygons (GiottoDisk)</a></li>
     <li><a class="dropdown-item" href="../articles/VisiumHD_Convenience_Function_Kidney.html">VisiumHD — Rhesus macaque kidney</a></li>
     <li><a class="dropdown-item" href="../articles/stereoseq_importer.html">Stereo-seq — Data importer</a></li>
     <li><a class="dropdown-item" href="../articles/stereoseq_mouse_eyeball.html">Stereo-seq — Mouse eyeball</a></li>
@@ -202,7 +205,29 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="4.3.2" id="giotto-432-in-development">Giotto 4.3.2 (in development)<a class="anchor" aria-label="anchor" href="#giotto-432-in-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="4.3.3" id="giotto-433-in-development">Giotto 4.3.3 (in development)<a class="anchor" aria-label="anchor" href="#giotto-433-in-development"></a></h2>
+<p>Downstream packages that import <code>spatAutoCorParam</code>, <code><a href="../reference/histThreshold.html">histThreshold()</a></code> or provide an <code><a href="../reference/analyzeData.html">analyzeData()</a></code> method for <code>edgeStatsParam</code> should require <code>Giotto (&gt;= 4.3.3)</code>.</p>
+<div class="section level3">
+<h3 id="new-4-3-3">new<a class="anchor" aria-label="anchor" href="#new-4-3-3"></a></h3>
+<ul><li>
+<code>thresholdParam("binarize")</code> takes a per-feature threshold on matrices: one value per row, or the rule <code>"kmeans"</code> (exact 1-D 2-means, Otsu’s split) or <code>"rank"</code> (top <code>percentage_rank</code> percent). <code><a href="../reference/histThreshold.html">histThreshold()</a></code> is that rule on a value histogram, so a streaming backend makes the same call; the raster Otsu threshold uses it too.</li>
+<li>
+<code><a href="../reference/spatAutoCorParam.html">spatAutoCorParam()</a></code>: Moran’s I, Geary’s C and binSpect’s join count as parameter classes, with significance from the closed-form randomisation null instead of shuffling. The statistics are computed from GiottoClass’s <code><a href="https://giotto-suite.github.io/GiottoClass/reference/edgeStatsParam.html" class="external-link">edgeStatsParam()</a></code> sums, so any backend providing those gets all three. <code><a href="../reference/analyzeData.html">analyzeData()</a></code> runs them on a matrix, a GiottoDisk store or a <code>giotto</code> object (<code>return_gobject = TRUE</code> adds the results to feature metadata). <code>null = "covariate"</code> conditions Moran’s I and binSpect on a cell grouping (library-size quantiles by default, or a cell metadata column), so genes that only follow sequencing depth or composition stop scoring as spatial.</li>
+<li>
+<code><a href="../reference/spatialAutoCor.html">spatialAutoCor()</a></code>: the one command for spatially autocorrelated features, <code>method = "moran"</code>, <code>"geary"</code> or <code>"binspect"</code> (also <code>"joincount"</code>, the same test), with <code>null = "permutation"</code> or <code>"covariate"</code>. It is a thin wrapper over <code>analyzeData(gobject, spatAutoCorParam(...))</code>. The help topic for <code><a href="../reference/spatialAutoCorGlobalLocal.html">spatialAutoCorGlobal()</a></code> and <code><a href="../reference/spatialAutoCorGlobalLocal.html">spatialAutoCorLocal()</a></code> is now <code>spatialAutoCorGlobalLocal</code>.</li>
+<li>
+<code>binSpect(implementation = "fast")</code> runs binSpect as that join-count test: sparse throughout, exact 2-means or rank binarization, and works on GiottoDisk-backed objects.</li>
+<li>
+<code>spatialAutoCorGlobal(test_method = "analytic")</code>: closed-form significance for Moran’s I and Geary’s C in place of Monte Carlo permutations.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="changes-4-3-3">changes<a class="anchor" aria-label="anchor" href="#changes-4-3-3"></a></h3>
+<ul><li>
+<code><a href="../reference/binSpect.html">binSpect()</a></code> now runs the fast join-count test by default (<code>implementation = "fast"</code>, as in <code>spatialAutoCor(method = "binspect")</code>). Its p-values come from the randomisation null instead of a Fisher test that treated edges as independent, so they are calibrated and far fewer genes reach p ~ 0; the result has <code>statistic</code>, <code>z</code>, <code>p.value</code>, <code>adj.p.value</code>, <code>n_on</code> and <code>odds_ratio</code>, ordered by <code>z</code> (legacy <code>estimate</code> is <code>odds_ratio</code>, <code>high_expr</code> is <code>n_on</code>). <code>binSpect.pval</code> is still written, so HMRF works, but fewer genes pass its 0.01 cut. <code>implementation = "data.table"</code> restores the old results exactly; <code>spatial_network_k</code>, <code>bin_matrix</code>, <code>calc_hub = TRUE</code>, <code>do_fisher_test = FALSE</code> and a non-default <code>kmeans_algo</code> select it automatically, with a message. <code>subset_feats</code> now works on the fast path, and <code><a href="../reference/spatialAutoCor.html">spatialAutoCor()</a></code> gains <code>feats</code>.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="4.3.2" id="giotto-432">Giotto 4.3.2<a class="anchor" aria-label="anchor" href="#giotto-432"></a></h2>
 <p>spatialDWLS moves to its own package, <a href="https://github.com/drieslab/spatialDWLS" class="external-link">spatialDWLS</a> (drieslab), which Giotto now suggests, the way the motif layer suggests smotif. <code><a href="../reference/runDWLSDeconv.html">runDWLSDeconv()</a></code> and <code><a href="../reference/runSpatialDeconv.html">runSpatialDeconv()</a></code> keep their arguments and call it; install it with <code>remotes::install_github("drieslab/spatialDWLS")</code>. Downstream packages that import <code>dwlsDeconvParam</code> or provide an <code><a href="../reference/analyzeData.html">analyzeData()</a></code> method for it should require <code>Giotto (&gt;= 4.3.2)</code>.</p>
 <div class="section level3">
 <h3 id="new-4-3-2">new<a class="anchor" aria-label="anchor" href="#new-4-3-2"></a></h3>
@@ -220,13 +245,23 @@
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-4-3-2">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-4-3-2"></a></h3>
-<ul><li>Visium HD (<code><a href="../reference/importVisiumHD.html">importVisiumHD()</a></code> and its wrappers):
+<ul><li>
+<code><a href="../reference/binSpect.html">binSpect()</a></code> with <code>spatial_network_k</code> failed before running (its network sizes were split into separate arguments), and so did passing <code>bin_matrix</code>; with <code>return_gobject = TRUE</code> it also wrote no p-values. All three work.</li>
+<li>
+<code><a href="../reference/binSpect.html">binSpectMulti()</a></code> combined p-values over <code>df = k</code> instead of <code>2k</code> in Fisher’s method, so its combined p-values were too small. It now also combines unadjusted p-values by default (<code>summarize = "p.value"</code>), as <code><a href="../reference/binSpect.html">binSpect()</a></code> already did.</li>
+<li>binSpect’s <code>"matrix"</code> implementation failed when run serially, and dropped edges between cells at distance 0.</li>
+<li>kmeans binarization calls a constant feature off instead of failing, and <code>kmeans_algo = "kmeans_arma_subset"</code> draws its subset under the seed and works with fewer cells than the subset size.</li>
+<li>Visium HD (<code><a href="../reference/importVisiumHD.html">importVisiumHD()</a></code> and its wrappers):
 <ul><li>
 <code>load_transcripts = TRUE</code> at 8 or 16 um no longer leaves the bins with empty cell metadata.</li>
 <li>cell metadata rows follow the expression barcodes instead of arrow scan order;</li>
 <li>a direct <code>.h5</code> or matrix-market <code>expression_path</code> loads;</li>
 <li>an <code>.h5</code> source gives the <code>rna</code> feat_type as an mtx one does;</li>
 <li>the class default <code>feature_id_type</code> is <code>"symbol"</code>, the value it accepts.</li>
+<li>
+<code>load_expression()</code> on a <code>NNNum_outputs.tar</code> that is not extracted yet extracts it; it errored unless the spatial loaders had run first.</li>
+<li>
+<code>micron = TRUE</code> works with the detected paths; it required <code>scalefactors_path</code> to be a file, so it errored unless one was given.</li>
 </ul></li>
 <li>
 <code>get10Xmatrix_h5(gene_ids = "symbols", split_by_type = FALSE)</code> returns gene symbols; it returned Ensembl IDs.</li>
@@ -1038,7 +1073,7 @@
 <ul><li>New <code><a href="https://giotto-suite.github.io/GiottoClass/reference/gefToGiotto.html" class="external-link">gefToGiotto()</a></code> interoperability function to convert gef object from Stereo*seq to giotto</li>
 <li>New <code><a href="https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code> interoperability function to convert giotto object to squidpy flavor anndata .h5ad file(s)</li>
 <li>New <code><a href="https://giotto-suite.github.io/GiottoClass/reference/giottoToSpatialExperiment.html" class="external-link">giottoToSpatialExperiment()</a></code> and <code><a href="https://giotto-suite.github.io/GiottoClass/reference/spatialExperimentToGiotto.html" class="external-link">spatialExperimentToGiotto()</a></code> to convert between Giotto and SpatialExperiment</li>
-<li>New <code><a href="../reference/spatialAutoCor.html">spatialAutoCorLocal()</a></code> and <code><a href="../reference/spatialAutoCor.html">spatialAutoCorGlobal()</a></code> functions to find spatial autocorrelations from expression and cell metadata information</li>
+<li>New <code><a href="../reference/spatialAutoCorGlobalLocal.html">spatialAutoCorLocal()</a></code> and <code><a href="../reference/spatialAutoCorGlobalLocal.html">spatialAutoCorGlobal()</a></code> functions to find spatial autocorrelations from expression and cell metadata information</li>
 <li>New <code><a href="https://giotto-suite.github.io/GiottoClass/reference/createSpatialWeightMatrix.html" class="external-link">createSpatialWeightMatrix()</a></code> function to generate spatial weight matrix from spatial networks for autocorrelation</li>
 <li>Add spatial_interaction_spot.R with functions adapted from master branch for working with the Giotto suite object.</li>
 <li>New exported accessors for slots (experimental)</li>

@@ -6,7 +6,7 @@ Uses
 
 Tutorials built on a Giotto Suite extension package.
 
-GiottoDisk 5
+GiottoDisk 8
 
 GiottoLens 1
 
@@ -18,7 +18,7 @@ Interactivity 1
 
 In situ methods 10
 
-Sequencing-based methods 9
+Sequencing-based methods 12
 
 Spatial in situ transcriptomics 7
 
@@ -32,7 +32,7 @@ Single cell RNA sequencing (non-spatial) 3
 
 Dataset size
 
-full 36
+full 39
 
 mini 2
 
@@ -64,7 +64,7 @@ Visium 3
 
 Visium CytAssist 2
 
-Visium HD 2
+Visium HD 5
 
 Stereo-seq 2
 
@@ -94,11 +94,11 @@ CosMx WTx, Visium.
 
 500–5,000 2
 
-5,000+ 25
+5,000+ 28
 
 Species
 
-human 19
+human 22
 
 mouse 17
 
@@ -110,7 +110,7 @@ brain 11
 
 breast 6
 
-colon 3
+colon 6
 
 embryo 2
 
@@ -132,13 +132,13 @@ spleen 1
 
 Condition
 
-cancer 16
+cancer 19
 
 normal 18
 
 Modality
 
-RNA 37
+RNA 40
 
 protein 4
 
@@ -151,9 +151,9 @@ multi-cell spots and bins.
 
 subcellular 10
 
-single cell 15
+single cell 17
 
-spot 14
+spot 15
 
 Clear filters
 
@@ -211,6 +211,17 @@ genesspot](https://giottosuite.com/dev/articles/visium_cytassist_human_glioblast
 [Sequencing-based methods VisiumHD Human Colorectal Cancer Visium HD ·
 human · colon · cancer RNA5,000+
 genesspot](https://giottosuite.com/dev/articles/VisiumHD_Human_Colorectal_Cancer.md)
+[Sequencing-based methods Visium HD Human Colorectal Cancer: Segmented
+Cells (GiottoDisk) Visium HD · human · colon · cancer
+GiottoDiskRNA5,000+ genessingle
+cell](https://giottosuite.com/dev/articles/visiumhd_crc_cells_giottodisk.md)
+[Sequencing-based methods Visium HD Human Colorectal Cancer: 8 µm Bins
+(GiottoDisk) Visium HD · human · colon · cancer GiottoDiskRNA5,000+
+genesspot](https://giottosuite.com/dev/articles/visiumhd_crc_bins_giottodisk.md)
+[Sequencing-based methods Visium HD Human Colorectal Cancer: 2 µm Bins
+into Your Own Polygons (GiottoDisk) Visium HD · human · colon · cancer
+GiottoDiskRNA5,000+ genessingle
+cell](https://giottosuite.com/dev/articles/visiumhd_crc_own_polygons_giottodisk.md)
 [Sequencing-based methods VisiumHD Rhesus Macaque Kidney Visium HD ·
 rhesus macaque · kidney · normal RNA5,000+
 genesspot](https://giottosuite.com/dev/articles/VisiumHD_Convenience_Function_Kidney.md)
