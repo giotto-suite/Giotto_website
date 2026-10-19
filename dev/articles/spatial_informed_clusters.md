@@ -36,7 +36,7 @@ g <- GiottoData::loadGiottoMini("visium")
 Get the top genes per spatial co-expression module. For more information
 about how to calculate these genes, see the tutorial for [Detection of
 spatial co-expression
-modules](https://giotto-suite.github.io/Giotto_website/spatial_coexpression_modules.html).
+modules](https://giottosuite.com/dev/articles/spatial_coexpression_modules.md).
 
 ``` r
 

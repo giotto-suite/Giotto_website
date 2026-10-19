@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Detection of spatial genes • Giotto</title>
+<title>Detection of spatially variable genes • Giotto</title>
 <!-- katex math --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script><script src="../katex-auto.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
@@ -14,7 +14,7 @@
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
-<meta property="og:title" content="Detection of spatial genes">
+<meta property="og:title" content="Detection of spatially variable genes">
 <meta name="robots" content="noindex">
 <!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=G-2V1K0KPLJC"></script><script>
   window.dataLayer = window.dataLayer || [];
@@ -180,7 +180,7 @@
     <li><a class="dropdown-item" href="../articles/tesselation.html">Tesselation</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Spatial patterns</h6></li>
-    <li><a class="dropdown-item" href="../articles/spatial_genes.html">Detection of spatial genes</a></li>
+    <li><a class="dropdown-item" href="../articles/spatial_genes.html">Detection of spatially variable genes</a></li>
     <li><a class="dropdown-item" href="../articles/spatial_coexpression_modules.html">Detection of spatial co-expression modules</a></li>
     <li><a class="dropdown-item" href="../articles/spatial_informed_clusters.html">Spatially informed clusters</a></li>
     <li><a class="dropdown-item" href="../articles/hmrf.html">Spatial domain analysis using HMRF</a></li>
@@ -239,7 +239,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Detection of spatial genes</h1>
+      <h1>Detection of spatially variable genes</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/giotto-suite/Giotto/blob/dev/vignettes/spatial_genes.Rmd" class="external-link"><code>vignettes/spatial_genes.Rmd</code></a></small>
@@ -248,169 +248,660 @@
 
     
     
-<p>Finding genes or features that follow spatial patterns in their
-expression can help to better understand the spatial microenvironment of
-the sample.</p>
+<p>A gene is <em>spatially variable</em> when where it is expressed in
+the tissue is not random: neighbouring cells look more alike than cells
+picked at random. This tutorial finds such genes with
+<code><a href="../reference/spatialAutoCor.html">spatialAutoCor()</a></code>, a single command for three classic
+statistics. Everything runs on <strong>disk-backed</strong> objects
+(GiottoDisk), so the same code scales from these small crops to whole
+slides.</p>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="33%">
+<col width="33%">
+</colgroup>
+<thead><tr class="header">
+<th>method</th>
+<th>asks</th>
+<th>good at</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>
+<code>"moran"</code> (Moran’s I)</td>
+<td>do neighbours have correlated expression levels?</td>
+<td>broad gradients and domains</td>
+</tr>
+<tr class="even">
+<td>
+<code>"geary"</code> (Geary’s C)</td>
+<td>how different are neighbours, on average?</td>
+<td>sharp local differences</td>
+</tr>
+<tr class="odd">
+<td>
+<code>"binspect"</code> (binSpect, also
+<code>"joincount"</code>)</td>
+<td>after calling each cell <em>on</em> or <em>off</em>, do <em>on</em>
+cells touch each other more than chance?</td>
+<td>sparse or patchy genes, rare cell types</td>
+</tr>
+</tbody>
+</table>
+<p>Two things make this fast and well calibrated:</p>
+<ul>
+<li>
+<strong>Analytic significance.</strong> P-values come from the
+closed-form randomisation null of each statistic, not from shuffling the
+tissue hundreds of times.</li>
+<li>
+<strong>A covariate null.</strong> <code>null = "covariate"</code>
+tests each gene against cells with similar sequencing depth (or the same
+cell type), so genes that only follow depth or cell composition stop
+looking spatial.</li>
+</ul>
+<p>The tutorial uses two public datasets: a <strong>Xenium</strong> lung
+cancer crop (single cells, section 3–4) and a <strong>Visium HD</strong>
+colorectal cancer crop (8 µm bins, section 5).</p>
 <div class="section level2" number="1">
-<h2 id="setup-and-load-example-dataset">
-<span class="header-section-number">1</span> Setup and load example
-dataset<a class="anchor" aria-label="anchor" href="#setup-and-load-example-dataset"></a>
+<h2 id="setup">
+<span class="header-section-number">1</span> Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed</span></span>
-<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/Giotto"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># Ensure Giotto Data is installed</span></span>
-<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"GiottoData"</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/GiottoData"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giottosuite.com">Giotto</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Ensure the Python environment for Giotto has been installed</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="co"># The following command need only be run once to install the Giotto environment</span></span>
-<span>  <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Giotto Suite with GiottoDisk; GiottoKernels is optional and speeds up the</span></span>
+<span><span class="co"># edge sums on large data</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"giotto-suite/GiottoUtils"</span>, ref <span class="op">=</span> <span class="st">"dev"</span><span class="op">)</span></span>
+<span><span class="fu">GiottoUtils</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoUtils/reference/suite_install.html" class="external-link">suite_install</a></span><span class="op">(</span><span class="st">"GiottoDisk"</span>, install_arrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># load the object</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu">GiottoData</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoData/reference/loadGiottoMini.html" class="external-link">loadGiottoMini</a></span><span class="op">(</span><span class="st">"visium"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giottosuite.com">Giotto</a></span><span class="op">)</span>; <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giotto-suite.github.io/GiottoClass/" class="external-link">GiottoClass</a></span><span class="op">)</span>; <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">GiottoDisk</span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span>; <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># run GiottoDisk's tiled steps on 4 parallel workers and hide progress bars</span></span>
+<span><span class="fu">future</span><span class="fu">::</span><span class="fu">plan</span><span class="op">(</span><span class="fu">future</span><span class="fu">::</span><span class="va">multisession</span>, workers <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>progressr.enable <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co"># GiottoDisk sizes its memory use from one setting: the fraction of free RAM</span></span>
+<span><span class="co"># it may use (default 0.25)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>giotto.memory_frac <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">data_dir</span>       <span class="op">&lt;-</span> <span class="st">"data"</span>      <span class="co"># downloads go here</span></span>
+<span><span class="va">project_dir</span>    <span class="op">&lt;-</span> <span class="st">"projects"</span>  <span class="co"># GiottoDisk projects (one per dataset)</span></span>
+<span><span class="va">results_folder</span> <span class="op">&lt;-</span> <span class="st">"results"</span>   <span class="co"># every figure is saved here as a PNG</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">project_dir</span>, showWarnings <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">results_folder</span>, showWarnings <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">instructions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span></span>
+<span>  save_dir <span class="op">=</span> <span class="va">results_folder</span>, save_plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  show_plot <span class="op">=</span> <span class="cn">TRUE</span>, return_plot <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="2">
-<h2 id="create-a-spatial-network">
-<span class="header-section-number">2</span> Create a spatial
-network<a class="anchor" aria-label="anchor" href="#create-a-spatial-network"></a>
+<h2 id="quick-start-a-xenium-lung-cancer-crop">
+<span class="header-section-number">2</span> Quick start: a Xenium
+lung cancer crop<a class="anchor" aria-label="anchor" href="#quick-start-a-xenium-lung-cancer-crop"></a>
 </h2>
+<div class="section level3" number="2.1">
+<h3 id="create-a-disk-backed-object">
+<span class="header-section-number">2.1</span> Create a disk-backed
+object<a class="anchor" aria-label="anchor" href="#create-a-disk-backed-object"></a>
+</h3>
+<p>The crop is a 425 × 425 µm window of the 10x Xenium human lung cancer
+FFPE sample (Human Multi-Tissue and Cancer panel, 377 genes), with its
+transcripts, cell and nucleus boundaries and morphology images.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span><span class="va">g</span>,</span>
-<span>    method <span class="op">=</span> <span class="st">"kNN"</span>, </span>
-<span>    k <span class="op">=</span> <span class="fl">6</span>,</span>
-<span>    maximum_distance_knn <span class="op">=</span> <span class="fl">400</span>,</span>
-<span>    name <span class="op">=</span> <span class="st">"spatial_network"</span></span>
-<span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">xen_dir</span> <span class="op">&lt;-</span> <span class="fu">GiottoData</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoData/reference/getSpatialDataset.html" class="external-link">getSpatialDataset</a></span><span class="op">(</span><span class="st">"xenium_mini_lung_ffpe"</span>,</span>
+<span>                                         directory <span class="op">=</span> <span class="va">data_dir</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g</span>,  </span>
-<span>    show_network <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>    network_color <span class="op">=</span> <span class="st">"blue"</span>, </span>
-<span>    spatial_network_name <span class="op">=</span> <span class="st">"spatial_network"</span></span>
+<span><span class="va">xen_source</span> <span class="op">&lt;-</span> <span class="fu">sourceCreate</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">project_dir</span>, <span class="st">"xenium"</span><span class="op">)</span>,</span>
+<span>                           type <span class="op">=</span> <span class="st">"gDirSource"</span><span class="op">)</span></span>
+<span><span class="fu">setArtifactDumpDir</span><span class="op">(</span><span class="va">xen_source</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">g_xen</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createGiottoXeniumObject.html">createGiottoXeniumObject</a></span><span class="op">(</span></span>
+<span>  xenium_dir       <span class="op">=</span> <span class="va">xen_dir</span>,</span>
+<span>  backend          <span class="op">=</span> <span class="va">xen_source</span>,   <span class="co"># creates the object as a disk-backed project</span></span>
+<span>  load_transcripts <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  load_expression  <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  load_cellmeta    <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  load_images      <span class="op">=</span> <span class="st">"focus"</span>,</span>
+<span>  instructions     <span class="op">=</span> <span class="va">instructions</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/spatial_genes/1-spatPlot2D.png" alt="" width="60%" style="display: block; margin: auto;"></p>
+<p>The expression matrix and, below, the spatial network are stores on
+disk. The statistics read them in chunks, so memory stays bounded
+however large the dataset is.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/getExpression.html" class="external-link">getExpression</a></span><span class="op">(</span><span class="va">g_xen</span>, values <span class="op">=</span> <span class="st">"raw"</span>, output <span class="op">=</span> <span class="st">"matrix"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "parquetExprStore"</span></span>
+<span><span class="co">## attr(,"package")</span></span>
+<span><span class="co">## [1] "GiottoDisk"</span></span></code></pre>
+</div>
+<div class="section level3" number="2.2">
+<h3 id="filter-normalize-and-build-a-spatial-network">
+<span class="header-section-number">2.2</span> Filter, normalize and
+build a spatial network<a class="anchor" aria-label="anchor" href="#filter-normalize-and-build-a-spatial-network"></a>
+</h3>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g_xen</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addStatistics.html">addStatistics</a></span><span class="op">(</span><span class="va">g_xen</span>, expression_values <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span>
+<span><span class="va">g_xen</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/filterGiotto.html">filterGiotto</a></span><span class="op">(</span><span class="va">g_xen</span>,</span>
+<span>  expression_threshold   <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  feat_det_in_min_cells  <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  min_det_feats_per_cell <span class="op">=</span> <span class="fl">10</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">g_xen</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/normalizeGiotto.html">normalizeGiotto</a></span><span class="op">(</span><span class="va">g_xen</span>, scale_feats <span class="op">=</span> <span class="cn">FALSE</span>, scale_cells <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># the Delaunay network joins each cell to its natural neighbours</span></span>
+<span><span class="va">g_xen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span><span class="va">g_xen</span>, method <span class="op">=</span> <span class="st">"Delaunay"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g_zoom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/crop.html" class="external-link">crop</a></span><span class="op">(</span><span class="va">g_xen</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">150</span>, <span class="fl">250</span>, <span class="op">-</span><span class="fl">300</span>, <span class="op">-</span><span class="fl">200</span><span class="op">)</span>, view <span class="op">=</span> <span class="st">"roi"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g_zoom</span>,</span>
+<span>  show_network <span class="op">=</span> <span class="cn">TRUE</span>, network_color <span class="op">=</span> <span class="st">"#4FC3F7"</span>,</span>
+<span>  spatial_network_name <span class="op">=</span> <span class="st">"Delaunay_network"</span>,</span>
+<span>  point_size <span class="op">=</span> <span class="fl">1.5</span>, point_alpha <span class="op">=</span> <span class="fl">1</span>, background_color <span class="op">=</span> <span class="st">"black"</span>,</span>
+<span>  view <span class="op">=</span> <span class="st">"roi"</span>,</span>
+<span>  save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"01-delaunay-network"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/spatial_genes/01-delaunay-network.png" alt="" width="60%" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level3" number="2.3">
+<h3 id="find-spatial-genes">
+<span class="header-section-number">2.3</span> Find spatial
+genes<a class="anchor" aria-label="anchor" href="#find-spatial-genes"></a>
+</h3>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">bs_xen</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialAutoCor.html">spatialAutoCor</a></span><span class="op">(</span><span class="va">g_xen</span>, method <span class="op">=</span> <span class="st">"binspect"</span>, return_gobject <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">bs_xen</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">8</span>, <span class="fu">.</span><span class="op">(</span><span class="va">feats</span>, <span class="va">statistic</span>, <span class="va">expected</span>, <span class="va">z</span>, <span class="va">adj.p.value</span>, <span class="va">n_on</span>, <span class="va">odds_ratio</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">##     feats statistic   expected        z   adj.p.value  n_on odds_ratio</span></span>
+<span><span class="co">##    &lt;char&gt;     &lt;num&gt;      &lt;num&gt;    &lt;num&gt;         &lt;num&gt; &lt;num&gt;      &lt;num&gt;</span></span>
+<span><span class="co">## 1:  MARCO       268   68.58911 26.75583 1.721670e-155   188  12.552041</span></span>
+<span><span class="co">## 2: MCEMP1       251   64.97977 25.56765 2.848251e-142   183  11.136574</span></span>
+<span><span class="co">## 3:   MALL      1870 1407.93413 22.91926 1.622512e-114   850   7.020221</span></span>
+<span><span class="co">## 4:  EPCAM      1683 1234.62742 22.45591 4.565162e-110   796   6.735536</span></span>
+<span><span class="co">## 5: GPRC5A      1262  871.88318 20.65363  2.952181e-93   669   5.053945</span></span>
+<span><span class="co">## 6: CYP2B6      1094  729.53873 20.10209  1.922036e-88   612   4.942007</span></span>
+<span><span class="co">## 7: CYP4B1       956  615.11299 19.67081  8.932170e-85   562   4.677609</span></span>
+<span><span class="co">## 8: STEAP4       894  567.85604 19.25584  2.569590e-81   540   4.409562</span></span></code></pre>
+<p>Each row is a gene. For binSpect, <code>statistic</code> counts
+network edges whose two cells are both <em>on</em>,
+<code>expected</code> is that count under the randomisation null, and
+<code>z</code> is the standardised difference. <code>n_on</code> is how
+many cells were called <em>on</em>, and <code>odds_ratio</code> is the
+odds ratio of the 2 × 2 table of edges by the on/off state of their two
+cells (the <code>estimate</code> of earlier binSpect versions). The
+table is sorted by <code>z</code>.</p>
+<p>With <code>return_gobject = TRUE</code> (the default), the results
+are written to the feature metadata instead, as <code>binspect.z</code>,
+<code>binspect.p</code> and <code>binspect.padj</code> (and
+<code>binSpect.pval</code>, which <code><a href="../reference/doHMRF.html">doHMRF()</a></code> reads):</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g_xen</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialAutoCor.html">spatialAutoCor</a></span><span class="op">(</span><span class="va">g_xen</span>, method <span class="op">=</span> <span class="st">"binspect"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">g_xen</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">binspect.z</span><span class="op">)</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="fu">.</span><span class="op">(</span><span class="va">feat_ID</span>, <span class="va">binspect.z</span>, <span class="va">binspect.padj</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">##    feat_ID binspect.z binspect.padj</span></span>
+<span><span class="co">##     &lt;char&gt;      &lt;num&gt;         &lt;num&gt;</span></span>
+<span><span class="co">## 1:   MARCO   26.75583 1.721670e-155</span></span>
+<span><span class="co">## 2:  MCEMP1   25.56765 2.848251e-142</span></span>
+<span><span class="co">## 3:    MALL   22.91926 1.622512e-114</span></span>
+<span><span class="co">## 4:   EPCAM   22.45591 4.565162e-110</span></span></code></pre>
+<p>The top genes, plotted as their transcripts over the cell
+boundaries:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">top4</span> <span class="op">&lt;-</span> <span class="va">bs_xen</span><span class="op">$</span><span class="va">feats</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">g_xen</span>,</span>
+<span>  show_image <span class="op">=</span> <span class="cn">TRUE</span>, image_name <span class="op">=</span> <span class="st">"bound1"</span>,  <span class="co"># morphology_focus_0000: DAPI</span></span>
+<span>  feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rna <span class="op">=</span> <span class="va">top4</span><span class="op">)</span>, feat_type <span class="op">=</span> <span class="st">"rna"</span>, use_overlap <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  feats_color_code <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#FFD54F"</span>, <span class="st">"#FF7043"</span>, <span class="st">"#4FC3F7"</span>, <span class="st">"#AED581"</span><span class="op">)</span>,</span>
+<span>  point_size <span class="op">=</span> <span class="fl">0.4</span>, plot_last <span class="op">=</span> <span class="st">"points"</span>,</span>
+<span>  show_polygon <span class="op">=</span> <span class="cn">TRUE</span>, polygon_feat_type <span class="op">=</span> <span class="st">"cell"</span>,</span>
+<span>  polygon_color <span class="op">=</span> <span class="st">"grey60"</span>, polygon_line_size <span class="op">=</span> <span class="fl">0.05</span>, polygon_alpha <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  background_color <span class="op">=</span> <span class="st">"black"</span>,</span>
+<span>  save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"02-binspect-top-insitu"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/spatial_genes/02-binspect-top-insitu.png" alt="" width="90%" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level3" number="2.4">
+<h3 id="what-binspect-counts">
+<span class="header-section-number">2.4</span> What binSpect
+counts<a class="anchor" aria-label="anchor" href="#what-binspect-counts"></a>
+</h3>
+<p>binSpect first calls every cell <em>on</em> or <em>off</em> for a
+gene. The default rule, <code>bin_method = "kmeans"</code>, splits the
+gene’s values into two groups with an exact one-dimensional 2-means
+(Otsu’s threshold). <code><a href="../reference/histThreshold.html">histThreshold()</a></code> exposes that rule, so
+we can redraw what the test sees for the top gene and for a gene with no
+pattern:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">bs_xen</span><span class="op">$</span><span class="va">feats</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="st">"ACTG2"</span><span class="op">)</span></span>
+<span><span class="va">vals</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/spatValues.html" class="external-link">spatValues</a></span><span class="op">(</span><span class="va">g_xen</span>, feats <span class="op">=</span> <span class="va">genes</span>, expression_values <span class="op">=</span> <span class="st">"normalized"</span><span class="op">)</span></span>
+<span><span class="va">locs</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/getSpatialLocations.html" class="external-link">getSpatialLocations</a></span><span class="op">(</span><span class="va">g_xen</span>, output <span class="op">=</span> <span class="st">"data.table"</span><span class="op">)</span></span>
+<span><span class="va">edges</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/getSpatialNetwork.html" class="external-link">getSpatialNetwork</a></span><span class="op">(</span><span class="va">g_xen</span>, name <span class="op">=</span> <span class="st">"Delaunay_network"</span>,</span>
+<span>                           output <span class="op">=</span> <span class="st">"networkDT"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">panel</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">gene</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">v</span>   <span class="op">&lt;-</span> <span class="va">vals</span><span class="op">[[</span><span class="va">gene</span><span class="op">]</span><span class="op">]</span></span>
+<span>  <span class="va">tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span>
+<span>  <span class="va">thr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/histThreshold.html">histThreshold</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">on</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">v</span> <span class="op">&gt;</span> <span class="va">thr</span>, <span class="va">vals</span><span class="op">$</span><span class="va">cell_ID</span><span class="op">)</span></span>
+<span>  <span class="va">e</span>   <span class="op">&lt;-</span> <span class="va">edges</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">from</span>, <span class="va">to</span>, both_on <span class="op">=</span> <span class="va">on</span><span class="op">[</span><span class="va">from</span><span class="op">]</span> <span class="op">&amp;</span> <span class="va">on</span><span class="op">[</span><span class="va">to</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span>
+<span>  <span class="va">e</span><span class="op">[</span><span class="va">locs</span>, on <span class="op">=</span> <span class="fu">.</span><span class="op">(</span>from <span class="op">=</span> <span class="va">cell_ID</span><span class="op">)</span>, <span class="fu">`:=`</span><span class="op">(</span>x0 <span class="op">=</span> <span class="va">i.sdimx</span>, y0 <span class="op">=</span> <span class="va">i.sdimy</span><span class="op">)</span><span class="op">]</span></span>
+<span>  <span class="va">e</span><span class="op">[</span><span class="va">locs</span>, on <span class="op">=</span> <span class="fu">.</span><span class="op">(</span>to <span class="op">=</span> <span class="va">cell_ID</span><span class="op">)</span>, <span class="fu">`:=`</span><span class="op">(</span>x1 <span class="op">=</span> <span class="va">i.sdimx</span>, y1 <span class="op">=</span> <span class="va">i.sdimy</span><span class="op">)</span><span class="op">]</span></span>
+<span>  <span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">locs</span>, <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span>cell_ID <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">on</span><span class="op">)</span>, on <span class="op">=</span> <span class="va">on</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"cell_ID"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html" class="external-link">geom_segment</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">e</span><span class="op">[</span><span class="va">both_on</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">]</span>,</span>
+<span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">x0</span>, <span class="va">y0</span>, xend <span class="op">=</span> <span class="va">x1</span>, yend <span class="op">=</span> <span class="va">y1</span><span class="op">)</span>,</span>
+<span>      colour <span class="op">=</span> <span class="st">"grey30"</span>, linewidth <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html" class="external-link">geom_segment</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">e</span><span class="op">[</span><span class="va">both_on</span> <span class="op">==</span> <span class="cn">TRUE</span><span class="op">]</span>,</span>
+<span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">x0</span>, <span class="va">y0</span>, xend <span class="op">=</span> <span class="va">x1</span>, yend <span class="op">=</span> <span class="va">y1</span><span class="op">)</span>,</span>
+<span>      colour <span class="op">=</span> <span class="st">"#FFD54F"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">pts</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">sdimx</span>, <span class="va">sdimy</span>, colour <span class="op">=</span> <span class="va">on</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_colour_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`FALSE` <span class="op">=</span> <span class="st">"grey45"</span>, `TRUE` <span class="op">=</span> <span class="st">"#FF7043"</span><span class="op">)</span>,</span>
+<span>                        labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"off"</span>, <span class="st">"on"</span><span class="op">)</span>, name <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html" class="external-link">coord_fixed</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"black"</span>, colour <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>          plot.margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">10</span>, <span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span>,</span>
+<span>          text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%s: %d on cells, %d on-on edges (%.0f expected)"</span>,</span>
+<span>                         <span class="va">gene</span>, <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">on</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">e</span><span class="op">$</span><span class="va">both_on</span><span class="op">)</span>,</span>
+<span>                         <span class="va">bs_xen</span><span class="op">[</span><span class="va">feats</span> <span class="op">==</span> <span class="va">gene</span>, <span class="va">expected</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/panel.html" class="external-link">panel</a></span><span class="op">(</span><span class="va">genes</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/panel.html" class="external-link">panel</a></span><span class="op">(</span><span class="va">genes</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">results_folder</span>, <span class="st">"03-binspect-explained.png"</span><span class="op">)</span>, <span class="va">p</span>,</span>
+<span>       width <span class="op">=</span> <span class="fl">11</span>, height <span class="op">=</span> <span class="fl">5</span>, dpi <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/spatial_genes/03-binspect-explained.png" alt="" width="100%" style="display: block; margin: auto;"></p>
+<p>Yellow edges join two <em>on</em> cells. MARCO, a marker of alveolar
+macrophages, is <em>on</em> in only 188 cells, but they sit together:
+268 edges join two <em>on</em> cells where about 69 are expected if the
+same cells were scattered at random. ACTG2 is <em>on</em> in more cells,
+but its <em>on</em>-<em>on</em> edges (466) are close to what chance
+gives (430).</p>
+</div>
+<div class="section level3" number="2.5">
+<h3 id="compare-the-three-statistics">
+<span class="header-section-number">2.5</span> Compare the three
+statistics<a class="anchor" aria-label="anchor" href="#compare-the-three-statistics"></a>
+</h3>
+<p>All three methods take the same arguments. Running them side by
+side:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>moran <span class="op">=</span> <span class="st">"moran"</span>, geary <span class="op">=</span> <span class="st">"geary"</span>, binspect <span class="op">=</span> <span class="st">"binspect"</span><span class="op">)</span>,</span>
+<span>  <span class="kw">function</span><span class="op">(</span><span class="va">m</span><span class="op">)</span> <span class="fu"><a href="../reference/spatialAutoCor.html">spatialAutoCor</a></span><span class="op">(</span><span class="va">g_xen</span>, method <span class="op">=</span> <span class="va">m</span>, return_gobject <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/funprog.html" class="external-link">Reduce</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">)</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, by <span class="op">=</span> <span class="st">"feats"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setattr.html" class="external-link">setnames</a></span><span class="op">(</span><span class="va">res</span><span class="op">[[</span><span class="va">m</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">feats</span>, <span class="va">z</span><span class="op">)</span><span class="op">]</span>, <span class="st">"z"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"z_"</span>, <span class="va">m</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">z</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>, method <span class="op">=</span> <span class="st">"spearman"</span>, use <span class="op">=</span> <span class="st">"complete.obs"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##              z_moran   z_geary z_binspect</span></span>
+<span><span class="co">## z_moran    1.0000000 0.9198885  0.9924898</span></span>
+<span><span class="co">## z_geary    0.9198885 1.0000000  0.9055192</span></span>
+<span><span class="co">## z_binspect 0.9924898 0.9055192  1.0000000</span></span></code></pre>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">label</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TFPI"</span>, <span class="st">"TCIM"</span>, <span class="st">"CD163"</span>, <span class="st">"MRC1"</span>, <span class="st">"CPA3"</span>, <span class="st">"AQP9"</span>, <span class="st">"ACTG2"</span>,</span>
+<span>           <span class="va">bs_xen</span><span class="op">$</span><span class="va">feats</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span>, <span class="va">z</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">z_moran</span><span class="op">)</span>, <span class="va">feats</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">z</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">z_moran</span>, <span class="va">z_binspect</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_abline</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"grey70"</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="va">z_geary</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">1.6</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggrepel</span><span class="fu">::</span><span class="fu"><a href="https://ggrepel.slowkow.com/reference/geom_text_repel.html" class="external-link">geom_text_repel</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">z</span><span class="op">[</span><span class="va">feats</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="va">label</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">feats</span><span class="op">)</span>,</span>
+<span>                           size <span class="op">=</span> <span class="fl">3.2</span>, min.segment.length <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_colour_viridis_c</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Geary z"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Moran's I z-score"</span>, y <span class="op">=</span> <span class="st">"binSpect z-score"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_classic</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">11</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">results_folder</span>, <span class="st">"04-moran-vs-binspect.png"</span><span class="op">)</span>, <span class="va">p</span>,</span>
+<span>       width <span class="op">=</span> <span class="fl">6.5</span>, height <span class="op">=</span> <span class="fl">5.5</span>, dpi <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/spatial_genes/04-moran-vs-binspect.png" alt="" width="70%" style="display: block; margin: auto;"></p>
+<p>The methods agree on most genes; where they differ, it is
+informative. Genes above the diagonal are favoured by binSpect, below it
+by Moran’s I:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># fill each cell by the gene's normalized expression; the colour scale is</span></span>
+<span><span class="co"># capped at the 95th percentile of expressing cells so a few very high cells</span></span>
+<span><span class="co"># do not wash out the pattern</span></span>
+<span><span class="va">fill_map</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">gobject</span>, <span class="va">gene</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/spatValues.html" class="external-link">spatValues</a></span><span class="op">(</span><span class="va">gobject</span>, feats <span class="op">=</span> <span class="va">gene</span>, expression_values <span class="op">=</span> <span class="st">"normalized"</span><span class="op">)</span></span>
+<span>  <span class="va">cap</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">v</span><span class="op">[[</span><span class="va">gene</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="va">v</span><span class="op">[[</span><span class="va">gene</span><span class="op">]</span><span class="op">]</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">]</span>, <span class="fl">0.95</span><span class="op">)</span></span>
+<span>  <span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span>cell_ID <span class="op">=</span> <span class="va">v</span><span class="op">$</span><span class="va">cell_ID</span>, expression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="va">v</span><span class="op">[[</span><span class="va">gene</span><span class="op">]</span><span class="op">]</span>, <span class="va">cap</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/addCellMetadata.html" class="external-link">addCellMetadata</a></span><span class="op">(</span><span class="va">gobject</span>, new_metadata <span class="op">=</span> <span class="va">v</span>,</span>
+<span>                             by_column <span class="op">=</span> <span class="cn">TRUE</span>, column_cell_ID <span class="op">=</span> <span class="st">"cell_ID"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">gobject</span>,</span>
+<span>    polygon_feat_type <span class="op">=</span> <span class="st">"cell"</span>, show_polygon <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    polygon_fill <span class="op">=</span> <span class="st">"expression"</span>, polygon_fill_gradient_style <span class="op">=</span> <span class="st">"sequential"</span>,</span>
+<span>    polygon_color <span class="op">=</span> <span class="st">"grey15"</span>, polygon_line_size <span class="op">=</span> <span class="fl">0.05</span>, polygon_alpha <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    background_color <span class="op">=</span> <span class="st">"black"</span>, show_legend <span class="op">=</span> <span class="cn">FALSE</span>, show_axes <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    show_plot <span class="op">=</span> <span class="cn">FALSE</span>, save_plot <span class="op">=</span> <span class="cn">FALSE</span>, return_plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="va">gene</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"black"</span>, colour <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>          plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"white"</span>, size <span class="op">=</span> <span class="fl">14</span>, hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TFPI"</span>, <span class="st">"CD163"</span>, <span class="st">"ACTG2"</span><span class="op">)</span>,</span>
+<span>                                          <span class="va">fill_map</span>, gobject <span class="op">=</span> <span class="va">g_xen</span><span class="op">)</span>,</span>
+<span>                        nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">results_folder</span>, <span class="st">"05-method-maps.png"</span><span class="op">)</span>, <span class="va">p</span>,</span>
+<span>       width <span class="op">=</span> <span class="fl">13</span>, height <span class="op">=</span> <span class="fl">4.6</span>, dpi <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/spatial_genes/05-method-maps.png" alt="" width="100%" style="display: block; margin: auto;"></p>
+<p>TFPI is expressed throughout the epithelium at levels that fade
+towards the stroma: a broad gradient, which Moran’s I, working on the
+expression level, scores higher than binSpect. CD163, a macrophage
+marker, is high in few cells that cluster together, which binSpect ranks
+higher. ACTG2 shows no pattern under any of the three.</p>
+</div>
 </div>
 <div class="section level2" number="3">
-<h2 id="rank-binarization">
-<span class="header-section-number">3</span> Rank binarization<a class="anchor" aria-label="anchor" href="#rank-binarization"></a>
+<h2 id="spatial-genes-within-cell-types">
+<span class="header-section-number">3</span> Spatial genes within
+cell types<a class="anchor" aria-label="anchor" href="#spatial-genes-within-cell-types"></a>
 </h2>
-<p>Rank the genes on the spatial dataset depending on whether they
-exhibit a spatial pattern location or not.</p>
-<p>This step may take a few minutes to run.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ranktest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/binSpect.html">binSpect</a></span><span class="op">(</span><span class="va">g</span>, </span>
-<span>    bin_method <span class="op">=</span> <span class="st">"rank"</span>,</span>
-<span>    calc_hub <span class="op">=</span> <span class="cn">TRUE</span>, </span>
-<span>    hub_min_int <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>    spatial_network_name <span class="op">=</span> <span class="st">"spatial_network"</span></span>
+<p>A cell-type marker is spatial almost by definition: the cell type
+sits somewhere in the tissue. To find genes that vary <em>within</em> a
+cell type, condition the null on the cell type itself. First, quick
+clusters:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g_xen</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPCA.html">runPCA</a></span><span class="op">(</span><span class="va">g_xen</span>, feats_to_use <span class="op">=</span> <span class="cn">NULL</span>, ncp <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span><span class="va">g_xen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">g_xen</span>, dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">15</span>, k <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span>
+<span><span class="va">g_xen</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/doLeidenCluster.html">doLeidenClusterIgraph</a></span><span class="op">(</span><span class="va">g_xen</span>, resolution <span class="op">=</span> <span class="fl">0.4</span>, name <span class="op">=</span> <span class="st">"leiden_clus"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">g_xen</span>,</span>
+<span>  polygon_feat_type <span class="op">=</span> <span class="st">"cell"</span>, show_polygon <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  polygon_fill <span class="op">=</span> <span class="st">"leiden_clus"</span>, polygon_fill_as_factor <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  polygon_color <span class="op">=</span> <span class="st">"grey20"</span>, polygon_line_size <span class="op">=</span> <span class="fl">0.05</span>, polygon_alpha <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  background_color <span class="op">=</span> <span class="st">"black"</span>,</span>
+<span>  save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"06-clusters"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="section level3" number="3.1">
-<h3 id="visualize-top-results">
-<span class="header-section-number">3.1</span> Visualize top
-results<a class="anchor" aria-label="anchor" href="#visualize-top-results"></a>
-</h3>
-<p>Plot the scaled expression of genes with the highest probability of
-being spatial genes.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatFeatPlot2D.html" class="external-link">spatFeatPlot2D</a></span><span class="op">(</span><span class="va">g</span>, </span>
-<span>    expression_values <span class="op">=</span> <span class="st">"scaled"</span>,</span>
-<span>    feats <span class="op">=</span> <span class="va">ranktest</span><span class="op">$</span><span class="va">feats</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span>, </span>
-<span>    cow_n_col <span class="op">=</span> <span class="fl">2</span>, </span>
-<span>    point_size <span class="op">=</span> <span class="fl">2</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/spatial_genes/2-spatFeatPlot2D.png" alt="" width="80%" style="display: block; margin: auto;"></p>
-</div>
+<p><img src="images/spatial_genes/06-clusters.png" alt="" width="70%" style="display: block; margin: auto;"></p>
+<p><code>null = "covariate"</code> with
+<code>covariate = "leiden_clus"</code> compares each cell only with
+cells of the same cluster:</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">within</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialAutoCor.html">spatialAutoCor</a></span><span class="op">(</span><span class="va">g_xen</span>, method <span class="op">=</span> <span class="st">"moran"</span>, null <span class="op">=</span> <span class="st">"covariate"</span>,</span>
+<span>                         covariate <span class="op">=</span> <span class="st">"leiden_clus"</span>, return_gobject <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">moran</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">feats</span>, z_tissue <span class="op">=</span> <span class="va">z</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>           <span class="va">within</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">feats</span>, z_within <span class="op">=</span> <span class="va">z</span><span class="op">)</span><span class="op">]</span>, by <span class="op">=</span> <span class="st">"feats"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">label</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EGFR"</span>, <span class="st">"PPARG"</span>, <span class="st">"KRT7"</span>, <span class="st">"STEAP4"</span>, <span class="st">"CXCL9"</span>, <span class="st">"PCSK2"</span>, <span class="st">"CPA3"</span>, <span class="st">"MALL"</span><span class="op">)</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">w</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">z_tissue</span>, <span class="va">z_within</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_abline</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"grey70"</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"grey40"</span>, size <span class="op">=</span> <span class="fl">1.4</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">w</span><span class="op">[</span><span class="va">feats</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="va">label</span><span class="op">]</span>, colour <span class="op">=</span> <span class="st">"#E64A19"</span>, size <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggrepel</span><span class="fu">::</span><span class="fu"><a href="https://ggrepel.slowkow.com/reference/geom_text_repel.html" class="external-link">geom_text_repel</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">w</span><span class="op">[</span><span class="va">feats</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="va">label</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">feats</span><span class="op">)</span>,</span>
+<span>                           size <span class="op">=</span> <span class="fl">3.2</span>, min.segment.length <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Moran z (permutation null)"</span>,</span>
+<span>       y <span class="op">=</span> <span class="st">"Moran z (within clusters)"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_classic</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">11</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">results_folder</span>, <span class="st">"07-within-clusters.png"</span><span class="op">)</span>, <span class="va">p</span>,</span>
+<span>       width <span class="op">=</span> <span class="fl">6.5</span>, height <span class="op">=</span> <span class="fl">5.5</span>, dpi <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/spatial_genes/07-within-clusters.png" alt="" width="70%" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"KRT7"</span>, <span class="st">"PPARG"</span>, <span class="st">"PCSK2"</span>, <span class="st">"CXCL9"</span><span class="op">)</span>,</span>
+<span>                                          <span class="va">fill_map</span>, gobject <span class="op">=</span> <span class="va">g_xen</span><span class="op">)</span>,</span>
+<span>                        nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">results_folder</span>, <span class="st">"08-within-maps.png"</span><span class="op">)</span>, <span class="va">p</span>,</span>
+<span>       width <span class="op">=</span> <span class="fl">16</span>, height <span class="op">=</span> <span class="fl">4.6</span>, dpi <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/spatial_genes/08-within-maps.png" alt="" width="100%" style="display: block; margin: auto;"></p>
+<p>Markers of a cell type drop sharply: KRT7 and PPARG cover the
+epithelial clusters wholesale, so once each cell is compared only with
+cells of its own cluster, little pattern is left. Genes that keep a high
+score vary <em>within</em> their cell type: PCSK2 is high in only part
+of the epithelium, and CXCL9 in a single small focus.</p>
 </div>
 <div class="section level2" number="4">
-<h2 id="session-info">
-<span class="header-section-number">4</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+<h2 id="sequencing-depth-a-visium-hd-crop">
+<span class="header-section-number">4</span> Sequencing depth: a
+Visium HD crop<a class="anchor" aria-label="anchor" href="#sequencing-depth-a-visium-hd-crop"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<p>On sequencing-based data, the number of molecules captured per spot
+or bin varies across the tissue, and many genes simply follow it. Under
+the permutation null those genes look spatial. This crop is a 400 × 400
+µm window of the 10x Visium HD colorectal cancer sample, at the tissue
+edge.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">vhd_dir</span> <span class="op">&lt;-</span> <span class="fu">GiottoData</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoData/reference/getSpatialDataset.html" class="external-link">getSpatialDataset</a></span><span class="op">(</span><span class="st">"visiumhd_mini_crc"</span>,</span>
+<span>                                         directory <span class="op">=</span> <span class="va">data_dir</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">vhd_source</span> <span class="op">&lt;-</span> <span class="fu">sourceCreate</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">project_dir</span>, <span class="st">"visiumhd"</span><span class="op">)</span>,</span>
+<span>                           type <span class="op">=</span> <span class="st">"gDirSource"</span><span class="op">)</span></span>
+<span><span class="fu">setArtifactDumpDir</span><span class="op">(</span><span class="va">vhd_source</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">g_vhd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createGiottoVisiumHDObjectBin.html">createGiottoVisiumHDObjectBin</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">vhd_dir</span>, <span class="st">"binned_outputs"</span><span class="op">)</span>,</span>
+<span>  bin          <span class="op">=</span> <span class="fl">8</span>,</span>
+<span>  backend      <span class="op">=</span> <span class="va">vhd_source</span>,</span>
+<span>  instructions <span class="op">=</span> <span class="va">instructions</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">g_vhd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addStatistics.html">addStatistics</a></span><span class="op">(</span><span class="va">g_vhd</span>, expression_values <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span>
+<span><span class="va">g_vhd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/filterGiotto.html">filterGiotto</a></span><span class="op">(</span><span class="va">g_vhd</span>,</span>
+<span>  expression_threshold   <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  feat_det_in_min_cells  <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>  min_det_feats_per_cell <span class="op">=</span> <span class="fl">20</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">g_vhd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/normalizeGiotto.html">normalizeGiotto</a></span><span class="op">(</span><span class="va">g_vhd</span>, scale_feats <span class="op">=</span> <span class="cn">FALSE</span>, scale_cells <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">g_vhd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addStatistics.html">addStatistics</a></span><span class="op">(</span><span class="va">g_vhd</span>, expression_values <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># the 8 nearest bins</span></span>
+<span><span class="va">g_vhd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span><span class="va">g_vhd</span>, method <span class="op">=</span> <span class="st">"kNN"</span>, k <span class="op">=</span> <span class="fl">8</span>,</span>
+<span>                              name <span class="op">=</span> <span class="st">"kNN_network"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g_vhd</span>,</span>
+<span>  show_image <span class="op">=</span> <span class="cn">TRUE</span>, image_name <span class="op">=</span> <span class="st">"image"</span>,</span>
+<span>  cell_color <span class="op">=</span> <span class="st">"total_expr"</span>, color_as_factor <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  cell_color_gradient <span class="op">=</span> <span class="st">"viridis"</span>, point_size <span class="op">=</span> <span class="fl">1.6</span>, point_alpha <span class="op">=</span> <span class="fl">0.9</span>,</span>
+<span>  save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"09-vhd-depth"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/spatial_genes/09-vhd-depth.png" alt="" width="60%" style="display: block; margin: auto;"></p>
+<p>Run Moran’s I with both nulls. <code>covariate = "libsize"</code>
+(the default) cuts the bins into <code>n_groups</code> (default 10)
+quantile groups of total counts and tests each gene against bins of
+similar depth:</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">perm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialAutoCor.html">spatialAutoCor</a></span><span class="op">(</span><span class="va">g_vhd</span>, method <span class="op">=</span> <span class="st">"moran"</span>,</span>
+<span>                       spatial_network_name <span class="op">=</span> <span class="st">"kNN_network"</span>,</span>
+<span>                       return_gobject <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">cov</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialAutoCor.html">spatialAutoCor</a></span><span class="op">(</span><span class="va">g_vhd</span>, method <span class="op">=</span> <span class="st">"moran"</span>, null <span class="op">=</span> <span class="st">"covariate"</span>,</span>
+<span>                       covariate <span class="op">=</span> <span class="st">"libsize"</span>,</span>
+<span>                       spatial_network_name <span class="op">=</span> <span class="st">"kNN_network"</span>,</span>
+<span>                       return_gobject <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>permutation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">perm</span><span class="op">$</span><span class="va">adj.p.value</span> <span class="op">&lt;</span> <span class="fl">0.01</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>  covariate   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">cov</span><span class="op">$</span><span class="va">adj.p.value</span>  <span class="op">&lt;</span> <span class="fl">0.01</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## permutation   covariate </span></span>
+<span><span class="co">##        3617         917 </span></span></code></pre>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">perm</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">feats</span>, z_perm <span class="op">=</span> <span class="va">z</span><span class="op">)</span><span class="op">]</span>, <span class="va">cov</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">feats</span>, z_cov <span class="op">=</span> <span class="va">z</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>           by <span class="op">=</span> <span class="st">"feats"</span><span class="op">)</span></span>
+<span><span class="va">label</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ACTB"</span>, <span class="st">"OAZ1"</span>, <span class="st">"TMSB4X"</span>, <span class="st">"MT-CO1"</span>, <span class="st">"FTL"</span>,</span>
+<span>           <span class="st">"IGHA1"</span>, <span class="st">"JCHAIN"</span>, <span class="st">"VIM"</span>, <span class="st">"COL3A1"</span>, <span class="st">"LYZ"</span><span class="op">)</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">v</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">z_perm</span>, <span class="va">z_cov</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_abline</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"grey70"</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"grey50"</span>, size <span class="op">=</span> <span class="fl">0.6</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">v</span><span class="op">[</span><span class="va">feats</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="va">label</span><span class="op">]</span>, colour <span class="op">=</span> <span class="st">"#E64A19"</span>, size <span class="op">=</span> <span class="fl">1.8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggrepel</span><span class="fu">::</span><span class="fu"><a href="https://ggrepel.slowkow.com/reference/geom_text_repel.html" class="external-link">geom_text_repel</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">v</span><span class="op">[</span><span class="va">feats</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="va">label</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">feats</span><span class="op">)</span>,</span>
+<span>                           size <span class="op">=</span> <span class="fl">3.2</span>, min.segment.length <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Moran z (permutation null)"</span>,</span>
+<span>       y <span class="op">=</span> <span class="st">"Moran z (covariate null, library size)"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_classic</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">11</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">results_folder</span>, <span class="st">"10-vhd-nulls.png"</span><span class="op">)</span>, <span class="va">p</span>,</span>
+<span>       width <span class="op">=</span> <span class="fl">6.5</span>, height <span class="op">=</span> <span class="fl">5.5</span>, dpi <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/spatial_genes/10-vhd-nulls.png" alt="" width="70%" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatFeatPlot2D.html" class="external-link">spatFeatPlot2D</a></span><span class="op">(</span><span class="va">g_vhd</span>,</span>
+<span>  feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ACTB"</span>, <span class="st">"OAZ1"</span>, <span class="st">"IGHA1"</span>, <span class="st">"COL3A1"</span><span class="op">)</span>,</span>
+<span>  expression_values <span class="op">=</span> <span class="st">"normalized"</span>,</span>
+<span>  cell_color_gradient <span class="op">=</span> <span class="st">"viridis"</span>, point_size <span class="op">=</span> <span class="fl">1.2</span>,</span>
+<span>  cow_n_col <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"11-vhd-maps"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/spatial_genes/11-vhd-maps.png" alt="" width="80%" style="display: block; margin: auto;"></p>
+<p>Under the permutation null 3,617 of 9,143 genes are significant at a
+1% false discovery rate; conditioned on library size, 917 are.
+Housekeeping and mitochondrial genes (ACTB, OAZ1, TMSB4X, MT-CO1, FTL)
+fall from the top 100 to below rank 300: their maps trace the dense
+epithelium, where more molecules are captured per bin. Immunoglobulins
+(IGHA1, JCHAIN), VIM, COL3A1 and LYZ keep their scores; they follow
+plasma cells, stroma and myeloid cells rather than depth.</p>
+<p>The same works for binSpect
+(<code>spatialAutoCor(g_vhd, method = "binspect", null = "covariate")</code>).
+Geary’s C has no covariate null.</p>
+</div>
+<div class="section level2" number="5">
+<h2 id="choosing-a-method-and-using-the-results">
+<span class="header-section-number">5</span> Choosing a method and
+using the results<a class="anchor" aria-label="anchor" href="#choosing-a-method-and-using-the-results"></a>
+</h2>
+<table class="table">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead><tr class="header">
+<th>you want</th>
+<th>use</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>a robust default ranking</td>
+<td><code>method = "moran"</code></td>
+</tr>
+<tr class="even">
+<td>sparse genes, rare cell types, or a binary on/off view</td>
+<td><code>method = "binspect"</code></td>
+</tr>
+<tr class="odd">
+<td>genes with sharp local boundaries</td>
+<td><code>method = "geary"</code></td>
+</tr>
+<tr class="even">
+<td>sequencing-based data (Visium, Visium HD, Stereo-seq)</td>
+<td>add <code>null = "covariate"</code>
+</td>
+</tr>
+<tr class="odd">
+<td>genes that vary within cell types</td>
+<td><code>null = "covariate", covariate = "&lt;cell type column&gt;"</code></td>
+</tr>
+</tbody>
+</table>
+<p>Some details:</p>
+<ul>
+<li>
+<code>feats =</code> tests only the given genes; the
+multiple-testing correction then counts only those genes.</li>
+<li>
+<code>weighted = TRUE</code> uses the network’s edge weights
+(Moran’s I and Geary’s C); the default treats every edge alike.</li>
+<li>Genes with the same value in every cell cannot be tested and get
+<code>NA</code>.</li>
+<li>The same call works on in-memory objects, and on a matrix or
+GiottoDisk store directly through
+<code>analyzeData(x, spatAutoCorParam(...), network = )</code>.</li>
+</ul>
+<div class="section level3" number="5.1">
+<h3 id="binspect">
+<span class="header-section-number">5.1</span> binSpect()<a class="anchor" aria-label="anchor" href="#binspect"></a>
+</h3>
+<p><code><a href="../reference/binSpect.html">binSpect()</a></code> runs the same join-count test as
+<code>spatialAutoCor(method = "binspect")</code> and keeps its familiar
+arguments (<code>bin_method = "rank"</code>,
+<code>percentage_rank</code>, <code>subset_feats</code>, …). The
+previous implementation, with a Fisher test per gene, is available as
+<code>binSpect(implementation = "data.table")</code>, and is chosen
+automatically when you use options only it has
+(<code>calc_hub = TRUE</code>, <code>spatial_network_k</code>,
+<code>bin_matrix</code>, <code>do_fisher_test = FALSE</code>).</p>
+</div>
+<div class="section level3" number="5.2">
+<h3 id="next-steps">
+<span class="header-section-number">5.2</span> Next steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
+</h3>
+<p>Spatial genes are the input to several downstream analyses:</p>
+<ul>
+<li>
+<a href="spatial_coexpression_modules.html">Spatial co-expression
+modules</a>: group spatial genes into modules with a shared
+pattern.</li>
+<li>
+<a href="hmrf.html">Spatial domains with HMRF</a> reads
+<code>binSpect.pval</code> from the feature metadata.</li>
+<li>
+<a href="spatial_informed_clusters.html">Spatially informed
+clusters</a>: cluster cells on spatial genes only.</li>
+</ul>
+</div>
+</div>
+<div class="section level2" number="6">
+<h2 id="session-info">
+<span class="header-section-number">6</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+</h2>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>R version <span class="dv">4</span>.<span class="fl">4.1</span> (<span class="dv">2024-06-14</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>Platform<span class="sc">:</span> x86_64<span class="sc">-</span>apple<span class="sc">-</span>darwin20</span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>Running under<span class="sc">:</span> macOS <span class="fl">15.0</span></span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>Matrix products<span class="sc">:</span> default</span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>BLAS<span class="sc">:</span>   <span class="er">/</span>System<span class="sc">/</span>Library<span class="sc">/</span>Frameworks<span class="sc">/</span>Accelerate.framework<span class="sc">/</span>Versions<span class="sc">/</span>A<span class="sc">/</span>Frameworks<span class="sc">/</span>vecLib.framework<span class="sc">/</span>Versions<span class="sc">/</span>A<span class="sc">/</span>libBLAS.dylib </span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>LAPACK<span class="sc">:</span> <span class="er">/</span>Library<span class="sc">/</span>Frameworks<span class="sc">/</span>R.framework<span class="sc">/</span>Versions<span class="sc">/</span><span class="fl">4.4</span><span class="sc">-</span>x86_64<span class="sc">/</span>Resources<span class="sc">/</span>lib<span class="sc">/</span>libRlapack.dylib;  LAPACK version <span class="dv">3</span>.<span class="fl">12.0</span></span>
-<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>locale<span class="sc">:</span></span>
-<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>[<span class="dv">1</span>] en_US.UTF<span class="dv">-8</span><span class="sc">/</span>en_US.UTF<span class="dv">-8</span><span class="sc">/</span>en_US.UTF<span class="dv">-8</span><span class="sc">/</span>C<span class="sc">/</span>en_US.UTF<span class="dv">-8</span><span class="sc">/</span>en_US.UTF<span class="dv">-8</span></span>
-<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a></span>
-<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>time zone<span class="sc">:</span> America<span class="sc">/</span>New_York</span>
-<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>tzcode source<span class="sc">:</span> internal</span>
-<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a></span>
-<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>attached base packages<span class="sc">:</span></span>
-<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>[<span class="dv">1</span>] stats     graphics  grDevices utils     datasets  methods   base     </span>
-<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a></span>
-<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>other attached packages<span class="sc">:</span></span>
-<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>[<span class="dv">1</span>] Giotto_4.<span class="fl">1.3</span>      GiottoClass_0.<span class="fl">4.0</span></span>
-<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a></span>
-<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a>loaded via a <span class="fu">namespace</span> (and not attached)<span class="sc">:</span></span>
-<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a>  [<span class="dv">1</span>] colorRamp2_0.<span class="fl">1.0</span>            rlang_1.<span class="fl">1.4</span>                </span>
-<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a>  [<span class="dv">3</span>] magrittr_2.<span class="fl">0.3</span>              clue_0<span class="fl">.3</span><span class="dv">-65</span>                </span>
-<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a>  [<span class="dv">5</span>] GetoptLong_1.<span class="fl">0.5</span>            GiottoUtils_0.<span class="fl">2.0</span>          </span>
-<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a>  [<span class="dv">7</span>] matrixStats_1.<span class="fl">4.1</span>           compiler_4.<span class="fl">4.1</span>             </span>
-<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a>  [<span class="dv">9</span>] png_0<span class="fl">.1</span><span class="dv">-8</span>                   systemfonts_1.<span class="fl">1.0</span>          </span>
-<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a> [<span class="dv">11</span>] vctrs_0.<span class="fl">6.5</span>                 shape_1.<span class="dv">4</span>.<span class="fl">6.1</span>              </span>
-<span id="cb7-28"><a href="#cb7-28" tabindex="-1"></a> [<span class="dv">13</span>] pkgconfig_2.<span class="fl">0.3</span>             SpatialExperiment_1.<span class="fl">14.0</span>   </span>
-<span id="cb7-29"><a href="#cb7-29" tabindex="-1"></a> [<span class="dv">15</span>] crayon_1.<span class="fl">5.3</span>                fastmap_1.<span class="fl">2.0</span>              </span>
-<span id="cb7-30"><a href="#cb7-30" tabindex="-1"></a> [<span class="dv">17</span>] backports_1.<span class="fl">5.0</span>             magick_2.<span class="fl">8.5</span>               </span>
-<span id="cb7-31"><a href="#cb7-31" tabindex="-1"></a> [<span class="dv">19</span>] XVector_0.<span class="fl">44.0</span>              labeling_0.<span class="fl">4.3</span>             </span>
-<span id="cb7-32"><a href="#cb7-32" tabindex="-1"></a> [<span class="dv">21</span>] utf8_1.<span class="fl">2.4</span>                  rmarkdown_2<span class="fl">.28</span>             </span>
-<span id="cb7-33"><a href="#cb7-33" tabindex="-1"></a> [<span class="dv">23</span>] UCSC.utils_1.<span class="fl">0.0</span>            ragg_1.<span class="fl">3.3</span>                 </span>
-<span id="cb7-34"><a href="#cb7-34" tabindex="-1"></a> [<span class="dv">25</span>] purrr_1.<span class="fl">0.2</span>                 xfun_0<span class="fl">.47</span>                  </span>
-<span id="cb7-35"><a href="#cb7-35" tabindex="-1"></a> [<span class="dv">27</span>] zlibbioc_1.<span class="fl">50.0</span>             GenomeInfoDb_1.<span class="fl">40.1</span>        </span>
-<span id="cb7-36"><a href="#cb7-36" tabindex="-1"></a> [<span class="dv">29</span>] jsonlite_1.<span class="fl">8.9</span>              DelayedArray_0.<span class="fl">30.1</span>        </span>
-<span id="cb7-37"><a href="#cb7-37" tabindex="-1"></a> [<span class="dv">31</span>] terra_1<span class="fl">.7</span><span class="dv">-78</span>                cluster_2.<span class="fl">1.6</span>              </span>
-<span id="cb7-38"><a href="#cb7-38" tabindex="-1"></a> [<span class="dv">33</span>] parallel_4.<span class="fl">4.1</span>              R6_2.<span class="fl">5.1</span>                   </span>
-<span id="cb7-39"><a href="#cb7-39" tabindex="-1"></a> [<span class="dv">35</span>] RColorBrewer_1<span class="fl">.1</span><span class="dv">-3</span>          reticulate_1.<span class="fl">39.0</span>          </span>
-<span id="cb7-40"><a href="#cb7-40" tabindex="-1"></a> [<span class="dv">37</span>] GenomicRanges_1.<span class="fl">56.1</span>        scattermore_1<span class="fl">.2</span>            </span>
-<span id="cb7-41"><a href="#cb7-41" tabindex="-1"></a> [<span class="dv">39</span>] Rcpp_1.<span class="fl">0.13</span>                 SummarizedExperiment_1.<span class="fl">34.0</span></span>
-<span id="cb7-42"><a href="#cb7-42" tabindex="-1"></a> [<span class="dv">41</span>] iterators_1.<span class="fl">0.14</span>            knitr_1<span class="fl">.48</span>                 </span>
-<span id="cb7-43"><a href="#cb7-43" tabindex="-1"></a> [<span class="dv">43</span>] R.utils_2.<span class="fl">12.3</span>              IRanges_2.<span class="fl">38.1</span>             </span>
-<span id="cb7-44"><a href="#cb7-44" tabindex="-1"></a> [<span class="dv">45</span>] Matrix_1<span class="fl">.7</span><span class="dv">-0</span>                igraph_2.<span class="fl">0.3</span>               </span>
-<span id="cb7-45"><a href="#cb7-45" tabindex="-1"></a> [<span class="dv">47</span>] tidyselect_1.<span class="fl">2.1</span>            rstudioapi_0.<span class="fl">16.0</span>          </span>
-<span id="cb7-46"><a href="#cb7-46" tabindex="-1"></a> [<span class="dv">49</span>] abind_1<span class="fl">.4</span><span class="dv">-8</span>                 yaml_2.<span class="fl">3.10</span>                </span>
-<span id="cb7-47"><a href="#cb7-47" tabindex="-1"></a> [<span class="dv">51</span>] doParallel_1.<span class="fl">0.17</span>           codetools_0<span class="fl">.2</span><span class="dv">-20</span>           </span>
-<span id="cb7-48"><a href="#cb7-48" tabindex="-1"></a> [<span class="dv">53</span>] lattice_0<span class="fl">.22</span><span class="dv">-6</span>              tibble_3.<span class="fl">2.1</span>               </span>
-<span id="cb7-49"><a href="#cb7-49" tabindex="-1"></a> [<span class="dv">55</span>] Biobase_2.<span class="fl">64.0</span>              withr_3.<span class="fl">0.1</span>                </span>
-<span id="cb7-50"><a href="#cb7-50" tabindex="-1"></a> [<span class="dv">57</span>] evaluate_1.<span class="fl">0.0</span>              circlize_0.<span class="fl">4.16</span>            </span>
-<span id="cb7-51"><a href="#cb7-51" tabindex="-1"></a> [<span class="dv">59</span>] pillar_1.<span class="fl">9.0</span>                MatrixGenerics_1.<span class="fl">16.0</span>      </span>
-<span id="cb7-52"><a href="#cb7-52" tabindex="-1"></a> [<span class="dv">61</span>] checkmate_2.<span class="fl">3.2</span>             foreach_1.<span class="fl">5.2</span>              </span>
-<span id="cb7-53"><a href="#cb7-53" tabindex="-1"></a> [<span class="dv">63</span>] stats4_4.<span class="fl">4.1</span>                plotly_4.<span class="fl">10.4</span>              </span>
-<span id="cb7-54"><a href="#cb7-54" tabindex="-1"></a> [<span class="dv">65</span>] generics_0.<span class="fl">1.3</span>              dbscan_1<span class="fl">.2</span><span class="dv">-0</span>               </span>
-<span id="cb7-55"><a href="#cb7-55" tabindex="-1"></a> [<span class="dv">67</span>] S4Vectors_0.<span class="fl">42.1</span>            ggplot2_3.<span class="fl">5.1</span>              </span>
-<span id="cb7-56"><a href="#cb7-56" tabindex="-1"></a> [<span class="dv">69</span>] munsell_0.<span class="fl">5.1</span>               scales_1.<span class="fl">3.0</span>               </span>
-<span id="cb7-57"><a href="#cb7-57" tabindex="-1"></a> [<span class="dv">71</span>] GiottoData_0.<span class="fl">2.15</span>           gtools_3.<span class="fl">9.5</span>               </span>
-<span id="cb7-58"><a href="#cb7-58" tabindex="-1"></a> [<span class="dv">73</span>] glue_1.<span class="fl">8.0</span>                  lazyeval_0.<span class="fl">2.2</span>             </span>
-<span id="cb7-59"><a href="#cb7-59" tabindex="-1"></a> [<span class="dv">75</span>] tools_4.<span class="fl">4.1</span>                 GiottoVisuals_0.<span class="fl">2.5</span>        </span>
-<span id="cb7-60"><a href="#cb7-60" tabindex="-1"></a> [<span class="dv">77</span>] data.table_1.<span class="fl">16.0</span>           Cairo_1<span class="fl">.6</span><span class="dv">-2</span>                </span>
-<span id="cb7-61"><a href="#cb7-61" tabindex="-1"></a> [<span class="dv">79</span>] cowplot_1.<span class="fl">1.3</span>               grid_4.<span class="fl">4.1</span>                 </span>
-<span id="cb7-62"><a href="#cb7-62" tabindex="-1"></a> [<span class="dv">81</span>] tidyr_1.<span class="fl">3.1</span>                 colorspace_2<span class="fl">.1</span><span class="dv">-1</span>           </span>
-<span id="cb7-63"><a href="#cb7-63" tabindex="-1"></a> [<span class="dv">83</span>] SingleCellExperiment_1.<span class="fl">26.0</span> GenomeInfoDbData_1.<span class="fl">2.12</span>    </span>
-<span id="cb7-64"><a href="#cb7-64" tabindex="-1"></a> [<span class="dv">85</span>] cli_3.<span class="fl">6.3</span>                   textshaping_0.<span class="fl">4.0</span>          </span>
-<span id="cb7-65"><a href="#cb7-65" tabindex="-1"></a> [<span class="dv">87</span>] fansi_1.<span class="fl">0.6</span>                 S4Arrays_1.<span class="fl">4.1</span>             </span>
-<span id="cb7-66"><a href="#cb7-66" tabindex="-1"></a> [<span class="dv">89</span>] viridisLite_0.<span class="fl">4.2</span>           ComplexHeatmap_2.<span class="fl">20.0</span>      </span>
-<span id="cb7-67"><a href="#cb7-67" tabindex="-1"></a> [<span class="dv">91</span>] dplyr_1.<span class="fl">1.4</span>                 gtable_0.<span class="fl">3.5</span>               </span>
-<span id="cb7-68"><a href="#cb7-68" tabindex="-1"></a> [<span class="dv">93</span>] R.methodsS3_1.<span class="fl">8.2</span>           digest_0.<span class="fl">6.37</span>              </span>
-<span id="cb7-69"><a href="#cb7-69" tabindex="-1"></a> [<span class="dv">95</span>] BiocGenerics_0.<span class="fl">50.0</span>         SparseArray_1.<span class="fl">4.8</span>          </span>
-<span id="cb7-70"><a href="#cb7-70" tabindex="-1"></a> [<span class="dv">97</span>] ggrepel_0.<span class="fl">9.6</span>               rjson_0.<span class="fl">2.23</span>               </span>
-<span id="cb7-71"><a href="#cb7-71" tabindex="-1"></a> [<span class="dv">99</span>] htmlwidgets_1.<span class="fl">6.4</span>           farver_2.<span class="fl">1.2</span>               </span>
-<span id="cb7-72"><a href="#cb7-72" tabindex="-1"></a>[<span class="dv">101</span>] htmltools_0.<span class="dv">5</span>.<span class="fl">8.1</span>           R.oo_1.<span class="fl">26.0</span>                </span>
-<span id="cb7-73"><a href="#cb7-73" tabindex="-1"></a>[<span class="dv">103</span>] lifecycle_1.<span class="fl">0.4</span>             httr_1.<span class="fl">4.7</span>                 </span>
-<span id="cb7-74"><a href="#cb7-74" tabindex="-1"></a>[<span class="dv">105</span>] GlobalOptions_0.<span class="fl">1.2</span></span></code></pre></div>
+<pre><code><span><span class="co">## R version 4.5.3 (2026-03-11)</span></span>
+<span><span class="co">## Platform: aarch64-apple-darwin20</span></span>
+<span><span class="co">## Running under: macOS Tahoe 26.6.2</span></span>
+<span><span class="co">##</span></span>
+<span><span class="co">## Matrix products: default</span></span>
+<span><span class="co">## BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib</span></span>
+<span><span class="co">## LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1</span></span>
+<span><span class="co">##</span></span>
+<span><span class="co">## locale:</span></span>
+<span><span class="co">## [1] C.UTF-8/C.UTF-8/C.UTF-8/C/C.UTF-8/C.UTF-8</span></span>
+<span><span class="co">##</span></span>
+<span><span class="co">## time zone: America/New_York</span></span>
+<span><span class="co">## tzcode source: internal</span></span>
+<span><span class="co">##</span></span>
+<span><span class="co">## attached base packages:</span></span>
+<span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base</span></span>
+<span><span class="co">##</span></span>
+<span><span class="co">## other attached packages:</span></span>
+<span><span class="co">## [1] ggplot2_4.0.2       data.table_1.18.2.1 GiottoDisk_0.0.0.5  Giotto_4.3.3</span></span>
+<span><span class="co">## [5] GiottoClass_0.7.15</span></span>
+<span><span class="co">##</span></span>
+<span><span class="co">## loaded via a namespace (and not attached):</span></span>
+<span><span class="co">##   [1] colorRamp2_0.1.0            deldir_2.0-4                gridExtra_2.3</span></span>
+<span><span class="co">##   [4] rlang_1.3.0                 magrittr_2.0.4              GiottoUtils_0.2.8</span></span>
+<span><span class="co">##   [7] matrixStats_1.5.0           compiler_4.5.3              systemfonts_1.3.2</span></span>
+<span><span class="co">##  [10] vctrs_0.7.2                 hdf5r_1.3.12                wk_0.9.5</span></span>
+<span><span class="co">##  [13] pkgconfig_2.0.3             SpatialExperiment_1.20.0    fastmap_1.2.0</span></span>
+<span><span class="co">##  [16] backports_1.5.0             magick_2.9.1                XVector_0.50.0</span></span>
+<span><span class="co">##  [19] labeling_0.4.3              ggraph_2.2.2                ragg_1.5.2</span></span>
+<span><span class="co">##  [22] bit_4.6.0                   purrr_1.2.1                 bluster_1.20.0</span></span>
+<span><span class="co">##  [25] cachem_1.1.0                beachmat_2.26.0             jsonlite_2.0.0</span></span>
+<span><span class="co">##  [28] DelayedArray_0.36.0         BiocParallel_1.44.0         tweenr_2.0.3</span></span>
+<span><span class="co">##  [31] terra_1.9-11                irlba_2.3.7                 parallel_4.5.3</span></span>
+<span><span class="co">##  [34] cluster_2.1.8.2             R6_2.6.1                    RColorBrewer_1.1-3</span></span>
+<span><span class="co">##  [37] parallelly_1.47.0           GenomicRanges_1.62.1        scattermore_1.2</span></span>
+<span><span class="co">##  [40] Rcpp_1.1.1                  Seqinfo_1.0.0               assertthat_0.2.1</span></span>
+<span><span class="co">##  [43] SummarizedExperiment_1.40.0 future.apply_1.20.2         R.utils_2.13.0</span></span>
+<span><span class="co">##  [46] IRanges_2.44.0              Matrix_1.7-5                igraph_2.2.2</span></span>
+<span><span class="co">##  [49] tidyselect_1.2.1            dichromat_2.0-0.1           abind_1.4-8</span></span>
+<span><span class="co">##  [52] viridis_0.6.5               codetools_0.2-20            listenv_0.10.1</span></span>
+<span><span class="co">##  [55] lattice_0.22-9              tibble_3.3.1                Biobase_2.70.0</span></span>
+<span><span class="co">##  [58] withr_3.0.2                 S7_0.2.1                    future_1.70.0</span></span>
+<span><span class="co">##  [61] polyclip_1.10-7             xml2_1.5.2                  pillar_1.11.1</span></span>
+<span><span class="co">##  [64] MatrixGenerics_1.22.0       checkmate_2.3.4             stats4_4.5.3</span></span>
+<span><span class="co">##  [67] GiottoKernels_0.3.0         dbscan_1.2.4                plotly_4.12.0</span></span>
+<span><span class="co">##  [70] generics_0.1.4              nanoarrow_0.9.0             S4Vectors_0.48.0</span></span>
+<span><span class="co">##  [73] scales_1.4.0                GiottoData_0.3.8            gtools_3.9.5</span></span>
+<span><span class="co">##  [76] globals_0.19.1              glue_1.8.0                  lazyeval_0.2.2</span></span>
+<span><span class="co">##  [79] tools_4.5.3                 GiottoVisuals_0.2.16        tilework_1.0.0</span></span>
+<span><span class="co">##  [82] BiocNeighbors_2.4.0         ScaledMatrix_1.18.0         graphlayouts_1.2.3</span></span>
+<span><span class="co">##  [85] tidygraph_1.3.1             cowplot_1.2.0               grid_4.5.3</span></span>
+<span><span class="co">##  [88] tidyr_1.3.2                 colorspace_2.1-2            SingleCellExperiment_1.32.0</span></span>
+<span><span class="co">##  [91] BiocSingular_1.26.1         ggforce_0.5.0               cli_3.6.5</span></span>
+<span><span class="co">##  [94] rsvd_1.0.5                  textshaping_1.0.5           S4Arrays_1.10.1</span></span>
+<span><span class="co">##  [97] viridisLite_0.4.3           arrow_23.0.1.2              dplyr_1.2.0</span></span>
+<span><span class="co">## [100] gtable_0.3.6                R.methodsS3_1.8.2           digest_0.6.39</span></span>
+<span><span class="co">## [103] progressr_0.18.0            BiocGenerics_0.56.0         SparseArray_1.10.9</span></span>
+<span><span class="co">## [106] ggrepel_0.9.8               rjson_0.2.23                htmlwidgets_1.6.4</span></span>
+<span><span class="co">## [109] farver_2.1.2                R.oo_1.27.1                 memoise_2.0.1</span></span>
+<span><span class="co">## [112] htmltools_0.5.9             lifecycle_1.0.5             httr_1.4.8</span></span>
+<span><span class="co">## [115] bit64_4.6.0-1               MASS_7.3-65</span></span>
+<span><span class="co">## Warning messages:</span></span>
+<span><span class="co">## 1: Skipping empty giottoPoints (0 features) for feat_type: GenomicControl</span></span>
+<span><span class="co">## 2: The `polygon_name` argument of `getPolygonInfo()` is deprecated as of GiottoClass 0.5.2.</span></span>
+<span><span class="co">## ℹ Please use the `name` argument instead.</span></span>
+<span><span class="co">## ℹ The deprecated feature was likely used in the GiottoClass package.</span></span>
+<span><span class="co">##   Please report the issue at &lt;https://github.com/giotto-suite/Giotto/issues&gt;.</span></span>
+<span><span class="co">## 3: In doTryCatch(return(expr), name, parentenv, handler) :</span></span>
+<span><span class="co">##   You need to select features (feats) and modify feature</span></span>
+<span><span class="co">##  types (feat_type) if you want to show individual features</span></span>
+<span><span class="co">##  (e.g. transcripts)</span></span>
+<span><span class="co">##  This warning is shown once per session</span></span>
+<span><span class="co">## 4: 008um_outputs.tar not detected in visiumHD directory</span></span>
+<span><span class="co">## 5: 002um_outputs.tar not detected in visiumHD directory</span></span></code></pre>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

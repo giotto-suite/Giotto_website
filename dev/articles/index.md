@@ -82,7 +82,7 @@ Feature selection, dimension reduction, clustering and enrichment.
 
 Spatial genes, co-expression modules and spatial domains.
 
-- [Detection of spatial
+- [Detection of spatially variable
   genes](https://giottosuite.com/dev/articles/spatial_genes.md):
 - [Detection of spatial co-expression
   modules](https://giottosuite.com/dev/articles/spatial_coexpression_modules.md):

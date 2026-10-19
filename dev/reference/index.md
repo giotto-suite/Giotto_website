@@ -694,6 +694,22 @@ Function to (help) create a spatial network or grid.
 
 Methods to detect spatially coherent expression patterns.
 
+- [`spatialAutoCor()`](https://giottosuite.com/dev/reference/spatialAutoCor.md)
+  : Spatially autocorrelated features
+- [`spatialAutoCorGlobal()`](https://giottosuite.com/dev/reference/spatialAutoCorGlobalLocal.md)
+  [`spatialAutoCorLocal()`](https://giottosuite.com/dev/reference/spatialAutoCorGlobalLocal.md)
+  : Spatial autocorrelation
+- [`spatAutoCorParam()`](https://giottosuite.com/dev/reference/spatAutoCorParam.md)
+  [`analyzeData(`*`<ANY>`*`,`*`<spatAutoCorParam>`*`)`](https://giottosuite.com/dev/reference/spatAutoCorParam.md)
+  [`analyzeData(`*`<giotto>`*`,`*`<spatAutoCorParam>`*`)`](https://giottosuite.com/dev/reference/spatAutoCorParam.md)
+  : Spatial autocorrelation parameters
+- [`spatAutoCorParam-class`](https://giottosuite.com/dev/reference/spatAutoCorParam-class.md)
+  [`moranParam-class`](https://giottosuite.com/dev/reference/spatAutoCorParam-class.md)
+  [`gearyParam-class`](https://giottosuite.com/dev/reference/spatAutoCorParam-class.md)
+  [`binSpectParam-class`](https://giottosuite.com/dev/reference/spatAutoCorParam-class.md)
+  : Spatial autocorrelation parameter classes
+- [`spdepAutoCorr()`](https://giottosuite.com/dev/reference/spdepAutoCorr.md)
+  : Compute spatial auto correlation using spdep
 - [`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md)
   [`binSpectSingleMatrix()`](https://giottosuite.com/dev/reference/binSpect.md)
   [`binSpectSingle()`](https://giottosuite.com/dev/reference/binSpect.md)
@@ -1016,22 +1032,6 @@ type due to interaction with another neighboring cell type.
   : deprecated
 - [`findInteractionChangedGenes()`](https://giottosuite.com/dev/reference/findInteractionChangedGenes.md)
   : deprecated
-- [`spatialAutoCor()`](https://giottosuite.com/dev/reference/spatialAutoCor.md)
-  : Spatially autocorrelated features
-- [`spatialAutoCorGlobal()`](https://giottosuite.com/dev/reference/spatialAutoCorGlobalLocal.md)
-  [`spatialAutoCorLocal()`](https://giottosuite.com/dev/reference/spatialAutoCorGlobalLocal.md)
-  : Spatial autocorrelation
-- [`spatAutoCorParam()`](https://giottosuite.com/dev/reference/spatAutoCorParam.md)
-  [`analyzeData(`*`<ANY>`*`,`*`<spatAutoCorParam>`*`)`](https://giottosuite.com/dev/reference/spatAutoCorParam.md)
-  [`analyzeData(`*`<giotto>`*`,`*`<spatAutoCorParam>`*`)`](https://giottosuite.com/dev/reference/spatAutoCorParam.md)
-  : Spatial autocorrelation parameters
-- [`spatAutoCorParam-class`](https://giottosuite.com/dev/reference/spatAutoCorParam-class.md)
-  [`moranParam-class`](https://giottosuite.com/dev/reference/spatAutoCorParam-class.md)
-  [`gearyParam-class`](https://giottosuite.com/dev/reference/spatAutoCorParam-class.md)
-  [`binSpectParam-class`](https://giottosuite.com/dev/reference/spatAutoCorParam-class.md)
-  : Spatial autocorrelation parameter classes
-- [`spdepAutoCorr()`](https://giottosuite.com/dev/reference/spdepAutoCorr.md)
-  : Compute spatial auto correlation using spdep
 - [`spatialSplitCluster()`](https://giottosuite.com/dev/reference/spatialSplitCluster.md)
   : Split cluster annotations based on a spatial network
 

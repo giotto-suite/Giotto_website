@@ -37,9 +37,20 @@ g <- GiottoData::loadGiottoMini("visium")
 
 ## 2 Select the top spatial genes
 
+Rank the genes by how spatially coherent their expression is, here with
+binSpect’s join-count test, and keep the top 100. See [Detection of
+spatially variable
+genes](https://giottosuite.com/dev/articles/spatial_genes.md) for the
+methods and their options.
+
 ``` r
 
-ext_spatial_genes <- ranktest[1:100,]$feats
+ranktest <- spatialAutoCor(g,
+    method = "binspect",
+    spatial_network_name = "spatial_network",
+    return_gobject = FALSE
+)
+ext_spatial_genes <- ranktest[1:100, ]$feats
 ```
 
 ## 3 Calculate pairwise distances between genes.
@@ -145,16 +156,16 @@ sessionInfo()
 ```
 
 ``` r
-R version 4.4.1 (2024-06-14)
-Platform: x86_64-apple-darwin20
-Running under: macOS 15.0
+R version 4.5.3 (2026-03-11)
+Platform: aarch64-apple-darwin20
+Running under: macOS Tahoe 26.6.2
 
 Matrix products: default
-BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
-LAPACK: /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
 
 locale:
-[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+[1] C.UTF-8/C.UTF-8/C.UTF-8/C/C.UTF-8/C.UTF-8
 
 time zone: America/New_York
 tzcode source: internal
@@ -163,60 +174,44 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] Giotto_4.1.3      GiottoClass_0.4.0
+[1] Giotto_4.3.3       GiottoClass_0.7.15
 
 loaded via a namespace (and not attached):
-  [1] colorRamp2_0.1.0            rlang_1.1.4                
-  [3] magrittr_2.0.3              clue_0.3-65                
-  [5] GetoptLong_1.0.5            GiottoUtils_0.2.0          
-  [7] matrixStats_1.4.1           compiler_4.4.1             
-  [9] png_0.1-8                   systemfonts_1.1.0          
- [11] vctrs_0.6.5                 shape_1.4.6.1              
- [13] pkgconfig_2.0.3             SpatialExperiment_1.14.0   
- [15] crayon_1.5.3                fastmap_1.2.0              
- [17] backports_1.5.0             magick_2.8.5               
- [19] XVector_0.44.0              labeling_0.4.3             
- [21] utf8_1.2.4                  rmarkdown_2.28             
- [23] UCSC.utils_1.0.0            ragg_1.3.3                 
- [25] purrr_1.0.2                 xfun_0.47                  
- [27] zlibbioc_1.50.0             GenomeInfoDb_1.40.1        
- [29] jsonlite_1.8.9              DelayedArray_0.30.1        
- [31] terra_1.7-78                cluster_2.1.6              
- [33] parallel_4.4.1              R6_2.5.1                   
- [35] RColorBrewer_1.1-3          reticulate_1.39.0          
- [37] GenomicRanges_1.56.1        scattermore_1.2            
- [39] Rcpp_1.0.13                 SummarizedExperiment_1.34.0
- [41] iterators_1.0.14            knitr_1.48                 
- [43] R.utils_2.12.3              IRanges_2.38.1             
- [45] Matrix_1.7-0                igraph_2.0.3               
- [47] tidyselect_1.2.1            rstudioapi_0.16.0          
- [49] abind_1.4-8                 yaml_2.3.10                
- [51] doParallel_1.0.17           codetools_0.2-20           
- [53] lattice_0.22-6              tibble_3.2.1               
- [55] Biobase_2.64.0              withr_3.0.1                
- [57] evaluate_1.0.0              circlize_0.4.16            
- [59] pillar_1.9.0                MatrixGenerics_1.16.0      
- [61] checkmate_2.3.2             foreach_1.5.2              
- [63] stats4_4.4.1                plotly_4.10.4              
- [65] generics_0.1.3              dbscan_1.2-0               
- [67] S4Vectors_0.42.1            ggplot2_3.5.1              
- [69] munsell_0.5.1               scales_1.3.0               
- [71] GiottoData_0.2.15           gtools_3.9.5               
- [73] glue_1.8.0                  lazyeval_0.2.2             
- [75] tools_4.4.1                 GiottoVisuals_0.2.5        
- [77] data.table_1.16.0           Cairo_1.6-2                
- [79] cowplot_1.1.3               grid_4.4.1                 
- [81] tidyr_1.3.1                 colorspace_2.1-1           
- [83] SingleCellExperiment_1.26.0 GenomeInfoDbData_1.2.12    
- [85] cli_3.6.3                   textshaping_0.4.0          
- [87] fansi_1.0.6                 S4Arrays_1.4.1             
- [89] viridisLite_0.4.2           ComplexHeatmap_2.20.0      
- [91] dplyr_1.1.4                 gtable_0.3.5               
- [93] R.methodsS3_1.8.2           digest_0.6.37              
- [95] BiocGenerics_0.50.0         SparseArray_1.4.8          
- [97] ggrepel_0.9.6               rjson_0.2.23               
- [99] htmlwidgets_1.6.4           farver_2.1.2               
-[101] htmltools_0.5.8.1           R.oo_1.26.0                
-[103] lifecycle_1.0.4             httr_1.4.7                 
-[105] GlobalOptions_0.1.2
+  [1] colorRamp2_0.1.0            gridExtra_2.3               rlang_1.3.0                
+  [4] magrittr_2.0.4              clue_0.3-68                 GetoptLong_1.1.1           
+  [7] GiottoUtils_0.2.8           matrixStats_1.5.0           compiler_4.5.3             
+ [10] systemfonts_1.3.2           png_0.1-9                   vctrs_0.7.2                
+ [13] shape_1.4.6.1               crayon_1.5.3                pkgconfig_2.0.3            
+ [16] SpatialExperiment_1.20.0    fastmap_1.2.0               backports_1.5.0            
+ [19] magick_2.9.1                XVector_0.50.0              labeling_0.4.3             
+ [22] ggraph_2.2.2                ragg_1.5.2                  purrr_1.2.1                
+ [25] bluster_1.20.0              cachem_1.1.0                beachmat_2.26.0            
+ [28] jsonlite_2.0.0              DelayedArray_0.36.0         BiocParallel_1.44.0        
+ [31] tweenr_2.0.3                terra_1.9-11                irlba_2.3.7                
+ [34] parallel_4.5.3              cluster_2.1.8.2             R6_2.6.1                   
+ [37] RColorBrewer_1.1-3          GenomicRanges_1.62.1        scattermore_1.2            
+ [40] Rcpp_1.1.1                  Seqinfo_1.0.0               SummarizedExperiment_1.40.0
+ [43] iterators_1.0.14            IRanges_2.44.0              Matrix_1.7-5               
+ [46] igraph_2.2.2                tidyselect_1.2.1            dichromat_2.0-0.1          
+ [49] abind_1.4-8                 viridis_0.6.5               doParallel_1.0.17          
+ [52] codetools_0.2-20            lattice_0.22-9              tibble_3.3.1               
+ [55] Biobase_2.70.0              withr_3.0.2                 S7_0.2.1                   
+ [58] polyclip_1.10-7             circlize_0.4.18             pillar_1.11.1              
+ [61] MatrixGenerics_1.22.0       checkmate_2.3.4             foreach_1.5.2              
+ [64] stats4_4.5.3                plotly_4.12.0               generics_0.1.4             
+ [67] GiottoDisk_0.0.0.5          S4Vectors_0.48.0            ggplot2_4.0.2              
+ [70] scales_1.4.0                GiottoData_0.3.8            gtools_3.9.5               
+ [73] glue_1.8.0                  lazyeval_0.2.2              tools_4.5.3                
+ [76] GiottoVisuals_0.2.16        tilework_1.0.0              BiocNeighbors_2.4.0        
+ [79] data.table_1.18.2.1         ScaledMatrix_1.18.0         graphlayouts_1.2.3         
+ [82] tidygraph_1.3.1             cowplot_1.2.0               grid_4.5.3                 
+ [85] tidyr_1.3.2                 colorspace_2.1-2            SingleCellExperiment_1.32.0
+ [88] BiocSingular_1.26.1         ggforce_0.5.0               cli_3.6.5                  
+ [91] rsvd_1.0.5                  textshaping_1.0.5           S4Arrays_1.10.1            
+ [94] viridisLite_0.4.3           ComplexHeatmap_2.26.1       dplyr_1.2.0                
+ [97] gtable_0.3.6                digest_0.6.39               BiocGenerics_0.56.0        
+[100] SparseArray_1.10.9          ggrepel_0.9.8               rjson_0.2.23               
+[103] htmlwidgets_1.6.4           farver_2.1.2                memoise_2.0.1              
+[106] htmltools_0.5.9             lifecycle_1.0.5             httr_1.4.8                 
+[109] GlobalOptions_0.1.4         MASS_7.3-65
 ```
