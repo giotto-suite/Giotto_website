@@ -816,6 +816,37 @@ GiottoVisuals::plotClusterTree(g,
 
 ![](images/visiumhd_crc_cells_giottodisk/05_tree-annotated.png)
 
+`k` sets the number of groups. The tree can also be cut by how different
+the clusters are: with `h`, clusters that are more than that fraction
+dissimilar (1 - correlation, averaged between the two groups) stay
+apart. The same `h` then means the same thing in another dataset, while
+the number of groups it gives depends on the data. Here no two clusters
+are within 5% of each other, so `h = 0.05` keeps all of them:
+
+``` r
+
+g <- annotateClusterTree(g,
+    tree = tree,
+    labels = labels,
+    cluster_column = CLUS,
+    h = c(0.05, 0.2, 0.4)
+)
+```
+
+``` r
+
+GiottoVisuals::plotClusterTree(g,
+    cluster_column = CLUS,
+    tree = tree,
+    labels = labels,
+    h = c(0.05, 0.2, 0.4),
+    gini_markers = gi,
+    node_labels = FALSE
+)
+```
+
+![](images/visiumhd_crc_cells_giottodisk/06_tree-annotated-h.png)
+
 ## 11 Results
 
 ``` r
@@ -830,7 +861,7 @@ spatPlot2D(g,
 )
 ```
 
-![](images/visiumhd_crc_cells_giottodisk/06_spatial-k5.png)
+![](images/visiumhd_crc_cells_giottodisk/07_spatial-k5.png)
 
 One color per type, reused in the zoom below:
 
@@ -850,7 +881,7 @@ spatPlot2D(g,
 )
 ```
 
-![](images/visiumhd_crc_cells_giottodisk/07_spatial-k20.png)
+![](images/visiumhd_crc_cells_giottodisk/08_spatial-k20.png)
 
 Zoom into a region with the cell polygons, filled by cell type, over the
 H&E image:
@@ -877,7 +908,7 @@ spatInSituPlotPoints(g,
 )
 ```
 
-![](images/visiumhd_crc_cells_giottodisk/08_roi.png)
+![](images/visiumhd_crc_cells_giottodisk/09_roi.png)
 
 The same region, with the cells filled by the normalized expression of a
 few marker genes instead:
@@ -906,7 +937,7 @@ for (gene in marker_genes) {
 }
 ```
 
-![](images/visiumhd_crc_cells_giottodisk/09_roi-genes.png)![](images/visiumhd_crc_cells_giottodisk/10_roi-genes.png)![](images/visiumhd_crc_cells_giottodisk/11_roi-genes.png)![](images/visiumhd_crc_cells_giottodisk/12_roi-genes.png)![](images/visiumhd_crc_cells_giottodisk/13_roi-genes.png)![](images/visiumhd_crc_cells_giottodisk/14_roi-genes.png)
+![](images/visiumhd_crc_cells_giottodisk/10_roi-genes.png)![](images/visiumhd_crc_cells_giottodisk/11_roi-genes.png)![](images/visiumhd_crc_cells_giottodisk/12_roi-genes.png)![](images/visiumhd_crc_cells_giottodisk/13_roi-genes.png)![](images/visiumhd_crc_cells_giottodisk/14_roi-genes.png)![](images/visiumhd_crc_cells_giottodisk/15_roi-genes.png)
 
 ``` r
 
