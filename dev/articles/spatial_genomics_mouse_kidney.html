@@ -81,7 +81,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.3</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -617,14 +617,14 @@ Patterns<a class="anchor" aria-label="anchor" href="#spatial-co-expression-patte
 <span><span class="va">spatial_genes</span> <span class="op">&lt;-</span> <span class="va">km_spatialfeats</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">500</span><span class="op">]</span><span class="op">$</span><span class="va">feats</span></span>
 <span></span>
 <span><span class="co"># 1. create spatial correlation object</span></span>
-<span><span class="va">spat_cor_netw_DT</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/detectSpatialCorFeats.html">detectSpatialCorFeats</a></span><span class="op">(</span><span class="va">sg</span>,</span>
+<span><span class="va">spat_cor_netw_DT</span>  <span class="op">&lt;-</span> <span class="fu">detectSpatialCorFeats</span><span class="op">(</span><span class="va">sg</span>,</span>
 <span>    method <span class="op">=</span> <span class="st">"network"</span>,</span>
 <span>    spatial_network_name <span class="op">=</span> <span class="st">"Delaunay_network"</span>,</span>
 <span>    subset_feats <span class="op">=</span> <span class="va">spatial_genes</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 2. identify most similar spatially correlated genes for one gene</span></span>
-<span><span class="va">Acsm2_top10_genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/showSpatialCorFeats.html">showSpatialCorFeats</a></span><span class="op">(</span><span class="va">spat_cor_netw_DT</span>, </span>
+<span><span class="va">Acsm2_top10_genes</span> <span class="op">&lt;-</span> <span class="fu">showSpatialCorFeats</span><span class="op">(</span><span class="va">spat_cor_netw_DT</span>, </span>
 <span>                                         feats <span class="op">=</span> <span class="st">"Acsm2"</span>, </span>
 <span>                                         show_top_feats <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span></span>
@@ -637,11 +637,11 @@ Patterns<a class="anchor" aria-label="anchor" href="#spatial-co-expression-patte
 <p><img src="images/spatial_genomics_mouse_kidney/Acsm2_SpatialCor.png"></p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 3. cluster correlated genes &amp; visualize</span></span>
-<span><span class="va">spat_cor_netw_DT</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/clusterSpatialCorFeats.html">clusterSpatialCorFeats</a></span><span class="op">(</span><span class="va">spat_cor_netw_DT</span>, </span>
+<span><span class="va">spat_cor_netw_DT</span> <span class="op">&lt;-</span> <span class="fu">clusterSpatialCorFeats</span><span class="op">(</span><span class="va">spat_cor_netw_DT</span>, </span>
 <span>                                           name <span class="op">=</span> <span class="st">"spat_netw_clus"</span>, </span>
 <span>                                           k <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/heatmSpatialCorFeats.html">heatmSpatialCorFeats</a></span><span class="op">(</span><span class="va">sg</span>,</span>
+<span><span class="fu">heatmSpatialCorFeats</span><span class="op">(</span><span class="va">sg</span>,</span>
 <span>    spatCorObject <span class="op">=</span> <span class="va">spat_cor_netw_DT</span>, </span>
 <span>    use_clus_name <span class="op">=</span> <span class="st">"spat_netw_clus"</span>,</span>
 <span>    heatmap_legend_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Spatial Correlation"</span><span class="op">)</span></span>
@@ -649,12 +649,12 @@ Patterns<a class="anchor" aria-label="anchor" href="#spatial-co-expression-patte
 <p><img src="images/spatial_genomics_mouse_kidney/SpatialCorHeatMap.png"></p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 4. rank spatial correlated clusters and show genes for selected clusters</span></span>
-<span><span class="va">netw_ranks</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rankSpatialCorGroups.html">rankSpatialCorGroups</a></span><span class="op">(</span><span class="va">sg</span>,</span>
+<span><span class="va">netw_ranks</span> <span class="op">&lt;-</span> <span class="fu">rankSpatialCorGroups</span><span class="op">(</span><span class="va">sg</span>,</span>
 <span>                                   spatCorObject <span class="op">=</span> <span class="va">spat_cor_netw_DT</span>,</span>
 <span>                                   use_clus_name <span class="op">=</span> <span class="st">"spat_netw_clus"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">top_netw_spat_cluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/showSpatialCorFeats.html">showSpatialCorFeats</a></span><span class="op">(</span><span class="va">spat_cor_netw_DT</span>,</span>
+<span><span class="va">top_netw_spat_cluster</span> <span class="op">&lt;-</span> <span class="fu">showSpatialCorFeats</span><span class="op">(</span><span class="va">spat_cor_netw_DT</span>,</span>
 <span>                                             use_clus_name <span class="op">=</span> <span class="st">"spat_netw_clus"</span>,</span>
 <span>                                             show_top_feats <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>

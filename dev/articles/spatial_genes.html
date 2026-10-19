@@ -81,7 +81,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.3</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -551,13 +551,13 @@ side:</p>
 informative. Genes above the diagonal are favoured by binSpect, below it
 by Moran’s I:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># fill each cell by the gene's normalized expression; the colour scale is</span></span>
-<span><span class="co"># capped at the 95th percentile of expressing cells so a few very high cells</span></span>
-<span><span class="co"># do not wash out the pattern</span></span>
-<span><span class="va">fill_map</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">gobject</span>, <span class="va">gene</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/spatValues.html" class="external-link">spatValues</a></span><span class="op">(</span><span class="va">gobject</span>, feats <span class="op">=</span> <span class="va">gene</span>, expression_values <span class="op">=</span> <span class="st">"normalized"</span><span class="op">)</span></span>
-<span>  <span class="va">cap</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">v</span><span class="op">[[</span><span class="va">gene</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="va">v</span><span class="op">[[</span><span class="va">gene</span><span class="op">]</span><span class="op">]</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">]</span>, <span class="fl">0.95</span><span class="op">)</span></span>
-<span>  <span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span>cell_ID <span class="op">=</span> <span class="va">v</span><span class="op">$</span><span class="va">cell_ID</span>, expression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="va">v</span><span class="op">[[</span><span class="va">gene</span><span class="op">]</span><span class="op">]</span>, <span class="va">cap</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># fill each cell by a value (here a gene's normalized expression); the</span></span>
+<span><span class="co"># colour scale is capped at the 95th percentile of the cells above 0, so a</span></span>
+<span><span class="co"># few very high cells do not wash out the pattern</span></span>
+<span><span class="va">fill_map</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">gobject</span>, <span class="va">feat</span>, <span class="va">title</span> <span class="op">=</span> <span class="va">feat</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/spatValues.html" class="external-link">spatValues</a></span><span class="op">(</span><span class="va">gobject</span>, feats <span class="op">=</span> <span class="va">feat</span>, <span class="va">...</span><span class="op">)</span></span>
+<span>  <span class="va">cap</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">v</span><span class="op">[[</span><span class="va">feat</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="va">v</span><span class="op">[[</span><span class="va">feat</span><span class="op">]</span><span class="op">]</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">]</span>, <span class="fl">0.95</span><span class="op">)</span></span>
+<span>  <span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span>cell_ID <span class="op">=</span> <span class="va">v</span><span class="op">$</span><span class="va">cell_ID</span>, expression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="va">v</span><span class="op">[[</span><span class="va">feat</span><span class="op">]</span><span class="op">]</span>, <span class="va">cap</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/addCellMetadata.html" class="external-link">addCellMetadata</a></span><span class="op">(</span><span class="va">gobject</span>, new_metadata <span class="op">=</span> <span class="va">v</span>,</span>
 <span>                             by_column <span class="op">=</span> <span class="cn">TRUE</span>, column_cell_ID <span class="op">=</span> <span class="st">"cell_ID"</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">gobject</span>,</span>
@@ -566,12 +566,13 @@ by Moran’s I:</p>
 <span>    polygon_color <span class="op">=</span> <span class="st">"grey15"</span>, polygon_line_size <span class="op">=</span> <span class="fl">0.05</span>, polygon_alpha <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>    background_color <span class="op">=</span> <span class="st">"black"</span>, show_legend <span class="op">=</span> <span class="cn">FALSE</span>, show_axes <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>    show_plot <span class="op">=</span> <span class="cn">FALSE</span>, save_plot <span class="op">=</span> <span class="cn">FALSE</span>, return_plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="va">gene</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="va">title</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"black"</span>, colour <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
 <span>          plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"white"</span>, size <span class="op">=</span> <span class="fl">14</span>, hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TFPI"</span>, <span class="st">"CD163"</span>, <span class="st">"ACTG2"</span><span class="op">)</span>,</span>
-<span>                                          <span class="va">fill_map</span>, gobject <span class="op">=</span> <span class="va">g_xen</span><span class="op">)</span>,</span>
+<span>                                          <span class="va">fill_map</span>, gobject <span class="op">=</span> <span class="va">g_xen</span>,</span>
+<span>                                          expression_values <span class="op">=</span> <span class="st">"normalized"</span><span class="op">)</span>,</span>
 <span>                        nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">results_folder</span>, <span class="st">"05-method-maps.png"</span><span class="op">)</span>, <span class="va">p</span>,</span>
 <span>       width <span class="op">=</span> <span class="fl">13</span>, height <span class="op">=</span> <span class="fl">4.6</span>, dpi <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span></code></pre></div>
@@ -584,15 +585,78 @@ higher. ACTG2 shows no pattern under any of the three.</p>
 </div>
 </div>
 <div class="section level2" number="3">
+<h2 id="spatial-co-expression-modules">
+<span class="header-section-number">3</span> Spatial co-expression
+modules<a class="anchor" aria-label="anchor" href="#spatial-co-expression-modules"></a>
+</h2>
+<p>Spatial genes often share a pattern: the genes of one cell type or
+region rise and fall together. <code><a href="../reference/spatialCoexpression.html">spatialCoexpression()</a></code> groups
+them into modules. It smooths each cell’s expression with its
+neighbours’, correlates the genes on the smoothed values, clusters the
+correlation, and scores every module in every cell. On this disk-backed
+object the smoothing and the correlation run on the stores.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">top_genes</span> <span class="op">&lt;-</span> <span class="va">bs_xen</span><span class="op">$</span><span class="va">feats</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">80</span><span class="op">]</span></span>
+<span><span class="va">g_xen</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialCoexpression.html">spatialCoexpression</a></span><span class="op">(</span><span class="va">g_xen</span>,</span>
+<span>  feats <span class="op">=</span> <span class="va">top_genes</span>,</span>
+<span>  spatial_network_name <span class="op">=</span> <span class="st">"Delaunay_network"</span>,</span>
+<span>  n_modules <span class="op">=</span> <span class="fl">6</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">coexpr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialCoexpression.html">spatialCoexpression</a></span><span class="op">(</span><span class="va">g_xen</span>,</span>
+<span>  feats <span class="op">=</span> <span class="va">top_genes</span>,</span>
+<span>  spatial_network_name <span class="op">=</span> <span class="st">"Delaunay_network"</span>,</span>
+<span>  n_modules <span class="op">=</span> <span class="fl">6</span>,</span>
+<span>  return_gobject <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">coexpr</span><span class="op">$</span><span class="va">summary</span></span></code></pre></div>
+<pre><code><span><span class="co">##    module  size within_cor  between_cor     score</span></span>
+<span><span class="co">##     &lt;int&gt; &lt;int&gt;      &lt;num&gt;        &lt;num&gt;     &lt;num&gt;</span></span>
+<span><span class="co">## 1:      2    26  0.5565854 -0.260558067 0.5565854</span></span>
+<span><span class="co">## 2:      1    14  0.5528519 -0.030621812 0.4257312</span></span>
+<span><span class="co">## 3:      5     7  0.5500639  0.008921023 0.4018332</span></span>
+<span><span class="co">## 4:      4    12  0.4166297 -0.081124593 0.3418724</span></span>
+<span><span class="co">## 5:      3    13  0.4064160 -0.081006461 0.3334434</span></span>
+<span><span class="co">## 6:      6     8  0.3181477 -0.037948786 0.2473251</span></span></code></pre>
+<p>Each module’s genes are in the feature metadata
+(<code>spatial_module</code>), and its scores per cell are the spatial
+enrichment <code>spatial_module</code>. The heatmap shows the gene-gene
+correlation, ordered and annotated by module:</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/heatmapCoexpression.html">heatmapCoexpression</a></span><span class="op">(</span><span class="va">g_xen</span>, <span class="va">coexpr</span>,</span>
+<span>  save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"12-coexpression-heatmap"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/spatial_genes/12-coexpression-heatmap.png" alt="" width="75%" style="display: block; margin: auto;"></p>
+<p>The three most distinct modules in the tissue, each titled with its
+genes that belong to it most firmly:</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">module_title</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">m</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">genes</span> <span class="op">&lt;-</span> <span class="va">coexpr</span><span class="op">$</span><span class="va">feats</span><span class="op">[</span><span class="va">module</span> <span class="op">==</span> <span class="va">m</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">module_cor</span><span class="op">)</span>, <span class="va">feat_ID</span><span class="op">]</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"module %s: %s"</span>, <span class="va">m</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">genes</span>, <span class="fl">3</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">mods</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">coexpr</span><span class="op">$</span><span class="va">summary</span><span class="op">$</span><span class="va">module</span>, <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">mods</span>, <span class="kw">function</span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span>
+<span>  <span class="fu">fill_map</span><span class="op">(</span><span class="va">g_xen</span>, <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>, title <span class="op">=</span> <span class="fu">module_title</span><span class="op">(</span><span class="va">m</span><span class="op">)</span>,</span>
+<span>           spat_enr_name <span class="op">=</span> <span class="st">"spatial_module"</span><span class="op">)</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">results_folder</span>, <span class="st">"13-module-maps.png"</span><span class="op">)</span>, <span class="va">p</span>,</span>
+<span>       width <span class="op">=</span> <span class="fl">13</span>, height <span class="op">=</span> <span class="fl">4.6</span>, dpi <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/spatial_genes/13-module-maps.png" alt="" width="100%" style="display: block; margin: auto;"></p>
+<p>The epithelial module (MALL, EPCAM, CAPN8) covers the airway and
+tumour epithelium. The two macrophage modules separate alveolar
+macrophages (MCEMP1, MARCO, VSIG4) in the airspaces from CD163-high
+interstitial macrophages (MS4A4A, MS4A6A, CD163) in the stroma, a
+distinction no single gene ranking makes.</p>
+<p>See <a href="spatial_coexpression_modules.html">Detection of spatial
+co-expression modules</a> for the options.</p>
+</div>
+<div class="section level2" number="4">
 <h2 id="spatial-genes-within-cell-types">
-<span class="header-section-number">3</span> Spatial genes within
+<span class="header-section-number">4</span> Spatial genes within
 cell types<a class="anchor" aria-label="anchor" href="#spatial-genes-within-cell-types"></a>
 </h2>
 <p>A cell-type marker is spatial almost by definition: the cell type
 sits somewhere in the tissue. To find genes that vary <em>within</em> a
 cell type, condition the null on the cell type itself. First, quick
 clusters:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_xen</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPCA.html">runPCA</a></span><span class="op">(</span><span class="va">g_xen</span>, feats_to_use <span class="op">=</span> <span class="cn">NULL</span>, ncp <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="va">g_xen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">g_xen</span>, dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">15</span>, k <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span>
 <span><span class="va">g_xen</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/doLeidenCluster.html">doLeidenClusterIgraph</a></span><span class="op">(</span><span class="va">g_xen</span>, resolution <span class="op">=</span> <span class="fl">0.4</span>, name <span class="op">=</span> <span class="st">"leiden_clus"</span><span class="op">)</span></span>
@@ -608,12 +672,12 @@ clusters:</p>
 <p><code>null = "covariate"</code> with
 <code>covariate = "leiden_clus"</code> compares each cell only with
 cells of the same cluster:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">within</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialAutoCor.html">spatialAutoCor</a></span><span class="op">(</span><span class="va">g_xen</span>, method <span class="op">=</span> <span class="st">"moran"</span>, null <span class="op">=</span> <span class="st">"covariate"</span>,</span>
 <span>                         covariate <span class="op">=</span> <span class="st">"leiden_clus"</span>, return_gobject <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">moran</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">feats</span>, z_tissue <span class="op">=</span> <span class="va">z</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>           <span class="va">within</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">feats</span>, z_within <span class="op">=</span> <span class="va">z</span><span class="op">)</span><span class="op">]</span>, by <span class="op">=</span> <span class="st">"feats"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">label</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EGFR"</span>, <span class="st">"PPARG"</span>, <span class="st">"KRT7"</span>, <span class="st">"STEAP4"</span>, <span class="st">"CXCL9"</span>, <span class="st">"PCSK2"</span>, <span class="st">"CPA3"</span>, <span class="st">"MALL"</span><span class="op">)</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">w</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">z_tissue</span>, <span class="va">z_within</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_abline</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"grey70"</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
@@ -627,9 +691,10 @@ cells of the same cluster:</p>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">results_folder</span>, <span class="st">"07-within-clusters.png"</span><span class="op">)</span>, <span class="va">p</span>,</span>
 <span>       width <span class="op">=</span> <span class="fl">6.5</span>, height <span class="op">=</span> <span class="fl">5.5</span>, dpi <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/spatial_genes/07-within-clusters.png" alt="" width="70%" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"KRT7"</span>, <span class="st">"PPARG"</span>, <span class="st">"PCSK2"</span>, <span class="st">"CXCL9"</span><span class="op">)</span>,</span>
-<span>                                          <span class="va">fill_map</span>, gobject <span class="op">=</span> <span class="va">g_xen</span><span class="op">)</span>,</span>
+<span>                                          <span class="va">fill_map</span>, gobject <span class="op">=</span> <span class="va">g_xen</span>,</span>
+<span>                                          expression_values <span class="op">=</span> <span class="st">"normalized"</span><span class="op">)</span>,</span>
 <span>                        nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">results_folder</span>, <span class="st">"08-within-maps.png"</span><span class="op">)</span>, <span class="va">p</span>,</span>
 <span>       width <span class="op">=</span> <span class="fl">16</span>, height <span class="op">=</span> <span class="fl">4.6</span>, dpi <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span></code></pre></div>
@@ -640,9 +705,9 @@ cells of its own cluster, little pattern is left. Genes that keep a high
 score vary <em>within</em> their cell type: PCSK2 is high in only part
 of the epithelium, and CXCL9 in a single small focus.</p>
 </div>
-<div class="section level2" number="4">
+<div class="section level2" number="5">
 <h2 id="sequencing-depth-a-visium-hd-crop">
-<span class="header-section-number">4</span> Sequencing depth: a
+<span class="header-section-number">5</span> Sequencing depth: a
 Visium HD crop<a class="anchor" aria-label="anchor" href="#sequencing-depth-a-visium-hd-crop"></a>
 </h2>
 <p>On sequencing-based data, the number of molecules captured per spot
@@ -650,7 +715,7 @@ or bin varies across the tissue, and many genes simply follow it. Under
 the permutation null those genes look spatial. This crop is a 400 × 400
 µm window of the 10x Visium HD colorectal cancer sample, at the tissue
 edge.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">vhd_dir</span> <span class="op">&lt;-</span> <span class="fu">GiottoData</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoData/reference/getSpatialDataset.html" class="external-link">getSpatialDataset</a></span><span class="op">(</span><span class="st">"visiumhd_mini_crc"</span>,</span>
 <span>                                         directory <span class="op">=</span> <span class="va">data_dir</span><span class="op">)</span></span>
 <span></span>
@@ -676,7 +741,7 @@ edge.</p>
 <span><span class="co"># the 8 nearest bins</span></span>
 <span><span class="va">g_vhd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span><span class="va">g_vhd</span>, method <span class="op">=</span> <span class="st">"kNN"</span>, k <span class="op">=</span> <span class="fl">8</span>,</span>
 <span>                              name <span class="op">=</span> <span class="st">"kNN_network"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g_vhd</span>,</span>
 <span>  show_image <span class="op">=</span> <span class="cn">TRUE</span>, image_name <span class="op">=</span> <span class="st">"image"</span>,</span>
 <span>  cell_color <span class="op">=</span> <span class="st">"total_expr"</span>, color_as_factor <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -688,7 +753,7 @@ edge.</p>
 (the default) cuts the bins into <code>n_groups</code> (default 10)
 quantile groups of total counts and tests each gene against bins of
 similar depth:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">perm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialAutoCor.html">spatialAutoCor</a></span><span class="op">(</span><span class="va">g_vhd</span>, method <span class="op">=</span> <span class="st">"moran"</span>,</span>
 <span>                       spatial_network_name <span class="op">=</span> <span class="st">"kNN_network"</span>,</span>
 <span>                       return_gobject <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -700,7 +765,7 @@ similar depth:</p>
 <span>  covariate   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">cov</span><span class="op">$</span><span class="va">adj.p.value</span>  <span class="op">&lt;</span> <span class="fl">0.01</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## permutation   covariate </span></span>
 <span><span class="co">##        3617         917 </span></span></code></pre>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">perm</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">feats</span>, z_perm <span class="op">=</span> <span class="va">z</span><span class="op">)</span><span class="op">]</span>, <span class="va">cov</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">feats</span>, z_cov <span class="op">=</span> <span class="va">z</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>           by <span class="op">=</span> <span class="st">"feats"</span><span class="op">)</span></span>
 <span><span class="va">label</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ACTB"</span>, <span class="st">"OAZ1"</span>, <span class="st">"TMSB4X"</span>, <span class="st">"MT-CO1"</span>, <span class="st">"FTL"</span>,</span>
@@ -717,7 +782,7 @@ similar depth:</p>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">results_folder</span>, <span class="st">"10-vhd-nulls.png"</span><span class="op">)</span>, <span class="va">p</span>,</span>
 <span>       width <span class="op">=</span> <span class="fl">6.5</span>, height <span class="op">=</span> <span class="fl">5.5</span>, dpi <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/spatial_genes/10-vhd-nulls.png" alt="" width="70%" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatFeatPlot2D.html" class="external-link">spatFeatPlot2D</a></span><span class="op">(</span><span class="va">g_vhd</span>,</span>
 <span>  feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ACTB"</span>, <span class="st">"OAZ1"</span>, <span class="st">"IGHA1"</span>, <span class="st">"COL3A1"</span><span class="op">)</span>,</span>
 <span>  expression_values <span class="op">=</span> <span class="st">"normalized"</span>,</span>
@@ -737,9 +802,9 @@ plasma cells, stroma and myeloid cells rather than depth.</p>
 (<code>spatialAutoCor(g_vhd, method = "binspect", null = "covariate")</code>).
 Geary’s C has no covariate null.</p>
 </div>
-<div class="section level2" number="5">
+<div class="section level2" number="6">
 <h2 id="choosing-a-method-and-using-the-results">
-<span class="header-section-number">5</span> Choosing a method and
+<span class="header-section-number">6</span> Choosing a method and
 using the results<a class="anchor" aria-label="anchor" href="#choosing-a-method-and-using-the-results"></a>
 </h2>
 <table class="table">
@@ -789,9 +854,9 @@ multiple-testing correction then counts only those genes.</li>
 GiottoDisk store directly through
 <code>analyzeData(x, spatAutoCorParam(...), network = )</code>.</li>
 </ul>
-<div class="section level3" number="5.1">
+<div class="section level3" number="6.1">
 <h3 id="binspect">
-<span class="header-section-number">5.1</span> binSpect()<a class="anchor" aria-label="anchor" href="#binspect"></a>
+<span class="header-section-number">6.1</span> binSpect()<a class="anchor" aria-label="anchor" href="#binspect"></a>
 </h3>
 <p><code><a href="../reference/binSpect.html">binSpect()</a></code> runs the same join-count test as
 <code>spatialAutoCor(method = "binspect")</code> and keeps its familiar
@@ -803,16 +868,16 @@ automatically when you use options only it has
 (<code>calc_hub = TRUE</code>, <code>spatial_network_k</code>,
 <code>bin_matrix</code>, <code>do_fisher_test = FALSE</code>).</p>
 </div>
-<div class="section level3" number="5.2">
+<div class="section level3" number="6.2">
 <h3 id="next-steps">
-<span class="header-section-number">5.2</span> Next steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
+<span class="header-section-number">6.2</span> Next steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
 </h3>
 <p>Spatial genes are the input to several downstream analyses:</p>
 <ul>
 <li>
 <a href="spatial_coexpression_modules.html">Spatial co-expression
-modules</a>: group spatial genes into modules with a shared
-pattern.</li>
+modules</a>: more on <code><a href="../reference/spatialCoexpression.html">spatialCoexpression()</a></code> and its
+options.</li>
 <li>
 <a href="hmrf.html">Spatial domains with HMRF</a> reads
 <code>binSpect.pval</code> from the feature metadata.</li>
@@ -822,11 +887,11 @@ clusters</a>: cluster cells on spatial genes only.</li>
 </ul>
 </div>
 </div>
-<div class="section level2" number="6">
+<div class="section level2" number="7">
 <h2 id="session-info">
-<span class="header-section-number">6</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+<span class="header-section-number">7</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## R version 4.5.3 (2026-03-11)</span></span>
 <span><span class="co">## Platform: aarch64-apple-darwin20</span></span>
@@ -846,49 +911,53 @@ clusters</a>: cluster cells on spatial genes only.</li>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base</span></span>
 <span><span class="co">##</span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] ggplot2_4.0.2       data.table_1.18.2.1 GiottoDisk_0.0.0.5  Giotto_4.3.3</span></span>
-<span><span class="co">## [5] GiottoClass_0.7.15</span></span>
+<span><span class="co">## [1] ggplot2_4.0.2       data.table_1.18.2.1 GiottoDisk_0.0.0.5  Giotto_4.3.4</span></span>
+<span><span class="co">## [5] GiottoClass_0.7.16</span></span>
 <span><span class="co">##</span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##   [1] colorRamp2_0.1.0            deldir_2.0-4                gridExtra_2.3</span></span>
-<span><span class="co">##   [4] rlang_1.3.0                 magrittr_2.0.4              GiottoUtils_0.2.8</span></span>
-<span><span class="co">##   [7] matrixStats_1.5.0           compiler_4.5.3              systemfonts_1.3.2</span></span>
-<span><span class="co">##  [10] vctrs_0.7.2                 hdf5r_1.3.12                wk_0.9.5</span></span>
-<span><span class="co">##  [13] pkgconfig_2.0.3             SpatialExperiment_1.20.0    fastmap_1.2.0</span></span>
-<span><span class="co">##  [16] backports_1.5.0             magick_2.9.1                XVector_0.50.0</span></span>
-<span><span class="co">##  [19] labeling_0.4.3              ggraph_2.2.2                ragg_1.5.2</span></span>
-<span><span class="co">##  [22] bit_4.6.0                   purrr_1.2.1                 bluster_1.20.0</span></span>
-<span><span class="co">##  [25] cachem_1.1.0                beachmat_2.26.0             jsonlite_2.0.0</span></span>
-<span><span class="co">##  [28] DelayedArray_0.36.0         BiocParallel_1.44.0         tweenr_2.0.3</span></span>
-<span><span class="co">##  [31] terra_1.9-11                irlba_2.3.7                 parallel_4.5.3</span></span>
-<span><span class="co">##  [34] cluster_2.1.8.2             R6_2.6.1                    RColorBrewer_1.1-3</span></span>
-<span><span class="co">##  [37] parallelly_1.47.0           GenomicRanges_1.62.1        scattermore_1.2</span></span>
-<span><span class="co">##  [40] Rcpp_1.1.1                  Seqinfo_1.0.0               assertthat_0.2.1</span></span>
-<span><span class="co">##  [43] SummarizedExperiment_1.40.0 future.apply_1.20.2         R.utils_2.13.0</span></span>
-<span><span class="co">##  [46] IRanges_2.44.0              Matrix_1.7-5                igraph_2.2.2</span></span>
-<span><span class="co">##  [49] tidyselect_1.2.1            dichromat_2.0-0.1           abind_1.4-8</span></span>
-<span><span class="co">##  [52] viridis_0.6.5               codetools_0.2-20            listenv_0.10.1</span></span>
-<span><span class="co">##  [55] lattice_0.22-9              tibble_3.3.1                Biobase_2.70.0</span></span>
-<span><span class="co">##  [58] withr_3.0.2                 S7_0.2.1                    future_1.70.0</span></span>
-<span><span class="co">##  [61] polyclip_1.10-7             xml2_1.5.2                  pillar_1.11.1</span></span>
-<span><span class="co">##  [64] MatrixGenerics_1.22.0       checkmate_2.3.4             stats4_4.5.3</span></span>
-<span><span class="co">##  [67] GiottoKernels_0.3.0         dbscan_1.2.4                plotly_4.12.0</span></span>
-<span><span class="co">##  [70] generics_0.1.4              nanoarrow_0.9.0             S4Vectors_0.48.0</span></span>
-<span><span class="co">##  [73] scales_1.4.0                GiottoData_0.3.8            gtools_3.9.5</span></span>
-<span><span class="co">##  [76] globals_0.19.1              glue_1.8.0                  lazyeval_0.2.2</span></span>
-<span><span class="co">##  [79] tools_4.5.3                 GiottoVisuals_0.2.16        tilework_1.0.0</span></span>
-<span><span class="co">##  [82] BiocNeighbors_2.4.0         ScaledMatrix_1.18.0         graphlayouts_1.2.3</span></span>
-<span><span class="co">##  [85] tidygraph_1.3.1             cowplot_1.2.0               grid_4.5.3</span></span>
-<span><span class="co">##  [88] tidyr_1.3.2                 colorspace_2.1-2            SingleCellExperiment_1.32.0</span></span>
-<span><span class="co">##  [91] BiocSingular_1.26.1         ggforce_0.5.0               cli_3.6.5</span></span>
-<span><span class="co">##  [94] rsvd_1.0.5                  textshaping_1.0.5           S4Arrays_1.10.1</span></span>
-<span><span class="co">##  [97] viridisLite_0.4.3           arrow_23.0.1.2              dplyr_1.2.0</span></span>
-<span><span class="co">## [100] gtable_0.3.6                R.methodsS3_1.8.2           digest_0.6.39</span></span>
-<span><span class="co">## [103] progressr_0.18.0            BiocGenerics_0.56.0         SparseArray_1.10.9</span></span>
-<span><span class="co">## [106] ggrepel_0.9.8               rjson_0.2.23                htmlwidgets_1.6.4</span></span>
-<span><span class="co">## [109] farver_2.1.2                R.oo_1.27.1                 memoise_2.0.1</span></span>
-<span><span class="co">## [112] htmltools_0.5.9             lifecycle_1.0.5             httr_1.4.8</span></span>
-<span><span class="co">## [115] bit64_4.6.0-1               MASS_7.3-65</span></span>
+<span><span class="co">##   [1] RColorBrewer_1.1-3          jsonlite_2.0.0              wk_0.9.5</span></span>
+<span><span class="co">##   [4] shape_1.4.6.1               magrittr_2.0.4              magick_2.9.1</span></span>
+<span><span class="co">##   [7] farver_2.1.2                GlobalOptions_0.1.4         ragg_1.5.2</span></span>
+<span><span class="co">##  [10] vctrs_0.7.2                 memoise_2.0.1               GiottoUtils_0.2.8</span></span>
+<span><span class="co">##  [13] terra_1.9-11                htmltools_0.5.9             S4Arrays_1.10.1</span></span>
+<span><span class="co">##  [16] BiocNeighbors_2.4.0         SparseArray_1.10.9          parallelly_1.47.0</span></span>
+<span><span class="co">##  [19] htmlwidgets_1.6.4           plotly_4.12.0               cachem_1.1.0</span></span>
+<span><span class="co">##  [22] igraph_2.2.2                lifecycle_1.0.5             iterators_1.0.14</span></span>
+<span><span class="co">##  [25] pkgconfig_2.0.3             rsvd_1.0.5                  Matrix_1.7-5</span></span>
+<span><span class="co">##  [28] R6_2.6.1                    fastmap_1.2.0               MatrixGenerics_1.22.0</span></span>
+<span><span class="co">##  [31] future_1.70.0               clue_0.3-68                 digest_0.6.39</span></span>
+<span><span class="co">##  [34] colorspace_2.1-2            S4Vectors_0.48.0            irlba_2.3.7</span></span>
+<span><span class="co">##  [37] textshaping_1.0.5           GenomicRanges_1.62.1        beachmat_2.26.0</span></span>
+<span><span class="co">##  [40] labeling_0.4.3              progressr_0.18.0            httr_1.4.8</span></span>
+<span><span class="co">##  [43] polyclip_1.10-7             abind_1.4-8                 compiler_4.5.3</span></span>
+<span><span class="co">##  [46] bit64_4.6.0-1               withr_3.0.2                 doParallel_1.0.17</span></span>
+<span><span class="co">##  [49] S7_0.2.1                    backports_1.5.0             BiocParallel_1.44.0</span></span>
+<span><span class="co">##  [52] viridis_0.6.5               ggforce_0.5.0               R.utils_2.13.0</span></span>
+<span><span class="co">##  [55] MASS_7.3-65                 DelayedArray_0.36.0         rjson_0.2.23</span></span>
+<span><span class="co">##  [58] bluster_1.20.0              gtools_3.9.5                GiottoVisuals_0.2.16</span></span>
+<span><span class="co">##  [61] tools_4.5.3                 future.apply_1.20.2         R.oo_1.27.1</span></span>
+<span><span class="co">##  [64] glue_1.8.0                  dbscan_1.2.4                grid_4.5.3</span></span>
+<span><span class="co">##  [67] checkmate_2.3.4             cluster_2.1.8.2             generics_0.1.4</span></span>
+<span><span class="co">##  [70] hdf5r_1.3.12                gtable_0.3.6                R.methodsS3_1.8.2</span></span>
+<span><span class="co">##  [73] tidyr_1.3.2                 BiocSingular_1.26.1         tidygraph_1.3.1</span></span>
+<span><span class="co">##  [76] ScaledMatrix_1.18.0         xml2_1.5.2                  XVector_0.50.0</span></span>
+<span><span class="co">##  [79] BiocGenerics_0.56.0         tilework_1.0.0              ggrepel_0.9.8</span></span>
+<span><span class="co">##  [82] foreach_1.5.2               pillar_1.11.1               nanoarrow_0.9.0</span></span>
+<span><span class="co">##  [85] circlize_0.4.18             dplyr_1.2.0                 tweenr_2.0.3</span></span>
+<span><span class="co">##  [88] lattice_0.22-9              bit_4.6.0                   deldir_2.0-4</span></span>
+<span><span class="co">##  [91] tidyselect_1.2.1            ComplexHeatmap_2.26.1       SingleCellExperiment_1.32.0</span></span>
+<span><span class="co">##  [94] gridExtra_2.3               IRanges_2.44.0              Seqinfo_1.0.0</span></span>
+<span><span class="co">##  [97] SummarizedExperiment_1.40.0 scattermore_1.2             stats4_4.5.3</span></span>
+<span><span class="co">## [100] graphlayouts_1.2.3          Biobase_2.70.0              matrixStats_1.5.0</span></span>
+<span><span class="co">## [103] lazyeval_0.2.2              GiottoKernels_0.3.0         codetools_0.2-20</span></span>
+<span><span class="co">## [106] ggraph_2.2.2                GiottoData_0.3.8            tibble_3.3.1</span></span>
+<span><span class="co">## [109] colorRamp2_0.1.0            cli_3.6.5                   arrow_23.0.1.2</span></span>
+<span><span class="co">## [112] systemfonts_1.3.2           dichromat_2.0-0.1           Rcpp_1.1.1</span></span>
+<span><span class="co">## [115] globals_0.19.1              png_0.1-9                   parallel_4.5.3</span></span>
+<span><span class="co">## [118] assertthat_0.2.1            listenv_0.10.1              SpatialExperiment_1.20.0</span></span>
+<span><span class="co">## [121] viridisLite_0.4.3           scales_1.4.0                purrr_1.2.1</span></span>
+<span><span class="co">## [124] crayon_1.5.3                GetoptLong_1.1.1            rlang_1.3.0</span></span>
+<span><span class="co">## [127] cowplot_1.2.0</span></span>
 <span><span class="co">## Warning messages:</span></span>
 <span><span class="co">## 1: Skipping empty giottoPoints (0 features) for feat_type: GenomicControl</span></span>
 <span><span class="co">## 2: The `polygon_name` argument of `getPolygonInfo()` is deprecated as of GiottoClass 0.5.2.</span></span>

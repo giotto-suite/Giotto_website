@@ -81,7 +81,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.3</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -800,18 +800,18 @@ genes<a class="anchor" aria-label="anchor" href="#spatially-correlated-genes"></
 <span><span class="va">ext_spatial_genes</span> <span class="op">&lt;-</span> <span class="va">rank_spatialfeats</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">500</span>,<span class="op">]</span><span class="op">$</span><span class="va">feats</span></span>
 <span></span>
 <span><span class="co"># here we use existing detectSpatialCorGenes function to calculate pairwise distances between genes (but set network_smoothing=0 to use default clustering)</span></span>
-<span><span class="va">spat_cor_netw_DT</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/detectSpatialCorFeats.html">detectSpatialCorFeats</a></span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
+<span><span class="va">spat_cor_netw_DT</span> <span class="op">&lt;-</span> <span class="fu">detectSpatialCorFeats</span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
 <span>                                          method <span class="op">=</span> <span class="st">"network"</span>,</span>
 <span>                                          spatial_network_name <span class="op">=</span> <span class="st">"spatial_network"</span>,</span>
 <span>                                          subset_feats <span class="op">=</span> <span class="va">ext_spatial_genes</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 3.3 identify potential spatial co-expression</span></span>
-<span><span class="va">spat_cor_netw_DT</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/clusterSpatialCorFeats.html">clusterSpatialCorFeats</a></span><span class="op">(</span><span class="va">spat_cor_netw_DT</span>, </span>
+<span><span class="va">spat_cor_netw_DT</span> <span class="op">&lt;-</span> <span class="fu">clusterSpatialCorFeats</span><span class="op">(</span><span class="va">spat_cor_netw_DT</span>, </span>
 <span>                                           name <span class="op">=</span> <span class="st">"spat_netw_clus"</span>, </span>
 <span>                                           k <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># visualize clusters</span></span>
-<span><span class="fu"><a href="../reference/heatmSpatialCorFeats.html">heatmSpatialCorFeats</a></span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
+<span><span class="fu">heatmSpatialCorFeats</span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
 <span>                     spatCorObject <span class="op">=</span> <span class="va">spat_cor_netw_DT</span>,</span>
 <span>                     use_clus_name <span class="op">=</span> <span class="st">"spat_netw_clus"</span>,</span>
 <span>                     heatmap_legend_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>title <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>,</span>
@@ -828,7 +828,7 @@ Metagenes/co-expression modules<a class="anchor" aria-label="anchor" href="#meta
 </h2>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 3.4 create metagenes / co-expression modules</span></span>
-<span><span class="va">cluster_genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getBalancedSpatCoexpressionFeats.html">getBalancedSpatCoexpressionFeats</a></span><span class="op">(</span><span class="va">spat_cor_netw_DT</span>, </span>
+<span><span class="va">cluster_genes</span> <span class="op">&lt;-</span> <span class="fu">getBalancedSpatCoexpressionFeats</span><span class="op">(</span><span class="va">spat_cor_netw_DT</span>, </span>
 <span>                                                  maximum <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createMetafeats.html" class="external-link">createMetafeats</a></span><span class="op">(</span><span class="va">my_giotto_object</span>, </span>

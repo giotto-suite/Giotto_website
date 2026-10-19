@@ -61,7 +61,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.3</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -205,7 +205,25 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="4.3.3" id="giotto-433-in-development">Giotto 4.3.3 (in development)<a class="anchor" aria-label="anchor" href="#giotto-433-in-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="4.3.4" id="giotto-434-in-development">Giotto 4.3.4 (in development)<a class="anchor" aria-label="anchor" href="#giotto-434-in-development"></a></h2>
+<div class="section level3">
+<h3 id="new-4-3-4">new<a class="anchor" aria-label="anchor" href="#new-4-3-4"></a></h3>
+<ul><li>
+<code><a href="../reference/spatialCoexpression.html">spatialCoexpression()</a></code>: spatial co-expression modules in one command. Expression is smoothed over a spatial network, the features are correlated on the smoothed values and clustered into modules, and each module gets a score per cell. Modules are written to the feature metadata and the scores as a spatial enrichment. It is built from <code><a href="https://giotto-suite.github.io/GiottoClass/reference/spatialSmoothParam.html" class="external-link">spatialSmoothParam()</a></code>, <code><a href="https://giotto-suite.github.io/GiottoClass/reference/featCorParam.html" class="external-link">featCorParam()</a></code> and <code><a href="https://giotto-suite.github.io/GiottoClass/reference/createMetafeats.html" class="external-link">createMetafeats()</a></code>, so it runs on any backend that provides those. <code><a href="../reference/heatmapCoexpression.html">heatmapCoexpression()</a></code> plots the correlation by module.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="breaking-changes-4-3-4">breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-4-3-4"></a></h3>
+<ul><li>Removed <code>detectSpatialCorFeats()</code>, <code>detectSpatialCorFeatsMatrix()</code>, <code>clusterSpatialCorFeats()</code>, <code>clusterSpatialCorGenes()</code>, <code>showSpatialCorFeats()</code>, <code>showSpatialCorGenes()</code>, <code>rankSpatialCorGroups()</code>, <code>heatmSpatialCorFeats()</code> and <code>getBalancedSpatCoexpressionFeats()</code>; use <code><a href="../reference/spatialCoexpression.html">spatialCoexpression()</a></code> and <code><a href="../reference/heatmapCoexpression.html">heatmapCoexpression()</a></code>. The <code>"grid"</code> method, which failed on a giotto object, is gone.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-4-3-4">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-4-3-4"></a></h3>
+<ul><li>Network smoothing for spatial co-expression averaged each cell only with the neighbours stored as <code>from</code> for it, about half of them on undirected networks; it now uses every neighbour.</li>
+<li>
+<code>initHMRF_V2(use_metagene = TRUE)</code> failed when building the metagene matrix. Its metagenes now use the genes most correlated with their module instead of the first genes by name.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="4.3.3" id="giotto-433">Giotto 4.3.3<a class="anchor" aria-label="anchor" href="#giotto-433"></a></h2>
 <p>Downstream packages that import <code>spatAutoCorParam</code>, <code><a href="../reference/histThreshold.html">histThreshold()</a></code> or provide an <code><a href="../reference/analyzeData.html">analyzeData()</a></code> method for <code>edgeStatsParam</code> should require <code>Giotto (&gt;= 4.3.3)</code>.</p>
 <div class="section level3">
 <h3 id="new-4-3-3">new<a class="anchor" aria-label="anchor" href="#new-4-3-3"></a></h3>
@@ -689,7 +707,7 @@
 <li>remove deprecated <code>rankEnrich()</code>. Use <code><a href="../reference/runRankEnrich.html">runRankEnrich()</a></code> instead</li>
 <li>remove deprecated <code>hyperGeometricEnrich()</code>. Use <code><a href="../reference/runHyperGeometricEnrich.html">runHyperGeometricEnrich()</a></code> instead</li>
 <li>remove deprecated <code>createSpatialEnrich()</code>. Use <code><a href="../reference/runSpatialEnrich.html">runSpatialEnrich()</a></code> instead</li>
-<li>remove deprecated <code>heatmSpatialCorGenes()</code>. Use <code><a href="../reference/heatmSpatialCorFeats.html">heatmSpatialCorFeats()</a></code> instead</li>
+<li>remove deprecated <code>heatmSpatialCorGenes()</code>. Use <code>heatmSpatialCorFeats()</code> instead</li>
 <li>remove deprecated <code>runPAGEEnrich_OLD()</code>. Use <code><a href="../reference/enrichment_PAGE.html">runPAGEEnrich()</a></code> instead</li>
 <li>remove <code>do_pca</code>, <code>expression_values</code>, <code>feats_to_use</code> args from <code><a href="../reference/runGiottoHarmony.html">runGiottoHarmony()</a></code>. Running PCA during the <code>harmony::RunHarmony()</code> call is deprecated.</li>
 </ul></div>
@@ -734,7 +752,7 @@
 <h2 class="pkg-version" data-toc-text="4.1.0" id="giotto-410-20240731">Giotto 4.1.0 (2024/07/31)<a class="anchor" aria-label="anchor" href="#giotto-410-20240731"></a></h2>
 <div class="section level3">
 <h3 id="breaking-changes-4-1-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-4-1-0"></a></h3>
-<ul><li>Deprecated <code>detectSpatialCorGenes()</code> removed. Use <code><a href="../reference/detectSpatialCorFeats.html">detectSpatialCorFeats()</a></code> instead</li>
+<ul><li>Deprecated <code>detectSpatialCorGenes()</code> removed. Use <code>detectSpatialCorFeats()</code> instead</li>
 <li>Deprecated <code><a href="../reference/findInteractionChangedGenes.html">findInteractionChangedGenes()</a></code> removed. Use <code><a href="../reference/findInteractionChangedFeats.html">findInteractionChangedFeats()</a></code> instead</li>
 <li>Deprecated <code><a href="../reference/findCellProximityGenes.html">findCellProximityGenes()</a></code> removed. Use <code><a href="../reference/findInteractionChangedFeats.html">findInteractionChangedFeats()</a></code> instead</li>
 <li>

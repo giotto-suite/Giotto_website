@@ -81,7 +81,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.3</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -1064,15 +1064,15 @@ for whether the high cells are neighbors more often than chance.</p>
 <span>               cow_n_col <span class="op">=</span> <span class="fl">3</span>, gradient_style <span class="op">=</span> <span class="st">"sequential"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/cosmx_mini_colon_wtx/14_binspect-figs.png" alt="" width="100%"></p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">spat_cor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/detectSpatialCorFeats.html">detectSpatialCorFeats</a></span><span class="op">(</span><span class="va">mini_cosmx</span>, method <span class="op">=</span> <span class="st">"network"</span>,</span>
+<code class="sourceCode R"><span><span class="va">spat_cor</span> <span class="op">&lt;-</span> <span class="fu">detectSpatialCorFeats</span><span class="op">(</span><span class="va">mini_cosmx</span>, method <span class="op">=</span> <span class="st">"network"</span>,</span>
 <span>                                  spatial_network_name <span class="op">=</span> <span class="st">"Delaunay_network"</span>,</span>
 <span>                                  subset_feats <span class="op">=</span> <span class="va">spatial_genes</span>,</span>
 <span>                                  expression_values <span class="op">=</span> <span class="st">"normalized"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># k = 6 was chosen by eye, not optimized</span></span>
-<span><span class="va">spat_cor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/clusterSpatialCorFeats.html">clusterSpatialCorFeats</a></span><span class="op">(</span><span class="va">spat_cor</span>, name <span class="op">=</span> <span class="st">"spat_netw_clus"</span>, k <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">spat_cor</span> <span class="op">&lt;-</span> <span class="fu">clusterSpatialCorFeats</span><span class="op">(</span><span class="va">spat_cor</span>, name <span class="op">=</span> <span class="st">"spat_netw_clus"</span>, k <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/heatmSpatialCorFeats.html">heatmSpatialCorFeats</a></span><span class="op">(</span><span class="va">mini_cosmx</span>, spatCorObject <span class="op">=</span> <span class="va">spat_cor</span>,</span>
+<code class="sourceCode R"><span><span class="fu">heatmSpatialCorFeats</span><span class="op">(</span><span class="va">mini_cosmx</span>, spatCorObject <span class="op">=</span> <span class="va">spat_cor</span>,</span>
 <span>                     use_clus_name <span class="op">=</span> <span class="st">"spat_netw_clus"</span>,</span>
 <span>                     col <span class="op">=</span> <span class="fu">circlize</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/circlize/man/colorRamp2.html" class="external-link">colorRamp2</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.12</span>, <span class="fl">0.08</span>, <span class="fl">0.5</span><span class="op">)</span>,</span>
 <span>                                                <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#3B4CC0"</span>, <span class="st">"white"</span>, <span class="st">"#B40426"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>

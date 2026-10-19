@@ -298,13 +298,13 @@ I:
 
 ``` r
 
-# fill each cell by the gene's normalized expression; the colour scale is
-# capped at the 95th percentile of expressing cells so a few very high cells
-# do not wash out the pattern
-fill_map <- function(gobject, gene) {
-  v <- spatValues(gobject, feats = gene, expression_values = "normalized")
-  cap <- quantile(v[[gene]][v[[gene]] > 0], 0.95)
-  v <- data.table(cell_ID = v$cell_ID, expression = pmin(v[[gene]], cap))
+# fill each cell by a value (here a gene's normalized expression); the
+# colour scale is capped at the 95th percentile of the cells above 0, so a
+# few very high cells do not wash out the pattern
+fill_map <- function(gobject, feat, title = feat, ...) {
+  v <- spatValues(gobject, feats = feat, ...)
+  cap <- quantile(v[[feat]][v[[feat]] > 0], 0.95)
+  v <- data.table(cell_ID = v$cell_ID, expression = pmin(v[[feat]], cap))
   gobject <- addCellMetadata(gobject, new_metadata = v,
                              by_column = TRUE, column_cell_ID = "cell_ID")
   spatInSituPlotPoints(gobject,
@@ -313,12 +313,13 @@ fill_map <- function(gobject, gene) {
     polygon_color = "grey15", polygon_line_size = 0.05, polygon_alpha = 1,
     background_color = "black", show_legend = FALSE, show_axes = FALSE,
     show_plot = FALSE, save_plot = FALSE, return_plot = TRUE) +
-    ggtitle(gene) +
+    ggtitle(title) +
     theme(plot.background = element_rect(fill = "black", colour = NA),
           plot.title = element_text(colour = "white", size = 14, hjust = 0.5))
 }
 p <- cowplot::plot_grid(plotlist = lapply(c("TFPI", "CD163", "ACTG2"),
-                                          fill_map, gobject = g_xen),
+                                          fill_map, gobject = g_xen,
+                                          expression_values = "normalized"),
                         nrow = 1)
 ggsave(file.path(results_folder, "05-method-maps.png"), p,
        width = 13, height = 4.6, dpi = 150)
@@ -332,7 +333,85 @@ level, scores higher than binSpect. CD163, a macrophage marker, is high
 in few cells that cluster together, which binSpect ranks higher. ACTG2
 shows no pattern under any of the three.
 
-## 3 Spatial genes within cell types
+## 3 Spatial co-expression modules
+
+Spatial genes often share a pattern: the genes of one cell type or
+region rise and fall together.
+[`spatialCoexpression()`](https://giottosuite.com/dev/reference/spatialCoexpression.md)
+groups them into modules. It smooths each cell’s expression with its
+neighbours’, correlates the genes on the smoothed values, clusters the
+correlation, and scores every module in every cell. On this disk-backed
+object the smoothing and the correlation run on the stores.
+
+``` r
+
+top_genes <- bs_xen$feats[1:80]
+g_xen <- spatialCoexpression(g_xen,
+  feats = top_genes,
+  spatial_network_name = "Delaunay_network",
+  n_modules = 6
+)
+coexpr <- spatialCoexpression(g_xen,
+  feats = top_genes,
+  spatial_network_name = "Delaunay_network",
+  n_modules = 6,
+  return_gobject = FALSE
+)
+coexpr$summary
+```
+
+    ##    module  size within_cor  between_cor     score
+    ##     <int> <int>      <num>        <num>     <num>
+    ## 1:      2    26  0.5565854 -0.260558067 0.5565854
+    ## 2:      1    14  0.5528519 -0.030621812 0.4257312
+    ## 3:      5     7  0.5500639  0.008921023 0.4018332
+    ## 4:      4    12  0.4166297 -0.081124593 0.3418724
+    ## 5:      3    13  0.4064160 -0.081006461 0.3334434
+    ## 6:      6     8  0.3181477 -0.037948786 0.2473251
+
+Each module’s genes are in the feature metadata (`spatial_module`), and
+its scores per cell are the spatial enrichment `spatial_module`. The
+heatmap shows the gene-gene correlation, ordered and annotated by
+module:
+
+``` r
+
+heatmapCoexpression(g_xen, coexpr,
+  save_param = list(save_name = "12-coexpression-heatmap"))
+```
+
+![](images/spatial_genes/12-coexpression-heatmap.png)
+
+The three most distinct modules in the tissue, each titled with its
+genes that belong to it most firmly:
+
+``` r
+
+module_title <- function(m) {
+  genes <- coexpr$feats[module == m][order(-module_cor), feat_ID]
+  sprintf("module %s: %s", m, paste(head(genes, 3), collapse = ", "))
+}
+mods <- head(coexpr$summary$module, 3)
+p <- cowplot::plot_grid(plotlist = lapply(mods, function(m)
+  fill_map(g_xen, as.character(m), title = module_title(m),
+           spat_enr_name = "spatial_module")), nrow = 1)
+ggsave(file.path(results_folder, "13-module-maps.png"), p,
+       width = 13, height = 4.6, dpi = 150)
+```
+
+![](images/spatial_genes/13-module-maps.png)
+
+The epithelial module (MALL, EPCAM, CAPN8) covers the airway and tumour
+epithelium. The two macrophage modules separate alveolar macrophages
+(MCEMP1, MARCO, VSIG4) in the airspaces from CD163-high interstitial
+macrophages (MS4A4A, MS4A6A, CD163) in the stroma, a distinction no
+single gene ranking makes.
+
+See [Detection of spatial co-expression
+modules](https://giottosuite.com/dev/articles/spatial_coexpression_modules.md)
+for the options.
+
+## 4 Spatial genes within cell types
 
 A cell-type marker is spatial almost by definition: the cell type sits
 somewhere in the tissue. To find genes that vary *within* a cell type,
@@ -387,7 +466,8 @@ ggsave(file.path(results_folder, "07-within-clusters.png"), p,
 ``` r
 
 p <- cowplot::plot_grid(plotlist = lapply(c("KRT7", "PPARG", "PCSK2", "CXCL9"),
-                                          fill_map, gobject = g_xen),
+                                          fill_map, gobject = g_xen,
+                                          expression_values = "normalized"),
                         nrow = 1)
 ggsave(file.path(results_folder, "08-within-maps.png"), p,
        width = 16, height = 4.6, dpi = 150)
@@ -401,7 +481,7 @@ own cluster, little pattern is left. Genes that keep a high score vary
 *within* their cell type: PCSK2 is high in only part of the epithelium,
 and CXCL9 in a single small focus.
 
-## 4 Sequencing depth: a Visium HD crop
+## 5 Sequencing depth: a Visium HD crop
 
 On sequencing-based data, the number of molecules captured per spot or
 bin varies across the tissue, and many genes simply follow it. Under the
@@ -516,7 +596,7 @@ The same works for binSpect
 (`spatialAutoCor(g_vhd, method = "binspect", null = "covariate")`).
 Geary’s C has no covariate null.
 
-## 5 Choosing a method and using the results
+## 6 Choosing a method and using the results
 
 | you want | use |
 |----|----|
@@ -537,7 +617,7 @@ Some details:
   GiottoDisk store directly through
   `analyzeData(x, spatAutoCorParam(...), network = )`.
 
-### 5.1 binSpect()
+### 6.1 binSpect()
 
 [`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md) runs
 the same join-count test as `spatialAutoCor(method = "binspect")` and
@@ -548,13 +628,15 @@ chosen automatically when you use options only it has
 (`calc_hub = TRUE`, `spatial_network_k`, `bin_matrix`,
 `do_fisher_test = FALSE`).
 
-### 5.2 Next steps
+### 6.2 Next steps
 
 Spatial genes are the input to several downstream analyses:
 
 - [Spatial co-expression
   modules](https://giottosuite.com/dev/articles/spatial_coexpression_modules.md):
-  group spatial genes into modules with a shared pattern.
+  more on
+  [`spatialCoexpression()`](https://giottosuite.com/dev/reference/spatialCoexpression.md)
+  and its options.
 - [Spatial domains with
   HMRF](https://giottosuite.com/dev/articles/hmrf.md) reads
   `binSpect.pval` from the feature metadata.
@@ -562,7 +644,7 @@ Spatial genes are the input to several downstream analyses:
   clusters](https://giottosuite.com/dev/articles/spatial_informed_clusters.md):
   cluster cells on spatial genes only.
 
-## 6 Session Info
+## 7 Session Info
 
 ``` r
 
@@ -587,49 +669,53 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base
     ##
     ## other attached packages:
-    ## [1] ggplot2_4.0.2       data.table_1.18.2.1 GiottoDisk_0.0.0.5  Giotto_4.3.3
-    ## [5] GiottoClass_0.7.15
+    ## [1] ggplot2_4.0.2       data.table_1.18.2.1 GiottoDisk_0.0.0.5  Giotto_4.3.4
+    ## [5] GiottoClass_0.7.16
     ##
     ## loaded via a namespace (and not attached):
-    ##   [1] colorRamp2_0.1.0            deldir_2.0-4                gridExtra_2.3
-    ##   [4] rlang_1.3.0                 magrittr_2.0.4              GiottoUtils_0.2.8
-    ##   [7] matrixStats_1.5.0           compiler_4.5.3              systemfonts_1.3.2
-    ##  [10] vctrs_0.7.2                 hdf5r_1.3.12                wk_0.9.5
-    ##  [13] pkgconfig_2.0.3             SpatialExperiment_1.20.0    fastmap_1.2.0
-    ##  [16] backports_1.5.0             magick_2.9.1                XVector_0.50.0
-    ##  [19] labeling_0.4.3              ggraph_2.2.2                ragg_1.5.2
-    ##  [22] bit_4.6.0                   purrr_1.2.1                 bluster_1.20.0
-    ##  [25] cachem_1.1.0                beachmat_2.26.0             jsonlite_2.0.0
-    ##  [28] DelayedArray_0.36.0         BiocParallel_1.44.0         tweenr_2.0.3
-    ##  [31] terra_1.9-11                irlba_2.3.7                 parallel_4.5.3
-    ##  [34] cluster_2.1.8.2             R6_2.6.1                    RColorBrewer_1.1-3
-    ##  [37] parallelly_1.47.0           GenomicRanges_1.62.1        scattermore_1.2
-    ##  [40] Rcpp_1.1.1                  Seqinfo_1.0.0               assertthat_0.2.1
-    ##  [43] SummarizedExperiment_1.40.0 future.apply_1.20.2         R.utils_2.13.0
-    ##  [46] IRanges_2.44.0              Matrix_1.7-5                igraph_2.2.2
-    ##  [49] tidyselect_1.2.1            dichromat_2.0-0.1           abind_1.4-8
-    ##  [52] viridis_0.6.5               codetools_0.2-20            listenv_0.10.1
-    ##  [55] lattice_0.22-9              tibble_3.3.1                Biobase_2.70.0
-    ##  [58] withr_3.0.2                 S7_0.2.1                    future_1.70.0
-    ##  [61] polyclip_1.10-7             xml2_1.5.2                  pillar_1.11.1
-    ##  [64] MatrixGenerics_1.22.0       checkmate_2.3.4             stats4_4.5.3
-    ##  [67] GiottoKernels_0.3.0         dbscan_1.2.4                plotly_4.12.0
-    ##  [70] generics_0.1.4              nanoarrow_0.9.0             S4Vectors_0.48.0
-    ##  [73] scales_1.4.0                GiottoData_0.3.8            gtools_3.9.5
-    ##  [76] globals_0.19.1              glue_1.8.0                  lazyeval_0.2.2
-    ##  [79] tools_4.5.3                 GiottoVisuals_0.2.16        tilework_1.0.0
-    ##  [82] BiocNeighbors_2.4.0         ScaledMatrix_1.18.0         graphlayouts_1.2.3
-    ##  [85] tidygraph_1.3.1             cowplot_1.2.0               grid_4.5.3
-    ##  [88] tidyr_1.3.2                 colorspace_2.1-2            SingleCellExperiment_1.32.0
-    ##  [91] BiocSingular_1.26.1         ggforce_0.5.0               cli_3.6.5
-    ##  [94] rsvd_1.0.5                  textshaping_1.0.5           S4Arrays_1.10.1
-    ##  [97] viridisLite_0.4.3           arrow_23.0.1.2              dplyr_1.2.0
-    ## [100] gtable_0.3.6                R.methodsS3_1.8.2           digest_0.6.39
-    ## [103] progressr_0.18.0            BiocGenerics_0.56.0         SparseArray_1.10.9
-    ## [106] ggrepel_0.9.8               rjson_0.2.23                htmlwidgets_1.6.4
-    ## [109] farver_2.1.2                R.oo_1.27.1                 memoise_2.0.1
-    ## [112] htmltools_0.5.9             lifecycle_1.0.5             httr_1.4.8
-    ## [115] bit64_4.6.0-1               MASS_7.3-65
+    ##   [1] RColorBrewer_1.1-3          jsonlite_2.0.0              wk_0.9.5
+    ##   [4] shape_1.4.6.1               magrittr_2.0.4              magick_2.9.1
+    ##   [7] farver_2.1.2                GlobalOptions_0.1.4         ragg_1.5.2
+    ##  [10] vctrs_0.7.2                 memoise_2.0.1               GiottoUtils_0.2.8
+    ##  [13] terra_1.9-11                htmltools_0.5.9             S4Arrays_1.10.1
+    ##  [16] BiocNeighbors_2.4.0         SparseArray_1.10.9          parallelly_1.47.0
+    ##  [19] htmlwidgets_1.6.4           plotly_4.12.0               cachem_1.1.0
+    ##  [22] igraph_2.2.2                lifecycle_1.0.5             iterators_1.0.14
+    ##  [25] pkgconfig_2.0.3             rsvd_1.0.5                  Matrix_1.7-5
+    ##  [28] R6_2.6.1                    fastmap_1.2.0               MatrixGenerics_1.22.0
+    ##  [31] future_1.70.0               clue_0.3-68                 digest_0.6.39
+    ##  [34] colorspace_2.1-2            S4Vectors_0.48.0            irlba_2.3.7
+    ##  [37] textshaping_1.0.5           GenomicRanges_1.62.1        beachmat_2.26.0
+    ##  [40] labeling_0.4.3              progressr_0.18.0            httr_1.4.8
+    ##  [43] polyclip_1.10-7             abind_1.4-8                 compiler_4.5.3
+    ##  [46] bit64_4.6.0-1               withr_3.0.2                 doParallel_1.0.17
+    ##  [49] S7_0.2.1                    backports_1.5.0             BiocParallel_1.44.0
+    ##  [52] viridis_0.6.5               ggforce_0.5.0               R.utils_2.13.0
+    ##  [55] MASS_7.3-65                 DelayedArray_0.36.0         rjson_0.2.23
+    ##  [58] bluster_1.20.0              gtools_3.9.5                GiottoVisuals_0.2.16
+    ##  [61] tools_4.5.3                 future.apply_1.20.2         R.oo_1.27.1
+    ##  [64] glue_1.8.0                  dbscan_1.2.4                grid_4.5.3
+    ##  [67] checkmate_2.3.4             cluster_2.1.8.2             generics_0.1.4
+    ##  [70] hdf5r_1.3.12                gtable_0.3.6                R.methodsS3_1.8.2
+    ##  [73] tidyr_1.3.2                 BiocSingular_1.26.1         tidygraph_1.3.1
+    ##  [76] ScaledMatrix_1.18.0         xml2_1.5.2                  XVector_0.50.0
+    ##  [79] BiocGenerics_0.56.0         tilework_1.0.0              ggrepel_0.9.8
+    ##  [82] foreach_1.5.2               pillar_1.11.1               nanoarrow_0.9.0
+    ##  [85] circlize_0.4.18             dplyr_1.2.0                 tweenr_2.0.3
+    ##  [88] lattice_0.22-9              bit_4.6.0                   deldir_2.0-4
+    ##  [91] tidyselect_1.2.1            ComplexHeatmap_2.26.1       SingleCellExperiment_1.32.0
+    ##  [94] gridExtra_2.3               IRanges_2.44.0              Seqinfo_1.0.0
+    ##  [97] SummarizedExperiment_1.40.0 scattermore_1.2             stats4_4.5.3
+    ## [100] graphlayouts_1.2.3          Biobase_2.70.0              matrixStats_1.5.0
+    ## [103] lazyeval_0.2.2              GiottoKernels_0.3.0         codetools_0.2-20
+    ## [106] ggraph_2.2.2                GiottoData_0.3.8            tibble_3.3.1
+    ## [109] colorRamp2_0.1.0            cli_3.6.5                   arrow_23.0.1.2
+    ## [112] systemfonts_1.3.2           dichromat_2.0-0.1           Rcpp_1.1.1
+    ## [115] globals_0.19.1              png_0.1-9                   parallel_4.5.3
+    ## [118] assertthat_0.2.1            listenv_0.10.1              SpatialExperiment_1.20.0
+    ## [121] viridisLite_0.4.3           scales_1.4.0                purrr_1.2.1
+    ## [124] crayon_1.5.3                GetoptLong_1.1.1            rlang_1.3.0
+    ## [127] cowplot_1.2.0
     ## Warning messages:
     ## 1: Skipping empty giottoPoints (0 features) for feat_type: GenomicControl
     ## 2: The `polygon_name` argument of `getPolygonInfo()` is deprecated as of GiottoClass 0.5.2.

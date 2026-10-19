@@ -741,25 +741,12 @@ the different gene distributions.
 
 Method to detect spatially co-expressed feature modules.
 
-- [`clusterSpatialCorFeats()`](https://giottosuite.com/dev/reference/clusterSpatialCorFeats.md)
-  : clusterSpatialCorFeats
-- [`detectSpatialCorFeats()`](https://giottosuite.com/dev/reference/detectSpatialCorFeats.md)
-  [`detectSpatialCorFeatsMatrix()`](https://giottosuite.com/dev/reference/detectSpatialCorFeats.md)
-  : Detect spatially correlated features
-- [`clusterSpatialCorGenes()`](https://giottosuite.com/dev/reference/clusterSpatialCorGenes.md)
-  : clusterSpatialCorGenes
+- [`spatialCoexpression()`](https://giottosuite.com/dev/reference/spatialCoexpression.md)
+  : Spatial co-expression modules
+- [`heatmapCoexpression()`](https://giottosuite.com/dev/reference/heatmapCoexpression.md)
+  : Heatmap of spatial co-expression modules
 - [`detectSpatialPatterns()`](https://giottosuite.com/dev/reference/detectSpatialPatterns.md)
   : detectSpatialPatterns
-- [`heatmSpatialCorFeats()`](https://giottosuite.com/dev/reference/heatmSpatialCorFeats.md)
-  : heatmSpatialCorFeats
-- [`showSpatialCorFeats()`](https://giottosuite.com/dev/reference/showSpatialCorFeats.md)
-  : showSpatialCorFeats
-- [`showSpatialCorGenes()`](https://giottosuite.com/dev/reference/showSpatialCorGenes.md)
-  : showSpatialCorGenes
-- [`rankSpatialCorGroups()`](https://giottosuite.com/dev/reference/rankSpatialCorGroups.md)
-  : rankSpatialCorGroups
-- [`getBalancedSpatCoexpressionFeats()`](https://giottosuite.com/dev/reference/getBalancedSpatCoexpressionFeats.md)
-  : Get balanced spatial coexpression features
 
 ## Hidden Markov Random Field (HMRF)
 

@@ -81,7 +81,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.3</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -631,32 +631,32 @@ network or grid and a subset of individual spatial genes.</p>
 <code class="sourceCode R"><span><span class="co"># 1. calculate spatial correlation scores </span></span>
 <span><span class="va">ext_spatial_genes</span> <span class="op">&lt;-</span> <span class="va">km_spatialfeats</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">500</span><span class="op">]</span><span class="op">$</span><span class="va">feats</span></span>
 <span></span>
-<span><span class="va">spat_cor_netw_DT</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/detectSpatialCorFeats.html">detectSpatialCorFeats</a></span><span class="op">(</span><span class="va">seqfish_mini</span>,</span>
+<span><span class="va">spat_cor_netw_DT</span> <span class="op">&lt;-</span> <span class="fu">detectSpatialCorFeats</span><span class="op">(</span><span class="va">seqfish_mini</span>,</span>
 <span>                                          method <span class="op">=</span> <span class="st">"network"</span>, </span>
 <span>                                          spatial_network_name <span class="op">=</span> <span class="st">"Delaunay_network"</span>,</span>
 <span>                                          subset_feats <span class="op">=</span> <span class="va">ext_spatial_genes</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 2. cluster correlation scores</span></span>
-<span><span class="va">spat_cor_netw_DT</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/clusterSpatialCorFeats.html">clusterSpatialCorFeats</a></span><span class="op">(</span><span class="va">spat_cor_netw_DT</span>, </span>
+<span><span class="va">spat_cor_netw_DT</span> <span class="op">&lt;-</span> <span class="fu">clusterSpatialCorFeats</span><span class="op">(</span><span class="va">spat_cor_netw_DT</span>, </span>
 <span>                                           name <span class="op">=</span> <span class="st">"spat_netw_clus"</span>, </span>
 <span>                                           k <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/heatmSpatialCorFeats.html">heatmSpatialCorFeats</a></span><span class="op">(</span><span class="va">seqfish_mini</span>, </span>
+<span><span class="fu">heatmSpatialCorFeats</span><span class="op">(</span><span class="va">seqfish_mini</span>, </span>
 <span>                     spatCorObject <span class="op">=</span> <span class="va">spat_cor_netw_DT</span>, </span>
 <span>                     use_clus_name <span class="op">=</span> <span class="st">"spat_netw_clus"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/mini_seqfish/20-heatmSpatialCorFeats.png"></p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">netw_ranks</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rankSpatialCorGroups.html">rankSpatialCorGroups</a></span><span class="op">(</span><span class="va">seqfish_mini</span>, </span>
+<code class="sourceCode R"><span><span class="va">netw_ranks</span> <span class="op">&lt;-</span> <span class="fu">rankSpatialCorGroups</span><span class="op">(</span><span class="va">seqfish_mini</span>, </span>
 <span>                                   spatCorObject <span class="op">=</span> <span class="va">spat_cor_netw_DT</span>, </span>
 <span>                                   use_clus_name <span class="op">=</span> <span class="st">"spat_netw_clus"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/mini_seqfish/21-rankSpatialCorGroups.png"></p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">top_netw_spat_cluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/showSpatialCorFeats.html">showSpatialCorFeats</a></span><span class="op">(</span><span class="va">spat_cor_netw_DT</span>, </span>
+<code class="sourceCode R"><span><span class="va">top_netw_spat_cluster</span> <span class="op">&lt;-</span> <span class="fu">showSpatialCorFeats</span><span class="op">(</span><span class="va">spat_cor_netw_DT</span>, </span>
 <span>                                             use_clus_name <span class="op">=</span> <span class="st">"spat_netw_clus"</span>,</span>
 <span>                                             selected_clusters <span class="op">=</span> <span class="fl">6</span>, </span>
 <span>                                             show_top_feats <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">cluster_genes_DT</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/showSpatialCorFeats.html">showSpatialCorFeats</a></span><span class="op">(</span><span class="va">spat_cor_netw_DT</span>, </span>
+<span><span class="va">cluster_genes_DT</span> <span class="op">&lt;-</span> <span class="fu">showSpatialCorFeats</span><span class="op">(</span><span class="va">spat_cor_netw_DT</span>, </span>
 <span>                                        use_clus_name <span class="op">=</span> <span class="st">"spat_netw_clus"</span>,</span>
 <span>                                        show_top_feats <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
