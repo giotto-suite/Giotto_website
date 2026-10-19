@@ -590,10 +590,117 @@ has another probe too, such as REG1A.</p>
 <span>    return_plot <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/visiumhd_crc_bins_giottodisk/06_binspect-top.png" alt="" width="100%"></p>
+<div class="section level3" number="10.1">
+<h3 id="spatial-co-expression-modules">
+<span class="header-section-number">10.1</span> Spatial
+co-expression modules<a class="anchor" aria-label="anchor" href="#spatial-co-expression-modules"></a>
+</h3>
+<p>Genes that are spatially variable often share a pattern, for example
+because they mark the same cell type or tissue region.
+<code><a href="../reference/spatialCoexpression.html">spatialCoexpression()</a></code> averages each bin’s expression with
+its neighbors’ in the spatial network, correlates the genes on these
+smoothed values, and clusters the correlation into modules. It runs on
+the significant genes from <code><a href="../reference/binSpect.html">binSpect()</a></code>.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">spatial_genes</span> <span class="op">&lt;-</span> <span class="va">ranktest</span><span class="op">[</span><span class="va">adj.p.value</span> <span class="op">&lt;</span> <span class="fl">0.001</span> <span class="op">&amp;</span></span>
+<span>    <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/startsWith.html" class="external-link">startsWith</a></span><span class="op">(</span><span class="va">feats</span>, <span class="st">"DEPRECATED_"</span><span class="op">)</span><span class="op">]</span><span class="op">$</span><span class="va">feats</span></span>
+<span></span>
+<span><span class="va">coexpr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialCoexpression.html">spatialCoexpression</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    feats <span class="op">=</span> <span class="va">spatial_genes</span>,</span>
+<span>    spatial_network_name <span class="op">=</span> <span class="st">"kNN_network"</span>,</span>
+<span>    n_modules <span class="op">=</span> <span class="fl">12</span>,</span>
+<span>    return_gobject <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">coexpr</span><span class="op">$</span><span class="va">summary</span></span></code></pre></div>
+<pre><code>    module  size within_cor  between_cor       score
+     &lt;int&gt; &lt;int&gt;      &lt;num&gt;        &lt;num&gt;       &lt;num&gt;
+ 1:      3    10 0.45587006 -0.010289861 0.455870058
+ 2:      5    28 0.40112262  0.049551215 0.377119014
+ 3:      1    11 0.28381770 -0.006246849 0.282670226
+ 4:     11    14 0.21186522  0.010336027 0.207495312
+ 5:      6    20 0.20215588  0.034412832 0.193118970
+ 6:      7    51 0.14073241  0.003549368 0.138784782
+ 7:     10    92 0.09444868  0.017175508 0.091854608
+ 8:      4   153 0.08172591  0.017675004 0.079440453
+ 9:      8    65 0.06902027  0.009422162 0.067659740
+10:      9   142 0.06751609  0.022270041 0.065317769
+11:     12   198 0.04233570  0.024023761 0.040883010
+12:      2   385 0.01022288  0.011573649 0.009999368</code></pre>
+<p>The summary ranks the modules: a high <code>within_cor</code> and a
+low <code>between_cor</code> mean a module is coherent and distinct from
+the others. Large modules with a low <code>within_cor</code> collect
+genes that fit no clear pattern.</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/heatmapCoexpression.html">heatmapCoexpression</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">coexpr</span>, return_plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/visiumhd_crc_bins_giottodisk/07_coexpression-heatmap.png" alt="" width="100%"></p>
+<p>The genes that best represent each of the four top-ranked
+modules:</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">top_modules</span> <span class="op">&lt;-</span> <span class="va">coexpr</span><span class="op">$</span><span class="va">summary</span><span class="op">$</span><span class="va">module</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span></span>
+<span><span class="va">coexpr</span><span class="op">$</span><span class="va">feats</span><span class="op">[</span><span class="va">module</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="va">top_modules</span><span class="op">]</span><span class="op">[</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">module</span>, <span class="va">top_modules</span><span class="op">)</span>, <span class="op">-</span><span class="va">module_cor</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">5</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"module"</span></span>
+<span><span class="op">]</span></span></code></pre></div>
+<pre><code>    module feat_ID module_cor
+     &lt;int&gt;  &lt;char&gt;      &lt;num&gt;
+ 1:      3     CA4  0.5873250
+ 2:      3  GUCA2A  0.5846494
+ 3:      3 SLC26A3  0.5626766
+ 4:      3    ZG16  0.4846346
+ 5:      3   CLCA4  0.4689647
+ 6:      5   THBS2  0.5376692
+ 7:      5   SFRP4  0.5144048
+ 8:      5  CTHRC1  0.4945319
+ 9:      5 COL11A1  0.4698855
+10:      5     ELN  0.4573143
+11:      1  SPINK4  0.3792945
+12:      1   OLFM4  0.3673571
+13:      1   CLCA1  0.3448918
+14:      1    CHGA  0.3339099
+15:      1    MUC2  0.3316704
+16:     11  TPSAB1  0.3689585
+17:     11    CPA3  0.3408935
+18:     11   MS4A2  0.2487235
+19:     11     HDC  0.2481234
+20:     11    CTSG  0.2433529
+    module feat_ID module_cor
+     &lt;int&gt;  &lt;char&gt;      &lt;num&gt;</code></pre>
+<p>The same call with the default <code>return_gobject = TRUE</code>
+adds the module of each gene to the feature metadata, and one score per
+bin and module, the mean expression of its genes, as a spatial
+enrichment:</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialCoexpression.html">spatialCoexpression</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    feats <span class="op">=</span> <span class="va">spatial_genes</span>,</span>
+<span>    spatial_network_name <span class="op">=</span> <span class="st">"kNN_network"</span>,</span>
+<span>    n_modules <span class="op">=</span> <span class="fl">12</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>A few bins score far higher than the rest, so each module’s color
+scale is capped at the 99th percentile of its non-zero scores. A module
+of scattered cells, like the mast cell module here, shows as sparse
+single bins at this scale:</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">scores</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/getSpatialEnrichment.html" class="external-link">getSpatialEnrichment</a></span><span class="op">(</span><span class="va">g</span>, name <span class="op">=</span> <span class="st">"spatial_module"</span>, output <span class="op">=</span> <span class="st">"data.table"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">m</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">top_modules</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">v</span> <span class="op">&lt;-</span> <span class="va">scores</span><span class="op">[[</span><span class="va">m</span><span class="op">]</span><span class="op">]</span></span>
+<span>    <span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatCellPlot.html" class="external-link">spatCellPlot2D</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>        spat_enr_names <span class="op">=</span> <span class="st">"spatial_module"</span>,</span>
+<span>        cell_annotation_values <span class="op">=</span> <span class="va">m</span>,</span>
+<span>        gradient_style <span class="op">=</span> <span class="st">"sequential"</span>,</span>
+<span>        gradient_limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">v</span><span class="op">[</span><span class="va">v</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">]</span>, <span class="fl">0.99</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>        point_size <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>        point_border_stroke <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>        background_color <span class="op">=</span> <span class="st">"black"</span>,</span>
+<span>        return_plot <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p><img src="images/visiumhd_crc_bins_giottodisk/08_coexpression-spatial.png" alt="" width="100%"><img src="images/visiumhd_crc_bins_giottodisk/09_coexpression-spatial.png" alt="" width="100%"><img src="images/visiumhd_crc_bins_giottodisk/10_coexpression-spatial.png" alt="" width="100%"><img src="images/visiumhd_crc_bins_giottodisk/11_coexpression-spatial.png" alt="" width="100%"></p>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto</a></span><span class="op">(</span><span class="va">g</span>, name <span class="op">=</span> <span class="st">"spatial"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span>  <span class="va">backend</span> <span class="op">:</span> <span class="va">`gDirSource`</span></span>
 <span>  <span class="va">path</span>    <span class="op">:</span> <span class="va">path</span><span class="op">/</span><span class="va">to</span><span class="op">/</span><span class="va">visiumhd_crc_bins_project</span></span></code></pre>
+</div>
 </div>
 <div class="section level2" number="11">
 <h2 id="further-reading">
@@ -606,15 +713,15 @@ cancer: segmented cells</a>, with cell typing from a cluster tree</li>
 <li><a href="visiumhd_crc_own_polygons_giottodisk.html">Visium HD
 colorectal cancer: 2 µm bins into your own polygons</a></li>
 <li>The in-memory <a href="VisiumHD_Human_Colorectal_Cancer.html">Visium
-HD colorectal cancer tutorial</a>, which also finds spatial
-co-expression modules</li>
+HD colorectal cancer tutorial</a>, which aggregates the 2 µm bins into
+hexagons</li>
 </ul>
 </div>
 <div class="section level2" number="12">
 <h2 id="session-info">
 <span class="header-section-number">12</span> Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code>R version 4.5.3 (2026-03-11)
 Platform: aarch64-apple-darwin20
@@ -634,69 +741,74 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] GiottoDisk_0.0.0.5 Giotto_4.3.3       GiottoClass_0.7.15 arrow_23.0.1.2    
+[1] GiottoDisk_0.0.0.5 Giotto_4.3.4       GiottoClass_0.7.16 arrow_23.0.1.2    
 
 loaded via a namespace (and not attached):
-  [1] colorRamp2_0.1.0            gridExtra_2.3              
-  [3] rlang_1.3.0                 magrittr_2.0.4             
-  [5] otel_0.2.0                  GiottoUtils_0.2.7          
-  [7] matrixStats_1.5.0           compiler_4.5.3             
-  [9] vctrs_0.7.2                 hdf5r_1.3.12               
- [11] pkgconfig_2.0.3             SpatialExperiment_1.20.0   
- [13] fastmap_1.2.0               backports_1.5.0            
- [15] magick_2.9.1                XVector_0.50.0             
- [17] labeling_0.4.3              ggraph_2.2.2               
- [19] rmarkdown_2.31              purrr_1.2.1                
- [21] bit_4.6.0                   bluster_1.20.0             
- [23] xfun_0.57                   cachem_1.1.0               
- [25] beachmat_2.26.0             jsonlite_2.0.0             
- [27] DelayedArray_0.36.0         BiocParallel_1.44.0        
- [29] tweenr_2.0.3                terra_1.9-11               
- [31] cluster_2.1.8.2             irlba_2.3.7                
- [33] parallel_4.5.3              R6_2.6.1                   
- [35] bslib_0.10.0                RColorBrewer_1.1-3         
- [37] parallelly_1.47.0           GenomicRanges_1.62.1       
- [39] jquerylib_0.1.4             scattermore_1.2            
- [41] Rcpp_1.1.1                  Seqinfo_1.0.0              
- [43] assertthat_0.2.1            SummarizedExperiment_1.40.0
- [45] knitr_1.51                  future.apply_1.20.2        
- [47] R.utils_2.13.0              IRanges_2.44.0             
- [49] Matrix_1.7-5                igraph_2.2.2               
- [51] tidyselect_1.2.1            dichromat_2.0-0.1          
- [53] abind_1.4-8                 yaml_2.3.12                
- [55] viridis_0.6.5               codetools_0.2-20           
- [57] listenv_0.10.1              lattice_0.22-9             
- [59] tibble_3.3.1                Biobase_2.70.0             
- [61] withr_3.0.2                 S7_0.2.1                   
- [63] evaluate_1.0.5              future_1.70.0              
- [65] polyclip_1.10-7             filelock_1.0.3             
- [67] pillar_1.11.1               MatrixGenerics_1.22.0      
- [69] checkmate_2.3.4             stats4_4.5.3               
- [71] dbscan_1.2.4                plotly_4.12.0              
- [73] generics_0.1.4              RcppHNSW_0.6.0             
- [75] S4Vectors_0.48.0            ggplot2_4.0.2              
- [77] scales_1.4.0                globals_0.19.1             
- [79] gtools_3.9.5                glue_1.8.0                 
- [81] lazyeval_0.2.2              tools_4.5.3                
- [83] tilework_1.0.0              GiottoVisuals_0.2.16       
- [85] BiocNeighbors_2.4.0         data.table_1.18.2.1        
- [87] ScaledMatrix_1.18.0         graphlayouts_1.2.3         
- [89] tidygraph_1.3.1             cowplot_1.2.0              
- [91] grid_4.5.3                  tidyr_1.3.2                
- [93] colorspace_2.1-2            SingleCellExperiment_1.32.0
- [95] BiocSingular_1.26.1         ggforce_0.5.0              
- [97] rsvd_1.0.5                  cli_3.6.5                  
- [99] S4Arrays_1.10.1             viridisLite_0.4.3          
-[101] dplyr_1.2.0                 uwot_0.2.4                 
-[103] gtable_0.3.6                R.methodsS3_1.8.2          
-[105] sass_0.4.10                 digest_0.6.39              
-[107] BiocGenerics_0.56.0         SparseArray_1.10.9         
-[109] ggrepel_0.9.8               rjson_0.2.23               
-[111] htmlwidgets_1.6.4           farver_2.1.2               
-[113] R.oo_1.27.1                 memoise_2.0.1              
-[115] htmltools_0.5.9             lifecycle_1.0.5            
-[117] httr_1.4.8                  bit64_4.6.0-1              
-[119] MASS_7.3-65</code></pre>
+  [1] RColorBrewer_1.1-3          jsonlite_2.0.0             
+  [3] shape_1.4.6.1               magrittr_2.0.4             
+  [5] magick_2.9.1                farver_2.1.2               
+  [7] rmarkdown_2.31              GlobalOptions_0.1.4        
+  [9] vctrs_0.7.2                 memoise_2.0.1              
+ [11] GiottoUtils_0.2.7           terra_1.9-11               
+ [13] htmltools_0.5.9             S4Arrays_1.10.1            
+ [15] BiocNeighbors_2.4.0         SparseArray_1.10.9         
+ [17] sass_0.4.10                 parallelly_1.47.0          
+ [19] bslib_0.10.0                htmlwidgets_1.6.4          
+ [21] plotly_4.12.0               cachem_1.1.0               
+ [23] igraph_2.2.2                lifecycle_1.0.5            
+ [25] iterators_1.0.14            pkgconfig_2.0.3            
+ [27] rsvd_1.0.5                  Matrix_1.7-5               
+ [29] R6_2.6.1                    fastmap_1.2.0              
+ [31] clue_0.3-68                 MatrixGenerics_1.22.0      
+ [33] future_1.70.0               digest_0.6.39              
+ [35] colorspace_2.1-2            S4Vectors_0.48.0           
+ [37] irlba_2.3.7                 GenomicRanges_1.62.1       
+ [39] beachmat_2.26.0             filelock_1.0.3             
+ [41] labeling_0.4.3              httr_1.4.8                 
+ [43] polyclip_1.10-7             abind_1.4-8                
+ [45] compiler_4.5.3              bit64_4.6.0-1              
+ [47] withr_3.0.2                 doParallel_1.0.17          
+ [49] S7_0.2.1                    backports_1.5.0            
+ [51] BiocParallel_1.44.0         viridis_0.6.5              
+ [53] ggforce_0.5.0               R.utils_2.13.0             
+ [55] MASS_7.3-65                 DelayedArray_0.36.0        
+ [57] rjson_0.2.23                bluster_1.20.0             
+ [59] gtools_3.9.5                GiottoVisuals_0.2.16       
+ [61] tools_4.5.3                 otel_0.2.0                 
+ [63] future.apply_1.20.2         R.oo_1.27.1                
+ [65] glue_1.8.0                  dbscan_1.2.4               
+ [67] grid_4.5.3                  checkmate_2.3.4            
+ [69] cluster_2.1.8.2             generics_0.1.4             
+ [71] hdf5r_1.3.12                gtable_0.3.6               
+ [73] R.methodsS3_1.8.2           tidyr_1.3.2                
+ [75] data.table_1.18.2.1         BiocSingular_1.26.1        
+ [77] tidygraph_1.3.1             ScaledMatrix_1.18.0        
+ [79] XVector_0.50.0              BiocGenerics_0.56.0        
+ [81] tilework_1.0.0              ggrepel_0.9.8              
+ [83] foreach_1.5.2               pillar_1.11.1              
+ [85] RcppHNSW_0.6.0              circlize_0.4.18            
+ [87] dplyr_1.2.0                 tweenr_2.0.3               
+ [89] lattice_0.22-9              bit_4.6.0                  
+ [91] tidyselect_1.2.1            ComplexHeatmap_2.26.1      
+ [93] SingleCellExperiment_1.32.0 knitr_1.51                 
+ [95] gridExtra_2.3               IRanges_2.44.0             
+ [97] Seqinfo_1.0.0               SummarizedExperiment_1.40.0
+ [99] scattermore_1.2             stats4_4.5.3               
+[101] xfun_0.57                   graphlayouts_1.2.3         
+[103] Biobase_2.70.0              matrixStats_1.5.0          
+[105] lazyeval_0.2.2              yaml_2.3.12                
+[107] evaluate_1.0.5              codetools_0.2-20           
+[109] ggraph_2.2.2                tibble_3.3.1               
+[111] colorRamp2_0.1.0            cli_3.6.5                  
+[113] uwot_0.2.4                  jquerylib_0.1.4            
+[115] dichromat_2.0-0.1           Rcpp_1.1.1                 
+[117] globals_0.19.1              png_0.1-9                  
+[119] parallel_4.5.3              ggplot2_4.0.2              
+[121] assertthat_0.2.1            listenv_0.10.1             
+[123] SpatialExperiment_1.20.0    viridisLite_0.4.3          
+[125] scales_1.4.0                purrr_1.2.1                
+[127] crayon_1.5.3                GetoptLong_1.1.1           
+[129] rlang_1.3.0                 cowplot_1.2.0</code></pre>
 <p>NA ```</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
