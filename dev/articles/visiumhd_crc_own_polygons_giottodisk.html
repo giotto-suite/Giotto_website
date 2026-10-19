@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Visium HD Human Colorectal Cancer: 2 µm Bins into Your Own Polygons (GiottoDisk) • Giotto</title>
+<title>Visium HD Human Colorectal Cancer: 2 µm Bins into Your Own Polygons • Giotto</title>
 <!-- katex math --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script><script src="../katex-auto.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
@@ -14,7 +14,7 @@
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
-<meta property="og:title" content="Visium HD Human Colorectal Cancer: 2 µm Bins into Your Own Polygons (GiottoDisk)">
+<meta property="og:title" content="Visium HD Human Colorectal Cancer: 2 µm Bins into Your Own Polygons">
 <meta name="robots" content="noindex">
 <!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=G-2V1K0KPLJC"></script><script>
   window.dataLayer = window.dataLayer || [];
@@ -135,9 +135,9 @@
     <li><a class="dropdown-item" href="../articles/visium_cytassist_lungcancer.html">Visium CytAssist — Human lung cancer</a></li>
     <li><a class="dropdown-item" href="../articles/visium_cytassist_human_glioblastoma.html">Visium CytAssist — Human glioblastoma</a></li>
     <li><a class="dropdown-item" href="../articles/VisiumHD_Human_Colorectal_Cancer.html">VisiumHD — Human colorectal cancer</a></li>
-    <li><a class="dropdown-item" href="../articles/visiumhd_crc_cells_giottodisk.html">VisiumHD — Human colorectal cancer, segmented cells (GiottoDisk)</a></li>
-    <li><a class="dropdown-item" href="../articles/visiumhd_crc_bins_giottodisk.html">VisiumHD — Human colorectal cancer, 8 µm bins (GiottoDisk)</a></li>
-    <li><a class="dropdown-item" href="../articles/visiumhd_crc_own_polygons_giottodisk.html">VisiumHD — Human colorectal cancer, 2 µm bins into polygons (GiottoDisk)</a></li>
+    <li><a class="dropdown-item" href="../articles/visiumhd_crc_cells_giottodisk.html">VisiumHD — Human colorectal cancer, segmented cells</a></li>
+    <li><a class="dropdown-item" href="../articles/visiumhd_crc_bins_giottodisk.html">VisiumHD — Human colorectal cancer, 8 µm bins</a></li>
+    <li><a class="dropdown-item" href="../articles/visiumhd_crc_own_polygons_giottodisk.html">VisiumHD — Human colorectal cancer, 2 µm bins into polygons</a></li>
     <li><a class="dropdown-item" href="../articles/VisiumHD_Convenience_Function_Kidney.html">VisiumHD — Rhesus macaque kidney</a></li>
     <li><a class="dropdown-item" href="../articles/stereoseq_importer.html">Stereo-seq — Data importer</a></li>
     <li><a class="dropdown-item" href="../articles/stereoseq_mouse_eyeball.html">Stereo-seq — Mouse eyeball</a></li>
@@ -239,7 +239,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Visium HD Human Colorectal Cancer: 2 µm Bins into Your Own Polygons (GiottoDisk)</h1>
+      <h1>Visium HD Human Colorectal Cancer: 2 µm Bins into Your Own Polygons</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/giotto-suite/Giotto/blob/dev/vignettes/visiumhd_crc_own_polygons_giottodisk.Rmd" class="external-link"><code>vignettes/visiumhd_crc_own_polygons_giottodisk.Rmd</code></a></small>
@@ -614,8 +614,81 @@ same network.</p>
 <code>loadGiotto(project_dir, name = "clustered")</code>.</p>
 </div>
 <div class="section level2" number="10">
+<h2 id="re-aggregate-into-a-grid">
+<span class="header-section-number">10</span> Re-aggregate into a
+grid<a class="anchor" aria-label="anchor" href="#re-aggregate-into-a-grid"></a>
+</h2>
+<p>Any set of polygons can be aggregated from the same 2 µm bins, not
+only cells. <code><a href="https://giotto-suite.github.io/GiottoClass/reference/tessellate.html" class="external-link">tessellate()</a></code> makes a grid of hexagons (or
+squares or triangles) over the bins. Each grid becomes a new spatial
+unit next to <code>cell</code>, so the bins can be re-aggregated at any
+size without reading the data again.</p>
+<p>Space Ranger records the pixel size, so the grid can be set in µm.
+<code>shape_size</code> is the width of one hexagon, in the same pixel
+units as the bins:</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">scalefactors</span> <span class="op">&lt;-</span> <span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html" class="external-link">fromJSON</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
+<span>    <span class="va">data_dir</span>, <span class="st">"binned_outputs"</span>, <span class="st">"square_002um"</span>, <span class="st">"spatial"</span>, <span class="st">"scalefactors_json.json"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">um_to_px</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="va">scalefactors</span><span class="op">$</span><span class="va">microns_per_pixel</span></span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">bins_ext</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/getFeatureInfo.html" class="external-link">getFeatureInfo</a></span><span class="op">(</span><span class="va">g</span>, feat_type <span class="op">=</span> <span class="st">"rna"</span>, return_giottoPoints <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">size_um</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">unit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"hex"</span>, <span class="va">size_um</span><span class="op">)</span></span>
+<span>    <span class="va">hex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/tessellate.html" class="external-link">tessellate</a></span><span class="op">(</span></span>
+<span>        extent <span class="op">=</span> <span class="va">bins_ext</span>,</span>
+<span>        shape <span class="op">=</span> <span class="st">"hexagon"</span>,</span>
+<span>        shape_size <span class="op">=</span> <span class="va">size_um</span> <span class="op">*</span> <span class="va">um_to_px</span>,</span>
+<span>        name <span class="op">=</span> <span class="va">unit</span></span>
+<span>    <span class="op">)</span></span>
+<span>    <span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">hex</span>, centroids_to_spatlocs <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>    <span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap</a></span><span class="op">(</span><span class="va">g</span>, spat_info <span class="op">=</span> <span class="va">unit</span>, feat_info <span class="op">=</span> <span class="st">"rna"</span><span class="op">)</span></span>
+<span>    <span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix</a></span><span class="op">(</span><span class="va">g</span>, spat_info <span class="op">=</span> <span class="va">unit</span>, feat_info <span class="op">=</span> <span class="st">"rna"</span>, name <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span>
+<span>    <span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/normalizeGiotto.html">normalizeGiotto</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>        spat_unit <span class="op">=</span> <span class="va">unit</span>,</span>
+<span>        scale_feats <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>        scale_cells <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>        verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>    <span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="va">unit</span>, <span class="st">":"</span>, <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/spatIDs-generic.html" class="external-link">spatIDs</a></span><span class="op">(</span><span class="va">g</span>, spat_unit <span class="op">=</span> <span class="va">unit</span><span class="op">)</span><span class="op">)</span>, big.mark <span class="op">=</span> <span class="st">","</span><span class="op">)</span>,</span>
+<span>        <span class="st">"hexagons\n"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<pre><code>hex20 : 132,353 hexagons
+hex50 : 21,060 hexagons</code></pre>
+<p>The extent comes from the bins rather than from <code>g</code>,
+because the extent of <code>g</code> also covers the whole H&amp;E
+image.</p>
+<p>MUC2 in the cells and in both grids, in the zoom region from
+above:</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">for</span> <span class="op">(</span><span class="va">unit</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cell"</span>, <span class="st">"hex20"</span>, <span class="st">"hex50"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>        show_image <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>        feats <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>        show_polygon <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>        polygon_feat_type <span class="op">=</span> <span class="va">unit</span>,</span>
+<span>        polygon_fill <span class="op">=</span> <span class="st">"MUC2"</span>,</span>
+<span>        expression_values <span class="op">=</span> <span class="st">"normalized"</span>,</span>
+<span>        polygon_fill_as_factor <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>        polygon_fill_gradient_style <span class="op">=</span> <span class="st">"sequential"</span>,</span>
+<span>        polygon_line_size <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>        polygon_alpha <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>        xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">roi_x</span> <span class="op">-</span> <span class="va">half</span>, <span class="va">roi_x</span> <span class="op">+</span> <span class="va">half</span><span class="op">)</span>,</span>
+<span>        ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">roi_y</span> <span class="op">-</span> <span class="va">half</span>, <span class="va">roi_y</span> <span class="op">+</span> <span class="va">half</span><span class="op">)</span>,</span>
+<span>        show_plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>        return_plot <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>    <span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"MUC2,"</span>, <span class="va">unit</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p><img src="images/visiumhd_crc_own_polygons_giottodisk/07_grid-roi.png" alt="" width="100%"><img src="images/visiumhd_crc_own_polygons_giottodisk/08_grid-roi.png" alt="" width="100%"><img src="images/visiumhd_crc_own_polygons_giottodisk/09_grid-roi.png" alt="" width="100%"></p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto</a></span><span class="op">(</span><span class="va">g</span>, name <span class="op">=</span> <span class="st">"grid"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span>  <span class="va">backend</span> <span class="op">:</span> <span class="va">`gDirSource`</span></span>
+<span>  <span class="va">path</span>    <span class="op">:</span> <span class="va">path</span><span class="op">/</span><span class="va">to</span><span class="op">/</span><span class="va">visiumhd_crc_polygons_project</span></span></code></pre>
+</div>
+<div class="section level2" number="11">
 <h2 id="further-reading">
-<span class="header-section-number">10</span> Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
+<span class="header-section-number">11</span> Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
 </h2>
 <ul>
 <li>
@@ -624,15 +697,15 @@ cancer: segmented cells</a>, with cell typing from a cluster tree</li>
 <li><a href="visiumhd_crc_bins_giottodisk.html">Visium HD colorectal
 cancer: 8 µm bins</a></li>
 <li>The in-memory <a href="VisiumHD_Human_Colorectal_Cancer.html">Visium
-HD colorectal cancer tutorial</a>, which aggregates the 2 µm bins into
-hexagons of several sizes</li>
+HD colorectal cancer tutorial</a>, which also finds spatially variable
+genes and co-expression modules on a hexagon grid</li>
 </ul>
 </div>
-<div class="section level2" number="11">
+<div class="section level2" number="12">
 <h2 id="session-info">
-<span class="header-section-number">11</span> Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+<span class="header-section-number">12</span> Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code>R version 4.5.3 (2026-03-11)
 Platform: aarch64-apple-darwin20
@@ -652,7 +725,7 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] GiottoDisk_0.0.0.5 Giotto_4.3.2       GiottoClass_0.7.13 arrow_23.0.1.2    
+[1] GiottoDisk_0.0.0.5 Giotto_4.3.3       GiottoClass_0.7.15 arrow_23.0.1.2    
 
 loaded via a namespace (and not attached):
   [1] DBI_1.3.0                   colorRamp2_0.1.0           

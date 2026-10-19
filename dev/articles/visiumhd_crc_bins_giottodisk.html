@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Visium HD Human Colorectal Cancer: 8 µm Bins (GiottoDisk) • Giotto</title>
+<title>Visium HD Human Colorectal Cancer: 8 µm Bins • Giotto</title>
 <!-- katex math --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script><script src="../katex-auto.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
@@ -14,7 +14,7 @@
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
-<meta property="og:title" content="Visium HD Human Colorectal Cancer: 8 µm Bins (GiottoDisk)">
+<meta property="og:title" content="Visium HD Human Colorectal Cancer: 8 µm Bins">
 <meta name="robots" content="noindex">
 <!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=G-2V1K0KPLJC"></script><script>
   window.dataLayer = window.dataLayer || [];
@@ -135,9 +135,9 @@
     <li><a class="dropdown-item" href="../articles/visium_cytassist_lungcancer.html">Visium CytAssist — Human lung cancer</a></li>
     <li><a class="dropdown-item" href="../articles/visium_cytassist_human_glioblastoma.html">Visium CytAssist — Human glioblastoma</a></li>
     <li><a class="dropdown-item" href="../articles/VisiumHD_Human_Colorectal_Cancer.html">VisiumHD — Human colorectal cancer</a></li>
-    <li><a class="dropdown-item" href="../articles/visiumhd_crc_cells_giottodisk.html">VisiumHD — Human colorectal cancer, segmented cells (GiottoDisk)</a></li>
-    <li><a class="dropdown-item" href="../articles/visiumhd_crc_bins_giottodisk.html">VisiumHD — Human colorectal cancer, 8 µm bins (GiottoDisk)</a></li>
-    <li><a class="dropdown-item" href="../articles/visiumhd_crc_own_polygons_giottodisk.html">VisiumHD — Human colorectal cancer, 2 µm bins into polygons (GiottoDisk)</a></li>
+    <li><a class="dropdown-item" href="../articles/visiumhd_crc_cells_giottodisk.html">VisiumHD — Human colorectal cancer, segmented cells</a></li>
+    <li><a class="dropdown-item" href="../articles/visiumhd_crc_bins_giottodisk.html">VisiumHD — Human colorectal cancer, 8 µm bins</a></li>
+    <li><a class="dropdown-item" href="../articles/visiumhd_crc_own_polygons_giottodisk.html">VisiumHD — Human colorectal cancer, 2 µm bins into polygons</a></li>
     <li><a class="dropdown-item" href="../articles/VisiumHD_Convenience_Function_Kidney.html">VisiumHD — Rhesus macaque kidney</a></li>
     <li><a class="dropdown-item" href="../articles/stereoseq_importer.html">Stereo-seq — Data importer</a></li>
     <li><a class="dropdown-item" href="../articles/stereoseq_mouse_eyeball.html">Stereo-seq — Mouse eyeball</a></li>
@@ -239,7 +239,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Visium HD Human Colorectal Cancer: 8 µm Bins (GiottoDisk)</h1>
+      <h1>Visium HD Human Colorectal Cancer: 8 µm Bins</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/giotto-suite/Giotto/blob/dev/vignettes/visiumhd_crc_bins_giottodisk.Rmd" class="external-link"><code>vignettes/visiumhd_crc_bins_giottodisk.Rmd</code></a></small>
@@ -536,8 +536,68 @@ the overview:</p>
 <code>loadGiotto(project_dir, name = "clustered")</code>.</p>
 </div>
 <div class="section level2" number="10">
+<h2 id="spatially-variable-genes">
+<span class="header-section-number">10</span> Spatially variable
+genes<a class="anchor" aria-label="anchor" href="#spatially-variable-genes"></a>
+</h2>
+<p><code><a href="../reference/binSpect.html">binSpect()</a></code> looks for genes whose expression is spatially
+coherent. It marks the bins where a gene is highly expressed (here the
+top 30% by rank) and tests whether those bins are neighbors of each
+other more often than expected by chance. The neighbors come from a
+spatial network that links each bin to its 8 nearest bins.</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    name <span class="op">=</span> <span class="st">"kNN_network"</span>,</span>
+<span>    method <span class="op">=</span> <span class="st">"kNN"</span>,</span>
+<span>    k <span class="op">=</span> <span class="fl">8</span>,</span>
+<span>    verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">hvf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">[</span><span class="va">hvf</span> <span class="op">==</span> <span class="st">"yes"</span><span class="op">]</span><span class="op">$</span><span class="va">feat_ID</span></span>
+<span></span>
+<span><span class="va">ranktest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/binSpect.html">binSpect</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    subset_feats <span class="op">=</span> <span class="va">hvf</span>,</span>
+<span>    bin_method <span class="op">=</span> <span class="st">"rank"</span>,</span>
+<span>    spatial_network_name <span class="op">=</span> <span class="st">"kNN_network"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ranktest</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">feats</span>, <span class="va">z</span>, <span class="va">adj.p.value</span>, <span class="va">n_on</span><span class="op">)</span><span class="op">]</span>, <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
+<pre><code>               feats        z adj.p.value  n_on
+              &lt;char&gt;    &lt;num&gt;       &lt;num&gt; &lt;num&gt;
+ 1:            OLFM4 885.9878           0 28074
+ 2:            CLCA1 784.0727           0 21485
+ 3:             MUC2 781.8279           0 25402
+ 4: DEPRECATED_REG1A 751.8565           0  4758
+ 5:            REG1A 751.0270           0  4687
+ 6: DEPRECATED_IGHA2 736.5453           0 31787
+ 7:            IGLC3 676.5789           0 39224
+ 8:            IGHA1 654.5728           0 16752
+ 9:            CLCA4 649.0724           0  4884
+10:           SPINK4 632.9500           0 16188</code></pre>
+<p>The six top-ranked genes. Probes that 10x marks as
+<code>DEPRECATED_</code> are skipped; some of them target a gene that
+has another probe too, such as REG1A.</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">top_genes</span> <span class="op">&lt;-</span> <span class="va">ranktest</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/startsWith.html" class="external-link">startsWith</a></span><span class="op">(</span><span class="va">feats</span>, <span class="st">"DEPRECATED_"</span><span class="op">)</span><span class="op">]</span><span class="op">$</span><span class="va">feats</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span></span>
+<span></span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatFeatPlot2D.html" class="external-link">spatFeatPlot2D</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    expression_values <span class="op">=</span> <span class="st">"normalized"</span>,</span>
+<span>    feats <span class="op">=</span> <span class="va">top_genes</span>,</span>
+<span>    gradient_style <span class="op">=</span> <span class="st">"sequential"</span>,</span>
+<span>    point_size <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>    point_border_stroke <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>    background_color <span class="op">=</span> <span class="st">"black"</span>,</span>
+<span>    cow_n_col <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>    return_plot <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/visiumhd_crc_bins_giottodisk/06_binspect-top.png" alt="" width="100%"></p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto</a></span><span class="op">(</span><span class="va">g</span>, name <span class="op">=</span> <span class="st">"spatial"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span>  <span class="va">backend</span> <span class="op">:</span> <span class="va">`gDirSource`</span></span>
+<span>  <span class="va">path</span>    <span class="op">:</span> <span class="va">path</span><span class="op">/</span><span class="va">to</span><span class="op">/</span><span class="va">visiumhd_crc_bins_project</span></span></code></pre>
+</div>
+<div class="section level2" number="11">
 <h2 id="further-reading">
-<span class="header-section-number">10</span> Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
+<span class="header-section-number">11</span> Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
 </h2>
 <ul>
 <li>
@@ -546,15 +606,15 @@ cancer: segmented cells</a>, with cell typing from a cluster tree</li>
 <li><a href="visiumhd_crc_own_polygons_giottodisk.html">Visium HD
 colorectal cancer: 2 µm bins into your own polygons</a></li>
 <li>The in-memory <a href="VisiumHD_Human_Colorectal_Cancer.html">Visium
-HD colorectal cancer tutorial</a>, which aggregates the 2 µm bins into
-hexagons of several sizes</li>
+HD colorectal cancer tutorial</a>, which also finds spatial
+co-expression modules</li>
 </ul>
 </div>
-<div class="section level2" number="11">
+<div class="section level2" number="12">
 <h2 id="session-info">
-<span class="header-section-number">11</span> Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+<span class="header-section-number">12</span> Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code>R version 4.5.3 (2026-03-11)
 Platform: aarch64-apple-darwin20
@@ -574,7 +634,7 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] GiottoDisk_0.0.0.5 Giotto_4.3.2       GiottoClass_0.7.13 arrow_23.0.1.2    
+[1] GiottoDisk_0.0.0.5 Giotto_4.3.3       GiottoClass_0.7.15 arrow_23.0.1.2    
 
 loaded via a namespace (and not attached):
   [1] colorRamp2_0.1.0            gridExtra_2.3              
@@ -612,30 +672,31 @@ loaded via a namespace (and not attached):
  [65] polyclip_1.10-7             filelock_1.0.3             
  [67] pillar_1.11.1               MatrixGenerics_1.22.0      
  [69] checkmate_2.3.4             stats4_4.5.3               
- [71] plotly_4.12.0               generics_0.1.4             
- [73] RcppHNSW_0.6.0              S4Vectors_0.48.0           
- [75] ggplot2_4.0.2               scales_1.4.0               
- [77] globals_0.19.1              gtools_3.9.5               
- [79] glue_1.8.0                  lazyeval_0.2.2             
- [81] tools_4.5.3                 tilework_1.0.0             
- [83] GiottoVisuals_0.2.16        BiocNeighbors_2.4.0        
- [85] data.table_1.18.2.1         ScaledMatrix_1.18.0        
- [87] graphlayouts_1.2.3          tidygraph_1.3.1            
- [89] cowplot_1.2.0               grid_4.5.3                 
- [91] tidyr_1.3.2                 colorspace_2.1-2           
- [93] SingleCellExperiment_1.32.0 BiocSingular_1.26.1        
- [95] ggforce_0.5.0               rsvd_1.0.5                 
- [97] cli_3.6.5                   S4Arrays_1.10.1            
- [99] viridisLite_0.4.3           dplyr_1.2.0                
-[101] uwot_0.2.4                  gtable_0.3.6               
-[103] R.methodsS3_1.8.2           sass_0.4.10                
-[105] digest_0.6.39               BiocGenerics_0.56.0        
-[107] SparseArray_1.10.9          ggrepel_0.9.8              
-[109] rjson_0.2.23                htmlwidgets_1.6.4          
-[111] farver_2.1.2                R.oo_1.27.1                
-[113] memoise_2.0.1               htmltools_0.5.9            
-[115] lifecycle_1.0.5             httr_1.4.8                 
-[117] bit64_4.6.0-1               MASS_7.3-65</code></pre>
+ [71] dbscan_1.2.4                plotly_4.12.0              
+ [73] generics_0.1.4              RcppHNSW_0.6.0             
+ [75] S4Vectors_0.48.0            ggplot2_4.0.2              
+ [77] scales_1.4.0                globals_0.19.1             
+ [79] gtools_3.9.5                glue_1.8.0                 
+ [81] lazyeval_0.2.2              tools_4.5.3                
+ [83] tilework_1.0.0              GiottoVisuals_0.2.16       
+ [85] BiocNeighbors_2.4.0         data.table_1.18.2.1        
+ [87] ScaledMatrix_1.18.0         graphlayouts_1.2.3         
+ [89] tidygraph_1.3.1             cowplot_1.2.0              
+ [91] grid_4.5.3                  tidyr_1.3.2                
+ [93] colorspace_2.1-2            SingleCellExperiment_1.32.0
+ [95] BiocSingular_1.26.1         ggforce_0.5.0              
+ [97] rsvd_1.0.5                  cli_3.6.5                  
+ [99] S4Arrays_1.10.1             viridisLite_0.4.3          
+[101] dplyr_1.2.0                 uwot_0.2.4                 
+[103] gtable_0.3.6                R.methodsS3_1.8.2          
+[105] sass_0.4.10                 digest_0.6.39              
+[107] BiocGenerics_0.56.0         SparseArray_1.10.9         
+[109] ggrepel_0.9.8               rjson_0.2.23               
+[111] htmlwidgets_1.6.4           farver_2.1.2               
+[113] R.oo_1.27.1                 memoise_2.0.1              
+[115] htmltools_0.5.9             lifecycle_1.0.5            
+[117] httr_1.4.8                  bit64_4.6.0-1              
+[119] MASS_7.3-65</code></pre>
 <p>NA ```</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

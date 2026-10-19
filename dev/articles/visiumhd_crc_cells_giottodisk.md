@@ -1,11 +1,10 @@
-# Visium HD Human Colorectal Cancer: Segmented Cells (GiottoDisk)
+# Visium HD Human Colorectal Cancer: Segmented Cells
 
 ## 1 Overview
 
-This tutorial starts from the cells that Space Ranger segmented from the
-H&E image. It reads them into an on-disk GiottoDisk project, clusters
-them, and names the clusters with a cluster tree, following [Cell typing
-with a cluster
+This tutorial starts from the cells that Space Ranger segmented. It
+reads them into an on-disk GiottoDisk project, clusters them, and names
+the clusters with a cluster tree, following [Cell typing with a cluster
 tree](https://giottosuite.com/dev/articles/cell_typing_cluster_tree.md).
 
 On a disk-backed object the expression matrix and the cell and nucleus
@@ -37,9 +36,11 @@ install.packages("GiottoKernels",
 10x Genomics’ [Visium HD Spatial Gene Expression Library, Human
 Colorectal Cancer
 (FFPE)](https://www.10xgenomics.com/datasets/visium-hd-cytassist-gene-expression-libraries-of-human-crc-v4),
-processed with Space Ranger 4.0.1. Space Ranger 4 segments cells from
-the H&E image and assigns each 2 µm bin to the cell it falls in, giving
-a cell by gene matrix and the cell and nucleus outlines.
+processed with Space Ranger 4.0.1. Space Ranger 4 finds the nuclei in
+the H&E image and expands each nucleus by a fixed distance to outline
+its cell; no other stain is used. Each 2 µm bin is then assigned to the
+cell it falls in, giving a cell by gene matrix and the cell and nucleus
+outlines.
 
 ### 3.1 Download links
 
@@ -240,19 +241,24 @@ g <- runUMAP(g,
 g <- doLeidenCluster(g,
     nn_network_to_use = "kNN",
     network_name = "kNN.pca",
-    resolution = 0.3,
+    resolution = 0.6,
     n_iterations = 20,
     objective_function = "modularity",
     verbose = FALSE
 )
 table(pDataDT(g)$leiden_clus)
+clusters <- GiottoUtils::mixedsort(unique(as.character(pDataDT(g)$leiden_clus)))
+# one color per cluster, shared by the plots below
+clus_colors <- stats::setNames(getDistinctColors(length(clusters)), clusters)
 
 g <- saveGiotto(g, name = "clustered")
 ```
 
 
         1     2     3     4     5     6     7     8     9    10    11    12    13 
-    11955 18083  7714 31430 71247 27021   551   951  6585  3175   878 14883 24306
+    11362 10806  6976  7670 14623  4165  3784 17228 31940 26600 17560  9043  7215 
+       14    15    16    17    18    19    20    21 
+     3804  8726  3679  3159   543  4065 14766 11065
       backend : `gDirSource`
       path    : path/to/visiumhd_crc_cells_project
 
@@ -261,12 +267,27 @@ g <- saveGiotto(g, name = "clustered")
 plotUMAP(g,
     cell_color = "leiden_clus",
     color_as_factor = TRUE,
+    cell_color_code = clus_colors,
     point_border_stroke = 0,
     point_size = 0.1
 )
 ```
 
 ![](images/visiumhd_crc_cells_giottodisk/02_umap.png)
+
+``` r
+
+spatPlot2D(g,
+    cell_color = "leiden_clus",
+    color_as_factor = TRUE,
+    cell_color_code = clus_colors,
+    point_border_stroke = 0,
+    point_size = 0.3,
+    background_color = "black"
+)
+```
+
+![](images/visiumhd_crc_cells_giottodisk/03_spatial-clusters.png)
 
 ## 10 Cell typing with a cluster tree
 
@@ -290,7 +311,7 @@ tree <- calculateClusterTree(g,
 plot(tree, hang = -1)
 ```
 
-![](images/visiumhd_crc_cells_giottodisk/03_tree.png)
+![](images/visiumhd_crc_cells_giottodisk/04_tree.png)
 
 ### 10.2 Markers
 
@@ -342,195 +363,340 @@ q <- writeClusterTreeQuery(g,
 cat(length(q), "lines\n")
 ```
 
-    233 lines
+    354 lines
 
 ### 10.4 Apply the annotation
 
 The model answers with a label for each cluster and for each node of the
 tree, saved here as `crc_cell_types.json`. Check the answer against the
-markers above before using it: several clusters here are flagged as low
-specificity, because segmented cells on Visium HD pick up counts from
-their neighbors.
+markers above before using it. Ten clusters carry the tumor epithelial
+markers (CEACAM5, CEACAM6, EPCAM) and are flagged as low specificity.
+Most of them correlate with a neighboring cell type, because segmented
+cells on Visium HD pick up counts from the cells around them, so they
+are named by the signal they share.
 
 `crc_cell_types.json`
 
     {
       "nodes": [
         {
-          "node": 12,
+          "node": 20,
           "short": "all cells",
           "label": "all cells"
         },
         {
-          "node": 11,
+          "node": 19,
           "short": "main tissue",
           "label": "main tissue compartments"
         },
         {
-          "node": 10,
+          "node": 5,
+          "short": "surface tumor epithelium",
+          "label": "KRT20+ surface-like tumor epithelium and colonocytes"
+        },
+        {
+          "node": 13,
+          "short": "inflamed tumor",
+          "label": "tumor epithelium with neutrophils and erythrocytes"
+        },
+        {
+          "node": 1,
+          "short": "tumor and neutrophils",
+          "label": "tumor epithelium and neutrophils"
+        },
+        {
+          "node": 18,
           "short": "mucosa, tumor and stroma",
           "label": "mucosa, tumor, stroma and immune cells"
         },
         {
           "node": 9,
-          "short": "tumor, stroma and immune",
-          "label": "tumor, stroma and immune cells"
-        },
-        {
-          "node": 8,
-          "short": "tumor, stroma and immune cells",
-          "label": "tumor epithelium with stroma and immune infiltrate"
-        },
-        {
-          "node": 7,
-          "short": "tumor epithelium and smooth muscle (mixed)",
-          "label": "tumor epithelium and muscle stroma"
-        },
-        {
-          "node": 6,
-          "short": "colonocytes and mast cells",
-          "label": "differentiated colonocytes and mast cells"
-        },
-        {
-          "node": 5,
-          "short": "tumor, stroma and immune (mixed)",
-          "label": "tumor epithelium and immune cells"
-        },
-        {
-          "node": 4,
-          "short": "stroma, plasma cells and tumor (mixed)",
-          "label": "stroma, plasma cells and tumor epithelium"
+          "short": "secretory and REG3A+ epithelium",
+          "label": "secretory and REG3A+ epithelium"
         },
         {
           "node": 3,
-          "short": "tumor epithelium and neutrophils",
-          "label": "tumor epithelium and neutrophils"
+          "short": "secretory epithelium",
+          "label": "secretory epithelium of the normal mucosa"
+        },
+        {
+          "node": 17,
+          "short": "tumor, stroma and muscle",
+          "label": "tumor, stroma, immune cells and smooth muscle"
         },
         {
           "node": 2,
-          "short": "tumor epithelium and smooth muscle",
-          "label": "tumor epithelium and smooth muscle"
+          "short": "smooth muscle niche",
+          "label": "smooth muscle and adjacent tumor cells"
         },
         {
-          "node": 1,
-          "short": "secretory epithelium",
-          "label": "secretory mucosal epithelium"
+          "node": 16,
+          "short": "tumor and microenvironment",
+          "label": "tumor epithelium and its microenvironment"
+        },
+        {
+          "node": 15,
+          "short": "tumor, immune and stroma",
+          "label": "tumor epithelium mixed with immune and stromal cells"
+        },
+        {
+          "node": 12,
+          "short": "tumor and immune cells",
+          "label": "tumor epithelium and immune cells"
+        },
+        {
+          "node": 10,
+          "short": "tumor and plasma/mast cells",
+          "label": "tumor epithelium, plasma cells and mast cells"
+        },
+        {
+          "node": 6,
+          "short": "plasma and mast cells",
+          "label": "plasma cells and mast cells"
+        },
+        {
+          "node": 11,
+          "short": "tumor and macrophages",
+          "label": "tumor epithelium and macrophages"
+        },
+        {
+          "node": 7,
+          "short": "macrophage niche",
+          "label": "macrophages and adjacent tumor cells"
+        },
+        {
+          "node": 14,
+          "short": "tumor stroma",
+          "label": "fibroblasts, endothelium and adjacent tumor cells"
+        },
+        {
+          "node": 4,
+          "short": "vascular niche",
+          "label": "endothelial cells and adjacent tumor cells"
+        },
+        {
+          "node": 8,
+          "short": "fibroblast niche",
+          "label": "cancer-associated fibroblasts and adjacent tumor cells"
         }
       ],
       "clusters": [
         {
           "cluster": "1",
-          "cell_type": "differentiated colonocytes",
+          "cell_type": "tumor epithelium, KRT20+ surface-like",
           "confidence": "medium",
           "markers": [
-            "SLC26A3",
-            "KRT20",
-            "FABP1",
             "CEACAM5",
-            "KRT8"
+            "CEACAM6",
+            "KRT20",
+            "DUOX2",
+            "LCN2",
+            "CXCL8"
           ],
-          "merge_with": "8"
+          "merge_with": null
         },
         {
           "cluster": "2",
-          "cell_type": "tumor epithelium (stroma-adjacent)",
+          "cell_type": "tumor epithelium, neutrophil-mixed",
           "confidence": "low",
           "markers": [
             "CEACAM5",
             "CEACAM6",
             "EPCAM",
-            "MYC"
+            "LCN2",
+            "CXCL8"
           ],
-          "merge_with": "4"
+          "merge_with": "3"
         },
         {
           "cluster": "3",
-          "cell_type": "neutrophils",
-          "confidence": "medium",
-          "markers": [
-            "CXCL8",
-            "S100A8",
-            "S100A9",
-            "IL1B",
-            "G0S2"
-          ],
-          "merge_with": null
-        },
-        {
-          "cluster": "4",
           "cell_type": "tumor epithelium",
           "confidence": "medium",
           "markers": [
             "CEACAM5",
             "CEACAM6",
+            "MUC12",
             "EPCAM",
-            "MYC",
+            "KRT8",
             "KRT18"
           ],
           "merge_with": null
         },
         {
-          "cluster": "5",
-          "cell_type": "stroma and plasma cells",
+          "cluster": "4",
+          "cell_type": "tumor epithelium, fibroblast-mixed",
           "confidence": "low",
           "markers": [
-            "IGKC",
-            "JCHAIN",
-            "COL3A1",
+            "CEACAM5",
+            "CEACAM6",
+            "EPCAM",
             "COL1A1",
-            "CD74",
-            "VIM"
+            "COL3A1"
+          ],
+          "merge_with": "3"
+        },
+        {
+          "cluster": "5",
+          "cell_type": "cancer-associated fibroblasts",
+          "confidence": "high",
+          "markers": [
+            "COL1A1",
+            "COL3A1",
+            "THBS2",
+            "COL10A1",
+            "COMP",
+            "COL11A1",
+            "SFRP4"
           ],
           "merge_with": null
         },
         {
           "cluster": "6",
-          "cell_type": "tumor epithelium (high mitochondrial)",
-          "confidence": "low",
+          "cell_type": "neutrophils",
+          "confidence": "high",
           "markers": [
-            "CEACAM5",
-            "EPCAM",
-            "MT-CO2",
-            "MT-ND4"
-          ],
-          "merge_with": "4"
-        },
-        {
-          "cluster": "7",
-          "cell_type": "CLU+ tumor epithelium",
-          "confidence": "medium",
-          "markers": [
-            "CLU",
-            "CEACAM5",
-            "MUC12"
+            "CXCL8",
+            "S100A8",
+            "S100A9",
+            "CSF3R",
+            "IL1B",
+            "G0S2",
+            "AQP9"
           ],
           "merge_with": null
         },
         {
-          "cluster": "8",
-          "cell_type": "mast cells",
-          "confidence": "low",
-          "markers": [
-            "KIT",
-            "TPSAB1",
-            "HPGDS",
-            "GATA2"
-          ],
-          "merge_with": "1"
-        },
-        {
-          "cluster": "9",
-          "cell_type": "tumor epithelium (CCL14+)",
+          "cluster": "7",
+          "cell_type": "tumor epithelium, smooth muscle-mixed",
           "confidence": "low",
           "markers": [
             "CEACAM5",
+            "CEACAM6",
             "EPCAM",
-            "CCL14"
+            "TAGLN",
+            "DES"
           ],
-          "merge_with": "2"
+          "merge_with": "3"
+        },
+        {
+          "cluster": "8",
+          "cell_type": "endothelial cells",
+          "confidence": "medium",
+          "markers": [
+            "PECAM1",
+            "VWF",
+            "PLVAP",
+            "AQP1",
+            "ENG",
+            "ACKR1"
+          ],
+          "merge_with": null
+        },
+        {
+          "cluster": "9",
+          "cell_type": "macrophages",
+          "confidence": "medium",
+          "markers": [
+            "CD74",
+            "LYZ",
+            "C1QA",
+            "C1QB",
+            "C1QC",
+            "MMP12",
+            "CCL18"
+          ],
+          "merge_with": null
         },
         {
           "cluster": "10",
+          "cell_type": "tumor epithelium, plasma cell-mixed",
+          "confidence": "low",
+          "markers": [
+            "CEACAM5",
+            "CEACAM6",
+            "MUC12",
+            "EPCAM"
+          ],
+          "merge_with": "3"
+        },
+        {
+          "cluster": "11",
+          "cell_type": "plasma cells",
+          "confidence": "high",
+          "markers": [
+            "JCHAIN",
+            "IGKC",
+            "IGHA1",
+            "MZB1",
+            "XBP1",
+            "TXNDC5"
+          ],
+          "merge_with": null
+        },
+        {
+          "cluster": "12",
+          "cell_type": "tumor epithelium, macrophage-mixed",
+          "confidence": "low",
+          "markers": [
+            "CEACAM5",
+            "CEACAM6",
+            "EPCAM",
+            "CD74"
+          ],
+          "merge_with": "3"
+        },
+        {
+          "cluster": "13",
+          "cell_type": "tumor epithelium, endothelium-mixed",
+          "confidence": "low",
+          "markers": [
+            "CEACAM5",
+            "CEACAM6",
+            "EPCAM",
+            "PECAM1"
+          ],
+          "merge_with": "3"
+        },
+        {
+          "cluster": "14",
+          "cell_type": "mast cells",
+          "confidence": "high",
+          "markers": [
+            "TPSAB1",
+            "TPSB2",
+            "CPA3",
+            "KIT",
+            "MS4A2",
+            "HDC"
+          ],
+          "merge_with": null
+        },
+        {
+          "cluster": "15",
+          "cell_type": "tumor epithelium, immune-mixed",
+          "confidence": "low",
+          "markers": [
+            "CEACAM5",
+            "CEACAM6",
+            "MUC12",
+            "EPCAM"
+          ],
+          "merge_with": "3"
+        },
+        {
+          "cluster": "16",
+          "cell_type": "erythrocytes",
+          "confidence": "high",
+          "markers": [
+            "HBB",
+            "HBA1",
+            "HBA2",
+            "HBD"
+          ],
+          "merge_with": null
+        },
+        {
+          "cluster": "17",
           "cell_type": "enteroendocrine cells",
           "confidence": "high",
           "markers": [
@@ -542,40 +708,53 @@ their neighbors.
           "merge_with": null
         },
         {
-          "cluster": "11",
-          "cell_type": "REG1A+ regenerative epithelium",
+          "cluster": "18",
+          "cell_type": "colonocytes, SLC26A3+",
           "confidence": "medium",
           "markers": [
-            "REG1A",
-            "REG3A",
-            "LCN2",
-            "REG1B"
+            "SLC26A3",
+            "FABP1",
+            "CEACAM5"
           ],
           "merge_with": null
         },
         {
-          "cluster": "12",
-          "cell_type": "goblet cells and normal mucosa",
+          "cluster": "19",
+          "cell_type": "tumor epithelium, REG3A+",
+          "confidence": "low",
+          "markers": [
+            "CEACAM6",
+            "MYC",
+            "LAPTM4B",
+            "KLF5",
+            "REG3A"
+          ],
+          "merge_with": null
+        },
+        {
+          "cluster": "20",
+          "cell_type": "goblet and crypt epithelium",
           "confidence": "high",
           "markers": [
             "MUC2",
             "FCGBP",
             "CLCA1",
             "PIGR",
+            "OLFM4",
             "TFF3"
           ],
           "merge_with": null
         },
         {
-          "cluster": "13",
-          "cell_type": "smooth muscle and fibroblasts",
+          "cluster": "21",
+          "cell_type": "smooth muscle",
           "confidence": "high",
           "markers": [
-            "TAGLN",
             "DES",
+            "TAGLN",
             "MYH11",
             "ACTG2",
-            "COL1A1"
+            "CNN1"
           ],
           "merge_with": null
         }
@@ -586,9 +765,9 @@ their neighbors.
 
 [`annotateClusterTree()`](https://giottosuite.com/dev/reference/annotateClusterTree.md)
 turns the tree into cell type columns at several levels of detail: `k`
-is the number of groups at each level. The top of this tree splits off
-two small, distinct clusters first, so the coarsest level used here has
-5 groups.
+is the number of groups at each level. Annotating the tree at 5, 10, 15
+and 20 groups shows how the broad compartments split into cell types and
+niches further down the tree.
 
 ``` r
 
@@ -610,18 +789,18 @@ g <- annotateClusterTree(g,
     tree = tree,
     labels = labels,
     cluster_column = CLUS,
-    k = c(5, 8, length(lvls))
+    k = c(5, 10, 15, 20, length(lvls))
 )
 table(g$cell_types_k5)
 ```
 
 
-             CLU+ tumor epithelium     colonocytes and mast cells 
-                               551                          12906 
-    REG1A+ regenerative epithelium           secretory epithelium 
-                               878                          18058 
-    tumor, stroma and immune cells 
-                            186386
+                     inflamed tumor secretory and REG3A+ epithelium 
+                              18650                           21990 
+                smooth muscle niche        surface tumor epithelium 
+                              14849                           11905 
+         tumor and microenvironment 
+                             151385
 
 ``` r
 
@@ -629,13 +808,13 @@ GiottoVisuals::plotClusterTree(g,
     cluster_column = CLUS,
     tree = tree,
     labels = labels,
-    k = c(5, 8),
+    k = c(5, 10, 15, 20),
     gini_markers = gi,
     node_labels = FALSE
 )
 ```
 
-![](images/visiumhd_crc_cells_giottodisk/04_tree-annotated.png)
+![](images/visiumhd_crc_cells_giottodisk/05_tree-annotated.png)
 
 ## 11 Results
 
@@ -651,27 +830,27 @@ spatPlot2D(g,
 )
 ```
 
-![](images/visiumhd_crc_cells_giottodisk/05_spatial-k5.png)
+![](images/visiumhd_crc_cells_giottodisk/06_spatial-k5.png)
 
 One color per type, reused in the zoom below:
 
 ``` r
 
-k8_types <- sort(unique(g$cell_types_k8))
-k8_colors <- stats::setNames(getDistinctColors(length(k8_types)), k8_types)
+k20_types <- sort(unique(g$cell_types_k20))
+k20_colors <- stats::setNames(getDistinctColors(length(k20_types)), k20_types)
 
 spatPlot2D(g,
     color_as_factor = TRUE,
-    cell_color = "cell_types_k8",
-    cell_color_code = k8_colors,
+    cell_color = "cell_types_k20",
+    cell_color_code = k20_colors,
     point_border_stroke = 0,
     point_size = 0.3,
     background_color = "black",
-    theme_param = list(legend.position = "bottom")
+    theme_param = list(legend.position = "right")
 )
 ```
 
-![](images/visiumhd_crc_cells_giottodisk/06_spatial-k8.png)
+![](images/visiumhd_crc_cells_giottodisk/07_spatial-k20.png)
 
 Zoom into a region with the cell polygons, filled by cell type, over the
 H&E image:
@@ -688,9 +867,9 @@ spatInSituPlotPoints(g,
     feats = NULL,
     show_polygon = TRUE,
     polygon_feat_type = "cell",
-    polygon_fill = "cell_types_k8",
+    polygon_fill = "cell_types_k20",
     polygon_fill_as_factor = TRUE,
-    polygon_fill_code = k8_colors,
+    polygon_fill_code = k20_colors,
     polygon_line_size = 0.1,
     polygon_alpha = 0.6,
     xlim = c(roi_x - half, roi_x + half),
@@ -698,7 +877,36 @@ spatInSituPlotPoints(g,
 )
 ```
 
-![](images/visiumhd_crc_cells_giottodisk/07_roi.png)
+![](images/visiumhd_crc_cells_giottodisk/08_roi.png)
+
+The same region, with the cells filled by the normalized expression of a
+few marker genes instead:
+
+``` r
+
+marker_genes <- c("CEACAM5", "MUC2", "COL1A1", "DES", "CD74", "JCHAIN")
+
+for (gene in marker_genes) {
+    print(spatInSituPlotPoints(g,
+        show_image = TRUE,
+        feats = NULL,
+        show_polygon = TRUE,
+        polygon_feat_type = "cell",
+        polygon_fill = gene,
+        expression_values = "normalized",
+        polygon_fill_as_factor = FALSE,
+        polygon_fill_gradient_style = "sequential",
+        polygon_line_size = 0.1,
+        polygon_alpha = 0.8,
+        xlim = c(roi_x - half, roi_x + half),
+        ylim = c(roi_y - half, roi_y + half),
+        show_plot = FALSE,
+        return_plot = TRUE
+    ) + ggplot2::ggtitle(gene))
+}
+```
+
+![](images/visiumhd_crc_cells_giottodisk/09_roi-genes.png)![](images/visiumhd_crc_cells_giottodisk/10_roi-genes.png)![](images/visiumhd_crc_cells_giottodisk/11_roi-genes.png)![](images/visiumhd_crc_cells_giottodisk/12_roi-genes.png)![](images/visiumhd_crc_cells_giottodisk/13_roi-genes.png)![](images/visiumhd_crc_cells_giottodisk/14_roi-genes.png)
 
 ``` r
 
@@ -748,7 +956,7 @@ sessionInfo()
     [1] stats     graphics  grDevices utils     datasets  methods   base     
 
     other attached packages:
-    [1] GiottoDisk_0.0.0.5 Giotto_4.3.2       GiottoClass_0.7.13 arrow_23.0.1.2    
+    [1] GiottoDisk_0.0.0.5 Giotto_4.3.3       GiottoClass_0.7.15 arrow_23.0.1.2    
 
     loaded via a namespace (and not attached):
       [1] RColorBrewer_1.1-3          wk_0.9.5                   

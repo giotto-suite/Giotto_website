@@ -1,4 +1,4 @@
-# Visium HD Human Colorectal Cancer: 8 µm Bins (GiottoDisk)
+# Visium HD Human Colorectal Cancer: 8 µm Bins
 
 ## 1 Overview
 
@@ -323,7 +323,81 @@ spatPlot2D(g_roi,
 The object is saved to the project directory and can be reloaded with
 `loadGiotto(project_dir, name = "clustered")`.
 
-## 10 Further reading
+## 10 Spatially variable genes
+
+[`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md) looks
+for genes whose expression is spatially coherent. It marks the bins
+where a gene is highly expressed (here the top 30% by rank) and tests
+whether those bins are neighbors of each other more often than expected
+by chance. The neighbors come from a spatial network that links each bin
+to its 8 nearest bins.
+
+``` r
+
+g <- createSpatialNetwork(g,
+    name = "kNN_network",
+    method = "kNN",
+    k = 8,
+    verbose = FALSE
+)
+```
+
+``` r
+
+hvf <- fDataDT(g)[hvf == "yes"]$feat_ID
+
+ranktest <- binSpect(g,
+    subset_feats = hvf,
+    bin_method = "rank",
+    spatial_network_name = "kNN_network"
+)
+head(ranktest[, .(feats, z, adj.p.value, n_on)], 10)
+```
+
+                   feats        z adj.p.value  n_on
+                  <char>    <num>       <num> <num>
+     1:            OLFM4 885.9878           0 28074
+     2:            CLCA1 784.0727           0 21485
+     3:             MUC2 781.8279           0 25402
+     4: DEPRECATED_REG1A 751.8565           0  4758
+     5:            REG1A 751.0270           0  4687
+     6: DEPRECATED_IGHA2 736.5453           0 31787
+     7:            IGLC3 676.5789           0 39224
+     8:            IGHA1 654.5728           0 16752
+     9:            CLCA4 649.0724           0  4884
+    10:           SPINK4 632.9500           0 16188
+
+The six top-ranked genes. Probes that 10x marks as `DEPRECATED_` are
+skipped; some of them target a gene that has another probe too, such as
+REG1A.
+
+``` r
+
+top_genes <- ranktest[!startsWith(feats, "DEPRECATED_")]$feats[1:6]
+
+spatFeatPlot2D(g,
+    expression_values = "normalized",
+    feats = top_genes,
+    gradient_style = "sequential",
+    point_size = 0.1,
+    point_border_stroke = 0,
+    background_color = "black",
+    cow_n_col = 2,
+    return_plot = FALSE
+)
+```
+
+![](images/visiumhd_crc_bins_giottodisk/06_binspect-top.png)
+
+``` r
+
+g <- saveGiotto(g, name = "spatial")
+```
+
+      backend : `gDirSource`
+      path    : path/to/visiumhd_crc_bins_project
+
+## 11 Further reading
 
 - [Visium HD colorectal cancer: segmented
   cells](https://giottosuite.com/dev/articles/visiumhd_crc_cells_giottodisk.md),
@@ -332,9 +406,9 @@ The object is saved to the project directory and can be reloaded with
   polygons](https://giottosuite.com/dev/articles/visiumhd_crc_own_polygons_giottodisk.md)
 - The in-memory [Visium HD colorectal cancer
   tutorial](https://giottosuite.com/dev/articles/VisiumHD_Human_Colorectal_Cancer.md),
-  which aggregates the 2 µm bins into hexagons of several sizes
+  which also finds spatial co-expression modules
 
-## 11 Session info
+## 12 Session info
 
 ``` r
 
@@ -359,7 +433,7 @@ sessionInfo()
     [1] stats     graphics  grDevices utils     datasets  methods   base     
 
     other attached packages:
-    [1] GiottoDisk_0.0.0.5 Giotto_4.3.2       GiottoClass_0.7.13 arrow_23.0.1.2    
+    [1] GiottoDisk_0.0.0.5 Giotto_4.3.3       GiottoClass_0.7.15 arrow_23.0.1.2    
 
     loaded via a namespace (and not attached):
       [1] colorRamp2_0.1.0            gridExtra_2.3              
@@ -397,29 +471,30 @@ sessionInfo()
      [65] polyclip_1.10-7             filelock_1.0.3             
      [67] pillar_1.11.1               MatrixGenerics_1.22.0      
      [69] checkmate_2.3.4             stats4_4.5.3               
-     [71] plotly_4.12.0               generics_0.1.4             
-     [73] RcppHNSW_0.6.0              S4Vectors_0.48.0           
-     [75] ggplot2_4.0.2               scales_1.4.0               
-     [77] globals_0.19.1              gtools_3.9.5               
-     [79] glue_1.8.0                  lazyeval_0.2.2             
-     [81] tools_4.5.3                 tilework_1.0.0             
-     [83] GiottoVisuals_0.2.16        BiocNeighbors_2.4.0        
-     [85] data.table_1.18.2.1         ScaledMatrix_1.18.0        
-     [87] graphlayouts_1.2.3          tidygraph_1.3.1            
-     [89] cowplot_1.2.0               grid_4.5.3                 
-     [91] tidyr_1.3.2                 colorspace_2.1-2           
-     [93] SingleCellExperiment_1.32.0 BiocSingular_1.26.1        
-     [95] ggforce_0.5.0               rsvd_1.0.5                 
-     [97] cli_3.6.5                   S4Arrays_1.10.1            
-     [99] viridisLite_0.4.3           dplyr_1.2.0                
-    [101] uwot_0.2.4                  gtable_0.3.6               
-    [103] R.methodsS3_1.8.2           sass_0.4.10                
-    [105] digest_0.6.39               BiocGenerics_0.56.0        
-    [107] SparseArray_1.10.9          ggrepel_0.9.8              
-    [109] rjson_0.2.23                htmlwidgets_1.6.4          
-    [111] farver_2.1.2                R.oo_1.27.1                
-    [113] memoise_2.0.1               htmltools_0.5.9            
-    [115] lifecycle_1.0.5             httr_1.4.8                 
-    [117] bit64_4.6.0-1               MASS_7.3-65
+     [71] dbscan_1.2.4                plotly_4.12.0              
+     [73] generics_0.1.4              RcppHNSW_0.6.0             
+     [75] S4Vectors_0.48.0            ggplot2_4.0.2              
+     [77] scales_1.4.0                globals_0.19.1             
+     [79] gtools_3.9.5                glue_1.8.0                 
+     [81] lazyeval_0.2.2              tools_4.5.3                
+     [83] tilework_1.0.0              GiottoVisuals_0.2.16       
+     [85] BiocNeighbors_2.4.0         data.table_1.18.2.1        
+     [87] ScaledMatrix_1.18.0         graphlayouts_1.2.3         
+     [89] tidygraph_1.3.1             cowplot_1.2.0              
+     [91] grid_4.5.3                  tidyr_1.3.2                
+     [93] colorspace_2.1-2            SingleCellExperiment_1.32.0
+     [95] BiocSingular_1.26.1         ggforce_0.5.0              
+     [97] rsvd_1.0.5                  cli_3.6.5                  
+     [99] S4Arrays_1.10.1             viridisLite_0.4.3          
+    [101] dplyr_1.2.0                 uwot_0.2.4                 
+    [103] gtable_0.3.6                R.methodsS3_1.8.2          
+    [105] sass_0.4.10                 digest_0.6.39              
+    [107] BiocGenerics_0.56.0         SparseArray_1.10.9         
+    [109] ggrepel_0.9.8               rjson_0.2.23               
+    [111] htmlwidgets_1.6.4           farver_2.1.2               
+    [113] R.oo_1.27.1                 memoise_2.0.1              
+    [115] htmltools_0.5.9             lifecycle_1.0.5            
+    [117] httr_1.4.8                  bit64_4.6.0-1              
+    [119] MASS_7.3-65
 
 NA \`\`\`

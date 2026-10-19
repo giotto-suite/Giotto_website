@@ -1,4 +1,4 @@
-# Visium HD Human Colorectal Cancer: 2 µm Bins into Your Own Polygons (GiottoDisk)
+# Visium HD Human Colorectal Cancer: 2 µm Bins into Your Own Polygons
 
 ## 1 Overview
 
@@ -422,7 +422,94 @@ spatInSituPlotPoints(g,
 The object is saved to the project directory and can be reloaded with
 `loadGiotto(project_dir, name = "clustered")`.
 
-## 10 Further reading
+## 10 Re-aggregate into a grid
+
+Any set of polygons can be aggregated from the same 2 µm bins, not only
+cells.
+[`tessellate()`](https://giotto-suite.github.io/GiottoClass/reference/tessellate.html)
+makes a grid of hexagons (or squares or triangles) over the bins. Each
+grid becomes a new spatial unit next to `cell`, so the bins can be
+re-aggregated at any size without reading the data again.
+
+Space Ranger records the pixel size, so the grid can be set in µm.
+`shape_size` is the width of one hexagon, in the same pixel units as the
+bins:
+
+``` r
+
+scalefactors <- jsonlite::fromJSON(file.path(
+    data_dir, "binned_outputs", "square_002um", "spatial", "scalefactors_json.json"
+))
+um_to_px <- 1 / scalefactors$microns_per_pixel
+```
+
+``` r
+
+bins_ext <- ext(getFeatureInfo(g, feat_type = "rna", return_giottoPoints = TRUE))
+
+for (size_um in c(20, 50)) {
+    unit <- paste0("hex", size_um)
+    hex <- tessellate(
+        extent = bins_ext,
+        shape = "hexagon",
+        shape_size = size_um * um_to_px,
+        name = unit
+    )
+    g <- setGiotto(g, hex, centroids_to_spatlocs = TRUE, verbose = FALSE)
+    g <- calculateOverlap(g, spat_info = unit, feat_info = "rna")
+    g <- overlapToMatrix(g, spat_info = unit, feat_info = "rna", name = "raw")
+    g <- normalizeGiotto(g,
+        spat_unit = unit,
+        scale_feats = FALSE,
+        scale_cells = FALSE,
+        verbose = FALSE
+    )
+    cat(unit, ":", format(length(spatIDs(g, spat_unit = unit)), big.mark = ","),
+        "hexagons\n")
+}
+```
+
+    hex20 : 132,353 hexagons
+    hex50 : 21,060 hexagons
+
+The extent comes from the bins rather than from `g`, because the extent
+of `g` also covers the whole H&E image.
+
+MUC2 in the cells and in both grids, in the zoom region from above:
+
+``` r
+
+for (unit in c("cell", "hex20", "hex50")) {
+    print(spatInSituPlotPoints(g,
+        show_image = TRUE,
+        feats = NULL,
+        show_polygon = TRUE,
+        polygon_feat_type = unit,
+        polygon_fill = "MUC2",
+        expression_values = "normalized",
+        polygon_fill_as_factor = FALSE,
+        polygon_fill_gradient_style = "sequential",
+        polygon_line_size = 0.1,
+        polygon_alpha = 0.8,
+        xlim = c(roi_x - half, roi_x + half),
+        ylim = c(roi_y - half, roi_y + half),
+        show_plot = FALSE,
+        return_plot = TRUE
+    ) + ggplot2::ggtitle(paste("MUC2,", unit)))
+}
+```
+
+![](images/visiumhd_crc_own_polygons_giottodisk/07_grid-roi.png)![](images/visiumhd_crc_own_polygons_giottodisk/08_grid-roi.png)![](images/visiumhd_crc_own_polygons_giottodisk/09_grid-roi.png)
+
+``` r
+
+g <- saveGiotto(g, name = "grid")
+```
+
+      backend : `gDirSource`
+      path    : path/to/visiumhd_crc_polygons_project
+
+## 11 Further reading
 
 - [Visium HD colorectal cancer: segmented
   cells](https://giottosuite.com/dev/articles/visiumhd_crc_cells_giottodisk.md),
@@ -431,9 +518,10 @@ The object is saved to the project directory and can be reloaded with
   bins](https://giottosuite.com/dev/articles/visiumhd_crc_bins_giottodisk.md)
 - The in-memory [Visium HD colorectal cancer
   tutorial](https://giottosuite.com/dev/articles/VisiumHD_Human_Colorectal_Cancer.md),
-  which aggregates the 2 µm bins into hexagons of several sizes
+  which also finds spatially variable genes and co-expression modules on
+  a hexagon grid
 
-## 11 Session info
+## 12 Session info
 
 ``` r
 
@@ -458,7 +546,7 @@ sessionInfo()
     [1] stats     graphics  grDevices utils     datasets  methods   base     
 
     other attached packages:
-    [1] GiottoDisk_0.0.0.5 Giotto_4.3.2       GiottoClass_0.7.13 arrow_23.0.1.2    
+    [1] GiottoDisk_0.0.0.5 Giotto_4.3.3       GiottoClass_0.7.15 arrow_23.0.1.2    
 
     loaded via a namespace (and not attached):
       [1] DBI_1.3.0                   colorRamp2_0.1.0           

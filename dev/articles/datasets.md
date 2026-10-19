@@ -212,14 +212,13 @@ genesspot](https://giottosuite.com/dev/articles/visium_cytassist_human_glioblast
 human · colon · cancer RNA5,000+
 genesspot](https://giottosuite.com/dev/articles/VisiumHD_Human_Colorectal_Cancer.md)
 [Sequencing-based methods Visium HD Human Colorectal Cancer: Segmented
-Cells (GiottoDisk) Visium HD · human · colon · cancer
-GiottoDiskRNA5,000+ genessingle
+Cells Visium HD · human · colon · cancer GiottoDiskRNA5,000+ genessingle
 cell](https://giottosuite.com/dev/articles/visiumhd_crc_cells_giottodisk.md)
 [Sequencing-based methods Visium HD Human Colorectal Cancer: 8 µm Bins
-(GiottoDisk) Visium HD · human · colon · cancer GiottoDiskRNA5,000+
+Visium HD · human · colon · cancer GiottoDiskRNA5,000+
 genesspot](https://giottosuite.com/dev/articles/visiumhd_crc_bins_giottodisk.md)
 [Sequencing-based methods Visium HD Human Colorectal Cancer: 2 µm Bins
-into Your Own Polygons (GiottoDisk) Visium HD · human · colon · cancer
+into Your Own Polygons Visium HD · human · colon · cancer
 GiottoDiskRNA5,000+ genessingle
 cell](https://giottosuite.com/dev/articles/visiumhd_crc_own_polygons_giottodisk.md)
 [Sequencing-based methods VisiumHD Rhesus Macaque Kidney Visium HD ·
