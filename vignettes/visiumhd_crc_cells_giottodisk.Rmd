@@ -831,7 +831,7 @@ table(g$cell_types_k5)
                          151385
 ```
 
-```{r tree-annotated, fig.width = 14, fig.height = 12, eval = FALSE}
+```{r tree-annotated, fig.width = 14, fig.height = 10, eval = FALSE}
 GiottoVisuals::plotClusterTree(g,
     cluster_column = CLUS,
     tree = tree,
@@ -844,6 +844,37 @@ GiottoVisuals::plotClusterTree(g,
 
 ```{r tree-annotated-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
 knitr::include_graphics("images/visiumhd_crc_cells_giottodisk/05_tree-annotated.png")
+```
+
+`k` sets the number of groups. The tree can also be cut by how different the
+clusters are: with `h`, clusters that are more than that fraction dissimilar
+(1 - correlation, averaged between the two groups) stay apart. The same `h`
+then means the same thing in another dataset, while the number of groups it
+gives depends on the data. Here no two clusters are within 5% of each other,
+so `h = 0.05` keeps all of them:
+
+```{r annotate-h, eval = FALSE}
+g <- annotateClusterTree(g,
+    tree = tree,
+    labels = labels,
+    cluster_column = CLUS,
+    h = c(0.05, 0.2, 0.4)
+)
+```
+
+```{r tree-annotated-h, fig.width = 14, fig.height = 9, eval = FALSE}
+GiottoVisuals::plotClusterTree(g,
+    cluster_column = CLUS,
+    tree = tree,
+    labels = labels,
+    h = c(0.05, 0.2, 0.4),
+    gini_markers = gi,
+    node_labels = FALSE
+)
+```
+
+```{r tree-annotated-h-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
+knitr::include_graphics("images/visiumhd_crc_cells_giottodisk/06_tree-annotated-h.png")
 ```
 
 # Results
@@ -860,7 +891,7 @@ spatPlot2D(g,
 ```
 
 ```{r spatial-k5-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
-knitr::include_graphics("images/visiumhd_crc_cells_giottodisk/06_spatial-k5.png")
+knitr::include_graphics("images/visiumhd_crc_cells_giottodisk/07_spatial-k5.png")
 ```
 
 One color per type, reused in the zoom below:
@@ -881,7 +912,7 @@ spatPlot2D(g,
 ```
 
 ```{r spatial-k20-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
-knitr::include_graphics("images/visiumhd_crc_cells_giottodisk/07_spatial-k20.png")
+knitr::include_graphics("images/visiumhd_crc_cells_giottodisk/08_spatial-k20.png")
 ```
 
 Zoom into a region with the cell polygons, filled by cell type, over the H&E
@@ -909,7 +940,7 @@ spatInSituPlotPoints(g,
 ```
 
 ```{r roi-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
-knitr::include_graphics("images/visiumhd_crc_cells_giottodisk/08_roi.png")
+knitr::include_graphics("images/visiumhd_crc_cells_giottodisk/09_roi.png")
 ```
 
 The same region, with the cells filled by the normalized expression of a few
@@ -939,12 +970,12 @@ for (gene in marker_genes) {
 ```
 
 ```{r roi-genes-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
-knitr::include_graphics("images/visiumhd_crc_cells_giottodisk/09_roi-genes.png")
 knitr::include_graphics("images/visiumhd_crc_cells_giottodisk/10_roi-genes.png")
 knitr::include_graphics("images/visiumhd_crc_cells_giottodisk/11_roi-genes.png")
 knitr::include_graphics("images/visiumhd_crc_cells_giottodisk/12_roi-genes.png")
 knitr::include_graphics("images/visiumhd_crc_cells_giottodisk/13_roi-genes.png")
 knitr::include_graphics("images/visiumhd_crc_cells_giottodisk/14_roi-genes.png")
+knitr::include_graphics("images/visiumhd_crc_cells_giottodisk/15_roi-genes.png")
 ```
 
 ```{r save-annotated, eval = FALSE}
