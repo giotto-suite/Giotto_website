@@ -55,16 +55,21 @@ review step.
    Edit this file **textually**. Do not round-trip it through a YAML writer — it is ~1000
    hand-commented lines and the comments and section anchors are load-bearing.
 
-6. **Tag it** for the dataset browser (`articles/datasets.html`). Add a `tags:` block
-   to the YAML header -- required for tutorials in the Examples sections listed under
-   `tagged_sections:` in `pkgdown/tags.yml`, optional elsewhere. `platform`,
-   `modality` and `resolution` are required; omit `species`/`tissue`/`condition` when
-   the dataset does not state them rather than guessing. Use `packages: GiottoDisk`
-   when the tutorial works on a disk-backed object, `packages: GiottoLens` for the
-   interactive viewer. Values must be in `pkgdown/tags.yml`. Then regenerate and
-   commit the page:
+6. **Tag it** for its browse page. `pkgdown/tags.yml` lists, under `browsers:`, which
+   `articles:` sections feed `articles/datasets.html` (platform examples) and which feed
+   `articles/tutorials.html` (analysis tutorials); every tutorial in those sections needs a
+   `tags:` block in its YAML header, and tags anywhere else are an error.
+   - **Dataset examples:** `size`, `platform`, `modality` and `resolution` are required;
+     omit `species`/`tissue`/`condition` when the dataset does not state them rather than
+     guessing.
+   - **Analysis tutorials:** one or more `category` values, by what the reader learns, not
+     by the example dataset used.
+   - Both: `packages: GiottoDisk` when the tutorial works on a disk-backed object,
+     `packages: GiottoLens` for the interactive viewer.
+
+   Values must be in `pkgdown/tags.yml`. Then regenerate and commit the pages:
    ```sh
-   Rscript pkgdown/build-dataset-index.R
+   Rscript pkgdown/build-browse-pages.R
    ```
 
 7. **Check, in about a second:**
