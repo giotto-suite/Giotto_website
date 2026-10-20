@@ -15,6 +15,13 @@ Downstream packages that stream PAGE (GiottoDisk) should require
 
 ### changes
 
+- The Stereo-seq readers
+  ([`importStereoSeq()`](https://giottosuite.com/dev/reference/importStereoSeq.md),
+  [`createGiottoStereoSeqObjectBin()`](https://giottosuite.com/dev/reference/createGiottoStereoSeqObjectBin.md),
+  [`createGiottoStereoSeqObjectCell()`](https://giottosuite.com/dev/reference/createGiottoStereoSeqObjectCell.md))
+  accept a folder with the GEF and registered image files directly, as
+  downloaded from the STOmics demo site, as well as a SAW `outs/`
+  directory with `feature_expression/` and `image/`.
 - PAGE no longer densifies the expression or melts it into a long table:
   the scores come from per-cell moments and one product with the marker
   matrix.

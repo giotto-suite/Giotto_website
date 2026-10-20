@@ -115,6 +115,9 @@
     <li><a class="dropdown-item" href="../articles/VisiumHD_Convenience_Function_Kidney.html">VisiumHD — Rhesus macaque kidney</a></li>
     <li><a class="dropdown-item" href="../articles/stereoseq_importer.html">Stereo-seq — Data importer</a></li>
     <li><a class="dropdown-item" href="../articles/stereoseq_mouse_eyeball.html">Stereo-seq — Mouse eyeball</a></li>
+    <li><a class="dropdown-item" href="../articles/stereoseq_testis_cells_giottodisk.html">Stereo-seq — Mouse testis, segmented cells</a></li>
+    <li><a class="dropdown-item" href="../articles/stereoseq_testis_bins_giottodisk.html">Stereo-seq — Mouse testis, 10 µm bins</a></li>
+    <li><a class="dropdown-item" href="../articles/stereoseq_testis_own_polygons_giottodisk.html">Stereo-seq — Mouse testis, 0.5 µm bins into polygons</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>More technologies</h6></li>
     <li><a class="dropdown-item" href="../articles/index.html#spatial-in-situ-transcriptomics">Spatial in situ transcriptomics</a></li>
@@ -215,7 +218,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="changes-4-3-5">changes<a class="anchor" aria-label="anchor" href="#changes-4-3-5"></a></h3>
-<ul><li>PAGE no longer densifies the expression or melts it into a long table: the scores come from per-cell moments and one product with the marker matrix.</li>
+<ul><li>The Stereo-seq readers (<code><a href="../reference/importStereoSeq.html">importStereoSeq()</a></code>, <code><a href="../reference/createGiottoStereoSeqObjectBin.html">createGiottoStereoSeqObjectBin()</a></code>, <code><a href="../reference/createGiottoStereoSeqObjectCell.html">createGiottoStereoSeqObjectCell()</a></code>) accept a folder with the GEF and registered image files directly, as downloaded from the STOmics demo site, as well as a SAW <code>outs/</code> directory with <code>feature_expression/</code> and <code>image/</code>.</li>
+<li>PAGE no longer densifies the expression or melts it into a long table: the scores come from per-cell moments and one product with the marker matrix.</li>
 <li>PAGE p-values are the permutation null in closed form instead of a normal fit to sampled permutations; <code>n_times</code> is no longer used by PAGE.</li>
 <li>All three methods work a block of cells at a time and no longer loop over cells in R: much faster and with a bounded memory peak, most of all for PAGE p-values and hypergeometric enrichment.</li>
 <li>

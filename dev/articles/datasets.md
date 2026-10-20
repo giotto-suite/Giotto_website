@@ -6,7 +6,7 @@ Uses
 
 Tutorials built on a Giotto Suite extension package.
 
-GiottoDisk 8
+GiottoDisk 11
 
 GiottoLens 1
 
@@ -18,7 +18,7 @@ Interactivity 1
 
 In situ methods 10
 
-Sequencing-based methods 12
+Sequencing-based methods 15
 
 Spatial in situ transcriptomics 7
 
@@ -32,7 +32,7 @@ Single cell RNA sequencing (non-spatial) 3
 
 Dataset size
 
-full 39
+full 42
 
 mini 2
 
@@ -66,7 +66,7 @@ Visium CytAssist 2
 
 Visium HD 5
 
-Stereo-seq 2
+Stereo-seq 5
 
 Slide-seq 1
 
@@ -94,13 +94,13 @@ CosMx WTx, Visium.
 
 500–5,000 2
 
-5,000+ 28
+5,000+ 31
 
 Species
 
 human 22
 
-mouse 17
+mouse 20
 
 rhesus macaque 1
 
@@ -130,15 +130,17 @@ skin 1
 
 spleen 1
 
+testis 3
+
 Condition
 
 cancer 19
 
-normal 18
+normal 21
 
 Modality
 
-RNA 40
+RNA 43
 
 protein 4
 
@@ -151,9 +153,9 @@ multi-cell spots and bins.
 
 subcellular 10
 
-single cell 17
+single cell 19
 
-spot 15
+spot 16
 
 Clear filters
 
@@ -230,6 +232,16 @@ cell](https://giottosuite.com/dev/articles/stereoseq_importer.md)
 [Sequencing-based methods Stereo-seq Mouse eyeball Stereo-seq · mouse ·
 eye · normal RNA5,000+
 genesspot](https://giottosuite.com/dev/articles/stereoseq_mouse_eyeball.md)
+[Sequencing-based methods Stereo-seq Mouse Testis: Segmented Cells
+Stereo-seq · mouse · testis · normal GiottoDiskRNA5,000+ genessingle
+cell](https://giottosuite.com/dev/articles/stereoseq_testis_cells_giottodisk.md)
+[Sequencing-based methods Stereo-seq Mouse Testis: 10 µm Bins Stereo-seq
+· mouse · testis · normal GiottoDiskRNA5,000+
+genesspot](https://giottosuite.com/dev/articles/stereoseq_testis_bins_giottodisk.md)
+[Sequencing-based methods Stereo-seq Mouse Testis: 0.5 µm Bins into Your
+Own Polygons Stereo-seq · mouse · testis · normal GiottoDiskRNA5,000+
+genessingle
+cell](https://giottosuite.com/dev/articles/stereoseq_testis_own_polygons_giottodisk.md)
 [Spatial in situ transcriptomics Spatial Genomics Mouse Kidney GenePS ·
 mouse · kidney · normal RNA0–500
 genessubcellular](https://giottosuite.com/dev/articles/spatial_genomics_mouse_kidney.md)

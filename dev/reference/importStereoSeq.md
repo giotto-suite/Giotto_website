@@ -30,7 +30,10 @@ plot(x, y, ...)
 
 - stereoseq_dir:
 
-  filepath to the Stereo-seq \`outs\` directory.
+  filepath to the Stereo-seq \`outs\` directory, with
+  \`feature_expression/\` and \`image/\` subdirectories, or to a folder
+  holding the GEF and registered image files directly (as downloaded
+  from STOmics).
 
 - type:
 
