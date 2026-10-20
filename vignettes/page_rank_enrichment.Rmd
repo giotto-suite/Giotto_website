@@ -153,51 +153,55 @@ spatCellPlot2D(gobject = g,
 knitr::include_graphics("images/page_rank_enrichment/2-spatCellPlot2D.png")
 ```
 
-# P-values
+# P-values and cell type calls
 
-PAGE p-values test each spot against random gene sets of the same size. They are computed exactly, so they cost no more than the scores.
+PAGE p-values test each spot against random gene sets of the same size. They are computed exactly, so they cost no more than the scores. With `p_value = TRUE` the scores stay under `PAGE`, and the p-values and their Benjamini-Hochberg adjusted values are stored beside them:
 
 ```{r, eval=FALSE}
 g <- runPAGEEnrich(gobject = g, 
                    sign_matrix = sign_matrix,
                    min_overlap_genes = 1,
-                   p_value = TRUE,
-                   name = "PAGE_p")
+                   p_value = TRUE)
 
-pvalues <- getSpatialEnrichment(g, name = "PAGE_p", output = "data.table")
-cell_types_kept <- setdiff(names(pvalues), "cell_ID")
-
-# spots enriched at p < 0.05, per cell type
-colSums(as.matrix(pvalues[, -"cell_ID"]) < 0.05)
+list_spatial_enrichments_names(g, spat_unit = "cell", feat_type = "rna")
 ```
 
 ```{r, eval=FALSE}
-     Ependymal         Oligos PeripheralGlia       Vascular 
-            44            178             55             69 
+[1] "cluster_metagene" "DWLS"             "PAGE"             "PAGE_p"          
+[5] "PAGE_padj"       
 ```
 
-Cell types with too few marker genes in the spatial data are left out (see `min_overlap_genes`), which is why only four of the seven appear here. To plot the p-values on the tissue, add them to the cell metadata as `-log10(p)`:
+Cell types with too few marker genes in the spatial data are left out (see `min_overlap_genes`), which is why only four of the seven appear. Each spot can then be called as its top-scoring cell type, keeping only calls that are significant after adjustment. `return_gobject = TRUE` adds the call to the cell metadata as `PAGE_type`:
 
 ```{r, eval=FALSE}
-mlog10p <- pvalues[, lapply(.SD, function(p) -log10(p)), by = cell_ID]
-data.table::setnames(mlog10p, cell_types_kept, paste0(cell_types_kept, "_mlog10p"))
+g <- findCellTypesFromEnrichment(gobject = g,
+                                 enrichment_name = "PAGE",
+                                 max_padj = 0.05,
+                                 return_gobject = TRUE)
 
-g <- addCellMetadata(g, 
-                     new_metadata = mlog10p, 
-                     by_column = TRUE, 
-                     column_cell_ID = "cell_ID")
-
-spatCellPlot2D(gobject = g,
-               cell_annotation_values = paste0(cell_types_kept, "_mlog10p"),
-               cow_n_col = 2,
-               coord_fix_ratio = 1, 
-               point_size = 4, 
-               show_legend = TRUE)
+table(pDataDT(g)$PAGE_type, useNA = "ifany")
 ```
 
-```{r, echo=FALSE, out.width="80%", fig.align='center'}
-knitr::include_graphics("images/page_rank_enrichment/3-spatCellPlot2D_pvalue.png")
+```{r, eval=FALSE}
+     Ependymal         Oligos PeripheralGlia       Vascular           <NA> 
+            15            107             13             13            476 
 ```
+
+```{r, eval=FALSE}
+spatPlot2D(gobject = g,
+           cell_color = "PAGE_type",
+           select_cell_groups = c("Ependymal", "Oligos", 
+                                  "PeripheralGlia", "Vascular"),
+           point_size = 4,
+           other_point_size = 4,
+           coord_fix_ratio = 1)
+```
+
+```{r, echo=FALSE, out.width="70%", fig.align='center'}
+knitr::include_graphics("images/page_rank_enrichment/3-spatPlot2D_type.png")
+```
+
+Spots without a significant cell type are shown in grey. `min_score` sets a threshold on the score instead, which also works without p-values.
 
 # Rank enrichment
 
@@ -216,7 +220,7 @@ g <- runRankEnrich(gobject = g,
 
 spatCellPlot2D(gobject = g,
                spat_enr_names = "rank",
-               cell_annotation_values = cell_types_kept,
+               cell_annotation_values = c("Ependymal", "Oligos", "PeripheralGlia", "Vascular"),
                cow_n_col = 2,
                coord_fix_ratio = 1, 
                point_size = 4, 
@@ -240,7 +244,7 @@ g <- runHyperGeometricEnrich(gobject = g,
 
 spatCellPlot2D(gobject = g,
                spat_enr_names = "hypergeometric",
-               cell_annotation_values = cell_types_kept,
+               cell_annotation_values = c("Ependymal", "Oligos", "PeripheralGlia", "Vascular"),
                cow_n_col = 2,
                coord_fix_ratio = 1, 
                point_size = 4, 
