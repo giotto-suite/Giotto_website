@@ -1,13 +1,20 @@
-# PAGE and Rank Enrichment
+# PAGE, Rank and Hypergeometric Enrichment
 
 Visium spatial transcriptomics does not provide single-cell resolution,
-making cell type annotation a harder problem. Giotto provides ways to
-calculate enrichment of specific cell-type signature gene lists.
+making cell type annotation a harder problem. Giotto scores each spot
+for cell type signatures taken from a single-cell reference, with three
+methods:
 
-Parametric Analysis of Gene Set Enrichment (PAGE) and Rank enrichment
-both aim to determine whether a predefined set of genes show
-statistically significant differences in expression compared to other
-genes in the dataset.
+- **PAGE** (Parametric Analysis of Gene Set Enrichment): a z-score for
+  how far a cell type’s marker genes sit above the spot’s average fold
+  change.
+- **Rank**: compares the rank of every gene in the spot with its rank in
+  each cell type of the reference.
+- **Hypergeometric**: tests whether a cell type’s markers are
+  over-represented among the spot’s most highly expressed genes.
+
+All three return one score per spot and cell type. With `p_value = TRUE`
+they return p-values instead.
 
 ## 1 Setup and load example dataset
 
@@ -44,8 +51,9 @@ g <- GiottoData::loadGiottoMini("visium")
 
 ``` r
 
+# downloads into data/scRNA_mouse_brain/
 GiottoData::getSpatialDataset(dataset = "scRNA_mouse_brain", 
-                              directory = "data/scRNA_mouse_brain")
+                              directory = "data")
 ```
 
 ## 3 Create the single-cell object and run the normalization step
@@ -147,7 +155,126 @@ spatCellPlot2D(gobject = g,
 
 ![](images/page_rank_enrichment/2-spatCellPlot2D.png)
 
-## 8 Session info
+## 8 P-values
+
+PAGE p-values test each spot against random gene sets of the same size.
+They are computed exactly, so they cost no more than the scores.
+
+``` r
+
+g <- runPAGEEnrich(gobject = g, 
+                   sign_matrix = sign_matrix,
+                   min_overlap_genes = 1,
+                   p_value = TRUE,
+                   name = "PAGE_p")
+
+pvalues <- getSpatialEnrichment(g, name = "PAGE_p", output = "data.table")
+cell_types_kept <- setdiff(names(pvalues), "cell_ID")
+
+# spots enriched at p < 0.05, per cell type
+colSums(as.matrix(pvalues[, -"cell_ID"]) < 0.05)
+```
+
+``` r
+     Ependymal         Oligos PeripheralGlia       Vascular 
+            44            178             55             69 
+```
+
+Cell types with too few marker genes in the spatial data are left out
+(see `min_overlap_genes`), which is why only four of the seven appear
+here. To plot the p-values on the tissue, add them to the cell metadata
+as `-log10(p)`:
+
+``` r
+
+mlog10p <- pvalues[, lapply(.SD, function(p) -log10(p)), by = cell_ID]
+data.table::setnames(mlog10p, cell_types_kept, paste0(cell_types_kept, "_mlog10p"))
+
+g <- addCellMetadata(g, 
+                     new_metadata = mlog10p, 
+                     by_column = TRUE, 
+                     column_cell_ID = "cell_ID")
+
+spatCellPlot2D(gobject = g,
+               cell_annotation_values = paste0(cell_types_kept, "_mlog10p"),
+               cow_n_col = 2,
+               coord_fix_ratio = 1, 
+               point_size = 4, 
+               show_legend = TRUE)
+```
+
+![](images/page_rank_enrichment/3-spatCellPlot2D_pvalue.png)
+
+## 9 Rank enrichment
+
+Rank enrichment needs a different signature matrix: instead of a short
+list of markers per cell type, it uses the whole single-cell expression
+profile.
+
+``` r
+
+rank_matrix <- makeSignMatrixRank(
+    sc_matrix = getExpression(giotto_SC, values = "normalized", output = "matrix"),
+    sc_cluster_ids = pDataDT(giotto_SC)$Class)
+
+colnames(rank_matrix) <- levels(factor(pDataDT(giotto_SC)$Class))
+
+g <- runRankEnrich(gobject = g, 
+                   sign_matrix = rank_matrix,
+                   expression_values = "normalized")
+
+spatCellPlot2D(gobject = g,
+               spat_enr_names = "rank",
+               cell_annotation_values = cell_types_kept,
+               cow_n_col = 2,
+               coord_fix_ratio = 1, 
+               point_size = 4, 
+               show_legend = TRUE)
+```
+
+![](images/page_rank_enrichment/4-spatCellPlot2D_rank.png)
+
+Because it compares whole profiles, rank enrichment works best when the
+spatial data measures most of the transcriptome. On this small subset of
+genes the marker-based methods give sharper maps.
+
+## 10 Hypergeometric enrichment
+
+The hypergeometric test takes, for each spot, the genes in its top 5%
+(`top_percentage`) of fold changes and asks whether a cell type’s
+markers are over-represented among them. It uses the same signature
+matrix as PAGE.
+
+``` r
+
+g <- runHyperGeometricEnrich(gobject = g, 
+                             sign_matrix = sign_matrix,
+                             expression_values = "normalized")
+
+spatCellPlot2D(gobject = g,
+               spat_enr_names = "hypergeometric",
+               cell_annotation_values = cell_types_kept,
+               cow_n_col = 2,
+               coord_fix_ratio = 1, 
+               point_size = 4, 
+               show_legend = TRUE)
+```
+
+![](images/page_rank_enrichment/5-spatCellPlot2D_hyper.png)
+
+The scores are `-log10(p)`, so they are never negative. The ependymal
+layer and the oligodendrocyte tracts stand out as they do with PAGE.
+
+## 11 Large datasets
+
+All three methods score spots in blocks, so memory stays bounded on
+large datasets. On disk-backed objects from
+[GiottoDisk](https://giotto-suite.github.io/GiottoDisk/), PAGE (with or
+without p-values) and the hypergeometric test run without loading the
+expression matrix into memory. Rank enrichment needs the whole matrix in
+memory.
+
+## 12 Session info
 
 ``` r
 
@@ -155,16 +282,16 @@ sessionInfo()
 ```
 
 ``` r
-R version 4.4.2 (2024-10-31)
-Platform: x86_64-apple-darwin20
-Running under: macOS Sequoia 15.0.1
+R version 4.5.3 (2026-03-11)
+Platform: aarch64-apple-darwin20
+Running under: macOS Tahoe 26.6.2
 
 Matrix products: default
-BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
-LAPACK: /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
 
 locale:
-[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+[1] C.UTF-8/C.UTF-8/C.UTF-8/C/C.UTF-8/C.UTF-8
 
 time zone: America/New_York
 tzcode source: internal
@@ -173,70 +300,53 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] Giotto_4.1.4      GiottoClass_0.4.3
+[1] Giotto_4.3.5       GiottoClass_0.7.16
 
 loaded via a namespace (and not attached):
-  [1] colorRamp2_0.1.0            rlang_1.1.4                
-  [3] magrittr_2.0.3              GiottoUtils_0.2.0          
-  [5] matrixStats_1.4.1           compiler_4.4.2             
-  [7] DelayedMatrixStats_1.26.0   systemfonts_1.1.0          
-  [9] png_0.1-8                   vctrs_0.6.5                
- [11] RcppZiggurat_0.1.6          quadprog_1.5-8             
- [13] pkgconfig_2.0.3             SpatialExperiment_1.14.0   
- [15] crayon_1.5.3                fastmap_1.2.0              
- [17] backports_1.5.0             magick_2.8.5               
- [19] XVector_0.44.0              labeling_0.4.3             
- [21] scuttle_1.14.0              utf8_1.2.4                 
- [23] rmarkdown_2.28              UCSC.utils_1.0.0           
- [25] ragg_1.3.3                  purrr_1.0.2                
- [27] Rfast_2.1.0                 xfun_0.47                  
- [29] bluster_1.14.0              zlibbioc_1.50.0            
- [31] beachmat_2.20.0             GenomeInfoDb_1.40.1        
- [33] jsonlite_1.8.9              DelayedArray_0.30.1        
- [35] tweenr_2.0.3                BiocParallel_1.38.0        
- [37] terra_1.7-78                irlba_2.3.5.1              
- [39] parallel_4.4.2              cluster_2.1.6              
- [41] R6_2.5.1                    RColorBrewer_1.1-3         
- [43] limma_3.60.4                reticulate_1.39.0          
- [45] GenomicRanges_1.56.1        scattermore_1.2            
- [47] Rcpp_1.0.13                 SummarizedExperiment_1.34.0
- [49] knitr_1.48                  R.utils_2.12.3             
- [51] IRanges_2.38.1              Matrix_1.7-1               
- [53] igraph_2.0.3                tidyselect_1.2.1           
- [55] rstudioapi_0.16.0           abind_1.4-8                
- [57] yaml_2.3.10                 codetools_0.2-20           
- [59] lattice_0.22-6              tibble_3.2.1               
- [61] Biobase_2.64.0              withr_3.0.1                
- [63] evaluate_1.0.0              polyclip_1.10-7            
- [65] scatterpie_0.2.4            RcppParallel_5.1.9         
- [67] pillar_1.9.0                MatrixGenerics_1.16.0      
- [69] checkmate_2.3.2             stats4_4.4.2               
- [71] ggfun_0.1.6                 plotly_4.10.4              
- [73] generics_0.1.3              S4Vectors_0.42.1           
- [75] ggplot2_3.5.1               sparseMatrixStats_1.16.0   
- [77] munsell_0.5.1               scales_1.3.0               
- [79] GiottoData_0.2.15           gtools_3.9.5               
- [81] glue_1.8.0                  metapod_1.12.0             
- [83] lazyeval_0.2.2              tools_4.4.2                
- [85] GiottoVisuals_0.2.7         BiocNeighbors_1.22.0       
- [87] data.table_1.16.0           ScaledMatrix_1.12.0        
- [89] locfit_1.5-9.10             fs_1.6.4                   
- [91] scran_1.32.0                cowplot_1.1.3              
- [93] grid_4.4.2                  tidyr_1.3.1                
- [95] edgeR_4.2.1                 colorspace_2.1-1           
- [97] SingleCellExperiment_1.26.0 GenomeInfoDbData_1.2.12    
- [99] ggforce_0.4.2               BiocSingular_1.20.0        
-[101] cli_3.6.3                   rsvd_1.0.5                 
-[103] textshaping_0.4.0           fansi_1.0.6                
-[105] S4Arrays_1.4.1              viridisLite_0.4.2          
-[107] dplyr_1.1.4                 gtable_0.3.5               
-[109] yulab.utils_0.1.7           R.methodsS3_1.8.2          
-[111] digest_0.6.37               progressr_0.14.0           
-[113] BiocGenerics_0.50.0         SparseArray_1.4.8          
-[115] ggrepel_0.9.6               dqrng_0.4.1                
-[117] farver_2.1.2                rjson_0.2.23               
-[119] htmlwidgets_1.6.4           htmltools_0.5.8.1          
-[121] R.oo_1.26.0                 lifecycle_1.0.4            
-[123] httr_1.4.7                  statmod_1.5.0              
-[125] MASS_7.3-61  
+ [1] tidyselect_1.2.1            viridisLite_0.4.3          
+ [3] dplyr_1.2.0                 farver_2.1.2               
+ [5] GiottoVisuals_0.2.16        viridis_0.6.5              
+ [7] S7_0.2.1                    ggraph_2.2.2               
+ [9] fastmap_1.2.0               SingleCellExperiment_1.32.0
+[11] lazyeval_0.2.2              bluster_1.20.0             
+[13] tweenr_2.0.3                rsvd_1.0.5                 
+[15] digest_0.6.39               lifecycle_1.0.5            
+[17] cluster_2.1.8.2             terra_1.9-11               
+[19] magrittr_2.0.4              compiler_4.5.3             
+[21] rlang_1.3.0                 tools_4.5.3                
+[23] igraph_2.2.2                data.table_1.18.2.1        
+[25] S4Arrays_1.10.1             graphlayouts_1.2.3         
+[27] htmlwidgets_1.6.4           DelayedArray_0.36.0        
+[29] RColorBrewer_1.1-3          BiocParallel_1.44.0        
+[31] abind_1.4-8                 withr_3.0.2                
+[33] purrr_1.2.1                 BiocGenerics_0.56.0        
+[35] grid_4.5.3                  polyclip_1.10-7            
+[37] stats4_4.5.3                beachmat_2.26.0            
+[39] colorspace_2.1-2            ggplot2_4.0.2              
+[41] scales_1.4.0                gtools_3.9.5               
+[43] MASS_7.3-65                 dichromat_2.0-0.1          
+[45] SummarizedExperiment_1.40.0 cli_3.6.5                  
+[47] generics_0.1.4              httr_1.4.8                 
+[49] rjson_0.2.23                cachem_1.1.0               
+[51] ggforce_0.5.0               parallel_4.5.3             
+[53] XVector_0.50.0              matrixStats_1.5.0          
+[55] vctrs_0.7.2                 Matrix_1.7-5               
+[57] jsonlite_2.0.0              BiocSingular_1.26.1        
+[59] BiocNeighbors_2.4.0         IRanges_2.44.0             
+[61] S4Vectors_0.48.0            ggrepel_0.9.8              
+[63] irlba_2.3.7                 scattermore_1.2            
+[65] magick_2.9.1                GiottoUtils_0.2.8          
+[67] plotly_4.12.0               tidyr_1.3.2                
+[69] glue_1.8.0                  codetools_0.2-20           
+[71] cowplot_1.2.0               gtable_0.3.6               
+[73] GenomicRanges_1.62.1        ScaledMatrix_1.18.0        
+[75] tibble_3.3.1                pillar_1.11.1              
+[77] htmltools_0.5.9             Seqinfo_1.0.0              
+[79] R6_2.6.1                    tidygraph_1.3.1            
+[81] lattice_0.22-9              Biobase_2.70.0             
+[83] backports_1.5.0             SpatialExperiment_1.20.0   
+[85] memoise_2.0.1               Rcpp_1.1.1                 
+[87] gridExtra_2.3               SparseArray_1.10.9         
+[89] checkmate_2.3.4             colorRamp2_0.1.0           
+[91] MatrixGenerics_1.22.0       pkgconfig_2.0.3
 ```

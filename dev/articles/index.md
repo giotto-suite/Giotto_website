@@ -73,7 +73,7 @@ Feature selection, dimension reduction, clustering and enrichment.
 - [Cell typing with a cluster
   tree](https://giottosuite.com/dev/articles/cell_typing_cluster_tree.md):
 - [Deconvolution](https://giottosuite.com/dev/articles/deconvolution.md):
-- [PAGE and Rank
+- [PAGE, Rank and Hypergeometric
   Enrichment](https://giottosuite.com/dev/articles/page_rank_enrichment.md):
 - [Kriging](https://giottosuite.com/dev/articles/kriging.md):
 - [Tesselation](https://giottosuite.com/dev/articles/tesselation.md):

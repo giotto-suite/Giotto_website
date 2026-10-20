@@ -40,8 +40,8 @@ runHyperGeometricEnrich(
 
 - sign_matrix:
 
-  binary matrix of signature features (rows) by cell type or process
-  (columns), 1 where the feature marks the type. Build one with
+  matrix of signature features (rows) by cell type or process (columns);
+  a feature marks a type where its value is \> 0. Build one with
   [`makeSignMatrixPAGE`](https://giottosuite.com/dev/reference/enrichment_PAGE.md)
   or
   [`makeSignMatrixRank`](https://giottosuite.com/dev/reference/makeSignMatrixRank.md).
@@ -72,7 +72,9 @@ runHyperGeometricEnrich(
 
 - p_value:
 
-  logical. Calculate p-values (default = FALSE).
+  logical. Return p-values instead of scores (default = FALSE). They are
+  computed from the unscaled scores, so `output_enrichment` applies to
+  scores only.
 
 - name:
 

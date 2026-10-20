@@ -57,8 +57,8 @@ runPAGEEnrich(
 
 - sign_matrix:
 
-  binary matrix of signature features (rows) by cell type or process
-  (columns), 1 where the feature marks the type. Build one with
+  matrix of signature features (rows) by cell type or process (columns);
+  a feature marks a type where its value is \> 0. Build one with
   `makeSignMatrixPAGE` or
   [`makeSignMatrixRank`](https://giottosuite.com/dev/reference/makeSignMatrixRank.md).
 
@@ -88,19 +88,23 @@ runPAGEEnrich(
 
 - p_value:
 
-  logical. Calculate p-values (default = FALSE).
+  logical. Return p-values instead of scores (default = FALSE). They are
+  computed from the unscaled scores, so `output_enrichment` applies to
+  scores only.
 
 - include_depletion:
 
-  also test for depletion, not enrichment only (default = FALSE)
+  test depletion as well as enrichment, on the absolute z-score (default
+  = FALSE)
 
 - n_times:
 
-  number of permutation iterations to calculate p-value
+  no longer used: PAGE p-values come from the permutation null in closed
+  form; kept so existing calls still run
 
 - max_block:
 
-  number of lines to process together (default = 20e6)
+  no longer used; kept so existing calls still run
 
 - name:
 
@@ -120,7 +124,7 @@ runPAGEEnrich(
 ## Value
 
 `matrix` (`makeSignMatrixPAGE()`) and `giotto`
-(`runPAGEEnrich(return_gobject = TRUE)`) or `data.table`
+(`runPAGEEnrich(return_gobject = TRUE)`) or a `spatEnrObj`
 (`runPAGEEnrich(return_gobject = FALSE)`)
 
 ## Details

@@ -34,8 +34,8 @@ analyzeData(x, param, ..., sign_matrix)
 
 - sign_matrix:
 
-  binary matrix of signature features (rows) by cell type or process
-  (columns), 1 where the feature marks the type. Build one with
+  matrix of signature features (rows) by cell type or process (columns);
+  a feature marks a type where its value is \> 0. Build one with
   [`makeSignMatrixPAGE`](https://giottosuite.com/dev/reference/enrichment_PAGE.md)
   or
   [`makeSignMatrixRank`](https://giottosuite.com/dev/reference/makeSignMatrixRank.md).

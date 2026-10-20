@@ -67,7 +67,7 @@ on relative ordering rather than on absolute expression."><meta name="robots" co
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.4</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -153,7 +153,7 @@ on relative ordering rather than on absolute expression."><meta name="robots" co
     <li><a class="dropdown-item" href="../articles/find_degs.html">Finding differentially expressed genes</a></li>
     <li><a class="dropdown-item" href="../articles/cell_typing_cluster_tree.html">Cell typing with a cluster tree</a></li>
     <li><a class="dropdown-item" href="../articles/deconvolution.html">Deconvolution</a></li>
-    <li><a class="dropdown-item" href="../articles/page_rank_enrichment.html">PAGE and rank enrichment</a></li>
+    <li><a class="dropdown-item" href="../articles/page_rank_enrichment.html">PAGE, rank and hypergeometric enrichment</a></li>
     <li><a class="dropdown-item" href="../articles/kriging.html">Kriging</a></li>
     <li><a class="dropdown-item" href="../articles/tesselation.html">Tesselation</a></li>
     <li><hr class="dropdown-divider"></li>
@@ -256,8 +256,9 @@ on relative ordering rather than on absolute expression.</p>
 
 
 <dt id="arg-sign-matrix">sign_matrix<a class="anchor" aria-label="anchor" href="#arg-sign-matrix"></a></dt>
-<dd><p>binary matrix of signature features (rows) by cell type
-or process (columns), 1 where the feature marks the type. Build one with
+<dd><p>matrix of signature features (rows) by cell type or
+process (columns); a feature marks a type where its value is &gt; 0. Build one
+with
 <code><a href="enrichment_PAGE.html">makeSignMatrixPAGE</a></code> or <code><a href="makeSignMatrixRank.html">makeSignMatrixRank</a></code>.</p></dd>
 
 
@@ -286,7 +287,9 @@ standardizes the scores within each cell type.</p></dd>
 
 
 <dt id="arg-p-value">p_value<a class="anchor" aria-label="anchor" href="#arg-p-value"></a></dt>
-<dd><p>logical. Calculate p-values (default = FALSE).</p></dd>
+<dd><p>logical. Return p-values instead of scores (default =
+FALSE). They are computed from the unscaled scores, so <code>output_enrichment</code>
+applies to scores only.</p></dd>
 
 
 <dt id="arg-n-times">n_times<a class="anchor" aria-label="anchor" href="#arg-n-times"></a></dt>

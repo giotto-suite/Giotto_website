@@ -751,8 +751,9 @@ instructions <- createGiottoInstructions(
     python_path = python_path
 )
 
-sc_expression <- file.path(data_path, "brain_sc_expression_matrix.txt.gz")
-sc_metadata <- file.path(data_path, "brain_sc_metadata.csv")
+# getSpatialDataset() saves into a scRNA_mouse_brain/ subfolder
+sc_expression <- file.path(data_path, "scRNA_mouse_brain", "brain_sc_expression_matrix.txt.gz")
+sc_metadata <- file.path(data_path, "scRNA_mouse_brain", "brain_sc_metadata.csv")
 
 giotto_SC <- createGiottoObject(expression = sc_expression,
                                 instructions = instructions)

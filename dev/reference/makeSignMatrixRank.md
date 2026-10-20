@@ -11,7 +11,7 @@ expects.
 makeSignMatrixRank(
   sc_matrix,
   sc_cluster_ids,
-  ties_method = c("random", "max"),
+  ties_method = c("average", "random", "max"),
   gobject = NULL
 )
 ```
@@ -28,7 +28,8 @@ makeSignMatrixRank(
 
 - ties_method:
 
-  how to rank tied expression values, `"average"` (default) or `"max"`
+  how to rank tied expression values, `"average"` (default) or `"max"`;
+  `"random"` is also accepted here
 
 - gobject:
 

@@ -58,8 +58,8 @@ Shared by all three:
 
   logical. return p-values instead of scores.
 
-PAGE: `min_overlap_genes` (5), `include_depletion` (`FALSE`), `n_times`
-(1000), `max_block` (2e7), `verbose` (`TRUE`).
+PAGE: `min_overlap_genes` (5), `include_depletion` (`FALSE`), `verbose`
+(`TRUE`). Its p-values are exact, so it takes no `n_times`.
 
 rank: `ties_method` (`"average"`), `n_times` (1000), `rbp_p` (0.99),
 `num_agg` (100).

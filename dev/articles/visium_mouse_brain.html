@@ -81,7 +81,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.4</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -175,7 +175,7 @@
     <li><a class="dropdown-item" href="../articles/find_degs.html">Finding differentially expressed genes</a></li>
     <li><a class="dropdown-item" href="../articles/cell_typing_cluster_tree.html">Cell typing with a cluster tree</a></li>
     <li><a class="dropdown-item" href="../articles/deconvolution.html">Deconvolution</a></li>
-    <li><a class="dropdown-item" href="../articles/page_rank_enrichment.html">PAGE and rank enrichment</a></li>
+    <li><a class="dropdown-item" href="../articles/page_rank_enrichment.html">PAGE, rank and hypergeometric enrichment</a></li>
     <li><a class="dropdown-item" href="../articles/kriging.html">Kriging</a></li>
     <li><a class="dropdown-item" href="../articles/tesselation.html">Tesselation</a></li>
     <li><hr class="dropdown-divider"></li>
@@ -889,8 +889,9 @@ single-cell object and run the normalization step<a class="anchor" aria-label="a
 <span>    python_path <span class="op">=</span> <span class="va">python_path</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">sc_expression</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"brain_sc_expression_matrix.txt.gz"</span><span class="op">)</span></span>
-<span><span class="va">sc_metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"brain_sc_metadata.csv"</span><span class="op">)</span></span>
+<span><span class="co"># getSpatialDataset() saves into a scRNA_mouse_brain/ subfolder</span></span>
+<span><span class="va">sc_expression</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"scRNA_mouse_brain"</span>, <span class="st">"brain_sc_expression_matrix.txt.gz"</span><span class="op">)</span></span>
+<span><span class="va">sc_metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_path</span>, <span class="st">"scRNA_mouse_brain"</span>, <span class="st">"brain_sc_metadata.csv"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">giotto_SC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span>expression <span class="op">=</span> <span class="va">sc_expression</span>,</span>
 <span>                                instructions <span class="op">=</span> <span class="va">instructions</span><span class="op">)</span></span>

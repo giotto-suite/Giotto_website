@@ -61,7 +61,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.4</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -147,7 +147,7 @@
     <li><a class="dropdown-item" href="../articles/find_degs.html">Finding differentially expressed genes</a></li>
     <li><a class="dropdown-item" href="../articles/cell_typing_cluster_tree.html">Cell typing with a cluster tree</a></li>
     <li><a class="dropdown-item" href="../articles/deconvolution.html">Deconvolution</a></li>
-    <li><a class="dropdown-item" href="../articles/page_rank_enrichment.html">PAGE and rank enrichment</a></li>
+    <li><a class="dropdown-item" href="../articles/page_rank_enrichment.html">PAGE, rank and hypergeometric enrichment</a></li>
     <li><a class="dropdown-item" href="../articles/kriging.html">Kriging</a></li>
     <li><a class="dropdown-item" href="../articles/tesselation.html">Tesselation</a></li>
     <li><hr class="dropdown-divider"></li>
@@ -205,7 +205,33 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="4.3.4" id="giotto-434-in-development">Giotto 4.3.4 (in development)<a class="anchor" aria-label="anchor" href="#giotto-434-in-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="4.3.5" id="giotto-435-in-development">Giotto 4.3.5 (in development)<a class="anchor" aria-label="anchor" href="#giotto-435-in-development"></a></h2>
+<p>Downstream packages that stream PAGE (GiottoDisk) should require <code>Giotto (&gt;= 4.3.5)</code> so both backends compute the same scores.</p>
+<div class="section level3">
+<h3 id="breaking-changes-4-3-5">breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-4-3-5"></a></h3>
+<ul><li>
+<code>runPAGEEnrich(return_gobject = FALSE)</code> returns a <code>spatEnrObj</code>, as the other enrichment methods do, instead of <code>list(DT =, matrix =)</code>.</li>
+<li>Enrichment <code>p_value = TRUE</code> returns p-values for every method; PAGE returned <code>-log10(p)</code>. They are computed from the unscaled scores, so <code>output_enrichment = "zscore"</code> no longer distorts them.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="changes-4-3-5">changes<a class="anchor" aria-label="anchor" href="#changes-4-3-5"></a></h3>
+<ul><li>PAGE no longer densifies the expression or melts it into a long table: the scores come from per-cell moments and one product with the marker matrix.</li>
+<li>PAGE p-values are the permutation null in closed form instead of a normal fit to sampled permutations; <code>n_times</code> is no longer used by PAGE.</li>
+<li>All three methods work a block of cells at a time and no longer loop over cells in R: much faster and with a bounded memory peak, most of all for PAGE p-values and hypergeometric enrichment.</li>
+<li>
+<code><a href="../reference/analyzeData.html">analyzeData()</a></code> for PAGE and hypergeometric takes a <code>reference</code> level per feature, so a disk-backed engine can score windows of cells against the reference of all cells.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-4-3-5">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-4-3-5"></a></h3>
+<ul><li>Hypergeometric enrichment scored every cell against other cells’ thresholds: the per-cell top-percentage cut was recycled down the features. It also tested P(X &gt; x) instead of P(X &gt;= x), and a cell with a single selected feature scored 0. Scores change.</li>
+<li>PAGE and hypergeometric share one per-feature reference level, the mean of the de-logged values logged back in the same base. PAGE logged it in base e while the values are in <code>logbase</code>, and hypergeometric mixed linear and log scales; PAGE scores shift slightly.</li>
+<li>All enrichment methods count a feature as a marker where its sign-matrix value is &gt; 0, and return cells in the order of the expression matrix.</li>
+<li>
+<code><a href="../reference/makeSignMatrixRank.html">makeSignMatrixRank()</a></code> ranks ties by <code>"average"</code> by default, as documented and as <code><a href="../reference/runRankEnrich.html">runRankEnrich()</a></code> does; it used <code>"random"</code>.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="4.3.4" id="giotto-434">Giotto 4.3.4<a class="anchor" aria-label="anchor" href="#giotto-434"></a></h2>
 <div class="section level3">
 <h3 id="new-4-3-4">new<a class="anchor" aria-label="anchor" href="#new-4-3-4"></a></h3>
 <ul><li>

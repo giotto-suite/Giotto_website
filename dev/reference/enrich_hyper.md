@@ -8,7 +8,7 @@ Hypergeometric enrichment
 
 ``` r
 # S4 method for class 'ANY,hyperEnrichParam'
-analyzeData(x, param, ..., sign_matrix)
+analyzeData(x, param, ..., sign_matrix, reference = NULL)
 ```
 
 ## Arguments
@@ -34,11 +34,17 @@ analyzeData(x, param, ..., sign_matrix)
 
 - sign_matrix:
 
-  binary matrix of signature features (rows) by cell type or process
-  (columns), 1 where the feature marks the type. Build one with
+  matrix of signature features (rows) by cell type or process (columns);
+  a feature marks a type where its value is \> 0. Build one with
   [`makeSignMatrixPAGE`](https://giottosuite.com/dev/reference/enrichment_PAGE.md)
   or
   [`makeSignMatrixRank`](https://giottosuite.com/dev/reference/makeSignMatrixRank.md).
+
+- reference:
+
+  per-feature reference level, named by feature. Computed from `x` when
+  `NULL`; supply it to score some cells against the reference of all of
+  them, as a disk-backed engine does window by window.
 
 ## Value
 

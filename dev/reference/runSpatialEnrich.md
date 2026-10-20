@@ -53,8 +53,8 @@ runSpatialEnrich(
 
 - sign_matrix:
 
-  binary matrix of signature features (rows) by cell type or process
-  (columns), 1 where the feature marks the type. Build one with
+  matrix of signature features (rows) by cell type or process (columns);
+  a feature marks a type where its value is \> 0. Build one with
   [`makeSignMatrixPAGE`](https://giottosuite.com/dev/reference/enrichment_PAGE.md)
   or
   [`makeSignMatrixRank`](https://giottosuite.com/dev/reference/makeSignMatrixRank.md).
@@ -80,11 +80,13 @@ runSpatialEnrich(
 
 - p_value:
 
-  logical. Calculate p-values (default = FALSE).
+  logical. Return p-values instead of scores (default = FALSE). They are
+  computed from the unscaled scores, so `output_enrichment` applies to
+  scores only.
 
 - n_times:
 
-  (page/rank) number of permutation iterations to calculate p-value
+  (rank) number of permutation iterations to calculate p-value
 
 - rbp_p:
 
@@ -96,7 +98,7 @@ runSpatialEnrich(
 
 - max_block:
 
-  number of lines to process together (default = 20e6)
+  no longer used; kept so existing calls still run
 
 - top_percentage:
 
@@ -120,7 +122,8 @@ runSpatialEnrich(
 
 - include_depletion:
 
-  (PAGE) also test for depletion, not enrichment only (default = FALSE)
+  (PAGE) test depletion as well as enrichment, on the absolute z-score
+  (default = FALSE)
 
 - ties_method:
 

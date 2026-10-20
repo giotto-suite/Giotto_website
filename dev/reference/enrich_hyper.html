@@ -63,7 +63,7 @@ Hypergeometric enrichment"><meta name="robots" content="noindex"><!-- Global sit
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.4</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -149,7 +149,7 @@ Hypergeometric enrichment"><meta name="robots" content="noindex"><!-- Global sit
     <li><a class="dropdown-item" href="../articles/find_degs.html">Finding differentially expressed genes</a></li>
     <li><a class="dropdown-item" href="../articles/cell_typing_cluster_tree.html">Cell typing with a cluster tree</a></li>
     <li><a class="dropdown-item" href="../articles/deconvolution.html">Deconvolution</a></li>
-    <li><a class="dropdown-item" href="../articles/page_rank_enrichment.html">PAGE and rank enrichment</a></li>
+    <li><a class="dropdown-item" href="../articles/page_rank_enrichment.html">PAGE, rank and hypergeometric enrichment</a></li>
     <li><a class="dropdown-item" href="../articles/kriging.html">Kriging</a></li>
     <li><a class="dropdown-item" href="../articles/tesselation.html">Tesselation</a></li>
     <li><hr class="dropdown-divider"></li>
@@ -215,7 +215,7 @@ Hypergeometric enrichment"><meta name="robots" content="noindex"><!-- Global sit
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'ANY,hyperEnrichParam'</span></span>
-<span><span class="fu"><a href="analyzeData.html">analyzeData</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">param</span>, <span class="va">...</span>, <span class="va">sign_matrix</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="analyzeData.html">analyzeData</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">param</span>, <span class="va">...</span>, <span class="va">sign_matrix</span>, reference <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -237,9 +237,16 @@ engine registered from another package can accept its own arguments.</p></dd>
 
 
 <dt id="arg-sign-matrix">sign_matrix<a class="anchor" aria-label="anchor" href="#arg-sign-matrix"></a></dt>
-<dd><p>binary matrix of signature features (rows) by cell type
-or process (columns), 1 where the feature marks the type. Build one with
+<dd><p>matrix of signature features (rows) by cell type or
+process (columns); a feature marks a type where its value is &gt; 0. Build one
+with
 <code><a href="enrichment_PAGE.html">makeSignMatrixPAGE</a></code> or <code><a href="makeSignMatrixRank.html">makeSignMatrixRank</a></code>.</p></dd>
+
+
+<dt id="arg-reference">reference<a class="anchor" aria-label="anchor" href="#arg-reference"></a></dt>
+<dd><p>per-feature reference level, named by feature. Computed
+from <code>x</code> when <code>NULL</code>; supply it to score some cells against the
+reference of all of them, as a disk-backed engine does window by window.</p></dd>
 
 </dl></div>
     <div class="section level2">
