@@ -130,15 +130,22 @@ Because you are on the `dev` branch, this only affects the development
 site. The change reaches <https://giottosuite.com> when `dev` is merged
 into `suite`.
 
-## 9 Tag the tutorial for the dataset browser
+## 9 Tag the tutorial for the browse pages
 
-[Browse datasets](https://giottosuite.com/dev/articles/datasets.md)
-filters tutorials by the tags in their YAML header. Tutorials under the
-Examples sections must have them; any other tutorial can opt in. Add a
-`tags:` block to the header:
+Two pages filter tutorials by the tags in their YAML header: [Browse
+datasets](https://giottosuite.com/dev/articles/datasets.md) for the
+platform examples, and [Browse
+tutorials](https://giottosuite.com/dev/articles/tutorials.md) for the
+analysis tutorials. Which one a tutorial lands on depends on its
+`articles:` section, as listed under `browsers:` in `pkgdown/tags.yml`.
+Every tutorial in those sections must be tagged; setup pages
+(installation, containers, saving) are not.
+
+For an example dataset, add a `tags:` block like this to the header:
 
     tags:
       packages: GiottoDisk        # only if it uses a Giotto Suite extension package
+      size: full
       platform: CosMx
       species: human
       tissue: colon
@@ -146,12 +153,19 @@ Examples sections must have them; any other tutorial can opt in. Add a
       modality: RNA
       resolution: subcellular
 
-`platform`, `modality` and `resolution` are required. Leave the others
-out when the dataset does not say, rather than guessing. Every value has
-to come from `pkgdown/tags.yml`; add a new one there if your dataset
-needs it. Then regenerate the browser page and commit it:
+`size`, `platform`, `modality` and `resolution` are required. Leave the
+others out when the dataset does not say, rather than guessing.
 
-    Rscript pkgdown/build-dataset-index.R
+For an analysis tutorial, give one or more categories:
+
+    tags:
+      category: [Spatial expression patterns, Visualization & interactive exploration]
+
+Every value has to come from `pkgdown/tags.yml`; add a new one there if
+your tutorial needs it. Then regenerate the browse pages and commit
+them:
+
+    Rscript pkgdown/build-browse-pages.R
 
 ## 10 Check your work
 
@@ -161,7 +175,7 @@ This takes about a second and needs no build. It reports an unregistered
 tutorial, a navbar link pointing at a file that does not exist, a broken
 section anchor, a missing `pkgdown: as_is: true` header, any figure you
 referenced but did not commit, and tags that are missing, misspelled, or
-out of date with the browser page. It also prints warnings, which are
+out of date with the browse pages. It also prints warnings, which are
 informational — the current tree has 19 of them.
 
 If you have a clone of the package beside this repository, it

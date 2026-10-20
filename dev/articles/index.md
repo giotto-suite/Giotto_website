@@ -7,6 +7,7 @@ Install Giotto, understand the object, and run your first workflow.
 - [Function
   index](https://giottosuite.com/dev/articles/function_index.md):
 - [Browse datasets](https://giottosuite.com/dev/articles/datasets.md):
+- [Browse tutorials](https://giottosuite.com/dev/articles/tutorials.md):
 - [Installation](https://giottosuite.com/dev/articles/installation.md):
 - [](https://giottosuite.com/dev/articles/ecosystem.md):
 - [An introduction to the Giotto Suite
@@ -170,9 +171,9 @@ Running Giotto in Docker, Singularity or the cloud.
 - [Analyzing NeMO Slide-seq datasets on Terra
   bio](https://giottosuite.com/dev/articles/nemo_slideseq.md):
 
-### In situ methods
+### Spatial in situ transcriptomics
 
-Imaging-based in situ platforms. Most users arrive with one of these.
+Imaging-based in situ platforms, most popular first.
 
 - [Xenium Human Breast Cancer
   Pre-Release](https://giottosuite.com/dev/articles/xenium_breast_cancer.md):
@@ -194,10 +195,20 @@ Imaging-based in situ platforms. Most users arrive with one of these.
   BIL](https://giottosuite.com/dev/articles/merfish_mouse_sagittal_bil.md):
 - [Vizgen Mouse Brain Receptor
   Map](https://giottosuite.com/dev/articles/vizgen_mouse_brain.md):
+- [Spatial Genomics Mouse
+  Kidney](https://giottosuite.com/dev/articles/spatial_genomics_mouse_kidney.md):
+- [mini seqFISH](https://giottosuite.com/dev/articles/mini_seqfish.md):
+- [SeqFish+ Mouse Cortex
+  Example](https://giottosuite.com/dev/articles/seqfish_cortex.md):
+- [osmFISH Mouse SS
+  Cortex](https://giottosuite.com/dev/articles/osmfish_mouse_ss_cortex.md):
+- [STARmap mouse
+  cortex](https://giottosuite.com/dev/articles/starmap_mouse_cortex.md):
 
-### Sequencing-based methods
+### Spatial sequencing transcriptomics
 
-Capture- and barcoding-based platforms read out by sequencing.
+Capture- and barcoding-based platforms read out by sequencing, most
+popular first.
 
 - [Visium Mouse
   Kidney](https://giottosuite.com/dev/articles/visium_mouse_kidney.md):
@@ -229,35 +240,10 @@ Capture- and barcoding-based platforms read out by sequencing.
   Bins](https://giottosuite.com/dev/articles/stereoseq_testis_bins_giottodisk.md):
 - [Stereo-seq Mouse Testis: 0.5 µm Bins into Your Own
   Polygons](https://giottosuite.com/dev/articles/stereoseq_testis_own_polygons_giottodisk.md):
-
-### Spatial in situ transcriptomics
-
-Further imaging-based transcriptomics methods.
-
-- [Spatial Genomics Mouse
-  Kidney](https://giottosuite.com/dev/articles/spatial_genomics_mouse_kidney.md):
-- [mini seqFISH](https://giottosuite.com/dev/articles/mini_seqfish.md):
-- [SeqFish+ Mouse Cortex
-  Example](https://giottosuite.com/dev/articles/seqfish_cortex.md):
-- [osmFISH Mouse SS
-  Cortex](https://giottosuite.com/dev/articles/osmfish_mouse_ss_cortex.md):
-- [STARmap mouse
-  cortex](https://giottosuite.com/dev/articles/starmap_mouse_cortex.md):
-- [Resolve Bioscience Breast Cancer
-  Subcellular](https://giottosuite.com/dev/articles/resolve_biosciences.md):
-- [Resolve Bioscience Human lung
-  Subcellular](https://giottosuite.com/dev/articles/resolve_biosciences_human_lung.md):
-
-### Spatial sequencing transcriptomics
-
-Further sequencing-based spatial transcriptomics methods.
-
 - [Slide-seq Mouse
   brain](https://giottosuite.com/dev/articles/slideseq_mouse_brain.md):
 - [Open-ST Mouse
   Hippocampus](https://giottosuite.com/dev/articles/openst_mouse_hippocampus.md):
-- [Seq-Scope Mouse
-  liver](https://giottosuite.com/dev/articles/seqscope_mouse_liver.md):
 
 ### Spatial proteomics
 
@@ -277,7 +263,7 @@ Assays combining transcriptome with protein or chromatin accessibility.
 - [Multi-omics spatial RNA-ATAC seq Mouse
   Embryo](https://giottosuite.com/dev/articles/multiomics_rna_atac_me13.md):
 
-### Single cell RNA sequencing (non-spatial)
+### Single-cell RNA-seq
 
 Non-spatial single cell workflows.
 

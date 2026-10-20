@@ -20,8 +20,7 @@ environment.](https://giottosuite.com/dev/articles/installation.md) [**2
 · Learn the workflow** The end-to-end path from raw data to a spatial
 result.](https://giottosuite.com/dev/articles/general_workflow.md) [**3
 · Find your platform** Worked examples for Xenium, CosMx, Visium,
-Stereo-seq and
-more.](https://giottosuite.com/dev/articles/index.html#in-situ-methods)
+Stereo-seq and more.](https://giottosuite.com/dev/articles/datasets.md)
 [**4 · Look up a function** Every Giotto function, grouped by
 purpose.](https://giottosuite.com/dev/reference/index.md)
 
@@ -57,11 +56,12 @@ containers.
 - **[Documentation](https://giottosuite.com/dev/reference/index.md):**
   all Giotto functions grouped by their purpose (helpers, getters &
   setters, visualization, …).
-- **[Examples](https://giottosuite.com/dev/articles/index.html#in-situ-methods):**
-  end-to-end examples for different technologies and datasets.
-- **[Tutorials](https://giottosuite.com/dev/articles/index.html#pre-processing):**
-  working with Giotto — analysis, visualization, running on the cloud,
-  and more.
+- **[Examples](https://giottosuite.com/dev/articles/datasets.md):**
+  end-to-end examples for different technologies and datasets,
+  filterable by platform, species, tissue and more.
+- **[Tutorials](https://giottosuite.com/dev/articles/tutorials.md):**
+  working with Giotto — analysis, visualization, interoperability, and
+  more, filterable by topic.
 - **[News](https://giottosuite.com/dev/news/index.md):** the changelog
   for every Giotto release, plus recordings of previous presentations.
 - **[Contributing](https://giottosuite.com/dev/articles/index.html#contributing):**
