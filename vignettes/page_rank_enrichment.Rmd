@@ -255,7 +255,7 @@ The scores are `-log10(p)`, so they are never negative. The ependymal layer and 
 
 # Large datasets
 
-All three methods score spots in blocks, so memory stays bounded on large datasets. On disk-backed objects from [GiottoDisk](https://giotto-suite.github.io/GiottoDisk/), PAGE (with or without p-values) and the hypergeometric test run without loading the expression matrix into memory. Rank enrichment needs the whole matrix in memory.
+All three methods score spots in blocks, so memory stays bounded on large datasets. On disk-backed objects from [GiottoDisk](https://giotto-suite.github.io/GiottoDisk/) they run without loading the expression matrix into memory. PAGE and the hypergeometric test give the same results as in memory. Rank enrichment approximates each gene's ranks across all spots from a histogram of its values, so its scores agree closely rather than exactly, and its p-values need an in-memory object.
 
 # Session info
 
