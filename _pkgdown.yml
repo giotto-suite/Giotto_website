@@ -102,6 +102,9 @@ navbar:
       # actually works through it. The operational tail (interoperability,
       # containers, cloud, saving, interactivity) collapses to one link per
       # section on the articles index: 73 rows -> ~40.
+      - text: Browse all tutorials
+        href: articles/tutorials.html
+      - text: -------
       - text: Giotto object
       - text: Object creation
         href: articles/object_creation.html
@@ -189,7 +192,7 @@ navbar:
       - text: Browse all datasets
         href: articles/datasets.html
       - text: -------
-      - text: In situ methods
+      - text: Spatial in situ transcriptomics
       - text: Xenium — Human breast cancer
         href: articles/xenium_breast_cancer.html
       - text: Xenium — Human breast cancer (GiottoDisk)
@@ -208,14 +211,14 @@ navbar:
         href: articles/merfish_mouse_hypothalamic.html
       - text: MERFISH — Whole mouse brain (BIL)
         href: articles/merfish_mouse_sagittal_bil.html
-      - text: Vizgen — Mouse brain receptor map
+      - text: MERSCOPE — Mouse brain receptor map
         href: articles/vizgen_mouse_brain.html
       - text: MERSCOPE — Human colon cancer (GiottoDisk)
         href: articles/merscope_human_colon_cancer_giottodisk.html
       - text: MERSCOPE — Human colon cancer mini dataset (GiottoDisk)
         href: articles/merscope_human_colon_cancer_mini_giottodisk.html
       - text: -------
-      - text: Sequencing-based methods
+      - text: Spatial sequencing transcriptomics
       - text: Visium — Mouse kidney
         href: articles/visium_mouse_kidney.html
       - text: Visium — Mouse brain
@@ -248,18 +251,19 @@ navbar:
         href: articles/stereoseq_testis_own_polygons_giottodisk.html
       - text: -------
       # One link per modality, pointing at the matching section of the
-      # articles index. The index ordering below mirrors this menu.
+      # articles index. The two transcriptomics sections also hold the less
+      # common platforms not listed above. The index ordering mirrors this menu.
       - text: More technologies
-      - text: Spatial in situ transcriptomics
+      - text: All spatial in situ transcriptomics
         href: articles/index.html#spatial-in-situ-transcriptomics
-      - text: Spatial sequencing transcriptomics
+      - text: All spatial sequencing transcriptomics
         href: articles/index.html#spatial-sequencing-transcriptomics
       - text: Spatial proteomics
         href: articles/index.html#spatial-proteomics
       - text: Spatial multi-omics
         href: articles/index.html#spatial-multi-omics
-      - text: Single cell RNA sequencing (non-spatial)
-        href: articles/index.html#single-cell-rna-sequencing-non-spatial
+      - text: Single-cell RNA-seq
+        href: articles/index.html#single-cell-rna-seq
       - text: -------
       - text: All examples →
         href: articles/index.html
@@ -311,6 +315,7 @@ articles:
   contents:
   - function_index
   - datasets
+  - tutorials
   - installation
   - ecosystem
   - structure
@@ -429,8 +434,8 @@ articles:
 
 # ---- Examples, ordered by platform popularity -----------------------------
 
-- title: In situ methods
-  desc: <span id="in-situ-methods"></span>Imaging-based in situ platforms. Most users arrive with one of these.
+- title: Spatial in situ transcriptomics
+  desc: <span id="spatial-in-situ-transcriptomics"></span>Imaging-based in situ platforms, most popular first.
   navbar: ~
   contents:
   - xenium_breast_cancer
@@ -445,9 +450,14 @@ articles:
   - vizgen_mouse_brain
   - merscope_human_colon_cancer_giottodisk
   - merscope_human_colon_cancer_mini_giottodisk
+  - spatial_genomics_mouse_kidney
+  - mini_seqfish
+  - seqfish_cortex
+  - osmfish_mouse_ss_cortex
+  - starmap_mouse_cortex
 
-- title: Sequencing-based methods
-  desc: <span id="sequencing-based-methods"></span>Capture- and barcoding-based platforms read out by sequencing.
+- title: Spatial sequencing transcriptomics
+  desc: <span id="spatial-sequencing-transcriptomics"></span>Capture- and barcoding-based platforms read out by sequencing, most popular first.
   navbar: ~
   contents:
   - visium_mouse_kidney
@@ -465,26 +475,8 @@ articles:
   - stereoseq_testis_cells_giottodisk
   - stereoseq_testis_bins_giottodisk
   - stereoseq_testis_own_polygons_giottodisk
-
-- title: Spatial in situ transcriptomics
-  desc: <span id="spatial-in-situ-transcriptomics"></span>Further imaging-based transcriptomics methods.
-  navbar: ~
-  contents:
-  - spatial_genomics_mouse_kidney
-  - mini_seqfish
-  - seqfish_cortex
-  - osmfish_mouse_ss_cortex
-  - starmap_mouse_cortex
-  - resolve_biosciences
-  - resolve_biosciences_human_lung
-
-- title: Spatial sequencing transcriptomics
-  desc: <span id="spatial-sequencing-transcriptomics"></span>Further sequencing-based spatial transcriptomics methods.
-  navbar: ~
-  contents:
   - slideseq_mouse_brain
   - openst_mouse_hippocampus
-  - seqscope_mouse_liver
 
 - title: Spatial proteomics
   desc: <span id="spatial-proteomics"></span>Imaging-based protein profiling.
@@ -500,8 +492,8 @@ articles:
   - spatial_citeseq_human_skin
   - multiomics_rna_atac_me13
 
-- title: Single cell RNA sequencing (non-spatial)
-  desc: <span id="single-cell-rna-sequencing-non-spatial"></span>Non-spatial single cell workflows.
+- title: Single-cell RNA-seq
+  desc: <span id="single-cell-rna-seq"></span>Non-spatial single cell workflows.
   navbar: ~
   contents:
   - singlecell_prostate_standard
