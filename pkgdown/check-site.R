@@ -148,6 +148,7 @@ split_rmd <- function(lines) {
   state  <- "prose"
   hdr    <- ""
   start  <- 0L
+  open_at <- 0L
   body   <- character()
 
   for (i in seq_along(lines)) {
@@ -169,18 +170,22 @@ split_rmd <- function(lines) {
     }
 
     if (grepl("^\\s*```\\{[rR]", line)) {
-      state <- "chunk"
-      hdr   <- line
-      start <- i
-      body  <- character()
+      state   <- "chunk"
+      hdr     <- line
+      start   <- i
+      open_at <- i
+      body    <- character()
     } else if (grepl("^\\s*```", line)) {
-      state <- "other"
+      state   <- "other"
+      open_at <- i
     } else {
       prose <- c(prose, line)
     }
   }
 
-  list(chunks = chunks, prose = prose)
+  # `state` is how an unterminated fence is detected: the walk above ends
+  # inside the block it never closed, and `open_at` is where it opened.
+  list(chunks = chunks, prose = prose, state = state, open_at = open_at)
 }
 
 for (v in vig_names) {
@@ -195,6 +200,39 @@ for (v in vig_names) {
   }
 
   parts <- split_rmd(L)
+
+  # An unclosed fence swallows every heading, figure and paragraph after it.
+  # The nine tutorials that trip this today all open it on the final line, so
+  # they lose nothing and the page gains one line of stray backticks -- but the
+  # build succeeds either way, so nothing reports it until someone reads the
+  # published page. Give the line, since what it costs depends on where it is.
+  if (!identical(parts$state, "prose")) {
+    warn("vignettes/%s:%d: a code fence is never closed", vig_files[[v]], parts$open_at)
+  }
+
+  # `number_sections: true` numbers the headings, so a heading carrying its own
+  # number renders twice over as "1 1. Overview".
+  numbered <- grep("^#{1,6}\\s+\\d+([.)]|\\.\\d)", parts$prose, value = TRUE)
+  if (length(numbered)) {
+    warn(paste0("vignettes/%s: %d heading(s) carry a manual number that
+",
+                "         number_sections: true then doubles, e.g. '%s'"),
+         vig_files[[v]], length(numbered), trimws(numbered[[1]]))
+  }
+
+  # A machine-specific path helps nobody and dates the page. Scan the raw lines
+  # rather than parts: printed output sits in plain fences, which split_rmd
+  # deliberately discards. Anchor on the usual roots so URLs and /usr/share do
+  # not match.
+  leaked <- grep("(?<![A-Za-z0-9_.:])/(home|users|projectnb|scratch|mnt|media)/",
+                 L, perl = TRUE, ignore.case = TRUE, value = TRUE)
+  if (length(leaked)) {
+    warn(paste0("vignettes/%s: %d line(s) carry an absolute path, e.g.
+",
+                "         %s"),
+         vig_files[[v]], length(leaked),
+         trimws(substr(leaked[[1]], 1L, 70L)))
+  }
 
   # A setup chunk may switch every chunk off at once, instead of per chunk.
   global_eval_off <- any(grepl(
@@ -220,6 +258,16 @@ for (v in vig_names) {
   }
 
   figs <- sub('.*?"([^"]+)".*', "\\1", figs)
+
+  # convert-tutorial.R writes NN_figure.png for a figure it could not trace to
+  # a chunk. The image is on the page but beside the wrong code, or beside none.
+  unplaced <- unique(grep("/[0-9]+_figure\\.png$", figs, value = TRUE))
+  if (length(unplaced)) {
+    warn(paste0("vignettes/%s: %d figure(s) were never matched to a chunk
+",
+                "         (named NN_figure.png). Re-convert from a current render."),
+         vig_files[[v]], length(unplaced))
+  }
   md <- unlist(regmatches(
     parts$prose, gregexpr('!\\[[^]]*\\]\\([^)]+\\)', parts$prose)))
   figs <- c(figs, sub('!\\[[^]]*\\]\\(([^)]+)\\)', "\\1", md))
