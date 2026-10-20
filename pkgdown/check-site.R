@@ -232,19 +232,23 @@ for (v in vig_names) {
   }
 }
 
-# ---- dataset tags -----------------------------------------------------------
-# The dataset browser is generated from each tutorial's `tags:` header. Reuse
-# the generator's own parsing and validation rather than a second copy of the
-# rules, then fail if the committed page no longer matches what it would write:
-# a stale page silently hides a new tutorial, or links a renamed one.
-ds_env <- new.env()
-sys.source("pkgdown/build-dataset-index.R", envir = ds_env)
-ds <- ds_env$collect_datasets()
-for (p in ds_env$validate_datasets(ds)) err("%s", p)
-if (!identical(ds_env$render_datasets(ds),
-               if (file.exists(ds_env$OUT)) readLines(ds_env$OUT, warn = FALSE))) {
-  err(paste0("%s is out of date with the tutorials' `tags:` headers.\n",
-             "         Run: Rscript pkgdown/build-dataset-index.R"), ds_env$OUT)
+# ---- browse-page tags -------------------------------------------------------
+# The browse pages (datasets, tutorials) are generated from each tutorial's
+# `tags:` header. Reuse the generator's own parsing and validation rather than a
+# second copy of the rules, then fail if a committed page no longer matches what
+# it would write: a stale page silently hides a new tutorial, or links a
+# renamed one.
+bp_env <- new.env()
+sys.source("pkgdown/build-browse-pages.R", envir = bp_env)
+td <- bp_env$collect_tutorials()
+for (p in bp_env$validate_tutorials(td)) err("%s", p)
+for (b in names(td$browsers)) {
+  out <- td$browsers[[b]]$out
+  if (!identical(bp_env$render_browser(td, b),
+                 if (file.exists(out)) readLines(out, warn = FALSE))) {
+    err(paste0("%s is out of date with the tutorials' `tags:` headers.\n",
+               "         Run: Rscript pkgdown/build-browse-pages.R"), out)
+  }
 }
 
 # ---- reference: index -------------------------------------------------------

@@ -24,7 +24,7 @@ Set up Giotto Suite and its Python environment.
 <strong>2 · Learn the workflow</strong>
 The end-to-end path from raw data to a spatial result.
 </a>
-<a class="tile" href="articles/index.html#in-situ-methods">
+<a class="tile" href="articles/datasets.html">
 <strong>3 · Find your platform</strong>
 Worked examples for Xenium, CosMx, Visium, Stereo-seq and more.
 </a>
@@ -52,8 +52,8 @@ If you prefer to skip the installation process, check the tutorials for using Gi
 
 - **[Get started](articles/index.html#get-started):** the Giotto object, the Giotto ecosystem, configuration, and installation FAQs.
 - **[Documentation](reference/index.html):** all Giotto functions grouped by their purpose (helpers, getters & setters, visualization, …).
-- **[Examples](articles/index.html#in-situ-methods):** end-to-end examples for different technologies and datasets.
-- **[Tutorials](articles/index.html#pre-processing):** working with Giotto — analysis, visualization, running on the cloud, and more.
+- **[Examples](articles/datasets.html):** end-to-end examples for different technologies and datasets, filterable by platform, species, tissue and more.
+- **[Tutorials](articles/tutorials.html):** working with Giotto — analysis, visualization, interoperability, and more, filterable by topic.
 - **[News](news/index.html):** the changelog for every Giotto release, plus recordings of previous presentations.
 - **[Contributing](articles/index.html#contributing):** submitting a pull request, the Giotto code style, writing tutorials for this website.
 

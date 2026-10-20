@@ -1,26 +1,26 @@
 #!/usr/bin/env Rscript
-# Generate vignettes/datasets.Rmd -- a filterable browser over every tutorial
-# that carries a `tags:` block in its YAML header.
+# Generate the browse pages -- vignettes/datasets.Rmd and vignettes/tutorials.Rmd
+# -- filterable indexes over every tutorial that carries a `tags:` block in its
+# YAML header.
 #
 # WHY
-# The Examples menu and articles index are organised by platform family, which
-# answers "show me Visium" but not "show me human lung", "which tutorials use
-# GiottoDisk", or "anything with protein". Tags answer those, and a browser
-# page makes them usable without a search backend: the whole index is a few
-# dozen cards, filtered in the page by ~60 lines of plain JS.
+# The navbar menus and articles index are organised by section, which answers
+# "show me Visium" or "show me pre-processing" but not "show me human lung",
+# "which tutorials use GiottoDisk", or "everything about cell typing". Tags
+# answer those, and a browser page makes them usable without a search backend:
+# each index is a few dozen cards, filtered in the page by ~60 lines of plain JS.
 #
 # GENERATED AND COMMITTED, like function_index.Rmd. Re-run it after changing
 # any tutorial's tags, or pkgdown/tags.yml, and commit the result:
 #
-#   Rscript pkgdown/build-dataset-index.R
+#   Rscript pkgdown/build-browse-pages.R
 #
 # check-site.R sources this file for its parsing and validation, and fails when
-# the committed page is stale, so a forgotten re-run surfaces in CI in seconds.
+# a committed page is stale, so a forgotten re-run surfaces in CI in seconds.
 #
-# The vocabulary, and which `articles:` sections must be tagged, live in
-# pkgdown/tags.yml.
+# The vocabularies, and which `articles:` sections feed which page, live in
+# pkgdown/tags.yml under `browsers:`.
 
-OUT   <- "vignettes/datasets.Rmd"
 VOCAB <- "pkgdown/tags.yml"
 
 `%||%` <- function(a, b) if (is.null(a)) b else a
@@ -41,71 +41,92 @@ read_front_matter <- function(path) {
   yaml::yaml.load(paste(L[seq(2L, fence[[2]] - 1L)], collapse = "\n")) %||% list()
 }
 
-# Inventory every tutorial, its section, and its tags, in `articles:` order.
-collect_datasets <- function() {
-  cfg   <- yaml::read_yaml("_pkgdown.yml")
-  vocab <- yaml::read_yaml(VOCAB)
+# Inventory every tutorial, its section, its tags and the browser it belongs
+# to, in `articles:` order. A tutorial belongs to the browser whose `sections:`
+# list its section, unless that browser `exclude:`s it.
+collect_tutorials <- function() {
+  cfg      <- yaml::read_yaml("_pkgdown.yml")
+  browsers <- yaml::read_yaml(VOCAB)$browsers
 
   files <- list.files("vignettes", pattern = "\\.[Rr]md$")
   names(files) <- sub("\\.[Rr]md$", "", files)
+
+  owner <- function(slug, section) {
+    for (b in names(browsers)) {
+      if (section %in% browsers[[b]]$sections &&
+          !slug %in% browsers[[b]]$exclude) return(b)
+    }
+    NA_character_
+  }
 
   rows <- list()
   for (sec in cfg$articles) {
     for (slug in sec$contents) {
       if (!slug %in% names(files)) next     # check-site.R reports this one
       fm <- read_front_matter(file.path("vignettes", files[[slug]]))
+      section <- sec$title %||% ""
       rows[[length(rows) + 1L]] <- list(
         slug    = slug,
         file    = files[[slug]],
         title   = fm$title %||% slug,
-        section = sec$title %||% "",
-        tagged  = (sec$title %||% "") %in% vocab$tagged_sections,
+        section = section,
+        browser = owner(slug, section),
         tags    = lapply(fm$tags, as.character)
       )
     }
   }
-  list(rows = rows, vocab = vocab, sections = vapply(cfg$articles,
-       function(s) s$title %||% "", ""))
+  list(rows = rows, browsers = browsers,
+       sections = vapply(cfg$articles, function(s) s$title %||% "", ""))
 }
 
 # Returns a character vector of problems; empty means valid.
-validate_datasets <- function(ds) {
-  vocab <- ds$vocab
+validate_tutorials <- function(td) {
   probs <- character()
 
-  for (s in setdiff(vocab$tagged_sections, ds$sections)) {
-    probs <- c(probs, sprintf(paste0(
-      "%s: tagged_sections lists '%s', but no `articles:` section has that title.\n",
-      "         A section was probably renamed without updating %s."), VOCAB, s, VOCAB))
+  for (b in names(td$browsers)) {
+    for (s in setdiff(td$browsers[[b]]$sections, td$sections)) {
+      probs <- c(probs, sprintf(paste0(
+        "%s: browsers: %s: sections lists '%s', but no `articles:` section has that title.\n",
+        "         A section was probably renamed without updating %s."), VOCAB, b, s, VOCAB))
+    }
   }
 
-  for (r in ds$rows) {
+  for (r in td$rows) {
     where <- sprintf("vignettes/%s", r$file)
-    if (!length(r$tags)) {
-      if (r$tagged) {
+    if (is.na(r$browser)) {
+      if (length(r$tags)) {
         probs <- c(probs, sprintf(paste0(
-          "%s has no `tags:` block, but every tutorial in '%s' needs one\n",
-          "         for the dataset browser. See %s for the vocabulary."),
+          "%s has a `tags:` block, but its section '%s' is not on any browse page.\n",
+          "         Remove the tags, or add the section to a browser in %s."),
           where, r$section, VOCAB))
       }
       next
     }
-    for (f in setdiff(names(r$tags), names(vocab$facets))) {
-      probs <- c(probs, sprintf("%s: unknown tag facet `%s` (known: %s)",
-                                where, f, paste(names(vocab$facets), collapse = ", ")))
+    b     <- td$browsers[[r$browser]]
+    facets <- b$facets
+    if (!length(r$tags)) {
+      probs <- c(probs, sprintf(paste0(
+        "%s has no `tags:` block, but every tutorial in '%s' needs one\n",
+        "         for %s. See %s for the vocabulary."),
+        where, r$section, b$out, VOCAB))
+      next
     }
-    for (f in intersect(names(r$tags), names(vocab$facets))) {
-      bad <- setdiff(r$tags[[f]], vocab$facets[[f]]$values)
+    for (f in setdiff(names(r$tags), names(facets))) {
+      probs <- c(probs, sprintf("%s: unknown tag facet `%s` for %s (known: %s)",
+                                where, f, b$out, paste(names(facets), collapse = ", ")))
+    }
+    for (f in intersect(names(r$tags), names(facets))) {
+      bad <- setdiff(r$tags[[f]], facets[[f]]$values)
       if (length(bad)) {
         probs <- c(probs, sprintf(paste0(
           "%s: `%s: %s` is not in the vocabulary.\n",
           "         Use one of: %s -- or add it to %s."),
           where, f, paste(bad, collapse = ", "),
-          paste(vocab$facets[[f]]$values, collapse = ", "), VOCAB))
+          paste(facets[[f]]$values, collapse = ", "), VOCAB))
       }
     }
-    for (f in names(vocab$facets)) {
-      if (isTRUE(vocab$facets[[f]]$required) && !length(r$tags[[f]])) {
+    for (f in names(facets)) {
+      if (isTRUE(facets[[f]]$required) && !length(r$tags[[f]])) {
         probs <- c(probs, sprintf("%s: `tags:` is missing the required facet `%s`",
                                   where, f))
       }
@@ -114,14 +135,16 @@ validate_datasets <- function(ds) {
   probs
 }
 
-render_datasets <- function(ds) {
-  vocab  <- ds$vocab
-  facets <- names(vocab$facets)
-  rows   <- Filter(function(r) length(r$tags) > 0L, ds$rows)
+render_browser <- function(td, name) {
+  b      <- td$browsers[[name]]
+  facets <- names(b$facets)
+  rows   <- Filter(function(r) identical(r$browser, name) && length(r$tags) > 0L,
+                   td$rows)
 
-  # The articles-index section is exposed as its own facet, so "Spatial
-  # multi-omics" etc. stay filterable without anyone having to tag them.
+  # Optionally expose the articles-index section as its own facet, so e.g.
+  # "Spatial multi-omics" stays filterable without anyone having to tag it.
   sections <- unique(vapply(rows, `[[`, "", "section"))
+  section_label <- b$section_facet
 
   count <- function(f, v) sum(vapply(rows, function(r) v %in% r$tags[[f]], TRUE))
 
@@ -142,14 +165,14 @@ render_datasets <- function(ds) {
 
   side <- character()
   for (f in facets) {
-    fc <- vocab$facets[[f]]
+    fc <- b$facets[[f]]
     side <- c(side, facet_html(f, fc$label %||% f, fc$desc, fc$values,
                                vapply(fc$values, function(v) count(f, v), 0L),
                                featured = identical(f, "packages")))
-    # Category goes right after the featured facet: it is the coarse cut most
-    # people make first.
-    if (identical(f, "packages")) {
-      side <- c(side, facet_html("section", "Category", NULL, sections,
+    # The section facet goes right after the featured facet: it is the coarse
+    # cut most people make first.
+    if (identical(f, "packages") && !is.null(section_label)) {
+      side <- c(side, facet_html("section", section_label, NULL, sections,
         vapply(sections, function(s) sum(vapply(rows, function(r)
           identical(r$section, s), TRUE)), 0L)))
     }
@@ -159,7 +182,8 @@ render_datasets <- function(ds) {
     tg   <- r$tags
     attr <- vapply(facets, function(f) sprintf(' data-%s="%s"', f,
                    html_escape(paste(tg[[f]] %||% character(), collapse = "|"))), "")
-    meta <- unlist(tg[intersect(c("platform", "species", "tissue", "condition"), names(tg))])
+    kind <- if (identical(b$kind, "section")) r$section else tg[[b$kind]]
+    meta <- unlist(tg[intersect(unlist(b$meta), names(tg))])
     text <- tolower(paste(r$title, r$section, paste(unlist(tg), collapse = " ")))
     badges <- c(
       sprintf('<span class="ds-badge ds-badge-pkg">%s</span>', html_escape(tg$packages)),
@@ -168,33 +192,39 @@ render_datasets <- function(ds) {
         if (length(tg$panel)) paste(tg$panel, "genes"), tg$resolution))))
     c(sprintf('<a class="ds-card" href="%s.html" data-section="%s"%s data-text="%s">',
               r$slug, html_escape(r$section), paste(attr, collapse = ""), html_escape(text)),
-      sprintf('<span class="ds-kind">%s</span>', html_escape(r$section)),
+      sprintf('<span class="ds-kind">%s</span>',
+              html_escape(paste(kind, collapse = " · "))),
       sprintf('<span class="ds-title">%s</span>', html_escape(r$title)),
-      sprintf('<span class="ds-meta">%s</span>', html_escape(paste(meta, collapse = " \u00b7 "))),
-      sprintf('<span class="ds-badges">%s</span>', paste(badges, collapse = "")),
+      if (length(meta))
+        sprintf('<span class="ds-meta">%s</span>', html_escape(paste(meta, collapse = " · "))),
+      if (length(badges))
+        sprintf('<span class="ds-badges">%s</span>', paste(badges, collapse = "")),
       "</a>")
   }
 
   c("---",
-    'title: "Browse datasets"',
+    sprintf('title: "%s"', b$title),
     "output:",
     "  html_document:",
     "    toc: false",
     "pkgdown:",
     "  as_is: true",
     "vignette: >",
-    "  %\\VignetteIndexEntry{Browse datasets}",
+    sprintf("  %%\\VignetteIndexEntry{%s}", b$title),
     "  %\\VignetteEngine{knitr::rmarkdown}",
     "  %\\VignetteEncoding{UTF-8}",
     "---",
     "",
-    "<!-- GENERATED by pkgdown/build-dataset-index.R from each tutorial's `tags:`",
+    "<!-- GENERATED by pkgdown/build-browse-pages.R from each tutorial's `tags:`",
     "     header and pkgdown/tags.yml. Do not edit by hand: re-run the script. -->",
     "",
     "```{=html}",
+    if (!is.null(b$intro)) sprintf('<p class="ds-intro">%s</p>', b$intro),
     '<div id="ds-browser" class="ds-browser">',
     '<aside class="ds-side">',
-    '<input type="search" id="ds-q" class="form-control" placeholder="Search titles and tags" aria-label="Search datasets">',
+    sprintf(paste0('<input type="search" id="ds-q" class="form-control" ',
+                   'placeholder="Search titles and tags" aria-label="Search %s">'),
+            name),
     # Collapsible so that on a phone the results are not a screen of
     # checkboxes away. On wider screens CSS hides the toggle and it stays open.
     '<details id="ds-filters" class="ds-filters" open>',
@@ -307,18 +337,22 @@ if (sys.nframe() == 0L) {
   if (!file.exists("_pkgdown.yml")) {
     stop("Run this from the repository root (no _pkgdown.yml here).", call. = FALSE)
   }
-  ds    <- collect_datasets()
-  probs <- validate_datasets(ds)
+  td    <- collect_tutorials()
+  probs <- validate_tutorials(td)
   if (length(probs)) {
     message(paste0("  x ", probs, collapse = "\n"))
-    stop(sprintf("%d tag problem%s; %s not written.", length(probs),
-                 if (length(probs) == 1) "" else "s", OUT), call. = FALSE)
+    stop(sprintf("%d tag problem%s; pages not written.", length(probs),
+                 if (length(probs) == 1) "" else "s"), call. = FALSE)
   }
-  new <- render_datasets(ds)
-  old <- if (file.exists(OUT)) readLines(OUT, warn = FALSE) else character()
-  writeLines(new, OUT)
+  for (name in names(td$browsers)) {
+    out <- td$browsers[[name]]$out
+    new <- render_browser(td, name)
+    old <- if (file.exists(out)) readLines(out, warn = FALSE) else character()
+    writeLines(new, out)
 
-  n <- sum(vapply(ds$rows, function(r) length(r$tags) > 0L, TRUE))
-  message(sprintf("%s: %d tutorials, %s", OUT, n,
-                  if (identical(old, new)) "unchanged" else "UPDATED -- commit it"))
+    n <- sum(vapply(td$rows, function(r)
+      identical(r$browser, name) && length(r$tags) > 0L, TRUE))
+    message(sprintf("%s: %d tutorials, %s", out, n,
+                    if (identical(old, new)) "unchanged" else "UPDATED -- commit it"))
+  }
 }

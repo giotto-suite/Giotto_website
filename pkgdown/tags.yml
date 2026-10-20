@@ -1,6 +1,11 @@
-# Controlled vocabulary for the dataset browser (articles/datasets.html).
+# Controlled vocabulary for the two browse pages:
 #
-# Each tutorial declares its tags in its own YAML header:
+#   articles/datasets.html   -- the platform examples ("Browse datasets")
+#   articles/tutorials.html  -- the analysis tutorials ("Browse tutorials")
+#
+# Each tutorial declares its tags in its own YAML header. Which vocabulary
+# applies depends on the `articles:` section the tutorial sits in (see
+# `sections:` below). An example dataset:
 #
 #   tags:
 #     packages: GiottoDisk
@@ -13,6 +18,11 @@
 #     modality: RNA
 #     resolution: subcellular
 #
+# An analysis tutorial:
+#
+#   tags:
+#     category: [Spatial expression patterns, Spatial domains & niches]
+#
 # A value may be a single string or a list. Every value must appear below --
 # check-site.R rejects anything else, so "Human", "human" and "H. sapiens"
 # cannot become three separate filters. Add a value here when a new tutorial
@@ -21,80 +31,132 @@
 # Leave a facet out when the tutorial does not say. A missing tag only means the
 # card does not match that filter; a guessed one sends people to the wrong page.
 #
-# After changing tags here or in any tutorial, regenerate the page:
+# After changing tags here or in any tutorial, regenerate the pages:
 #
-#   Rscript pkgdown/build-dataset-index.R
+#   Rscript pkgdown/build-browse-pages.R
 
-# Every tutorial in these `articles:` sections must be tagged. Tutorials outside
-# them are optional, and appear in the browser once they carry a `tags:` block.
-tagged_sections:
-- In situ methods
-- Sequencing-based methods
-- Spatial in situ transcriptomics
-- Spatial sequencing transcriptomics
-- Spatial proteomics
-- Spatial multi-omics
-- Single cell RNA sequencing (non-spatial)
+browsers:
 
-# Shown in this order. `values` order is the order of the checkboxes.
-facets:
-  packages:
-    label: Uses
-    desc: Tutorials built on a Giotto Suite extension package.
-    values: [GiottoDisk, GiottoLens]
-  size:
-    label: Dataset size
-    required: true
-    values: [full, mini]
-  platform:
-    label: Platform
-    required: true
-    values:
-    - Xenium
-    - Atera
-    - CosMx
-    - MERFISH
-    - MERSCOPE
-    - Molecular Cartography
-    - GenePS
-    - seqFISH+
-    - osmFISH
-    - STARmap
-    - CODEX
-    - Visium
-    - Visium CytAssist
-    - Visium HD
-    - Stereo-seq
-    - Slide-seq
-    - Open-ST
-    - Seq-Scope
-    - DBiT-seq
-    - Spatial CITE-seq
-    - Spatial ATAC-RNA-seq
-    - Chromium
-    - Smart-seq2
-  panel:
-    label: Panel size
-    # A tier, not an exact count: tag by the panel's nominal size, so a 5K panel
-    # plus ~100 custom genes is still 500-5,000. Untargeted sequencing (Visium,
-    # Stereo-seq, scRNA-seq, ...) counts as whole transcriptome.
-    desc: Panel tier. 0-500 is e.g. MERSCOPE; 500-5,000 e.g. Xenium Prime 5K, with or without add-on genes; 5,000+ is whole transcriptome, e.g. Atera WTA, CosMx WTx, Visium.
-    values: ["0–500", "500–5,000", "5,000+"]
-  species:
-    label: Species
-    values: [human, mouse, rhesus macaque]
-  tissue:
-    label: Tissue
-    values: [brain, breast, colon, embryo, eye, kidney, liver, lung, pancreas, prostate, skin, spleen, testis]
-  condition:
-    label: Condition
-    values: [cancer, normal]
-  modality:
-    label: Modality
-    required: true
-    values: [RNA, protein, ATAC]
-  resolution:
-    label: Resolution
-    required: true
-    desc: What the tutorial analyzes -- transcript points, segmented cells, or multi-cell spots and bins.
-    values: [subcellular, single cell, spot]
+  datasets:
+    out: vignettes/datasets.Rmd
+    title: Browse datasets
+    # Every tutorial in these `articles:` sections must be tagged, and tags
+    # anywhere else are an error. The section is exposed as the Category facet.
+    sections:
+    - Spatial in situ transcriptomics
+    - Spatial sequencing transcriptomics
+    - Spatial proteomics
+    - Spatial multi-omics
+    - Single-cell RNA-seq
+    section_facet: Category
+    # Card layout: the small label above the title, and the dotted line below.
+    kind: section
+    meta: [platform, species, tissue, condition]
+
+    # Shown in this order. `values` order is the order of the checkboxes.
+    facets:
+      packages:
+        label: Uses
+        desc: Tutorials built on a Giotto Suite extension package.
+        values: [GiottoDisk, GiottoLens]
+      size:
+        label: Dataset size
+        required: true
+        values: [full, mini]
+      platform:
+        label: Platform
+        required: true
+        values:
+        - Xenium
+        - Atera
+        - CosMx
+        - MERFISH/MERSCOPE
+        - GenePS
+        - seqFISH+
+        - osmFISH
+        - STARmap
+        - CODEX
+        - Visium
+        - Visium CytAssist
+        - Visium HD
+        - Stereo-seq
+        - Slide-seq
+        - Open-ST
+        - DBiT-seq
+        - Spatial CITE-seq
+        - Spatial ATAC-RNA-seq
+        - Chromium
+        - Smart-seq2
+      panel:
+        label: Panel size
+        # A tier, not an exact count: tag by the panel's nominal size, so a 5K panel
+        # plus ~100 custom genes is still 500-5,000. Untargeted sequencing (Visium,
+        # Stereo-seq, scRNA-seq, ...) counts as whole transcriptome.
+        desc: Panel tier. 0-500 is e.g. MERFISH/MERSCOPE; 500-5,000 e.g. Xenium Prime 5K, with or without add-on genes; 5,000+ is whole transcriptome, e.g. Atera WTA, CosMx WTx, Visium.
+        values: ["0–500", "500–5,000", "5,000+"]
+      species:
+        label: Species
+        values: [human, mouse, rhesus macaque]
+      tissue:
+        label: Tissue
+        values: [brain, breast, colon, embryo, eye, kidney, lung, pancreas, prostate, skin, spleen, testis]
+      condition:
+        label: Condition
+        values: [cancer, normal]
+      modality:
+        label: Modality
+        required: true
+        values: [RNA, protein, ATAC]
+      resolution:
+        label: Resolution
+        required: true
+        desc: What the tutorial analyzes -- transcript points, segmented cells, or multi-cell spots and bins.
+        values: [subcellular, single cell, spot]
+
+  tutorials:
+    out: vignettes/tutorials.Rmd
+    title: Browse tutorials
+    intro: >-
+      Tutorials for each step of a Giotto analysis, from building the object to
+      spatial patterns and integration with other tools. Each one runs on a small
+      example dataset, but the methods apply to any platform. For end-to-end
+      examples on a specific technology, see
+      <a href="datasets.html">Browse datasets</a>; to set Giotto up, see
+      <a href="installation.html">Installation</a>.
+    # Analysis tutorials only. Setup and operational pages (Get started,
+    # Saving and loading, Containers and cloud, Contributing) stay out.
+    sections:
+    - Giotto object
+    - Pre-processing
+    - Analysis
+    - Spatial patterns
+    - Visualization
+    - Multiple samples
+    - Spatial manipulation and alignment
+    - Interactivity
+    - Interoperability
+    # Technical pages inside those sections.
+    exclude: [instructions, configuration]
+    kind: category
+    meta: []
+
+    facets:
+      packages:
+        label: Uses
+        desc: Tutorials built on a Giotto Suite extension package.
+        values: [GiottoDisk, GiottoLens]
+      category:
+        label: Category
+        required: true
+        desc: A tutorial can sit in more than one.
+        values:
+        - Object creation & import
+        - Pre-processing & QC
+        - Dimension reduction & clustering
+        - Cell type annotation
+        - Spatial expression patterns
+        - Spatial domains & niches
+        - Multiple samples & integration
+        - Spatial alignment & 3D
+        - Visualization & interactive exploration
+        - Interoperability
