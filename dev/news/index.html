@@ -101,6 +101,8 @@
     <li><a class="dropdown-item" href="../articles/merfish_mouse_hypothalamic.html">MERFISH — Mouse hypothalamic preoptic region</a></li>
     <li><a class="dropdown-item" href="../articles/merfish_mouse_sagittal_bil.html">MERFISH — Whole mouse brain (BIL)</a></li>
     <li><a class="dropdown-item" href="../articles/vizgen_mouse_brain.html">MERSCOPE — Mouse brain receptor map</a></li>
+    <li><a class="dropdown-item" href="../articles/merscope_human_colon_cancer_giottodisk.html">MERSCOPE — Human colon cancer (GiottoDisk)</a></li>
+    <li><a class="dropdown-item" href="../articles/merscope_human_colon_cancer_mini_giottodisk.html">MERSCOPE — Human colon cancer mini dataset (GiottoDisk)</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Spatial sequencing transcriptomics</h6></li>
     <li><a class="dropdown-item" href="../articles/visium_mouse_kidney.html">Visium — Mouse kidney</a></li>
@@ -213,8 +215,18 @@
 <h2 class="pkg-version" data-toc-text="4.3.5" id="giotto-435-in-development">Giotto 4.3.5 (in development)<a class="anchor" aria-label="anchor" href="#giotto-435-in-development"></a></h2>
 <p>Downstream packages that stream PAGE (GiottoDisk) should require <code>Giotto (&gt;= 4.3.5)</code> so both backends compute the same scores.</p>
 <div class="section level3">
+<h3 id="new-4-3-5">new<a class="anchor" aria-label="anchor" href="#new-4-3-5"></a></h3>
+<ul><li>
+<code><a href="../reference/importMerscope.html">importMerscope()</a></code> creates a <code>MerscopeReader</code> with <code>load_transcripts()</code>, <code>load_polys()</code>, <code>load_expression()</code>, <code>load_cellmeta()</code>, <code>load_spatlocs()</code>, <code>load_image()</code> and <code>create_gobject()</code> for Vizgen MERSCOPE region directories. <code>backend =</code> returns <code>GiottoDisk::importMerscopeDisk()</code>.</li>
+<li>
+<code><a href="../reference/createGiottoMerscopeObject.html">createGiottoMerscopeObject()</a></code> gains <code>load_images</code>: mosaic images (e.g. <code>"DAPI_z3"</code>) placed with <code>images/micron_to_mosaic_pixel_transform.csv</code>.</li>
+<li>Atera docs: Atera v1 output (zarr) is read with <code>importAtera(backend =)</code> / <code>createGiottoAteraObject(backend =)</code>, which use GiottoDisk’s Atera reader. Atera preview data in the Xenium layout reads with the Xenium readers.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="breaking-changes-4-3-5">breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-4-3-5"></a></h3>
 <ul><li>
+<code><a href="../reference/createGiottoMerscopeObject.html">createGiottoMerscopeObject()</a></code> loads the vendor outputs through <code><a href="../reference/importMerscope.html">importMerscope()</a></code>: transcripts, cell boundaries, the expression matrix from <code>cell_by_gene.csv</code> and, with <code>data_to_use = "aggregate"</code>, cell centers from <code>cell_metadata.csv</code>. No overlap is calculated; use <code><a href="https://giotto-suite.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap()</a></code> and <code><a href="https://giotto-suite.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix()</a></code> on the created object. Expression values now match <code>cell_by_gene.csv</code>. <code>polygon_format = "parquet"</code> is the default. The y coordinates of transcripts, polygons and cell centers are negated. <code>version</code>, <code>flip_axis</code>, <code>calculate_overlap</code>, <code>overlap_to_matrix</code>, <code>aggregate_stack</code>, <code>aggregate_stack_param</code> and <code>cores</code> are deprecated. <code>version = 1</code> reads the HDF5 cell boundaries when <code>polygon_format</code> is not given.</li>
+<li>
 <code>runPAGEEnrich(return_gobject = FALSE)</code> returns a <code>spatEnrObj</code>, as the other enrichment methods do, instead of <code>list(DT =, matrix =)</code>.</li>
 <li>Enrichment <code>p_value = TRUE</code> returns p-values for every method; PAGE returned <code>-log10(p)</code>. They are computed from the unscaled scores, so <code>output_enrichment = "zscore"</code> no longer distorts them.</li>
 </ul></div>
@@ -229,7 +241,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-4-3-5">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-4-3-5"></a></h3>
-<ul><li>Hypergeometric enrichment scored every cell against other cells’ thresholds: the per-cell top-percentage cut was recycled down the features. It also tested P(X &gt; x) instead of P(X &gt;= x), and a cell with a single selected feature scored 0. Scores change.</li>
+<ul><li>Xenium and Atera readers: with the default <code>load_images = "focus"</code>, an output folder without <code>morphology_focus/</code> loaded everything else and then failed with “invalid ‘path’ argument”. The focus images are now skipped with a warning.</li>
+<li>Hypergeometric enrichment scored every cell against other cells’ thresholds: the per-cell top-percentage cut was recycled down the features. It also tested P(X &gt; x) instead of P(X &gt;= x), and a cell with a single selected feature scored 0. Scores change.</li>
 <li>PAGE and hypergeometric share one per-feature reference level, the mean of the de-logged values logged back in the same base. PAGE logged it in base e while the values are in <code>logbase</code>, and hypergeometric mixed linear and log scales; PAGE scores shift slightly.</li>
 <li>All enrichment methods count a feature as a marker where its sign-matrix value is &gt; 0, and return cells in the order of the expression matrix.</li>
 <li>
@@ -392,7 +405,7 @@
 <div class="section level3">
 <h3 id="enhancements-4-3-0">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-4-3-0"></a></h3>
 <ul><li>
-<code><a href="../reference/importXenium.html">importXenium()</a></code> / <code>importAtera()</code> path detection now recognizes zarr output (<code>.zarr.zip</code> archives and unzipped <code>.zarr</code> trees): <code>filetype</code> accepts <code>"zarr"</code> for transcripts / boundaries / cell_meta / expression, and detection falls back to zarr automatically when a slot’s requested filetype matches nothing but a zarr archive is present (zarr-only exports, e.g. Atera). Existing datasets detect exactly as before — parquet/csv/h5/mtx still win when present. Reading zarr requires the disk pathway (<code>GiottoDisk::importXeniumDisk()</code> / <code>importAteraDisk()</code>); the in-memory loaders now point there instead of a bare “not yet supported” stop.</li>
+<code><a href="../reference/importXenium.html">importXenium()</a></code> / <code><a href="../reference/importAtera.html">importAtera()</a></code> path detection now recognizes zarr output (<code>.zarr.zip</code> archives and unzipped <code>.zarr</code> trees): <code>filetype</code> accepts <code>"zarr"</code> for transcripts / boundaries / cell_meta / expression, and detection falls back to zarr automatically when a slot’s requested filetype matches nothing but a zarr archive is present (zarr-only exports, e.g. Atera). Existing datasets detect exactly as before — parquet/csv/h5/mtx still win when present. Reading zarr requires the disk pathway (<code>GiottoDisk::importXeniumDisk()</code> / <code>importAteraDisk()</code>); the in-memory loaders now point there instead of a bare “not yet supported” stop.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-4-3-0-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-4-3-0-1"></a></h3>
@@ -480,7 +493,7 @@
 <li>
 <code><a href="../reference/enrich_param.html">enrichParam()</a></code> and the <code>pageEnrichParam</code> / <code>rankEnrichParam</code> / <code>hyperEnrichParam</code> classes put sign-matrix enrichment on the <code><a href="../reference/analyzeData.html">analyzeData()</a></code> verb, following <code>markersParam</code>. The arithmetic runs on a bare matrix – <code>analyzeData(expr, enrichParam("rank"), sign_matrix = sm)</code> – with no <code>giotto</code> object involved, and dispatches on the expression object, so a backend can register a streaming implementation against the same generic from another package. <code><a href="../reference/enrichment_PAGE.html">runPAGEEnrich()</a></code>, <code><a href="../reference/runRankEnrich.html">runRankEnrich()</a></code>, <code><a href="../reference/runHyperGeometricEnrich.html">runHyperGeometricEnrich()</a></code> and <code><a href="../reference/runSpatialEnrich.html">runSpatialEnrich()</a></code> keep their names, signatures and results, and become thin wrappers over it. <code><a href="../reference/runSpatialEnrich.html">runSpatialEnrich()</a></code> also gained <code>include_depletion</code> and <code>ties_method</code>, which were reachable from neither it nor its documentation.</li>
 <li>
-<code>importAtera()</code> and <code>createGiottoAteraObject()</code> read Atera output. <code>AteraReader</code> subclasses <code>XeniumReader</code> — the layouts are identical today, so it overrides only the platform label and inherits the rest, including <code>backend =</code>.</li>
+<code><a href="../reference/importAtera.html">importAtera()</a></code> and <code><a href="../reference/createGiottoAteraObject.html">createGiottoAteraObject()</a></code> read Atera output. <code>AteraReader</code> subclasses <code>XeniumReader</code> — the layouts are identical today, so it overrides only the platform label and inherits the rest, including <code>backend =</code>.</li>
 <li>
 <code><a href="../reference/importStereoSeq.html">importStereoSeq()</a></code>, <code><a href="../reference/createGiottoStereoSeqObjectBin.html">createGiottoStereoSeqObjectBin()</a></code> and <code><a href="../reference/createGiottoStereoSeqObjectCell.html">createGiottoStereoSeqObjectCell()</a></code> gained a <code>backend =</code> argument. When set to a <code>gsource</code> project backend it routes to <code>GiottoDisk::importStereoSeqDisk()</code>, so a Stereo-seq object can be created as a managed on-disk project with expression held in a <code>parquetExprStore</code> instead of memory — mirroring what <code><a href="../reference/createGiottoXeniumObject.html">createGiottoXeniumObject()</a></code> already did. <code>backend = NULL</code> (the default) is a no-op and leaves the in-memory path byte-identical. Requires a GiottoDisk carrying the matching GEF reader fixes.</li>
 <li>

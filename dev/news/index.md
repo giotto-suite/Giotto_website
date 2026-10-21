@@ -5,8 +5,39 @@
 Downstream packages that stream PAGE (GiottoDisk) should require
 `Giotto (>= 4.3.5)` so both backends compute the same scores.
 
+### new
+
+- [`importMerscope()`](https://giottosuite.com/dev/reference/importMerscope.md)
+  creates a `MerscopeReader` with `load_transcripts()`, `load_polys()`,
+  `load_expression()`, `load_cellmeta()`, `load_spatlocs()`,
+  `load_image()` and `create_gobject()` for Vizgen MERSCOPE region
+  directories. `backend =` returns `GiottoDisk::importMerscopeDisk()`.
+- [`createGiottoMerscopeObject()`](https://giottosuite.com/dev/reference/createGiottoMerscopeObject.md)
+  gains `load_images`: mosaic images (e.g. `"DAPI_z3"`) placed with
+  `images/micron_to_mosaic_pixel_transform.csv`.
+- Atera docs: Atera v1 output (zarr) is read with
+  `importAtera(backend =)` / `createGiottoAteraObject(backend =)`, which
+  use GiottoDisk’s Atera reader. Atera preview data in the Xenium layout
+  reads with the Xenium readers.
+
 ### breaking changes
 
+- [`createGiottoMerscopeObject()`](https://giottosuite.com/dev/reference/createGiottoMerscopeObject.md)
+  loads the vendor outputs through
+  [`importMerscope()`](https://giottosuite.com/dev/reference/importMerscope.md):
+  transcripts, cell boundaries, the expression matrix from
+  `cell_by_gene.csv` and, with `data_to_use = "aggregate"`, cell centers
+  from `cell_metadata.csv`. No overlap is calculated; use
+  [`calculateOverlap()`](https://giotto-suite.github.io/GiottoClass/reference/calculateOverlap.html)
+  and
+  [`overlapToMatrix()`](https://giotto-suite.github.io/GiottoClass/reference/overlapToMatrix.html)
+  on the created object. Expression values now match `cell_by_gene.csv`.
+  `polygon_format = "parquet"` is the default. The y coordinates of
+  transcripts, polygons and cell centers are negated. `version`,
+  `flip_axis`, `calculate_overlap`, `overlap_to_matrix`,
+  `aggregate_stack`, `aggregate_stack_param` and `cores` are deprecated.
+  `version = 1` reads the HDF5 cell boundaries when `polygon_format` is
+  not given.
 - `runPAGEEnrich(return_gobject = FALSE)` returns a `spatEnrObj`, as the
   other enrichment methods do, instead of `list(DT =, matrix =)`.
 - Enrichment `p_value = TRUE` returns p-values for every method; PAGE
@@ -38,6 +69,10 @@ Downstream packages that stream PAGE (GiottoDisk) should require
 
 ### bug fixes
 
+- Xenium and Atera readers: with the default `load_images = "focus"`, an
+  output folder without `morphology_focus/` loaded everything else and
+  then failed with “invalid ‘path’ argument”. The focus images are now
+  skipped with a warning.
 - Hypergeometric enrichment scored every cell against other cells’
   thresholds: the per-cell top-percentage cut was recycled down the
   features. It also tested P(X \> x) instead of P(X \>= x), and a cell
@@ -548,15 +583,17 @@ too, and will ship from there under that version.
 ### Enhancements
 
 - [`importXenium()`](https://giottosuite.com/dev/reference/importXenium.md)
-  / `importAtera()` path detection now recognizes zarr output
-  (`.zarr.zip` archives and unzipped `.zarr` trees): `filetype` accepts
-  `"zarr"` for transcripts / boundaries / cell_meta / expression, and
-  detection falls back to zarr automatically when a slot’s requested
-  filetype matches nothing but a zarr archive is present (zarr-only
-  exports, e.g. Atera). Existing datasets detect exactly as before —
-  parquet/csv/h5/mtx still win when present. Reading zarr requires the
-  disk pathway (`GiottoDisk::importXeniumDisk()` / `importAteraDisk()`);
-  the in-memory loaders now point there instead of a bare “not yet
+  /
+  [`importAtera()`](https://giottosuite.com/dev/reference/importAtera.md)
+  path detection now recognizes zarr output (`.zarr.zip` archives and
+  unzipped `.zarr` trees): `filetype` accepts `"zarr"` for transcripts /
+  boundaries / cell_meta / expression, and detection falls back to zarr
+  automatically when a slot’s requested filetype matches nothing but a
+  zarr archive is present (zarr-only exports, e.g. Atera). Existing
+  datasets detect exactly as before — parquet/csv/h5/mtx still win when
+  present. Reading zarr requires the disk pathway
+  (`GiottoDisk::importXeniumDisk()` / `importAteraDisk()`); the
+  in-memory loaders now point there instead of a bare “not yet
   supported” stop.
 
 ### Bug fixes
@@ -931,10 +968,12 @@ too, and will ship from there under that version.
   [`runSpatialEnrich()`](https://giottosuite.com/dev/reference/runSpatialEnrich.md)
   also gained `include_depletion` and `ties_method`, which were
   reachable from neither it nor its documentation.
-- `importAtera()` and `createGiottoAteraObject()` read Atera output.
-  `AteraReader` subclasses `XeniumReader` — the layouts are identical
-  today, so it overrides only the platform label and inherits the rest,
-  including `backend =`.
+- [`importAtera()`](https://giottosuite.com/dev/reference/importAtera.md)
+  and
+  [`createGiottoAteraObject()`](https://giottosuite.com/dev/reference/createGiottoAteraObject.md)
+  read Atera output. `AteraReader` subclasses `XeniumReader` — the
+  layouts are identical today, so it overrides only the platform label
+  and inherits the rest, including `backend =`.
 - [`importStereoSeq()`](https://giottosuite.com/dev/reference/importStereoSeq.md),
   [`createGiottoStereoSeqObjectBin()`](https://giottosuite.com/dev/reference/createGiottoStereoSeqObjectBin.md)
   and

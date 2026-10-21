@@ -6,13 +6,13 @@ Uses
 
 Tutorials built on a Giotto Suite extension package.
 
-GiottoDisk 9
+GiottoDisk 11
 
 GiottoLens 0
 
 Category
 
-Spatial in situ transcriptomics 15
+Spatial in situ transcriptomics 17
 
 Spatial sequencing transcriptomics 17
 
@@ -24,9 +24,9 @@ Single-cell RNA-seq 3
 
 Dataset size
 
-full 37
+full 38
 
-mini 2
+mini 3
 
 Platform
 
@@ -36,7 +36,7 @@ Atera 1
 
 CosMx 4
 
-MERFISH/MERSCOPE 3
+MERFISH/MERSCOPE 5
 
 GenePS 1
 
@@ -78,13 +78,13 @@ Atera WTA, CosMx WTx, Visium.
 
 0–500 8
 
-500–5,000 2
+500–5,000 4
 
 5,000+ 28
 
 Species
 
-human 18
+human 20
 
 mouse 19
 
@@ -96,7 +96,7 @@ brain 11
 
 breast 3
 
-colon 6
+colon 8
 
 embryo 2
 
@@ -118,13 +118,13 @@ testis 3
 
 Condition
 
-cancer 16
+cancer 18
 
 normal 21
 
 Modality
 
-RNA 38
+RNA 40
 
 protein 4
 
@@ -137,7 +137,7 @@ multi-cell spots and bins.
 
 subcellular 8
 
-single cell 17
+single cell 19
 
 spot 15
 
@@ -173,6 +173,14 @@ cell](https://giottosuite.com/dev/articles/merfish_mouse_sagittal_bil.md)
 [Spatial in situ transcriptomics Vizgen Mouse Brain Receptor Map
 MERFISH/MERSCOPE · mouse · brain · normal RNA0–500
 genessubcellular](https://giottosuite.com/dev/articles/vizgen_mouse_brain.md)
+[Spatial in situ transcriptomics Human colon cancer MERSCOPE with
+GiottoDisk MERFISH/MERSCOPE · human · colon · cancer
+GiottoDiskRNA500–5,000 genessingle
+cell](https://giottosuite.com/dev/articles/merscope_human_colon_cancer_giottodisk.md)
+[Spatial in situ transcriptomics Human colon cancer MERSCOPE mini
+dataset with GiottoDisk MERFISH/MERSCOPE · human · colon · cancer
+GiottoDiskminiRNA500–5,000 genessingle
+cell](https://giottosuite.com/dev/articles/merscope_human_colon_cancer_mini_giottodisk.md)
 [Spatial in situ transcriptomics Spatial Genomics Mouse Kidney GenePS ·
 mouse · kidney · normal RNA0–500
 genessubcellular](https://giottosuite.com/dev/articles/spatial_genomics_mouse_kidney.md)

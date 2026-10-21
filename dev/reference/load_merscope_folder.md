@@ -44,30 +44,33 @@ Load MERSCOPE data from folder
 
 - data_to_use:
 
-  which of either the 'subcellular' or 'aggregate' information to use
-  for object creation
+  \`"subcellular"\` (default) loads transcripts, polygons and the cell
+  by gene matrix. \`"aggregate"\` loads the cell by gene matrix, with
+  cell centers from \`cell_metadata.csv\` as spatial locations.
 
 - polygon_format:
 
-  format of the boundary files, either 'parquet' or 'hdf5' (v2 only)
+  format of the cell boundaries, either \`"parquet"\` (default,
+  \`cell_boundaries.parquet\`) or \`"hdf5"\` (per-FOV files in
+  \`cell_boundaries/\`)
 
 - poly_z_indices:
 
-  which z-indices to use for the polygons (Default 0:6 for v2, 1:7 for
-  v1)
+  which z-indices to use for the polygons. \`NULL\` (default) uses the
+  lowest z-plane when all z-planes hold identical boundaries and stops
+  otherwise.
 
 - version:
 
-  integer. Version of logic to use (1 = Legacy/Original, 2 =
-  New/Optimized)
+  deprecated. Use \`polygon_format\`.
 
 - cores:
 
-  how many cores or threads to use to read data if paths are provided
+  deprecated.
 
 - verbose:
 
-  be verbose when building Giotto object
+  be verbose (default \`NULL\`)
 
 ## Value
 

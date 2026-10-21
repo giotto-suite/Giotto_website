@@ -127,6 +127,8 @@
     <li><a class="dropdown-item" href="../articles/merfish_mouse_hypothalamic.html">MERFISH — Mouse hypothalamic preoptic region</a></li>
     <li><a class="dropdown-item" href="../articles/merfish_mouse_sagittal_bil.html">MERFISH — Whole mouse brain (BIL)</a></li>
     <li><a class="dropdown-item" href="../articles/vizgen_mouse_brain.html">MERSCOPE — Mouse brain receptor map</a></li>
+    <li><a class="dropdown-item" href="../articles/merscope_human_colon_cancer_giottodisk.html">MERSCOPE — Human colon cancer (GiottoDisk)</a></li>
+    <li><a class="dropdown-item" href="../articles/merscope_human_colon_cancer_mini_giottodisk.html">MERSCOPE — Human colon cancer mini dataset (GiottoDisk)</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Spatial sequencing transcriptomics</h6></li>
     <li><a class="dropdown-item" href="../articles/visium_mouse_kidney.html">Visium — Mouse kidney</a></li>
@@ -257,29 +259,29 @@
 <h2 id="overview">
 <span class="header-section-number">1</span> Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>This tutorial covers ingestion of the 10x Atera whole-transcriptome
-human invasive breast carcinoma FFPE dataset as an on-disk GiottoDisk
-project, followed by simple data processing to filter and cluster and
-visualize the data.</p>
-<p>The ingestion includes transcript loading and aggregation, although
-both can be skipped in favor of just working the included qv &gt;= 20
-expression matrix provided by 10x.</p>
+<p>This tutorial reads the 10x Atera whole-transcriptome preview dataset
+of human invasive breast carcinoma into an on-disk GiottoDisk project.
+It then filters, clusters and names the cells, and looks at the tissue’s
+spatial organization: spatially variable genes, co-expression modules,
+signature enrichment and the cell types that sit next to each other.</p>
+<p>The ingestion loads the individual transcripts and aggregates them
+into cells. Both steps can be skipped in favor of the qv &gt;= 20
+expression matrix that 10x provides.</p>
 <p><em>Note that currently transcript loading is needed for GiottoLens
-compatability, but this is expected to be changed in the
-future.</em></p>
+compatibility, but this is expected to change in the future.</em></p>
 </div>
 <div class="section level2" number="2">
 <h2 id="install-extra-packages">
-<span class="header-section-number">2</span> Install Extra
-Packages<a class="anchor" aria-label="anchor" href="#install-extra-packages"></a>
+<span class="header-section-number">2</span> Install extra
+packages<a class="anchor" aria-label="anchor" href="#install-extra-packages"></a>
 </h2>
 <div class="section level3" number="2.1">
 <h3 id="arrow-installation">
 <span class="header-section-number">2.1</span> <em>arrow</em>
 installation<a class="anchor" aria-label="anchor" href="#arrow-installation"></a>
 </h3>
-<p>Atera datasets require arrow with ZSTD support to be installed to
-work with parquet files.</p>
+<p>Atera datasets require arrow with ZSTD support to work with parquet
+files.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">has_arrow</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"arrow"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">zstd</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
@@ -296,39 +298,82 @@ work with parquet files.</p>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level3" number="2.2">
+<h3 id="sedonadb-and-duckdb-installation">
+<span class="header-section-number">2.2</span> <em>SedonaDB</em> and
+<em>DuckDB</em> installation<a class="anchor" aria-label="anchor" href="#sedonadb-and-duckdb-installation"></a>
+</h3>
+<p>GiottoDisk runs spatial joins, such as the aggregation of transcripts
+into cells below, in SedonaDB when it is installed, and in DuckDB
+otherwise. Both are optional; without them it falls back to tiled terra
+operations, which are much slower at this scale.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"sedonadb"</span>,</span>
+<span>    repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://apache.r-universe.dev"</span>, <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"duckdb"</span><span class="op">)</span></span></code></pre></div>
+<p>Loading SedonaDB can print messages about PROJ or GDAL data
+directories it did not find. They do not affect the steps in this
+tutorial.</p>
+</div>
+<div class="section level3" number="2.3">
+<h3 id="smotif-installation">
+<span class="header-section-number">2.3</span> <em>smotif</em>
+installation<a class="anchor" aria-label="anchor" href="#smotif-installation"></a>
+</h3>
+<p>The cell-cell interaction section at the end uses smotif and its Rust
+backend smotifrs to count cell type motifs:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"smotif"</span>, <span class="st">"smotifrs"</span><span class="op">)</span>,</span>
+<span>    repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://drieslab.r-universe.dev"</span>, <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3" number="2.4">
 <h3 id="giotto-extensions">
-<span class="header-section-number">2.2</span> Giotto
-Extensions<a class="anchor" aria-label="anchor" href="#giotto-extensions"></a>
+<span class="header-section-number">2.4</span> Giotto
+extensions<a class="anchor" aria-label="anchor" href="#giotto-extensions"></a>
 </h3>
 <p>This tutorial uses GiottoDisk for on-disk processing. These are
 preview dev builds off the dev and gsource Giotto package branches. If
 GiottoDisk has not been installed yet, use the following:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># GiottoDisk install</span></span>
 <span><span class="fu">GiottoUtils</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoUtils/reference/suite_install.html" class="external-link">suite_install</a></span><span class="op">(</span><span class="st">"GiottoDisk"</span><span class="op">)</span></span>
 <span><span class="co"># Optional for matrix maths speedup:</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'GiottoKernels'</span>,</span>
-<span>    repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'https://giotto-suite.r-universe.dev'</span>, <span class="st">'https://cloud.r-project.org'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"GiottoKernels"</span>,</span>
+<span>    repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://giotto-suite.r-universe.dev"</span>, <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2" number="3">
 <h2 id="dataset-explanation">
 <span class="header-section-number">3</span> Dataset
-Explanation<a class="anchor" aria-label="anchor" href="#dataset-explanation"></a>
+explanation<a class="anchor" aria-label="anchor" href="#dataset-explanation"></a>
 </h2>
-<p>This vignette covers Giotto object creation and exploratory analysis
-with 10x Genomics’ <em>Atera In Situ</em> platform, using their <a href="https://www.10xgenomics.com/datasets/atera-wta-ffpe-human-breast-cancer" class="external-link">FFPE
-Human Breast Cancer preview dataset</a>. The data were generated with a
-pre-commercial version of the Atera Whole Transcriptome Assay (WTA) on
-an FFPE section of human breast cancer. The panel targets 18,028 genes,
-and 170,057 cells are segmented.</p>
-<p>10x provides this preview dataset converted to closely resemble the
-Xenium Onboard Analysis output format, so the Atera reader in
-<em>Giotto</em> shares its implementation with the Xenium one.</p>
+<p>This tutorial uses 10x Genomics’ <a href="https://www.10xgenomics.com/datasets/atera-wta-ffpe-human-breast-cancer" class="external-link">FFPE
+Human Breast Cancer preview dataset</a> from their <em>Atera In
+Situ</em> platform. The data were generated with a pre-commercial
+version of the Atera Whole Transcriptome Assay (WTA) on an FFPE section
+of human breast cancer. The panel targets 18,028 genes, and 170,057
+cells are segmented.</p>
 <div class="section level3" number="3.1">
+<h3 id="why-the-xenium-reader">
+<span class="header-section-number">3.1</span> Why the Xenium
+reader<a class="anchor" aria-label="anchor" href="#why-the-xenium-reader"></a>
+</h3>
+<p>10x converted this preview dataset to the Xenium Onboard Analysis
+output format. The folder has an <code>experiment.xenium</code>
+manifest, a <code>morphology_focus/</code> image folder, and
+<code>transcripts.parquet</code>, <code>cell_boundaries.parquet</code>
+and <code>cell_feature_matrix.h5</code> files, all laid out like a
+Xenium run. It is read here with
+<code><a href="../reference/createGiottoXeniumObject.html">createGiottoXeniumObject()</a></code>.</p>
+<p><code><a href="../reference/createGiottoAteraObject.html">createGiottoAteraObject()</a></code> is meant for the output of the
+commercial Atera instrument (Atera v1), which ships its data as zarr
+archives instead. See the Atera kidney tutorial for that layout.</p>
+</div>
+<div class="section level3" number="3.2">
 <h3 id="download-links">
-<span class="header-section-number">3.1</span> Download Links<a class="anchor" aria-label="anchor" href="#download-links"></a>
+<span class="header-section-number">3.2</span> Download links<a class="anchor" aria-label="anchor" href="#download-links"></a>
 </h3>
 <p>The files are available from the <a href="https://www.10xgenomics.com/datasets/atera-wta-ffpe-human-breast-cancer" class="external-link">10x
 Genomics dataset page</a>.</p>
@@ -338,7 +383,8 @@ curl -O https://s3-us-west-2.amazonaws.com/10x.files/samples/atera/dev/WTA_Previ
 </details><p><br></p>
 <p>The zipped outputs are large (about 55 GB, most of it
 <code>transcripts.parquet</code>, <code>transcripts.zarr.zip</code> and
-<code>morphology.ome.tif</code>)</p>
+<code>morphology.ome.tif</code>). The GiottoDisk project built below
+takes another 26 GB.</p>
 </div>
 </div>
 <div class="section level2" number="4">
@@ -346,7 +392,7 @@ curl -O https://s3-us-west-2.amazonaws.com/10x.files/samples/atera/dev/WTA_Previ
 <span class="header-section-number">4</span> Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
 <p>This workflow uses the on-disk backend from GiottoDisk.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/apache/arrow/" class="external-link">arrow</a></span><span class="op">)</span> <span class="co"># this must be libraried before terra or GiottoClass</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giottosuite.com">Giotto</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">GiottoDisk</span><span class="op">)</span></span>
@@ -355,58 +401,73 @@ curl -O https://s3-us-west-2.amazonaws.com/10x.files/samples/atera/dev/WTA_Previ
 <span><span class="va">project_dir</span> <span class="op">&lt;-</span> <span class="st">"path/to/atera_project"</span></span>
 <span></span>
 <span><span class="co"># set an appropriate amount of parallel workers for your computer</span></span>
-<span><span class="fu">future</span><span class="fu">::</span><span class="fu">plan</span><span class="op">(</span><span class="fu">future.mirai</span><span class="fu">::</span><span class="va">mirai_multisession</span>, workers <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">future</span><span class="fu">::</span><span class="fu">plan</span><span class="op">(</span><span class="fu">future.mirai</span><span class="fu">::</span><span class="va">mirai_multisession</span>, workers <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></code></pre></div>
+<p>The timings quoted below come from a run with 8 workers on an Apple
+silicon Mac. Reading the transcripts was the most memory-intensive step
+of ingestion, at about 24 GB.</p>
 </div>
 <div class="section level2" number="5">
 <h2 id="read-the-data">
 <span class="header-section-number">5</span> Read the data<a class="anchor" aria-label="anchor" href="#read-the-data"></a>
 </h2>
-<p>Atera data is too large to process in-memory. We will be using a
+<p>Atera data is too large to process in memory. We will be using a
 GiottoDisk disk-backed project to handle it.</p>
 <p>First we set up a <code>gDirSource</code> object using
 <code>sourceCreate()</code> as a handle for a Giotto file directory disk
-backend. A backend defines the storage architecture and also associated
-preferred write formats for data types. Currently, the only option
-available is a managed project directory via <code>gDirSource</code>,
-but other solutions are planned.</p>
+backend. A backend defines the storage architecture and the preferred
+write formats for each data type. Currently, the only option available
+is a managed project directory via <code>gDirSource</code>, but other
+solutions are planned.</p>
 <p>Next, using <code>setArtifactDumpDir()</code>, we point GiottoDisk
 writes of content such as expression matrices and spatial information
 directly at the backend. <em>This is mostly precautionary to avoid more
 work later that would have to pull scattered files into the backend when
 the object is saved.</em></p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># declare a Giotto directory backend to use</span></span>
 <span><span class="va">gdsrc</span> <span class="op">&lt;-</span> <span class="fu">GiottoDisk</span><span class="fu">::</span><span class="fu">sourceCreate</span><span class="op">(</span><span class="va">project_dir</span>, type <span class="op">=</span> <span class="st">"gDirSource"</span><span class="op">)</span></span>
 <span><span class="co"># point data content writes to the backend's artifact subdirectory</span></span>
 <span><span class="fu">GiottoDisk</span><span class="fu">::</span><span class="fu">setArtifactDumpDir</span><span class="op">(</span><span class="va">gdsrc</span><span class="op">)</span></span></code></pre></div>
-<p><code>createGiottoAteraObject()</code> creates a Giotto object from
-an Atera output directory. Passing the <code>gDirSource</code> object to
-the <code>backend</code> param sets the object up as a disk-backed
+<p><code><a href="../reference/createGiottoXeniumObject.html">createGiottoXeniumObject()</a></code> creates a Giotto object from
+the output directory. Passing the <code>gDirSource</code> object to the
+<code>backend</code> param sets the object up as a disk-backed
 project.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># convenience function load defaults: </span></span>
+<p>Besides genes, the transcripts include several kinds of control
+probes. The reader separates them into their own feature types by
+matching keywords in their names (<code>split_keyword</code>). In this
+dataset the genomic control probes are named
+<code>Intergenic_Region_*</code> rather than
+<code>GenomicControl*</code>, so that name is added to the last keyword
+set. Without it, 62 control probes would end up among the genes.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># convenience function load defaults:</span></span>
 <span><span class="co"># * transcripts (qv &gt;= 20)</span></span>
-<span><span class="co"># * polygons</span></span>
-<span><span class="co"># * cell metadata</span></span>
-<span><span class="co"># * expression matrix</span></span>
-<span><span class="co"># * images</span></span>
-<span></span>
-<span><span class="co"># skipped:</span></span>
-<span><span class="co"># * aligned images (needs more input)</span></span>
-<span><span class="co"># * cell metadata</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu">createGiottoAteraObject</span><span class="op">(</span><span class="va">data_dir</span>,</span>
+<span><span class="co"># * cell and nucleus polygons</span></span>
+<span><span class="co"># * 10x expression matrix</span></span>
+<span><span class="co"># * morphology_focus images</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># not loaded by default:</span></span>
+<span><span class="co"># * cell metadata (load_cellmeta = TRUE)</span></span>
+<span><span class="co"># * aligned images (load_aligned_images, needs an alignment matrix)</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createGiottoXeniumObject.html">createGiottoXeniumObject</a></span><span class="op">(</span><span class="va">data_dir</span>,</span>
 <span>    backend <span class="op">=</span> <span class="va">gdsrc</span>, <span class="co"># creates the object as a backed project</span></span>
-<span>    <span class="co"># load_transcripts = FALSE # This takes a while. You can skip this and just load the expression content</span></span>
+<span>    split_keyword <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>        <span class="st">"NegControlProbe"</span>,</span>
+<span>        <span class="st">"UnassignedCodeword"</span>,</span>
+<span>        <span class="st">"NegControlCodeword"</span>,</span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GenomicControl"</span>, <span class="st">"Intergenic_Region"</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span>    <span class="co"># load_transcripts = FALSE # skip the transcripts, see Aggregate below</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co"># items to load can be controlled via `load_*` params</span></span>
 <span><span class="va">g</span></span></code></pre></div>
-<pre><code>An object of class giotto 
-&gt;Active spat_unit:  cell 
-&gt;Active feat_type:  rna 
+<pre><code>An object of class giotto
+&gt;Active spat_unit:  cell
+&gt;Active feat_type:  rna
 dimensions    : 18028, 170057 (features, cells)
 [SUBCELLULAR INFO]
-polygons      : cell nucleus 
-features      : rna NegControlProbe UnassignedCodeword NegControlCodeword 
+polygons      : cell nucleus
+features      : rna NegControlProbe UnassignedCodeword NegControlCodeword GenomicControl
 [AGGREGATE INFO]
 expression -----------------------
   [cell][rna] raw
@@ -422,13 +483,18 @@ images      : 4 items...
 
 
 Use objHistory() to see steps and params used</code></pre>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># preview the data</span></span>
+<p>Reading the 624 million transcripts takes most of the 10 minutes this
+step needs. The preview dataset has no <code>gene_panel.json</code>, so
+the reader warns <code>panel not detected in Xenium directory</code>;
+this only means no gene metadata such as Ensembl IDs is attached.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># preview the cell polygons</span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/getPolygonInfo.html" class="external-link">getPolygonInfo</a></span><span class="op">(</span><span class="va">g</span>, <span class="st">"cell"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/atera_human_breast_cancer/01_poly.png" alt="" width="100%"></p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/getFeatureInfo.html" class="external-link">getFeatureInfo</a></span><span class="op">(</span><span class="va">g</span>, <span class="st">"rna"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># transcript density</span></span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/getFeatureInfo.html" class="external-link">getFeatureInfo</a></span><span class="op">(</span><span class="va">g</span>, <span class="st">"rna"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/atera_human_breast_cancer/02_tx.png" alt="" width="100%"></p>
 <div class="section level3" number="5.1">
@@ -436,9 +502,9 @@ Use objHistory() to see steps and params used</code></pre>
 <span class="header-section-number">5.1</span> Save<a class="anchor" aria-label="anchor" href="#save"></a>
 </h3>
 <p>Backed Giotto projects write snapshots of analysis state to the
-project directory. Save/load operations are faster than in-memory and
-can be treated as checkpoints.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+project directory. Save and load operations are faster than in-memory
+ones and can be treated as checkpoints.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># name param (optional) assigns the snapshot a name</span></span>
 <span><span class="co"># The return value is needed since saveGiotto makes changes during the write</span></span>
 <span><span class="co"># Either use the returned value or immediately load with `loadGiotto()`</span></span>
@@ -448,10 +514,19 @@ can be treated as checkpoints.</p>
 <h3 id="aggregate">
 <span class="header-section-number">5.2</span> Aggregate<a class="anchor" aria-label="anchor" href="#aggregate"></a>
 </h3>
-<p>Aggregate spatial transcripts with the default polygon layer (cell
-annotations) This takes a while and can be skipped to just use the
-10x-provided expression matrix.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<p>Aggregate the spatial transcripts with the default polygon layer (the
+cell outlines). This replaces the 10x expression matrix with one Giotto
+computes from the transcripts, and takes under a minute.</p>
+<p style="color:#c0392b; font-weight:bold;">
+This step can be skipped: the 10x expression matrix read above is used
+otherwise.
+</p>
+<p>Reading the transcripts makes creating the object take a while, but
+it is a one-time step: the project directory keeps them, and
+<code><a href="https://giotto-suite.github.io/GiottoClass/reference/loadGiotto.html" class="external-link">loadGiotto()</a></code> reopens the saved object in seconds.
+<code>load_transcripts = FALSE</code> skips them, which also means
+individual transcripts cannot be plotted or re-aggregated later.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/aggregateFeatures.html" class="external-link">aggregateFeatures</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto</a></span><span class="op">(</span><span class="va">g</span>, name <span class="op">=</span> <span class="st">"aggregated"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -461,15 +536,18 @@ annotations) This takes a while and can be skipped to just use the
 <span class="header-section-number">6</span> Quality control and
 filtering<a class="anchor" aria-label="anchor" href="#quality-control-and-filtering"></a>
 </h2>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addStatistics.html">addStatistics</a></span><span class="op">(</span><span class="va">g</span>, expression_values <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span>
 <span><span class="va">cx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%s cells | median %d counts, %d features per cell\n"</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">cx</span><span class="op">)</span>, big.mark <span class="op">=</span> <span class="st">","</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">cx</span><span class="op">$</span><span class="va">total_expr</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">cx</span><span class="op">$</span><span class="va">nr_feats</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">cx</span><span class="op">$</span><span class="va">total_expr</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">cx</span><span class="op">$</span><span class="va">nr_feats</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code>170,057 cells | median 2046 counts, 1502 features per cell</code></pre>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<pre><code>170,057 cells | median 2045 counts, 1501 features per cell</code></pre>
+<p>With about 2,000 counts per cell, the whole-transcriptome panel is
+far deeper than a targeted one. A low threshold of 50 detected genes
+removes only empty or fragmented outlines.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/filterGiotto.html">filterGiotto</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    expression_threshold   <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>    feat_det_in_min_cells  <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -480,14 +558,14 @@ filtering<a class="anchor" aria-label="anchor" href="#quality-control-and-filter
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">)</span>, big.mark <span class="op">=</span> <span class="st">","</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">g</span>, feat_type <span class="op">=</span> <span class="st">"rna"</span><span class="op">)</span><span class="op">)</span>, big.mark <span class="op">=</span> <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code>169,420 cells x 18,090 features retained</code></pre>
+<pre><code>169,418 cells x 18,028 features retained</code></pre>
 </div>
 <div class="section level2" number="7">
 <h2 id="normalize-and-select-features">
 <span class="header-section-number">7</span> Normalize and select
 features<a class="anchor" aria-label="anchor" href="#normalize-and-select-features"></a>
 </h2>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/normalizeGiotto.html">normalizeGiotto</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    scalefactor <span class="op">=</span> <span class="fl">1e4</span>,</span>
 <span>    logbase <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>,</span>
@@ -497,7 +575,7 @@ features<a class="anchor" aria-label="anchor" href="#normalize-and-select-featur
 <span>    verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculateHVF.html">calculateHVF</a></span><span class="op">(</span><span class="va">g</span>, </span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculateHVF.html">calculateHVF</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    method <span class="op">=</span> <span class="st">"cov_loess"</span>,</span>
 <span>    n_top_feats <span class="op">=</span> <span class="fl">2000</span>,</span>
 <span>    verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -515,7 +593,7 @@ reduction<a class="anchor" aria-label="anchor" href="#dimension-reduction"></a>
 </h2>
 <p><code>scale_unit = TRUE</code> scales to unit variance on the fly, so
 no dense z-scored matrix is ever written.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPCA.html">runPCA</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    feats_to_use <span class="op">=</span> <span class="st">"hvf"</span>,</span>
 <span>    ncp <span class="op">=</span> <span class="fl">50</span>,</span>
@@ -527,84 +605,94 @@ no dense z-scored matrix is ever written.</p>
 <span></span>
 <span><span class="fu"><a href="../reference/screePlot.html">screePlot</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/atera_human_breast_cancer/03_scree.png" alt="" width="100%"></p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dims_to_use</span> <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span> <span class="co"># use the top 30 PCs for UMAP and clustering</span></span>
+<p>The kNN network is built first. <code><a href="../reference/runUMAP.html">runUMAP()</a></code> reuses it
+instead of searching for neighbors again, which also makes the UMAP
+reproducible, and Leiden clusters on the same network.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dims_to_use</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span> <span class="co"># use the top 30 PCs for UMAP and clustering</span></span>
 <span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    type <span class="op">=</span> <span class="st">"kNN"</span>,</span>
+<span>    dimensions_to_use <span class="op">=</span> <span class="va">dims_to_use</span>,</span>
+<span>    k <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>    engine <span class="op">=</span> <span class="st">"hnsw"</span>,</span>
+<span>    verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    dimensions_to_use <span class="op">=</span> <span class="va">dims_to_use</span>,</span>
 <span>    n_neighbors <span class="op">=</span> <span class="fl">30</span>,</span>
-<span>    min_dist <span class="op">=</span> <span class="fl">0.3</span>,</span>
-<span>    verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>    min_dist <span class="op">=</span> <span class="fl">0.3</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<pre><code>runUMAP: using the stored kNN 'kNN.pca' (29 neighbours per cell)</code></pre>
 </div>
 <div class="section level2" number="9">
 <h2 id="clustering">
 <span class="header-section-number">9</span> Clustering<a class="anchor" aria-label="anchor" href="#clustering"></a>
 </h2>
-<p>The Leiden resolution here is deliberately high. The <a href="cell_typing_cluster_tree.html">cell typing tutorial</a> builds a
-cluster tree and a per-cluster specificity measure that sort genuine
-cell types from fragments, so it is better to split too much than too
-little.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">g</span>,</span>
-<span>    dimensions_to_use <span class="op">=</span> <span class="va">dims_to_use</span>,</span>
-<span>    k <span class="op">=</span> <span class="fl">20</span>,</span>
-<span>    engine <span class="op">=</span> <span class="st">"hnsw"</span>,</span>
-<span>    verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">leiden_res</span> <span class="op">&lt;-</span> <span class="fl">0.8</span></span>
+<p>The <a href="cell_typing_cluster_tree.html">cell typing tutorial</a>
+builds a cluster tree and a per-cluster specificity measure that sort
+genuine cell types from fragments, so it is better to split too much
+than too little. Here we name the clusters directly from their
+markers.</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">leiden_res</span> <span class="op">&lt;-</span> <span class="fl">0.8</span></span>
 <span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/doLeidenCluster.html">doLeidenCluster</a></span><span class="op">(</span><span class="va">g</span>,</span>
-<span>    resolution <span class="op">=</span> <span class="va">leiden_res</span>, </span>
-<span>    n_iterations <span class="op">=</span> <span class="fl">20</span>, </span>
+<span>    nn_network_to_use <span class="op">=</span> <span class="st">"kNN"</span>,</span>
+<span>    network_name <span class="op">=</span> <span class="st">"kNN.pca"</span>,</span>
+<span>    resolution <span class="op">=</span> <span class="va">leiden_res</span>,</span>
+<span>    n_iterations <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>    objective_function <span class="op">=</span> <span class="st">"modularity"</span>,</span>
 <span>    verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/spatValues.html" class="external-link">spatValues</a></span><span class="op">(</span><span class="va">g</span>, feats <span class="op">=</span> <span class="st">"leiden_clus"</span><span class="op">)</span><span class="op">$</span><span class="va">leiden_clus</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"clusters at resolution"</span>, <span class="va">leiden_res</span>, <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div>
-<pre><code>33 clusters at resolution 0.8 </code></pre>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<span><span class="va">clusters</span> <span class="op">&lt;-</span> <span class="fu">GiottoUtils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gtools/man/mixedsort.html" class="external-link">mixedsort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">$</span><span class="va">leiden_clus</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">clusters</span><span class="op">)</span>, <span class="st">"clusters at resolution"</span>, <span class="va">leiden_res</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co"># one color per cluster, shared by the plots below</span></span>
+<span><span class="va">clus_colors</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoUtils/reference/getDistinctColors.html" class="external-link">getDistinctColors</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">clusters</span><span class="op">)</span><span class="op">)</span>, <span class="va">clusters</span><span class="op">)</span></span></code></pre></div>
+<pre><code>18 clusters at resolution 0.8</code></pre>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto</a></span><span class="op">(</span><span class="va">g</span>, name <span class="op">=</span> <span class="st">"clustered"</span><span class="op">)</span></span></code></pre></div>
 <p>The object is saved to the project directory and can be reloaded with
 <code>loadGiotto(project_dir, name = "clustered")</code>.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>    color_as_factor <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    cell_color_code <span class="op">=</span> <span class="va">clus_colors</span>,</span>
 <span>    point_border_stroke <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>    point_size <span class="op">=</span> <span class="fl">0.1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/atera_human_breast_cancer/04_umap_leiden.png" alt="" width="100%"></p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>    color_as_factor <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    cell_color_code <span class="op">=</span> <span class="va">clus_colors</span>,</span>
 <span>    point_border_stroke <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>    point_size <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>    point_size <span class="op">=</span> <span class="fl">0.2</span>,</span>
 <span>    background_color <span class="op">=</span> <span class="st">"black"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/atera_human_breast_cancer/05_centroids_global.png" alt="" width="100%"></p>
 <p>Establish an ROI and get a zoomed in plot with the polygons.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">roi</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2500</span>, <span class="fl">3500</span>, <span class="op">-</span><span class="fl">4500</span>, <span class="op">-</span><span class="fl">3500</span><span class="op">)</span> <span class="co"># xmin/xmax/ymin/ymax</span></span>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">roi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2500</span>, <span class="fl">3500</span>, <span class="op">-</span><span class="fl">4500</span>, <span class="op">-</span><span class="fl">3500</span><span class="op">)</span> <span class="co"># xmin/xmax/ymin/ymax</span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/crop.html" class="external-link">crop</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">roi</span>, view <span class="op">=</span> <span class="st">"roi"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    polygon_fill <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>    polygon_fill_as_factor <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    polygon_fill_code <span class="op">=</span> <span class="va">clus_colors</span>,</span>
 <span>    polygon_line_size <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>    view <span class="op">=</span> <span class="st">"roi"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/atera_human_breast_cancer/06_sissp_roi.png" alt="" width="100%"></p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># refine the ROI region and plot with dapi (default) image</span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    polygon_fill <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>    polygon_fill_as_factor <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    polygon_fill_code <span class="op">=</span> <span class="va">clus_colors</span>,</span>
 <span>    polygon_line_size <span class="op">=</span> <span class="fl">0.2</span>,</span>
 <span>    polygon_alpha <span class="op">=</span> <span class="fl">0.3</span>,</span>
 <span>    xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3000</span>, <span class="fl">3400</span><span class="op">)</span>,</span>
@@ -615,104 +703,494 @@ little.</p>
 <p><img src="images/atera_human_breast_cancer/07_sissp_roi_refine.png" alt="" width="100%"></p>
 </div>
 <div class="section level2" number="10">
+<h2 id="cell-types-from-cluster-markers">
+<span class="header-section-number">10</span> Cell types from
+cluster markers<a class="anchor" aria-label="anchor" href="#cell-types-from-cluster-markers"></a>
+</h2>
+<p><code><a href="../reference/findMarkers_one_vs_all.html">findMarkers_one_vs_all()</a></code> ranks the genes that set each
+Leiden cluster apart from the others. The top eight per cluster:</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/findMarkers_one_vs_all.html">findMarkers_one_vs_all</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    method <span class="op">=</span> <span class="st">"scran"</span>,</span>
+<span>    cluster_column <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
+<span>    min_feats <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>    verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">top_markers</span> <span class="op">&lt;-</span> <span class="va">markers</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span>top <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">feats</span>, <span class="fl">8</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    by <span class="op">=</span> <span class="st">"cluster"</span><span class="op">]</span></span>
+<span><span class="va">top_markers</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">cluster</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<pre><code>    cluster                                                         top
+     &lt;char&gt;                                                      &lt;char&gt;
+ 1:       1   NHERF1, NIBAN1, ANKRD30A, BMPR1B, PREX1, STC2, MUC1, MDM2
+ 2:       2        LAPTM5, ITGB2, FCGR2A, CSF1R, CTSS, C1QA, CYBB, C1QC
+ 3:       3          TRAC, CD3E, CD52, WIPF1, ITGB2, B2M, LAPTM5, TRBC2
+ 4:       4        CXCL12, LAMB1, LRP1, ABCA6, COL6A1, GEM, COL6A2, LUM
+ 5:       5      MMRN1, TGFBR2, FLT4, PROX1, TFPI, LYVE1, PKHD1L1, TBX1
+ 6:       6     EPAS1, VWF, PECAM1, HSPG2, TGFBR2, SPARCL1, ENG, COL4A1
+ 7:       7         KIT, CTSG, IL1RL1, CPA3, MS4A2, GATA2, VWA5A, NDST2
+ 8:       8      MZB1, PIM2, IGKC, JCHAIN, HERPUD1, SEC11C, DERL3, PDK1
+ 9:       9 CCND1, NHERF1, ELAPOR1, XBP1, TBC1D9, PLAT, PRPF19, STARD10
+10:      10     CCND1, ELAPOR1, PLAT, TBC1D9, NHERF1, XBP1, GATA3, MLPH
+11:      11        MYBPC1, ANKRD30A, TAT, FASN, XBP1, PIP, LRIG1, TFPI2
+12:      12    TNS4, TAGLN, MYLK, LTBP2, FBXO32, SEMA3C, BHLHE41, SFRP1
+13:      13       MS4A1, CD52, BANK1, OR4F17, RIPOR2, LTB, CD37, LAPTM5
+14:      14      GABRP, CCL28, PROM1, KIT, SFRP1, EHF, GUCY1A1, SLC12A2
+15:      15     CCND1, TFF1, TFF3, NHERF1, DSP, ELAPOR1, TBC1D9, RASSF3
+16:      16    CCND1, NHERF1, GATA3, RASSF3, VAV3, PRPF19, XBP1, TBC1D9
+17:      17         PLIN1, PLIN4, ADIPOQ, ALDH2, LPL, ACSL1, GPAM, CD36
+18:      18   COL3A1, POSTN, AEBP1, COL5A2, COL5A1, COL6A1, LUM, COL6A2</code></pre>
+<p>Each cluster is named from its markers and where it sits in the
+tissue:</p>
+<ul>
+<li>Four clusters (9, 10, 15, 16) share the luminal tumor program
+(CCND1, XBP1, GATA3, TFF1) and are kept as one type.</li>
+<li>Cluster 1 is a luminal tumor population marked by ANKRD30A and MUC1,
+and cluster 11 an apocrine-like one marked by PIP, MYBPC1 and FASN.</li>
+<li>Cluster 12 expresses TP63, KRT5 and KRT17 further down its marker
+list and lines the ducts: myoepithelial cells.</li>
+<li>Cluster 14 (KIT, GABRP, PROM1, KRT15) is the luminal progenitor
+population.</li>
+<li>Cluster 4 (CXCL12, PDGFRA, ABCA6) are fibroblasts, cluster 18
+(POSTN, CTHRC1, FAP, COL5A1) cancer-associated fibroblasts.</li>
+</ul>
+<p><em>Leiden cluster numbers can change between package versions or
+numbers of workers. Check the markers before reusing this mapping on
+your own run.</em></p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cell_types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"1"</span> <span class="op">=</span> <span class="st">"tumor, ANKRD30A+"</span>,</span>
+<span>    <span class="st">"9"</span> <span class="op">=</span> <span class="st">"tumor, luminal"</span>, <span class="st">"10"</span> <span class="op">=</span> <span class="st">"tumor, luminal"</span>,</span>
+<span>    <span class="st">"15"</span> <span class="op">=</span> <span class="st">"tumor, luminal"</span>, <span class="st">"16"</span> <span class="op">=</span> <span class="st">"tumor, luminal"</span>,</span>
+<span>    <span class="st">"11"</span> <span class="op">=</span> <span class="st">"tumor, PIP+"</span>,</span>
+<span>    <span class="st">"14"</span> <span class="op">=</span> <span class="st">"luminal progenitors"</span>,</span>
+<span>    <span class="st">"12"</span> <span class="op">=</span> <span class="st">"myoepithelial cells"</span>,</span>
+<span>    <span class="st">"4"</span> <span class="op">=</span> <span class="st">"fibroblasts"</span>, <span class="st">"18"</span> <span class="op">=</span> <span class="st">"CAFs"</span>,</span>
+<span>    <span class="st">"6"</span> <span class="op">=</span> <span class="st">"endothelial cells"</span>, <span class="st">"5"</span> <span class="op">=</span> <span class="st">"lymphatic endothelial cells"</span>,</span>
+<span>    <span class="st">"3"</span> <span class="op">=</span> <span class="st">"T cells"</span>, <span class="st">"13"</span> <span class="op">=</span> <span class="st">"B cells"</span>, <span class="st">"8"</span> <span class="op">=</span> <span class="st">"plasma cells"</span>,</span>
+<span>    <span class="st">"2"</span> <span class="op">=</span> <span class="st">"macrophages"</span>, <span class="st">"7"</span> <span class="op">=</span> <span class="st">"mast cells"</span>, <span class="st">"17"</span> <span class="op">=</span> <span class="st">"adipocytes"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/annotateGiotto.html" class="external-link">annotateGiotto</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    annotation_vector <span class="op">=</span> <span class="va">cell_types</span>,</span>
+<span>    cluster_column <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
+<span>    name <span class="op">=</span> <span class="st">"cell_type"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co"># one color per cell type, shared by the plots below</span></span>
+<span><span class="va">type_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"tumor, luminal"</span> <span class="op">=</span> <span class="st">"#c51b7d"</span>, <span class="st">"tumor, ANKRD30A+"</span> <span class="op">=</span> <span class="st">"#f1b6da"</span>,</span>
+<span>    <span class="st">"tumor, PIP+"</span> <span class="op">=</span> <span class="st">"#7a0177"</span>, <span class="st">"luminal progenitors"</span> <span class="op">=</span> <span class="st">"#ff7f00"</span>,</span>
+<span>    <span class="st">"myoepithelial cells"</span> <span class="op">=</span> <span class="st">"#e6ab02"</span>,</span>
+<span>    <span class="st">"fibroblasts"</span> <span class="op">=</span> <span class="st">"#33a02c"</span>, <span class="st">"CAFs"</span> <span class="op">=</span> <span class="st">"#b2df8a"</span>,</span>
+<span>    <span class="st">"endothelial cells"</span> <span class="op">=</span> <span class="st">"#e31a1c"</span>, <span class="st">"lymphatic endothelial cells"</span> <span class="op">=</span> <span class="st">"#fb9a99"</span>,</span>
+<span>    <span class="st">"T cells"</span> <span class="op">=</span> <span class="st">"#17becf"</span>, <span class="st">"B cells"</span> <span class="op">=</span> <span class="st">"#1f78b4"</span>, <span class="st">"plasma cells"</span> <span class="op">=</span> <span class="st">"#a6cee3"</span>,</span>
+<span>    <span class="st">"macrophages"</span> <span class="op">=</span> <span class="st">"#6a3d9a"</span>, <span class="st">"mast cells"</span> <span class="op">=</span> <span class="st">"#b15928"</span>, <span class="st">"adipocytes"</span> <span class="op">=</span> <span class="st">"#ffff99"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">$</span><span class="va">cell_type</span><span class="op">)</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<pre><code>             tumor, luminal                 fibroblasts           endothelial cells
+                      67329                       27258                       16361
+        myoepithelial cells            tumor, ANKRD30A+                 macrophages
+                      12533                       11707                        9783
+                    T cells         luminal progenitors                        CAFs
+                       9545                        6862                        4169
+               plasma cells                  mast cells                 tumor, PIP+
+                       1283                         717                         651
+lymphatic endothelial cells                     B cells                  adipocytes
+                        542                         539                         139</code></pre>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    cell_color <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
+<span>    color_as_factor <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    cell_color_code <span class="op">=</span> <span class="va">type_colors</span>,</span>
+<span>    point_border_stroke <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>    point_size <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>    background_color <span class="op">=</span> <span class="st">"black"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/atera_human_breast_cancer/08_spatial_cell_types.png" alt="" width="100%"></p>
+<p>In the ROI, the myoepithelial cells outline the ducts, a cluster of
+luminal progenitors sits inside one tumor nest, and fibroblasts and
+vessels fill the stroma between them:</p>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    polygon_fill <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
+<span>    polygon_fill_as_factor <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    polygon_fill_code <span class="op">=</span> <span class="va">type_colors</span>,</span>
+<span>    polygon_line_size <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>    view <span class="op">=</span> <span class="st">"roi"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/atera_human_breast_cancer/09_roi_cell_types.png" alt="" width="100%"></p>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto</a></span><span class="op">(</span><span class="va">g</span>, name <span class="op">=</span> <span class="st">"annotated"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2" number="11">
+<h2 id="spatially-variable-genes">
+<span class="header-section-number">11</span> Spatially variable
+genes<a class="anchor" aria-label="anchor" href="#spatially-variable-genes"></a>
+</h2>
+<p>A spatial network links each cell to its neighbors. The Delaunay
+network connects every cell to the cells that share an edge of the
+triangulation of the cell centers.</p>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    method <span class="op">=</span> <span class="st">"Delaunay"</span>,</span>
+<span>    delaunay_method <span class="op">=</span> <span class="st">"delaunayn_geometry"</span>,</span>
+<span>    verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Moran’s I measures whether a gene’s expression is more similar
+between neighboring cells than expected by chance.
+<code><a href="../reference/spatialAutoCor.html">spatialAutoCor()</a></code> computes it for all 18,028 genes on the
+disk-backed expression in about 10 seconds.</p>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">moran</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialAutoCor.html">spatialAutoCor</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    method <span class="op">=</span> <span class="st">"moran"</span>,</span>
+<span>    spatial_network_name <span class="op">=</span> <span class="st">"Delaunay_network"</span>,</span>
+<span>    return_gobject <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">moran</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">feats</span>, <span class="va">statistic</span>, <span class="va">z</span>, <span class="va">adj.p.value</span><span class="op">)</span><span class="op">]</span>, <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
+<pre><code>      feats statistic        z adj.p.value
+     &lt;char&gt;     &lt;num&gt;    &lt;num&gt;       &lt;num&gt;
+ 1:   CCND1 0.6934436 474.5931           0
+ 2:  NHERF1 0.6852831 469.0080           0
+ 3: ELAPOR1 0.6785076 464.3708           0
+ 4:    MSMB 0.6624656 453.3966           0
+ 5:    XBP1 0.6336424 433.6654           0
+ 6: STARD10 0.6212348 425.1737           0
+ 7:   GATA3 0.6209205 424.9585           0
+ 8:    TFF1 0.6157652 421.4311           0
+ 9:  TBC1D9 0.6092279 416.9563           0
+10:    TFF3 0.6091648 416.9144           0</code></pre>
+<p>The genes with the highest Moran’s I are all part of the luminal
+tumor program, the largest and most compact compartment of this
+section:</p>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatFeatPlot2D.html" class="external-link">spatFeatPlot2D</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    expression_values <span class="op">=</span> <span class="st">"normalized"</span>,</span>
+<span>    feats <span class="op">=</span> <span class="va">moran</span><span class="op">$</span><span class="va">feats</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span>,</span>
+<span>    gradient_style <span class="op">=</span> <span class="st">"sequential"</span>,</span>
+<span>    point_size <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>    point_border_stroke <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>    background_color <span class="op">=</span> <span class="st">"black"</span>,</span>
+<span>    cow_n_col <span class="op">=</span> <span class="fl">2</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/atera_human_breast_cancer/10_moran_top.png" alt="" width="100%"></p>
+</div>
+<div class="section level2" number="12">
+<h2 id="spatial-co-expression-modules">
+<span class="header-section-number">12</span> Spatial co-expression
+modules<a class="anchor" aria-label="anchor" href="#spatial-co-expression-modules"></a>
+</h2>
+<p><code><a href="../reference/spatialCoexpression.html">spatialCoexpression()</a></code> averages each cell’s expression
+with its neighbors’ in the spatial network, correlates the genes on
+these smoothed values, and clusters the correlation into modules. It
+runs on the 500 genes with the highest Moran’s I.</p>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">spatial_genes</span> <span class="op">&lt;-</span> <span class="va">moran</span><span class="op">$</span><span class="va">feats</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">500</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">coexpr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialCoexpression.html">spatialCoexpression</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    feats <span class="op">=</span> <span class="va">spatial_genes</span>,</span>
+<span>    spatial_network_name <span class="op">=</span> <span class="st">"Delaunay_network"</span>,</span>
+<span>    n_modules <span class="op">=</span> <span class="fl">12</span>,</span>
+<span>    return_gobject <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">coexpr</span><span class="op">$</span><span class="va">summary</span></span></code></pre></div>
+<pre><code>    module  size within_cor between_cor      score
+     &lt;int&gt; &lt;int&gt;      &lt;num&gt;       &lt;num&gt;      &lt;num&gt;
+ 1:     10    24 0.48658359 -0.34059207 0.48658359
+ 2:     12    15 0.42605743 -0.27962385 0.40008147
+ 3:     11     8 0.38986133 -0.06374923 0.28193101
+ 4:      9    11 0.34914690 -0.14220437 0.27988045
+ 5:      6    13 0.39533533  0.01806930 0.25354382
+ 6:      2   214 0.62338634  0.27263228 0.24111066
+ 7:      4    33 0.33589003  0.09998138 0.18790580
+ 8:      1    79 0.62735500  0.36000119 0.18783432
+ 9:      7    44 0.54614852  0.35714032 0.16508301
+10:      3    40 0.41691558  0.28860478 0.15459361
+11:      8    12 0.32361456  0.20659439 0.14653706
+12:      5     7 0.09562919 -0.05725352 0.06853375</code></pre>
+<p>The summary ranks the modules: a high <code>within_cor</code> and a
+low <code>between_cor</code> mean a module is coherent and distinct from
+the others. Most of the 500 genes fall into large, mutually correlated
+tumor modules (2, 1, 7); the small stromal and immune modules rank
+highest because they are the most distinct.</p>
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/heatmapCoexpression.html">heatmapCoexpression</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">coexpr</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/atera_human_breast_cancer/11_coexpression_heatmap.png" alt="" width="100%"></p>
+<p>The genes that best represent each of the four top-ranked
+modules:</p>
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">top_modules</span> <span class="op">&lt;-</span> <span class="va">coexpr</span><span class="op">$</span><span class="va">summary</span><span class="op">$</span><span class="va">module</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span></span>
+<span><span class="va">coexpr</span><span class="op">$</span><span class="va">feats</span><span class="op">[</span><span class="va">module</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">top_modules</span><span class="op">]</span><span class="op">[</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">module</span>, <span class="va">top_modules</span><span class="op">)</span>, <span class="op">-</span><span class="va">module_cor</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">5</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"module"</span></span>
+<span><span class="op">]</span></span></code></pre></div>
+<pre><code>    module feat_ID module_cor
+     &lt;int&gt;  &lt;char&gt;      &lt;num&gt;
+ 1:     10   LAMB1  0.6013472
+ 2:     10  CXCL12  0.5911660
+ 3:     10  COL6A2  0.5769407
+ 4:     10    LRP1  0.5745794
+ 5:     10  COL6A1  0.5694322
+ 6:     12   HSPG2  0.5284842
+ 7:     12  COL4A1  0.4930708
+ 8:     12  TGFBR2  0.4692459
+ 9:     12   EPAS1  0.4635048
+10:     12     ENG  0.4617396
+11:     11    TNS4  0.4795486
+12:     11    MYLK  0.4532510
+13:     11  FBXO32  0.4487561
+14:     11   TAGLN  0.3841451
+15:     11    NFIB  0.3490831
+16:      9    CD52  0.4688161
+17:      9    TRAC  0.4546557
+18:      9   ITGB2  0.4376084
+19:      9  LAPTM5  0.4202442
+20:      9    CD3E  0.4201818</code></pre>
+<p>They match the cell types named above: fibroblast stroma (module 10),
+vessels (12), the myoepithelial layer (11) and T cell infiltrates
+(9).</p>
+<p>The same call with the default <code>return_gobject = TRUE</code>
+adds the module scores to the object, one per cell and module:</p>
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialCoexpression.html">spatialCoexpression</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    feats <span class="op">=</span> <span class="va">spatial_genes</span>,</span>
+<span>    spatial_network_name <span class="op">=</span> <span class="st">"Delaunay_network"</span>,</span>
+<span>    n_modules <span class="op">=</span> <span class="fl">12</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Each module’s color scale is capped at the 99th percentile of its
+non-zero scores, so a few high-scoring cells do not wash out the
+rest:</p>
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">module_scores</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/getSpatialEnrichment.html" class="external-link">getSpatialEnrichment</a></span><span class="op">(</span><span class="va">g</span>, name <span class="op">=</span> <span class="st">"spatial_module"</span>,</span>
+<span>    output <span class="op">=</span> <span class="st">"data.table"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">m</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">top_modules</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">v</span> <span class="op">&lt;-</span> <span class="va">module_scores</span><span class="op">[[</span><span class="va">m</span><span class="op">]</span><span class="op">]</span></span>
+<span>    <span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatCellPlot.html" class="external-link">spatCellPlot2D</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>        spat_enr_names <span class="op">=</span> <span class="st">"spatial_module"</span>,</span>
+<span>        cell_annotation_values <span class="op">=</span> <span class="va">m</span>,</span>
+<span>        gradient_style <span class="op">=</span> <span class="st">"sequential"</span>,</span>
+<span>        gradient_limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">v</span><span class="op">[</span><span class="va">v</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">]</span>, <span class="fl">0.99</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>        point_size <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>        point_border_stroke <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>        background_color <span class="op">=</span> <span class="st">"black"</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p><img src="images/atera_human_breast_cancer/12_module_1.png" alt="" width="50%"><img src="images/atera_human_breast_cancer/12_module_2.png" alt="" width="50%"><img src="images/atera_human_breast_cancer/12_module_3.png" alt="" width="50%"><img src="images/atera_human_breast_cancer/12_module_4.png" alt="" width="50%"></p>
+</div>
+<div class="section level2" number="13">
+<h2 id="spatial-enrichment">
+<span class="header-section-number">13</span> Spatial
+enrichment<a class="anchor" aria-label="anchor" href="#spatial-enrichment"></a>
+</h2>
+<p>PAGE scores each cell for a set of marker genes per cell type, here
+short signatures for the main cell types of breast tissue. It runs on
+the disk-backed expression without loading it into memory.</p>
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">signatures</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    luminal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EPCAM"</span>, <span class="st">"KRT8"</span>, <span class="st">"KRT18"</span>, <span class="st">"KRT19"</span>, <span class="st">"ESR1"</span>, <span class="st">"GATA3"</span>, <span class="st">"FOXA1"</span><span class="op">)</span>,</span>
+<span>    myoepithelial <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"KRT5"</span>, <span class="st">"KRT14"</span>, <span class="st">"KRT17"</span>, <span class="st">"TP63"</span>, <span class="st">"OXTR"</span>, <span class="st">"MYLK"</span><span class="op">)</span>,</span>
+<span>    fibroblast <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"COL1A1"</span>, <span class="st">"COL1A2"</span>, <span class="st">"COL3A1"</span>, <span class="st">"DCN"</span>, <span class="st">"LUM"</span>, <span class="st">"PDGFRA"</span>, <span class="st">"FBLN1"</span><span class="op">)</span>,</span>
+<span>    endothelial <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PECAM1"</span>, <span class="st">"VWF"</span>, <span class="st">"CDH5"</span>, <span class="st">"CLDN5"</span>, <span class="st">"PLVAP"</span>, <span class="st">"KDR"</span><span class="op">)</span>,</span>
+<span>    T_NK <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD3E"</span>, <span class="st">"CD3D"</span>, <span class="st">"CD2"</span>, <span class="st">"TRAC"</span>, <span class="st">"NKG7"</span>, <span class="st">"GZMA"</span>, <span class="st">"CD8A"</span><span class="op">)</span>,</span>
+<span>    B_plasma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MS4A1"</span>, <span class="st">"CD79A"</span>, <span class="st">"JCHAIN"</span>, <span class="st">"MZB1"</span>, <span class="st">"IGKC"</span><span class="op">)</span>,</span>
+<span>    myeloid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD68"</span>, <span class="st">"CD163"</span>, <span class="st">"LYZ"</span>, <span class="st">"C1QA"</span>, <span class="st">"C1QB"</span>, <span class="st">"CSF1R"</span>, <span class="st">"AIF1"</span><span class="op">)</span>,</span>
+<span>    mast <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TPSAB1"</span>, <span class="st">"CPA3"</span>, <span class="st">"KIT"</span>, <span class="st">"MS4A2"</span><span class="op">)</span>,</span>
+<span>    adipocyte <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ADIPOQ"</span>, <span class="st">"PLIN1"</span>, <span class="st">"LEP"</span>, <span class="st">"FABP4"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">sign_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/enrichment_PAGE.html">makeSignMatrixPAGE</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">signatures</span><span class="op">)</span>, <span class="va">signatures</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/enrichment_PAGE.html">runPAGEEnrich</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    sign_matrix <span class="op">=</span> <span class="va">sign_matrix</span>,</span>
+<span>    expression_values <span class="op">=</span> <span class="st">"normalized"</span>,</span>
+<span>    min_overlap_genes <span class="op">=</span> <span class="fl">3</span>, <span class="co"># the mast and adipocyte signatures have 4 genes</span></span>
+<span>    verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>As for the modules, each signature’s color scale is capped, here at
+the 1st and 99th percentile of its scores:</p>
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">page_scores</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/getSpatialEnrichment.html" class="external-link">getSpatialEnrichment</a></span><span class="op">(</span><span class="va">g</span>, name <span class="op">=</span> <span class="st">"PAGE"</span>, output <span class="op">=</span> <span class="st">"data.table"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">sig</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"luminal"</span>, <span class="st">"myoepithelial"</span>, <span class="st">"fibroblast"</span>, <span class="st">"endothelial"</span>,</span>
+<span>              <span class="st">"T_NK"</span>, <span class="st">"myeloid"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">v</span> <span class="op">&lt;-</span> <span class="va">page_scores</span><span class="op">[[</span><span class="va">sig</span><span class="op">]</span><span class="op">]</span></span>
+<span>    <span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatCellPlot.html" class="external-link">spatCellPlot2D</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>        spat_enr_names <span class="op">=</span> <span class="st">"PAGE"</span>,</span>
+<span>        cell_annotation_values <span class="op">=</span> <span class="va">sig</span>,</span>
+<span>        gradient_style <span class="op">=</span> <span class="st">"sequential"</span>,</span>
+<span>        gradient_limits <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">v</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.99</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>        point_size <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>        point_border_stroke <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>        background_color <span class="op">=</span> <span class="st">"black"</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p><img src="images/atera_human_breast_cancer/13_page_1.png" alt="" width="50%"><img src="images/atera_human_breast_cancer/13_page_2.png" alt="" width="50%"><img src="images/atera_human_breast_cancer/13_page_3.png" alt="" width="50%"><img src="images/atera_human_breast_cancer/13_page_4.png" alt="" width="50%"><img src="images/atera_human_breast_cancer/13_page_5.png" alt="" width="50%"><img src="images/atera_human_breast_cancer/13_page_6.png" alt="" width="50%"></p>
+<p>The highest-scoring signature per cell type checks the marker-based
+names against an independent gene set:</p>
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">page</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">page_scores</span>, <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">cell_ID</span>, <span class="va">cell_type</span><span class="op">)</span><span class="op">]</span>, by <span class="op">=</span> <span class="st">"cell_ID"</span><span class="op">)</span></span>
+<span><span class="va">scored</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">intersect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">signatures</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">page</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">page_mean</span> <span class="op">&lt;-</span> <span class="va">page</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="va">mean</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"cell_type"</span>, .SDcols <span class="op">=</span> <span class="va">scored</span><span class="op">]</span></span>
+<span><span class="va">page_mean</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">cell_type</span>, top_signature <span class="op">=</span> <span class="va">scored</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/maxCol.html" class="external-link">max.col</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">.SD</span><span class="op">)</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>    .SDcols <span class="op">=</span> <span class="va">scored</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">cell_type</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<pre><code>                      cell_type top_signature
+                         &lt;char&gt;        &lt;char&gt;
+ 1:                     B cells      B_plasma
+ 2:                        CAFs    fibroblast
+ 3:                     T cells          T_NK
+ 4:                  adipocytes     adipocyte
+ 5:           endothelial cells   endothelial
+ 6:                 fibroblasts    fibroblast
+ 7:         luminal progenitors          mast
+ 8: lymphatic endothelial cells   endothelial
+ 9:                 macrophages       myeloid
+10:                  mast cells          mast
+11:         myoepithelial cells myoepithelial
+12:                plasma cells      B_plasma
+13:            tumor, ANKRD30A+       luminal
+14:                 tumor, PIP+          mast
+15:              tumor, luminal       luminal</code></pre>
+<p>Thirteen of the fifteen types agree. The two exceptions show a limit
+of short signatures: the luminal progenitors express KIT, one of only
+four genes in the mast signature, and that is enough to outscore the
+luminal signature. Longer or more specific gene sets avoid this.</p>
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto</a></span><span class="op">(</span><span class="va">g</span>, name <span class="op">=</span> <span class="st">"spatial"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2" number="14">
+<h2 id="cell-cell-interactions">
+<span class="header-section-number">14</span> Cell-cell
+interactions<a class="anchor" aria-label="anchor" href="#cell-cell-interactions"></a>
+</h2>
+<p><code><a href="../reference/cellProximityMotifs.html">cellProximityMotifs()</a></code> counts which cell types are
+neighbors in the spatial network more or less often than expected when
+the labels are shuffled. Pairs of neighbors (<code>size = 2</code>) give
+the classic proximity enrichment:</p>
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pairs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cellProximityMotifs.html">cellProximityMotifs</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    spatial_network_name <span class="op">=</span> <span class="st">"Delaunay_network"</span>,</span>
+<span>    cluster_column <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
+<span>    size <span class="op">=</span> <span class="fl">2L</span>,</span>
+<span>    n_perm <span class="op">=</span> <span class="fl">1000L</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotMotifEnrichment.html">plotMotifEnrichment</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">pairs</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/atera_human_breast_cancer/14_motif_pairs.png" alt="" width="100%"></p>
+<p>Each cell type is most enriched next to its own kind, as expected for
+tumor nests, ducts and stroma. Contacts between the stroma and the tumor
+(fibroblasts, endothelial cells, T cells next to luminal tumor cells)
+are depleted, because the tumor cells sit in compact nests.</p>
+<p>Motifs of three cells (<code>size = 3</code>) with the conditional
+null hold the observed pairs fixed, so a triplet that is still enriched
+is enriched beyond what its pairs already explain:</p>
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">triplets</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cellProximityMotifs.html">cellProximityMotifs</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    spatial_network_name <span class="op">=</span> <span class="st">"Delaunay_network"</span>,</span>
+<span>    cluster_column <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
+<span>    size <span class="op">=</span> <span class="fl">3L</span>,</span>
+<span>    null <span class="op">=</span> <span class="st">"conditional"</span>,</span>
+<span>    n_perm <span class="op">=</span> <span class="fl">1000L</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">triplets</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">z</span><span class="op">)</span>, <span class="fu">.</span><span class="op">(</span><span class="va">motif_id</span>, <span class="va">observed</span>, <span class="va">expected</span>, <span class="va">fold</span>, <span class="va">p_adj</span><span class="op">)</span><span class="op">]</span>, <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
+<pre><code>                                                             motif_id observed expected     fold       p_adj
+                                                               &lt;char&gt;    &lt;num&gt;    &lt;num&gt;    &lt;num&gt;       &lt;num&gt;
+ 1:                         size3_open_tumor, luminal-T cells-T cells      311   73.874 4.209871 0.008589671
+ 2:              size3_open_macrophages-tumor, luminal-tumor, luminal     6791 4787.419 1.418510 0.008589671
+ 3: size3_open_tumor, luminal-myoepithelial cells-myoepithelial cells     3298 2036.807 1.619201 0.008589671
+ 4:                                  size3_open_fibroblasts-CAFs-CAFs      260   56.240 4.623044 0.008589671
+ 5:                        size3_open_fibroblasts-CAFs-tumor, luminal      907  328.566 2.760480 0.008589671
+ 6:               size3_closed_macrophages-macrophages-tumor, luminal     1484  974.486 1.522854 0.008589671
+ 7:                      size3_closed_CAFs-fibroblasts-tumor, luminal      434  206.977 2.096851 0.008589671
+ 8:                 size3_open_tumor, luminal-fibroblasts-fibroblasts     1158  536.493 2.158462 0.008589671
+ 9:                                size3_closed_CAFs-CAFs-fibroblasts      270  118.566 2.277213 0.008589671
+10: size3_closed_endothelial cells-myoepithelial cells-tumor, luminal     2316 1544.338 1.499672 0.008589671</code></pre>
+<p>In an open motif the first cell type listed is the center that links
+the other two. The glyphs draw the top-ranked triplets:</p>
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotMotifGlyphs.html">plotMotifGlyphs</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">triplets</span>, cell_color_code <span class="op">=</span> <span class="va">type_colors</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/atera_human_breast_cancer/15_motif_triplets.png" alt="" width="100%"></p>
+<p>The most enriched triplet is a luminal tumor cell with two T cells on
+either side, four times more often than its pairs predict. It marks the
+places where T cells penetrate the tumor nests:</p>
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">top_triplet</span> <span class="op">&lt;-</span> <span class="va">triplets</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">z</span><span class="op">)</span><span class="op">]</span><span class="op">$</span><span class="va">motif_id</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
+<span><span class="fu"><a href="../reference/spatMotifPlot.html">spatMotifPlot</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    motif_id <span class="op">=</span> <span class="va">top_triplet</span>,</span>
+<span>    cluster_column <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
+<span>    spatial_network_name <span class="op">=</span> <span class="st">"Delaunay_network"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/atera_human_breast_cancer/16_motif_spatial.png" alt="" width="100%"></p>
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto</a></span><span class="op">(</span><span class="va">g</span>, name <span class="op">=</span> <span class="st">"analyzed"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2" number="15">
 <h2 id="further-reading">
-<span class="header-section-number">10</span> Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
+<span class="header-section-number">15</span> Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
 </h2>
 <p>Suggested further topics:</p>
 <ul>
 <li>Continue with <a href="cell_typing_cluster_tree.html">Cell typing
-with a cluster tree</a>
-</li>
+with a cluster tree</a> for a more systematic annotation than the
+cluster markers above</li>
 <li>GiottoLens for <a href="giottolens.html">interactive visualization
 and annotation</a>
 </li>
 </ul>
 </div>
-<div class="section level2" number="11">
+<div class="section level2" number="16">
 <h2 id="session-info">
-<span class="header-section-number">11</span> Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+<span class="header-section-number">16</span> Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code>R version 4.5.2 (2025-10-31)
+<pre><code>R version 4.5.1 (2025-06-13)
 Platform: aarch64-apple-darwin20
-Running under: macOS Sequoia 15.5
+Running under: macOS Sonoma 14.5
 
 Matrix products: default
-BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
+BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib
 LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
 
 locale:
-[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+[1] en_US/en_US/en_US/C/en_US/en_US
 
 time zone: America/New_York
 tzcode source: internal
 
 attached base packages:
-[1] stats     graphics  grDevices utils     datasets  methods   base     
+[1] stats     graphics  grDevices utils     datasets  methods   base
 
 other attached packages:
-[1] GiottoDisk_0.0.0.3 Giotto_4.3.0       GiottoClass_0.7.3  arrow_23.0.1.2    
+[1] GiottoDisk_0.0.0.6 Giotto_4.3.5       GiottoClass_0.7.18 arrow_23.0.1.2
 
 loaded via a namespace (and not attached):
-  [1] colorRamp2_0.1.0            gridExtra_2.3              
-  [3] rlang_1.2.0                 magrittr_2.0.5             
-  [5] GiottoUtils_0.2.7           matrixStats_1.5.0          
-  [7] compiler_4.5.2              systemfonts_1.3.1          
-  [9] png_0.1-9                   vctrs_0.7.3                
- [11] wk_0.9.5                    pkgconfig_2.0.3            
- [13] SpatialExperiment_1.20.0    fastmap_1.2.0              
- [15] backports_1.5.1             magick_2.9.0               
- [17] XVector_0.50.0              labeling_0.4.3             
- [19] ggraph_2.2.2                ragg_1.5.0                 
- [21] purrr_1.2.1                 bit_4.6.0                  
- [23] bluster_1.20.0              cachem_1.1.0               
- [25] beachmat_2.26.0             jsonlite_2.0.0             
- [27] DelayedArray_0.36.1         BiocParallel_1.44.0        
- [29] tweenr_2.0.3                terra_1.9-27               
- [31] irlba_2.3.7                 parallel_4.5.2             
- [33] cluster_2.1.8.1             R6_2.6.1                   
- [35] RColorBrewer_1.1-3          reticulate_1.46.0          
- [37] parallelly_1.46.1           GenomicRanges_1.62.1       
- [39] scattermore_1.2             Rcpp_1.1.1-1.1             
- [41] Seqinfo_1.0.0               assertthat_0.2.1           
- [43] SummarizedExperiment_1.40.0 R.utils_2.13.0             
- [45] IRanges_2.44.0              Matrix_1.7-4               
- [47] igraph_2.3.2                tidyselect_1.2.1           
- [49] abind_1.4-8                 viridis_0.6.5              
- [51] codetools_0.2-20            listenv_0.10.0             
- [53] lattice_0.22-7              tibble_3.3.1               
- [55] Biobase_2.70.0              withr_3.0.2                
- [57] S7_0.2.1                    sedonadb_0.3.0             
- [59] future_1.69.0               polyclip_1.10-7            
- [61] pillar_1.11.1               MatrixGenerics_1.22.0      
- [63] checkmate_2.3.4             stats4_4.5.2               
- [65] GiottoKernels_0.2.0         plotly_4.12.0              
- [67] generics_0.1.4              RcppHNSW_0.6.0             
- [69] nanoarrow_0.7.0-3           S4Vectors_0.48.1           
- [71] ggplot2_4.0.2               scales_1.4.0               
- [73] globals_0.19.0              gtools_3.9.5               
- [75] glue_1.8.1                  BPCells_0.3.1              
- [77] lazyeval_0.2.2              tools_4.5.2                
- [79] GiottoVisuals_0.2.16        tilework_1.0.0             
- [81] BiocNeighbors_2.4.0         data.table_1.18.4          
- [83] ScaledMatrix_1.18.0         graphlayouts_1.2.2         
- [85] tidygraph_1.3.1             cowplot_1.2.0              
- [87] grid_4.5.2                  tidyr_1.3.2                
- [89] colorspace_2.1-2            SingleCellExperiment_1.32.0
- [91] BiocSingular_1.26.1         ggforce_0.5.0              
- [93] cli_3.6.6                   rsvd_1.0.5                 
- [95] textshaping_1.0.4           S4Arrays_1.10.1            
- [97] viridisLite_0.4.3           ggdendro_0.2.0             
- [99] dplyr_1.2.0                 geoarrow_0.4.2             
-[101] gtable_0.3.6                R.methodsS3_1.8.2          
-[103] digest_0.6.39               BiocGenerics_0.56.0        
-[105] SparseArray_1.10.10         ggrepel_0.9.6              
-[107] rjson_0.2.23                htmlwidgets_1.6.4          
-[109] farver_2.1.2                R.oo_1.27.1                
-[111] memoise_2.0.1               htmltools_0.5.9            
-[113] lifecycle_1.0.5             httr_1.4.7                 
-[115] bit64_4.6.0-1               MASS_7.3-65    </code></pre>
+  [1] colorRamp2_0.1.0            gridExtra_2.3               rlang_1.1.7                 magrittr_2.0.4
+  [5] otel_0.2.0                  GiottoUtils_0.2.7           matrixStats_1.5.0           compiler_4.5.1
+  [9] systemfonts_1.3.2           vctrs_0.7.2                 pkgconfig_2.0.3             SpatialExperiment_1.20.0
+ [13] crayon_1.5.3                fastmap_1.2.0               backports_1.5.1             magick_2.9.1
+ [17] XVector_0.48.0              labeling_0.4.3              ggraph_2.2.2                UCSC.utils_1.4.0
+ [21] ragg_1.5.2                  purrr_1.2.1                 bit_4.6.0                   bluster_1.18.0
+ [25] cachem_1.1.0                beachmat_2.24.0             GenomeInfoDb_1.44.3         jsonlite_2.0.0
+ [29] DelayedArray_0.34.1         smotif_0.2.0                BiocParallel_1.42.2         tweenr_2.0.3
+ [33] terra_1.9-11                cluster_2.1.8.3             irlba_2.3.7                 parallel_4.5.1
+ [37] R6_2.6.1                    RColorBrewer_1.1-3          smotifrs_0.2.0              parallelly_1.46.1
+ [41] GenomicRanges_1.60.0        scattermore_1.2             Rcpp_1.1.2                  Seqinfo_1.0.0
+ [45] assertthat_0.2.1            SummarizedExperiment_1.38.1 R.utils_2.13.0              IRanges_2.42.0
+ [49] Matrix_1.7-3                igraph_2.2.2                tidyselect_1.2.1            abind_1.4-8
+ [53] viridis_0.6.5               codetools_0.2-20            listenv_0.10.1              lattice_0.22-7
+ [57] tibble_3.3.1                Biobase_2.68.0              withr_3.0.2                 S7_0.2.1
+ [61] future.mirai_1.0.0          future_1.70.0               polyclip_1.10-7             filelock_1.0.3
+ [65] pillar_1.11.1               MatrixGenerics_1.20.0       checkmate_2.3.4             stats4_4.5.1
+ [69] plotly_4.12.0               generics_0.1.4              RcppHNSW_0.7.0              nanoarrow_0.9.0
+ [73] S4Vectors_0.48.1            ggplot2_4.0.2               mirai_2.7.2                 scales_1.4.0
+ [77] globals_0.19.1              gtools_3.9.5                glue_1.8.0                  lazyeval_0.2.2
+ [81] tools_4.5.1                 tilework_1.0.0              GiottoVisuals_0.2.16        BiocNeighbors_2.2.0
+ [85] data.table_1.18.2.1         ScaledMatrix_1.16.0         graphlayouts_1.2.3          tidygraph_1.3.1
+ [89] cowplot_1.2.0               grid_4.5.1                  tidyr_1.3.2                 colorspace_2.1-2
+ [93] SingleCellExperiment_1.30.1 GenomeInfoDbData_1.2.14     BiocSingular_1.24.0         ggforce_0.5.0
+ [97] cli_3.6.5                   rsvd_1.0.5                  textshaping_1.0.5           S4Arrays_1.8.1
+[101] viridisLite_0.4.3           dplyr_1.2.0                 gtable_0.3.6                R.methodsS3_1.8.2
+[105] digest_0.6.39               BiocGenerics_0.54.1         SparseArray_1.8.1           ggrepel_0.9.8
+[109] nanonext_1.10.2             rjson_0.2.23                htmlwidgets_1.6.4           farver_2.1.2
+[113] R.oo_1.27.1                 memoise_2.0.1               htmltools_0.5.9             lifecycle_1.0.5
+[117] httr_1.4.8                  bit64_4.6.0-1               MASS_7.3-65</code></pre>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

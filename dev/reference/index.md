@@ -155,10 +155,11 @@ Functions to help to import raw spatial data.
 - [`createGiottoObject()`](https://giotto-suite.github.io/GiottoClass/reference/create_giotto.html)
   [`createGiottoObjectSubcellular()`](https://giotto-suite.github.io/GiottoClass/reference/create_giotto.html)
   : Create a giotto object (from GiottoClass)
+- [`createGiottoAteraObject()`](https://giottosuite.com/dev/reference/createGiottoAteraObject.md)
+  : Create a Giotto object from Atera output
 - [`createGiottoCosMxObject()`](https://giottosuite.com/dev/reference/createGiottoCosMxObject.md)
   : Create Nanostring CosMx Giotto Object
 - [`createGiottoMerscopeObject()`](https://giottosuite.com/dev/reference/createGiottoMerscopeObject.md)
-  [`.createGiottoMerscopeObject_subcellular()`](https://giottosuite.com/dev/reference/createGiottoMerscopeObject.md)
   [`.createGiottoMerscopeObject_aggregate()`](https://giottosuite.com/dev/reference/createGiottoMerscopeObject.md)
   : Create Vizgen MERSCOPE Giotto Object
 - [`createGiottoStereoSeqObject()`](https://giottosuite.com/dev/reference/createGiottoStereoSeqObject.md)
@@ -184,8 +185,12 @@ Functions to help to import raw spatial data.
   : Create a Giotto object from an ArchR project
 - [`createArchRProj()`](https://giottosuite.com/dev/reference/createArchRProj.md)
   : Create an ArchR project and run LSI dimension reduction
+- [`importAtera()`](https://giottosuite.com/dev/reference/importAtera.md)
+  : Import an Atera dataset
 - [`importCosMx()`](https://giottosuite.com/dev/reference/importCosMx.md)
   : Import a Nanostring CosMx Assay
+- [`importMerscope()`](https://giottosuite.com/dev/reference/importMerscope.md)
+  : Import a Vizgen MERSCOPE Assay
 - [`importStereoSeq()`](https://giottosuite.com/dev/reference/importStereoSeq.md)
   [`plot(`*`<StereoSeqReader>`*`,`*`<missing>`*`)`](https://giottosuite.com/dev/reference/importStereoSeq.md)
   : Import a Stereo-seq assay

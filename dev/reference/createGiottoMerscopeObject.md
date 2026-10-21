@@ -1,47 +1,49 @@
 # Create Vizgen MERSCOPE Giotto Object
 
-Given the path to a MERSCOPE experiment directory, creates a Giotto
-object. Supports both Parquet and HDF5 cell boundary formats (v2).
-Features automatic 2D vs 3D architecture detection with vertex
-validation.
+Given the path to a MERSCOPE region directory, creates a Giotto object
+from the vendor outputs: transcripts (\`detected_transcripts.parquet\`
+or \`.csv\`), cell boundaries (\`cell_boundaries.parquet\`, or the
+per-FOV HDF5 files in \`cell_boundaries/\`), the cell by gene matrix
+(\`cell_by_gene.csv\`) and cell metadata (\`cell_metadata.csv\`). Calls
+\[importMerscope()\] and the reader's \`create_gobject()\`.
+
+No overlap between transcripts and polygons is calculated. Use
+\[calculateOverlap()\] and \[overlapToMatrix()\] on the created object
+to aggregate transcripts by polygon.
+
+The y coordinates of transcripts, polygons and cell centers are negated
+(\`y\` becomes \`-y\`).
 
 ## Usage
 
 ``` r
 createGiottoMerscopeObject(
   merscope_dir,
-  version = 1,
+  transcript_path = NULL,
+  bounds_path = NULL,
+  expression_path = NULL,
+  cell_metadata_path = NULL,
   data_to_use = c("subcellular", "aggregate"),
   FOVs = NULL,
   polygon_format = c("parquet", "hdf5"),
   poly_z_indices = NULL,
-  flip_axis = c("none", "y", "x", "both"),
   spat_unit = "cell",
-  calculate_overlap = TRUE,
-  overlap_to_matrix = TRUE,
-  aggregate_stack = TRUE,
-  aggregate_stack_param = list(summarize_expression = "sum", summarize_locations =
-    "mean", new_spat_unit = "cell"),
   split_keyword = c("Blank"),
+  score_threshold = NULL,
+  load_transcripts = TRUE,
+  load_expression = TRUE,
+  load_cellmeta = FALSE,
+  load_images = NULL,
+  backend = NULL,
   instructions = NULL,
-  cores = NA,
-  verbose = TRUE
-)
-
-.createGiottoMerscopeObject_subcellular(
-  data_list,
-  version = 1,
-  flip_axis = c("none", "y", "x", "both"),
-  spat_unit = "cell",
-  calculate_overlap = TRUE,
-  overlap_to_matrix = TRUE,
-  aggregate_stack = TRUE,
-  aggregate_stack_param = list(summarize_expression = "sum", summarize_locations =
-    "mean"),
-  split_keyword = c("Blank"),
-  instructions = NULL,
-  cores = NA,
-  verbose = TRUE
+  verbose = NULL,
+  version = deprecated(),
+  flip_axis = deprecated(),
+  calculate_overlap = deprecated(),
+  overlap_to_matrix = deprecated(),
+  aggregate_stack = deprecated(),
+  aggregate_stack_param = deprecated(),
+  cores = deprecated()
 )
 
 .createGiottoMerscopeObject_aggregate(data_list, cores = NA, verbose = TRUE)
@@ -51,84 +53,130 @@ createGiottoMerscopeObject(
 
 - merscope_dir:
 
-  full path to the exported merscope directory
+  full path to the MERSCOPE region directory
 
-- version:
+- transcript_path:
 
-  integer. Version of logic to use (1 = Legacy/Original, 2 =
-  New/Optimized)
+  (optional) path to the transcripts file. \`NULL\` (default) uses
+  \`detected_transcripts.parquet\` or \`.csv\` in \`merscope_dir\`.
+
+- bounds_path:
+
+  (optional) path to the cell boundaries. \`NULL\` (default) uses
+  \`cell_boundaries.parquet\`, or the \`cell_boundaries/\` directory
+  when \`polygon_format = "hdf5"\`.
+
+- expression_path:
+
+  (optional) path to the cell by gene matrix. \`NULL\` (default) uses
+  \`cell_by_gene.csv\` in \`merscope_dir\`.
+
+- cell_metadata_path:
+
+  (optional) path to the cell metadata. \`NULL\` (default) uses
+  \`cell_metadata.csv\` in \`merscope_dir\`.
 
 - data_to_use:
 
-  which of either the 'subcellular' or 'aggregate' information to use
-  for object creation
+  \`"subcellular"\` (default) loads transcripts, polygons and the cell
+  by gene matrix. \`"aggregate"\` loads the cell by gene matrix, with
+  cell centers from \`cell_metadata.csv\` as spatial locations.
 
 - FOVs:
 
-  which FOVs to use when building the subcellular object. (default is
-  NULL). NULL loads all FOVs (very slow)
+  which FOVs to load. \`NULL\` (default) loads all FOVs.
 
 - polygon_format:
 
-  format of the boundary files, either 'parquet' or 'hdf5' (v2 only)
+  format of the cell boundaries, either \`"parquet"\` (default,
+  \`cell_boundaries.parquet\`) or \`"hdf5"\` (per-FOV files in
+  \`cell_boundaries/\`)
 
 - poly_z_indices:
 
-  which z-indices to use for the polygons (Default 0:6 for v2, 1:7 for
-  v1)
-
-- flip_axis:
-
-  character. **Version 2 only.** Axis along which to reflect polygon
-  vertices and transcript coordinates after loading: `"none"` (default,
-  data read as-is), `"y"`, `"x"`, or `"both"`. The reflection origin is
-  the midpoint of the transcript coordinate range so both layers stay
-  registered. Silently forced to `"none"` for `version = 1`, which
-  handles orientation internally via `polygon_mask_list_params`
-  (`flip_vertical = TRUE`).
+  which z-indices to use for the polygons. \`NULL\` (default) uses the
+  lowest z-plane when all z-planes hold identical boundaries and stops
+  otherwise.
 
 - spat_unit:
 
-  character. Name assigned to the cell spatial unit (default `"cell"`).
-  Controls the polygon layer name when a single Z-plane is present and
-  serves as the default `new_spat_unit` in `aggregate_stack_param` when
-  that field is not already supplied.
-
-- calculate_overlap:
-
-  whether to run
-  [`calculateOverlapRaster`](https://giotto-suite.github.io/GiottoClass/reference/calculateOverlapRaster.html)
-
-- overlap_to_matrix:
-
-  whether to run
-  [`overlapToMatrix`](https://giotto-suite.github.io/GiottoClass/reference/overlapToMatrix.html)
-
-- aggregate_stack:
-
-  whether to run `aggregateStacks`
-
-- aggregate_stack_param:
-
-  params to pass to `aggregateStacks`
+  character. Name of the spatial unit for the polygons, expression, cell
+  metadata and spatial locations (default \`"cell"\`)
 
 - split_keyword:
 
-  character vector of keywords to separate feature detections (e.g.
-  "Blank")
+  character vector of keywords to separate feature detections (default
+  \`"Blank"\`). Detections matching \`"Blank"\` are loaded as the
+  \`"neg_probe"\` feature type; other keywords are used as the feature
+  type name.
+
+- score_threshold:
+
+  numeric or \`NULL\` (default). Minimum \`transcript_score\` for a
+  transcript detection to be loaded. \`NULL\` loads all transcripts.
+
+- load_transcripts:
+
+  logical. Whether to load the transcripts (default \`TRUE\`)
+
+- load_expression:
+
+  logical. Whether to load the cell by gene matrix (default \`TRUE\`)
+
+- load_cellmeta:
+
+  logical. Whether to load the cell metadata (default \`FALSE\`)
+
+- load_images:
+
+  (optional) images to load. Character vector or list of mosaic names
+  (e.g. \`"DAPI_z3"\` for \`images/mosaic_DAPI_z3.tif\`) or image file
+  paths. Names of the list are used as image names. Images are placed
+  with \`images/micron_to_mosaic_pixel_transform.csv\`. \`NULL\`
+  (default) loads no images.
+
+- backend:
+
+  (optional) a \`gsource\`-inheriting project backend (typically
+  produced by \`GiottoDisk::sourceCreate()\`). When provided, creates
+  the \`giotto\` object as a managed on-disk project (See GiottoDisk).
 
 - instructions:
 
   list of instructions or output result from
-  [`createGiottoInstructions`](https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html)
-
-- cores:
-
-  how many cores or threads to use to read data if paths are provided
+  \[createGiottoInstructions()\]
 
 - verbose:
 
-  be verbose when building Giotto object
+  be verbose (default \`NULL\`)
+
+- version:
+
+  deprecated. Use \`polygon_format\`.
+
+- flip_axis:
+
+  deprecated. Use \[flip()\] on the created object.
+
+- calculate_overlap:
+
+  deprecated. Use \[calculateOverlap()\] on the created object.
+
+- overlap_to_matrix:
+
+  deprecated. Use \[overlapToMatrix()\] on the created object.
+
+- aggregate_stack:
+
+  deprecated.
+
+- aggregate_stack_param:
+
+  deprecated.
+
+- cores:
+
+  deprecated.
 
 - data_list:
 
@@ -141,8 +189,9 @@ a giotto object
 
 ## Functions
 
-- `.createGiottoMerscopeObject_subcellular()`: Create giotto object with
-  'subcellular' workflow
-
 - `.createGiottoMerscopeObject_aggregate()`: Create giotto object with
   'aggregate' workflow
+
+## See also
+
+\[importMerscope()\]
