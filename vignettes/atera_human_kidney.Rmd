@@ -50,11 +50,9 @@ available: GiottoDisk reads the data in pieces sized to the memory it finds
 free.
 
 *Hardware:* the analysis after reading runs on a computer with 16 GB of
-memory; PAGE enrichment is the step closest to that limit. Reading the data is
-the most demanding step, so more memory and cores help most there.
-`GiottoDisk::storeChunkInfo()` shows how the pieces are sized on your
-machine, and `options(giottodisk.chunk_ram_frac = 0.1)` makes every piece
-smaller on a busy one.
+memory. Reading the data is the most demanding step, so more memory and cores
+help most there. See [Memory and window size](#memory-and-window-size) to check
+and adjust how much memory each step uses on your machine.
 </div>
 
 # Install extra packages
@@ -301,6 +299,54 @@ plotted or re-aggregated later.
 g <- aggregateFeatures(g)
 g <- saveGiotto(g, name = "aggregated")
 ```
+
+# Memory and window size
+
+The steps below never load the whole expression matrix. They read it in
+windows of cells, sized to a share of the memory that is free when the step
+starts (25% by default), so the same code runs on a laptop and on a server:
+a smaller machine reads more, smaller windows.
+
+`storeChunkProbe()` reads one window on your machine and reports the time and
+memory it took, and the window that fits the budget:
+
+```{r probe}
+pe <- getExpression(g, values = "raw", output = "exprObj")[]
+GiottoDisk::storeChunkProbe(pe, cells = 20000)
+```
+
+```
+── storeChunkProbe ──────────────────────────────────────────────────
+   Store    : parquetExprStore, 18,049 features x 399,120 cells
+   Probe    : 20,000 cells, 43,392,936 stored values
+   Measured : 5.4 s, 2,948 MB peak (68 bytes per value)
+   Budget   : 31,829 MB (0.25 of 127,444 MB free)
+   Window   : 318,514 cells fit the budget -> 2 windows,
+              about 108.1 s to read the whole store once
+
+   options(giottodisk.chunk_size = 318514) pins this window.
+```
+
+This run had 127 GB free, so two windows cover all 399,120 cells. With 8 GB
+free, the same store is read in about 18 windows of 22,000 cells. The time for
+one pass is scaled up from the probed window and is an upper bound, since a
+larger window reads faster per cell.
+
+Options that change the windows for the rest of the session. This tutorial ran
+with the defaults, shown in the comments; set only the ones you need:
+
+```{r window-options}
+options(
+    giottodisk.chunk_ram_frac = 0.1,    # share of free RAM per window (0.25)
+    giottodisk.chunk_size     = 20000,  # pin the window, in cells (NULL)
+    giottodisk.chunk_min_rows = 5000    # smallest calculated window (10000)
+)
+```
+
+Lower `giottodisk.chunk_ram_frac` on a machine that is busy with other work.
+Pin `giottodisk.chunk_size` when the probe suggests a window you want to keep.
+`GiottoDisk::storeChunkInfo()` tabulates the calculated windows for several
+budgets without reading any data.
 
 # Quality control and filtering
 
