@@ -26,11 +26,10 @@ depends on the number of cores and the amount of memory available:
 GiottoDisk reads the data in pieces sized to the memory it finds free.
 
 *Hardware:* the analysis after reading runs on a computer with 16 GB of
-memory; PAGE enrichment is the step closest to that limit. Reading the
-data is the most demanding step, so more memory and cores help most
-there. `GiottoDisk::storeChunkInfo()` shows how the pieces are sized on
-your machine, and `options(giottodisk.chunk_ram_frac = 0.1)` makes every
-piece smaller on a busy one.
+memory. Reading the data is the most demanding step, so more memory and
+cores help most there. See [Memory and window
+size](#memory-and-window-size) to check and adjust how much memory each
+step uses on your machine.
 
 ## 2 Install extra packages
 
@@ -286,7 +285,56 @@ g <- aggregateFeatures(g)
 g <- saveGiotto(g, name = "aggregated")
 ```
 
-## 6 Quality control and filtering
+## 6 Memory and window size
+
+The steps below never load the whole expression matrix. They read it in
+windows of cells, sized to a share of the memory that is free when the
+step starts (25% by default), so the same code runs on a laptop and on a
+server: a smaller machine reads more, smaller windows.
+
+`storeChunkProbe()` reads one window on your machine and reports the
+time and memory it took, and the window that fits the budget:
+
+``` r
+
+pe <- getExpression(g, values = "raw", output = "exprObj")[]
+GiottoDisk::storeChunkProbe(pe, cells = 20000)
+```
+
+    ── storeChunkProbe ──────────────────────────────────────────────────
+       Store    : parquetExprStore, 18,049 features x 399,120 cells
+       Probe    : 20,000 cells, 43,392,936 stored values
+       Measured : 5.4 s, 2,948 MB peak (68 bytes per value)
+       Budget   : 31,829 MB (0.25 of 127,444 MB free)
+       Window   : 318,514 cells fit the budget -> 2 windows,
+                  about 108.1 s to read the whole store once
+
+       options(giottodisk.chunk_size = 318514) pins this window.
+
+This run had 127 GB free, so two windows cover all 399,120 cells. With 8
+GB free, the same store is read in about 18 windows of 22,000 cells. The
+time for one pass is scaled up from the probed window and is an upper
+bound, since a larger window reads faster per cell.
+
+Options that change the windows for the rest of the session. This
+tutorial ran with the defaults, shown in the comments; set only the ones
+you need:
+
+``` r
+
+options(
+    giottodisk.chunk_ram_frac = 0.1,    # share of free RAM per window (0.25)
+    giottodisk.chunk_size     = 20000,  # pin the window, in cells (NULL)
+    giottodisk.chunk_min_rows = 5000    # smallest calculated window (10000)
+)
+```
+
+Lower `giottodisk.chunk_ram_frac` on a machine that is busy with other
+work. Pin `giottodisk.chunk_size` when the probe suggests a window you
+want to keep. `GiottoDisk::storeChunkInfo()` tabulates the calculated
+windows for several budgets without reading any data.
+
+## 7 Quality control and filtering
 
 ``` r
 
@@ -319,7 +367,7 @@ cat(sprintf("%s cells x %s features retained\n",
 
     395,606 cells x 18,049 features retained
 
-## 7 Normalize and select features
+## 8 Normalize and select features
 
 ``` r
 
@@ -345,7 +393,7 @@ g <- saveGiotto(g, name = "normalized")
 
     2000 highly variable features
 
-## 8 Dimension reduction
+## 9 Dimension reduction
 
 `scale_unit = TRUE` scales to unit variance on the fly, so no dense
 z-scored matrix is ever written.
@@ -391,7 +439,7 @@ g <- runUMAP(g,
 
     runUMAP: using the stored kNN 'kNN.pca' (29 neighbours per cell)
 
-## 9 Clustering
+## 10 Clustering
 
 ``` r
 
@@ -468,7 +516,7 @@ spatInSituPlotPoints(g,
 
 ![](images/atera_human_kidney/06_sissp_roi.png)
 
-## 10 Cell types from cluster markers
+## 11 Cell types from cluster markers
 
 [`findMarkers_one_vs_all()`](https://giottosuite.com/dev/reference/findMarkers_one_vs_all.md)
 ranks the genes that set each Leiden cluster apart from the others. The
@@ -660,7 +708,7 @@ spatInSituPlotPoints(g,
 g <- saveGiotto(g, name = "annotated")
 ```
 
-## 11 Spatially variable genes
+## 12 Spatially variable genes
 
 A spatial network links each cell to its neighbors. The Delaunay network
 connects every cell to the cells that share an edge of the triangulation
@@ -723,7 +771,7 @@ spatFeatPlot2D(g,
 
 ![](images/atera_human_kidney/10_moran_top.png)
 
-## 12 Spatial co-expression modules
+## 13 Spatial co-expression modules
 
 [`spatialCoexpression()`](https://giottosuite.com/dev/reference/spatialCoexpression.md)
 averages each cell’s expression with its neighbors’ in the spatial
@@ -844,7 +892,7 @@ for (m in as.character(top_modules)) {
 
 ![](images/atera_human_kidney/12_module_1.png)![](images/atera_human_kidney/12_module_2.png)![](images/atera_human_kidney/12_module_3.png)![](images/atera_human_kidney/12_module_4.png)
 
-## 13 Spatial enrichment
+## 14 Spatial enrichment
 
 PAGE scores each cell for a set of marker genes per cell type, here
 short signatures for the nephron segments and the main other cell types
@@ -941,7 +989,7 @@ cells, are then assigned whichever signature they score least badly on.
 g <- saveGiotto(g, name = "spatial")
 ```
 
-## 14 Cell-cell interactions
+## 15 Cell-cell interactions
 
 [`cellProximityMotifs()`](https://giottosuite.com/dev/reference/cellProximityMotifs.md)
 counts which cell types are neighbors in the spatial network more or
@@ -1029,7 +1077,7 @@ spatMotifPlot(g,
 g <- saveGiotto(g, name = "analyzed")
 ```
 
-## 15 Further reading
+## 16 Further reading
 
 Suggested further topics:
 
@@ -1042,7 +1090,7 @@ Suggested further topics:
 - GiottoLens for [interactive visualization and
   annotation](https://giottosuite.com/dev/articles/giottolens.md)
 
-## 16 Session info
+## 17 Session info
 
 ``` r
 

@@ -280,12 +280,9 @@ personal computer. How quickly depends on the number of cores and the
 amount of memory available: GiottoDisk reads the data in pieces sized to
 the memory it finds free.</p>
 <p><em>Hardware:</em> the analysis after reading runs on a computer with
-16 GB of memory; PAGE enrichment is the step closest to that limit.
-Reading the data is the most demanding step, so more memory and cores
-help most there. <code>GiottoDisk::storeChunkInfo()</code> shows how the
-pieces are sized on your machine, and
-<code>options(giottodisk.chunk_ram_frac = 0.1)</code> makes every piece
-smaller on a busy one.</p>
+16 GB of memory. Reading the data is the most demanding step, so more
+memory and cores help most there. See <a href="#memory-and-window-size">Memory and window size</a> to check and
+adjust how much memory each step uses on your machine.</p>
 </div>
 </div>
 <div class="section level2" number="2">
@@ -544,11 +541,54 @@ individual transcripts cannot be plotted or re-aggregated later.</p>
 </div>
 </div>
 <div class="section level2" number="6">
+<h2 id="memory-and-window-size">
+<span class="header-section-number">6</span> Memory and window
+size<a class="anchor" aria-label="anchor" href="#memory-and-window-size"></a>
+</h2>
+<p>The steps below never load the whole expression matrix. They read it
+in windows of cells, sized to a share of the memory that is free when
+the step starts (25% by default), so the same code runs on a laptop and
+on a server: a smaller machine reads more, smaller windows.</p>
+<p><code>storeChunkProbe()</code> reads one window on your machine and
+reports the time and memory it took, and the window that fits the
+budget:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/getExpression.html" class="external-link">getExpression</a></span><span class="op">(</span><span class="va">g</span>, values <span class="op">=</span> <span class="st">"raw"</span>, output <span class="op">=</span> <span class="st">"exprObj"</span><span class="op">)</span><span class="op">[</span><span class="op">]</span></span>
+<span><span class="fu">GiottoDisk</span><span class="fu">::</span><span class="fu">storeChunkProbe</span><span class="op">(</span><span class="va">pe</span>, cells <span class="op">=</span> <span class="fl">20000</span><span class="op">)</span></span></code></pre></div>
+<pre><code>── storeChunkProbe ──────────────────────────────────────────────────
+   Store    : parquetExprStore, 18,049 features x 399,120 cells
+   Probe    : 20,000 cells, 43,392,936 stored values
+   Measured : 5.4 s, 2,948 MB peak (68 bytes per value)
+   Budget   : 31,829 MB (0.25 of 127,444 MB free)
+   Window   : 318,514 cells fit the budget -&gt; 2 windows,
+              about 108.1 s to read the whole store once
+
+   options(giottodisk.chunk_size = 318514) pins this window.</code></pre>
+<p>This run had 127 GB free, so two windows cover all 399,120 cells.
+With 8 GB free, the same store is read in about 18 windows of 22,000
+cells. The time for one pass is scaled up from the probed window and is
+an upper bound, since a larger window reads faster per cell.</p>
+<p>Options that change the windows for the rest of the session. This
+tutorial ran with the defaults, shown in the comments; set only the ones
+you need:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span></span>
+<span>    giottodisk.chunk_ram_frac <span class="op">=</span> <span class="fl">0.1</span>,    <span class="co"># share of free RAM per window (0.25)</span></span>
+<span>    giottodisk.chunk_size     <span class="op">=</span> <span class="fl">20000</span>,  <span class="co"># pin the window, in cells (NULL)</span></span>
+<span>    giottodisk.chunk_min_rows <span class="op">=</span> <span class="fl">5000</span>    <span class="co"># smallest calculated window (10000)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Lower <code>giottodisk.chunk_ram_frac</code> on a machine that is
+busy with other work. Pin <code>giottodisk.chunk_size</code> when the
+probe suggests a window you want to keep.
+<code>GiottoDisk::storeChunkInfo()</code> tabulates the calculated
+windows for several budgets without reading any data.</p>
+</div>
+<div class="section level2" number="7">
 <h2 id="quality-control-and-filtering">
-<span class="header-section-number">6</span> Quality control and
+<span class="header-section-number">7</span> Quality control and
 filtering<a class="anchor" aria-label="anchor" href="#quality-control-and-filtering"></a>
 </h2>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addStatistics.html">addStatistics</a></span><span class="op">(</span><span class="va">g</span>, expression_values <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span>
 <span><span class="va">cx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%s cells | median %d counts, %d features per cell\n"</span>,</span>
@@ -558,7 +598,7 @@ filtering<a class="anchor" aria-label="anchor" href="#quality-control-and-filter
 <pre><code>399,120 cells | median 1550 counts, 1191 features per cell</code></pre>
 <p>A threshold of 50 detected genes removes only empty or fragmented
 outlines.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/filterGiotto.html">filterGiotto</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    expression_threshold   <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>    feat_det_in_min_cells  <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -571,12 +611,12 @@ outlines.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code>395,606 cells x 18,049 features retained</code></pre>
 </div>
-<div class="section level2" number="7">
+<div class="section level2" number="8">
 <h2 id="normalize-and-select-features">
-<span class="header-section-number">7</span> Normalize and select
+<span class="header-section-number">8</span> Normalize and select
 features<a class="anchor" aria-label="anchor" href="#normalize-and-select-features"></a>
 </h2>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/normalizeGiotto.html">normalizeGiotto</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    scalefactor <span class="op">=</span> <span class="fl">1e4</span>,</span>
 <span>    logbase <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>,</span>
@@ -597,14 +637,14 @@ features<a class="anchor" aria-label="anchor" href="#normalize-and-select-featur
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto</a></span><span class="op">(</span><span class="va">g</span>, name <span class="op">=</span> <span class="st">"normalized"</span><span class="op">)</span></span></code></pre></div>
 <pre><code>2000 highly variable features</code></pre>
 </div>
-<div class="section level2" number="8">
+<div class="section level2" number="9">
 <h2 id="dimension-reduction">
-<span class="header-section-number">8</span> Dimension
+<span class="header-section-number">9</span> Dimension
 reduction<a class="anchor" aria-label="anchor" href="#dimension-reduction"></a>
 </h2>
 <p><code>scale_unit = TRUE</code> scales to unit variance on the fly, so
 no dense z-scored matrix is ever written.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPCA.html">runPCA</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    feats_to_use <span class="op">=</span> <span class="st">"hvf"</span>,</span>
 <span>    ncp <span class="op">=</span> <span class="fl">50</span>,</span>
@@ -619,7 +659,7 @@ no dense z-scored matrix is ever written.</p>
 <p>The kNN network is built first. <code><a href="../reference/runUMAP.html">runUMAP()</a></code> reuses it
 instead of searching for neighbors again, which also makes the UMAP
 reproducible, and Leiden clusters on the same network.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dims_to_use</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span> <span class="co"># use the top 30 PCs for UMAP and clustering</span></span>
 <span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">g</span>,</span>
@@ -636,11 +676,11 @@ reproducible, and Leiden clusters on the same network.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code>runUMAP: using the stored kNN 'kNN.pca' (29 neighbours per cell)</code></pre>
 </div>
-<div class="section level2" number="9">
+<div class="section level2" number="10">
 <h2 id="clustering">
-<span class="header-section-number">9</span> Clustering<a class="anchor" aria-label="anchor" href="#clustering"></a>
+<span class="header-section-number">10</span> Clustering<a class="anchor" aria-label="anchor" href="#clustering"></a>
 </h2>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">leiden_res</span> <span class="op">&lt;-</span> <span class="fl">0.8</span></span>
 <span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/doLeidenCluster.html">doLeidenCluster</a></span><span class="op">(</span><span class="va">g</span>,</span>
@@ -657,11 +697,11 @@ reproducible, and Leiden clusters on the same network.</p>
 <span><span class="co"># one color per cluster, shared by the plots below</span></span>
 <span><span class="va">clus_colors</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoUtils/reference/getDistinctColors.html" class="external-link">getDistinctColors</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">clusters</span><span class="op">)</span><span class="op">)</span>, <span class="va">clusters</span><span class="op">)</span></span></code></pre></div>
 <pre><code>28 clusters at resolution 0.8</code></pre>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto</a></span><span class="op">(</span><span class="va">g</span>, name <span class="op">=</span> <span class="st">"clustered"</span><span class="op">)</span></span></code></pre></div>
 <p>The object is saved to the project directory and can be reloaded with
 <code>loadGiotto(project_dir, name = "clustered")</code>.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>    color_as_factor <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -670,7 +710,7 @@ reproducible, and Leiden clusters on the same network.</p>
 <span>    point_size <span class="op">=</span> <span class="fl">0.1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/atera_human_kidney/04_umap_leiden.png" alt="" width="100%"></p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>    color_as_factor <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -682,7 +722,7 @@ reproducible, and Leiden clusters on the same network.</p>
 <p><img src="images/atera_human_kidney/05_centroids_global.png" alt="" width="100%"></p>
 <p>Establish an ROI around a group of glomeruli and get a zoomed in plot
 with the polygons.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">roi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6700</span>, <span class="fl">7700</span>, <span class="op">-</span><span class="fl">2300</span>, <span class="op">-</span><span class="fl">1300</span><span class="op">)</span> <span class="co"># xmin/xmax/ymin/ymax</span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/crop.html" class="external-link">crop</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">roi</span>, view <span class="op">=</span> <span class="st">"roi"</span><span class="op">)</span></span>
 <span></span>
@@ -695,14 +735,14 @@ with the polygons.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/atera_human_kidney/06_sissp_roi.png" alt="" width="100%"></p>
 </div>
-<div class="section level2" number="10">
+<div class="section level2" number="11">
 <h2 id="cell-types-from-cluster-markers">
-<span class="header-section-number">10</span> Cell types from
+<span class="header-section-number">11</span> Cell types from
 cluster markers<a class="anchor" aria-label="anchor" href="#cell-types-from-cluster-markers"></a>
 </h2>
 <p><code><a href="../reference/findMarkers_one_vs_all.html">findMarkers_one_vs_all()</a></code> ranks the genes that set each
 Leiden cluster apart from the others. The top eight per cluster:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/findMarkers_one_vs_all.html">findMarkers_one_vs_all</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    method <span class="op">=</span> <span class="st">"scran"</span>,</span>
 <span>    cluster_column <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
@@ -769,7 +809,7 @@ macrophages (3) and mast cells (22).</li>
 <p><em>Leiden cluster numbers can change between package versions or
 numbers of workers. Check the markers before reusing this mapping on
 your own run.</em></p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cell_types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="st">"15"</span> <span class="op">=</span> <span class="st">"proximal tubule"</span>, <span class="st">"16"</span> <span class="op">=</span> <span class="st">"proximal tubule"</span>,</span>
 <span>    <span class="st">"17"</span> <span class="op">=</span> <span class="st">"proximal tubule"</span>, <span class="st">"18"</span> <span class="op">=</span> <span class="st">"proximal tubule"</span>,</span>
@@ -823,7 +863,7 @@ intercalated cells, type B        fibroblasts, MFAP5+  parietal epithelial cells
                       3524                       2965                       2923                       1950
              Schwann cells               plasma cells                 mast cells
                       1872                       1806                       1397</code></pre>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
 <span>    color_as_factor <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -837,7 +877,7 @@ intercalated cells, type B        fibroblasts, MFAP5+  parietal epithelial cells
 endothelium (yellow), lined by parietal epithelial cells, among proximal
 tubules, thick ascending limbs and collecting ducts. A large T cell
 aggregate sits in the upper left.</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    polygon_fill <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
 <span>    polygon_fill_as_factor <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -848,7 +888,7 @@ aggregate sits in the upper left.</p>
 <p><img src="images/atera_human_kidney/09_roi_cell_types.png" alt="" width="100%"></p>
 <p>Zooming in on two glomeruli with the DAPI image (default)
 underneath:</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    polygon_fill <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
 <span>    polygon_fill_as_factor <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -861,18 +901,18 @@ underneath:</p>
 <span>    show_image <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/atera_human_kidney/07_sissp_roi_refine.png" alt="" width="100%"></p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto</a></span><span class="op">(</span><span class="va">g</span>, name <span class="op">=</span> <span class="st">"annotated"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2" number="11">
+<div class="section level2" number="12">
 <h2 id="spatially-variable-genes">
-<span class="header-section-number">11</span> Spatially variable
+<span class="header-section-number">12</span> Spatially variable
 genes<a class="anchor" aria-label="anchor" href="#spatially-variable-genes"></a>
 </h2>
 <p>A spatial network links each cell to its neighbors. The Delaunay
 network connects every cell to the cells that share an edge of the
 triangulation of the cell centers.</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    method <span class="op">=</span> <span class="st">"Delaunay"</span>,</span>
 <span>    delaunay_method <span class="op">=</span> <span class="st">"delaunayn_geometry"</span>,</span>
@@ -882,7 +922,7 @@ triangulation of the cell centers.</p>
 between neighboring cells than expected by chance.
 <code><a href="../reference/spatialAutoCor.html">spatialAutoCor()</a></code> computes it for all 18,049 genes on the
 disk-backed expression.</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">moran</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialAutoCor.html">spatialAutoCor</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    method <span class="op">=</span> <span class="st">"moran"</span>,</span>
 <span>    spatial_network_name <span class="op">=</span> <span class="st">"Delaunay_network"</span>,</span>
@@ -905,7 +945,7 @@ disk-backed expression.</p>
 nephron: the collecting duct (AQP2, HSD11B2), the connecting and distal
 tubule (CALB1, SLC12A3), the thick ascending limb (UMOD, SLC12A1), the
 proximal tubule (ALDOB, CLTRN) and the glomeruli (FGF1, CLIC5).</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatFeatPlot2D.html" class="external-link">spatFeatPlot2D</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    expression_values <span class="op">=</span> <span class="st">"normalized"</span>,</span>
 <span>    feats <span class="op">=</span> <span class="va">moran</span><span class="op">$</span><span class="va">feats</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span>,</span>
@@ -917,16 +957,16 @@ proximal tubule (ALDOB, CLTRN) and the glomeruli (FGF1, CLIC5).</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/atera_human_kidney/10_moran_top.png" alt="" width="100%"></p>
 </div>
-<div class="section level2" number="12">
+<div class="section level2" number="13">
 <h2 id="spatial-co-expression-modules">
-<span class="header-section-number">12</span> Spatial co-expression
+<span class="header-section-number">13</span> Spatial co-expression
 modules<a class="anchor" aria-label="anchor" href="#spatial-co-expression-modules"></a>
 </h2>
 <p><code><a href="../reference/spatialCoexpression.html">spatialCoexpression()</a></code> averages each cell’s expression
 with its neighbors’ in the spatial network, correlates the genes on
 these smoothed values, and clusters the correlation into modules. It
 runs on the 500 genes with the highest Moran’s I.</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spatial_genes</span> <span class="op">&lt;-</span> <span class="va">moran</span><span class="op">$</span><span class="va">feats</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">500</span><span class="op">]</span></span>
 <span></span>
 <span><span class="va">coexpr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialCoexpression.html">spatialCoexpression</a></span><span class="op">(</span><span class="va">g</span>,</span>
@@ -953,12 +993,12 @@ runs on the 500 genes with the highest Moran’s I.</p>
 <p>The summary ranks the modules: a high <code>within_cor</code> and a
 low <code>between_cor</code> mean a module is coherent and distinct from
 the others.</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/heatmapCoexpression.html">heatmapCoexpression</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">coexpr</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/atera_human_kidney/11_coexpression_heatmap.png" alt="" width="100%"></p>
 <p>The genes that best represent each of the four top-ranked
 modules:</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">top_modules</span> <span class="op">&lt;-</span> <span class="va">coexpr</span><span class="op">$</span><span class="va">summary</span><span class="op">$</span><span class="va">module</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span></span>
 <span><span class="va">coexpr</span><span class="op">$</span><span class="va">feats</span><span class="op">[</span><span class="va">module</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">top_modules</span><span class="op">]</span><span class="op">[</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">module</span>, <span class="va">top_modules</span><span class="op">)</span>, <span class="op">-</span><span class="va">module_cor</span><span class="op">)</span>,</span>
@@ -993,7 +1033,7 @@ gluconeogenesis and organic anion transport (ALDOB, SLC5A12,
 SLC22A6).</p>
 <p>The same call with the default <code>return_gobject = TRUE</code>
 adds the module scores to the object, one per cell and module:</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialCoexpression.html">spatialCoexpression</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    feats <span class="op">=</span> <span class="va">spatial_genes</span>,</span>
 <span>    spatial_network_name <span class="op">=</span> <span class="st">"Delaunay_network"</span>,</span>
@@ -1002,7 +1042,7 @@ adds the module scores to the object, one per cell and module:</p>
 <p>Each module’s color scale is capped at the 99th percentile of its
 non-zero scores, so a few high-scoring cells do not wash out the
 rest:</p>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">module_scores</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/getSpatialEnrichment.html" class="external-link">getSpatialEnrichment</a></span><span class="op">(</span><span class="va">g</span>, name <span class="op">=</span> <span class="st">"spatial_module"</span>,</span>
 <span>    output <span class="op">=</span> <span class="st">"data.table"</span><span class="op">)</span></span>
 <span></span>
@@ -1020,15 +1060,15 @@ rest:</p>
 <span><span class="op">}</span></span></code></pre></div>
 <p><img src="images/atera_human_kidney/12_module_1.png" alt="" width="50%"><img src="images/atera_human_kidney/12_module_2.png" alt="" width="50%"><img src="images/atera_human_kidney/12_module_3.png" alt="" width="50%"><img src="images/atera_human_kidney/12_module_4.png" alt="" width="50%"></p>
 </div>
-<div class="section level2" number="13">
+<div class="section level2" number="14">
 <h2 id="spatial-enrichment">
-<span class="header-section-number">13</span> Spatial
+<span class="header-section-number">14</span> Spatial
 enrichment<a class="anchor" aria-label="anchor" href="#spatial-enrichment"></a>
 </h2>
 <p>PAGE scores each cell for a set of marker genes per cell type, here
 short signatures for the nephron segments and the main other cell types
 of the kidney.</p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">signatures</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    proximal_tubule <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LRP2"</span>, <span class="st">"CUBN"</span>, <span class="st">"SLC34A1"</span>, <span class="st">"SLC5A12"</span>, <span class="st">"ALDOB"</span>, <span class="st">"PCK1"</span><span class="op">)</span>,</span>
 <span>    loop_of_henle <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"UMOD"</span>, <span class="st">"SLC12A1"</span>, <span class="st">"KCNJ1"</span>, <span class="st">"CLDN16"</span>, <span class="st">"CASR"</span><span class="op">)</span>,</span>
@@ -1051,7 +1091,7 @@ of the kidney.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Each signature’s color scale is capped at the 1st and 99th percentile
 of its scores:</p>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">page_scores</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/getSpatialEnrichment.html" class="external-link">getSpatialEnrichment</a></span><span class="op">(</span><span class="va">g</span>, name <span class="op">=</span> <span class="st">"PAGE"</span>, output <span class="op">=</span> <span class="st">"data.table"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">sig</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"proximal_tubule"</span>, <span class="st">"loop_of_henle"</span>, <span class="st">"collecting_duct"</span>,</span>
@@ -1070,7 +1110,7 @@ of its scores:</p>
 <p><img src="images/atera_human_kidney/13_page_1.png" alt="" width="50%"><img src="images/atera_human_kidney/13_page_2.png" alt="" width="50%"><img src="images/atera_human_kidney/13_page_3.png" alt="" width="50%"><img src="images/atera_human_kidney/13_page_4.png" alt="" width="50%"><img src="images/atera_human_kidney/13_page_5.png" alt="" width="50%"><img src="images/atera_human_kidney/13_page_6.png" alt="" width="50%"></p>
 <p>To check the marker-based names against these independent gene sets,
 ask, for each signature, which cell type scores highest on average:</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">page</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">page_scores</span>, <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">cell_ID</span>, <span class="va">cell_type</span><span class="op">)</span><span class="op">]</span>, by <span class="op">=</span> <span class="st">"cell_ID"</span><span class="op">)</span></span>
 <span><span class="va">scored</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">intersect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">signatures</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">page</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">page_mean</span> <span class="op">&lt;-</span> <span class="va">page</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="va">mean</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"cell_type"</span>, .SDcols <span class="op">=</span> <span class="va">scored</span><span class="op">]</span></span>
@@ -1101,26 +1141,26 @@ other way, by the best signature per cell type, would not work here.
 Cell types without a signature of their own, such as B cells or Schwann
 cells, are then assigned whichever signature they score least badly
 on.</p>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto</a></span><span class="op">(</span><span class="va">g</span>, name <span class="op">=</span> <span class="st">"spatial"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2" number="14">
+<div class="section level2" number="15">
 <h2 id="cell-cell-interactions">
-<span class="header-section-number">14</span> Cell-cell
+<span class="header-section-number">15</span> Cell-cell
 interactions<a class="anchor" aria-label="anchor" href="#cell-cell-interactions"></a>
 </h2>
 <p><code><a href="../reference/cellProximityMotifs.html">cellProximityMotifs()</a></code> counts which cell types are
 neighbors in the spatial network more or less often than expected when
 the labels are shuffled. Pairs of neighbors (<code>size = 2</code>) give
 the classic proximity enrichment:</p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pairs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cellProximityMotifs.html">cellProximityMotifs</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    spatial_network_name <span class="op">=</span> <span class="st">"Delaunay_network"</span>,</span>
 <span>    cluster_column <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
 <span>    size <span class="op">=</span> <span class="fl">2L</span>,</span>
 <span>    n_perm <span class="op">=</span> <span class="fl">1000L</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotMotifEnrichment.html">plotMotifEnrichment</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">pairs</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/atera_human_kidney/14_motif_pairs.png" alt="" width="100%"></p>
 <p>Each cell type is most enriched next to its own kind, as expected for
@@ -1129,7 +1169,7 @@ of the most enriched pairs between two different types.</p>
 <p>Motifs of three cells (<code>size = 3</code>) with the conditional
 null hold the observed pairs fixed, so a triplet that is still enriched
 is enriched beyond what its pairs already explain:</p>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">triplets</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cellProximityMotifs.html">cellProximityMotifs</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    spatial_network_name <span class="op">=</span> <span class="st">"Delaunay_network"</span>,</span>
 <span>    cluster_column <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
@@ -1152,7 +1192,7 @@ is enriched beyond what its pairs already explain:</p>
 10:                     size3_open_fibroblasts, MFAP5+-fibroblasts-fibroblasts      386   192.563 2.004539 0.01002828</code></pre>
 <p>In an open motif the first cell type listed is the center that links
 the other two. The glyphs draw the top-ranked triplets:</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotMotifGlyphs.html">plotMotifGlyphs</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">triplets</span>, cell_color_code <span class="op">=</span> <span class="va">type_colors</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/atera_human_kidney/15_motif_triplets.png" alt="" width="100%"></p>
 <p>The top triplet is fibroblasts in a row, the large interstitial areas
@@ -1160,19 +1200,19 @@ of the section. The second is more specific: a proximal tubule cell
 between an injured, VCAM1+ tubule cell and a T cell, almost twice as
 often as its pairs predict. It marks where T cells sit against injured
 tubules:</p>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/spatMotifPlot.html">spatMotifPlot</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    motif_id <span class="op">=</span> <span class="st">"size3_open_proximal tubule-proximal tubule, VCAM1+-T cells"</span>,</span>
 <span>    cluster_column <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
 <span>    spatial_network_name <span class="op">=</span> <span class="st">"Delaunay_network"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/atera_human_kidney/16_motif_spatial.png" alt="" width="100%"></p>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto</a></span><span class="op">(</span><span class="va">g</span>, name <span class="op">=</span> <span class="st">"analyzed"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2" number="15">
+<div class="section level2" number="16">
 <h2 id="further-reading">
-<span class="header-section-number">15</span> Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
+<span class="header-section-number">16</span> Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
 </h2>
 <p>Suggested further topics:</p>
 <ul>
@@ -1187,11 +1227,11 @@ and annotation</a>
 </li>
 </ul>
 </div>
-<div class="section level2" number="16">
+<div class="section level2" number="17">
 <h2 id="session-info">
-<span class="header-section-number">16</span> Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+<span class="header-section-number">17</span> Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code>R version 4.5.1 (2025-06-13)
 Platform: aarch64-apple-darwin20
