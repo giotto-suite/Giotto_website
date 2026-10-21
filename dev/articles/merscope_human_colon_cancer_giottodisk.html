@@ -280,7 +280,7 @@ release</a>). Panel: 815 gene targets, 85 <code>Blank</code> barcodes.
 <tr class="odd">
 <td><code>detected_transcripts.parquet</code></td>
 <td>3.3 GB</td>
-<td>transcript, x, y, z, cell, not read</td>
+<td>transcript, x, y, z, cell</td>
 </tr>
 <tr class="even">
 <td><code>detected_transcripts.csv</code></td>
@@ -321,8 +321,11 @@ release</a>). Panel: 815 gene targets, 85 <code>Blank</code> barcodes.
 </tr>
 </tbody>
 </table>
-<p>Inputs read: <code>cell_boundaries.parquet</code>,
-<code>cell_by_gene.csv</code>, <code>cell_metadata.csv</code>.</p>
+<p>Inputs read: <code>detected_transcripts.parquet</code>,
+<code>cell_boundaries.parquet</code>, <code>cell_by_gene.csv</code>,
+<code>cell_metadata.csv</code>. Exports that ship only
+<code>detected_transcripts.csv</code> work too: the reader converts the
+CSV to parquet once and caches it in the vault.</p>
 </div>
 <div class="section level2" number="2">
 <h2 id="packages">
@@ -330,12 +333,12 @@ release</a>). Panel: 815 gene targets, 85 <code>Blank</code> barcodes.
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"giotto-suite/GiottoUtils@65fb1a9b"</span>,</span>
-<span>    <span class="st">"giotto-suite/GiottoClass@b3e79326"</span>,</span>
-<span>    <span class="st">"giotto-suite/GiottoVisuals@bec7b11b"</span>,</span>
-<span>    <span class="st">"giotto-suite/Giotto@e611ed99"</span>,</span>
-<span>    <span class="st">"drieslab/tilework@f4616fa3"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_local.html" class="external-link">install_local</a></span><span class="op">(</span><span class="st">"path/to/GiottoDisk"</span><span class="op">)</span>   <span class="co"># branch feat/merscope-on-dev</span></span>
+<span>    <span class="st">"giotto-suite/GiottoUtils@24774a1"</span>,</span>
+<span>    <span class="st">"giotto-suite/GiottoClass@4a507d60"</span>,</span>
+<span>    <span class="st">"giotto-suite/GiottoVisuals@a939c0f"</span>,</span>
+<span>    <span class="st">"giotto-suite/Giotto@686fba1a"</span>,</span>
+<span>    <span class="st">"giotto-suite/GiottoDisk@674aaf2"</span>,</span>
+<span>    <span class="st">"drieslab/tilework@447503b"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"scran"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="3">
@@ -375,9 +378,8 @@ release</a>). Panel: 815 gene targets, 85 <code>Blank</code> barcodes.
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">src</span> <span class="op">&lt;-</span> <span class="fu">sourceCreate</span><span class="op">(</span><span class="va">VAULT</span><span class="op">)</span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createGiottoMerscopeObject.html">createGiottoMerscopeObject</a></span><span class="op">(</span></span>
-<span>    merscope_dir     <span class="op">=</span> <span class="va">MERSCOPE</span>,</span>
-<span>    backend          <span class="op">=</span> <span class="va">src</span>,</span>
-<span>    load_transcripts <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>    merscope_dir <span class="op">=</span> <span class="va">MERSCOPE</span>,</span>
+<span>    backend      <span class="op">=</span> <span class="va">src</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span></span>
 <span>    save_plot <span class="op">=</span> <span class="cn">FALSE</span>, show_plot <span class="op">=</span> <span class="cn">TRUE</span>, return_plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">g</span></span></code></pre></div>
@@ -387,6 +389,7 @@ release</a>). Panel: 815 gene targets, 85 <code>Blank</code> barcodes.
 <span><span class="co">## dimensions    : 815, 703879 (features, cells)</span></span>
 <span><span class="co">## [SUBCELLULAR INFO]</span></span>
 <span><span class="co">## polygons      : cell </span></span>
+<span><span class="co">## features      : rna neg_probe </span></span>
 <span><span class="co">## [AGGREGATE INFO]</span></span>
 <span><span class="co">## expression -----------------------</span></span>
 <span><span class="co">##   [cell][rna] raw</span></span>
@@ -396,13 +399,22 @@ release</a>). Panel: 815 gene targets, 85 <code>Blank</code> barcodes.
 <span><span class="co">## </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Use objHistory() to see steps and params used</span></span></code></pre>
-<p>Setting <code>backend</code> builds the object on disk: polygons go
-into a parquet geometry store. <code>load_transcripts = FALSE</code>
-skips <code>detected_transcripts.parquet</code>, so the object has no
-transcript layer. The cell x gene layer is read from
-<code>cell_by_gene.csv</code>, and the negative controls go into their
-own <code>[cell][neg_probe]</code> layer. The y coordinates are negated
-on load, so plots have the orientation of the Vizgen images.</p>
+<p>Setting <code>backend</code> builds the object on disk. The
+transcripts go into a tiled parquet point store, the segmentation
+polygons into a tiled parquet geometry store, and the cell x gene matrix
+from <code>cell_by_gene.csv</code> into a parquet expression store. Only
+the per-cell tables, cell metadata and spatial locations, are held in
+memory. <code>Blank</code> barcodes become their own
+<code>neg_probe</code> feature type, both as transcripts and as the
+<code>[cell][neg_probe]</code> expression layer. The y coordinates are
+negated on load, so plots have the orientation of the Vizgen images.</p>
+<p>On an Apple M2 Ultra (24 cores, 192 GB), building this object took 31
+minutes and at most 9 GB of memory, and left a 6.8 GB vault. Nearly all
+of that time is spent writing the 151 million transcripts into spatial
+tiles; the default sequential <code>future</code> plan was used.</p>
+<p>Set <code>load_transcripts = FALSE</code> to skip the transcripts
+when only the cell-level analysis is needed; the other layers are built
+the same way.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addStatistics.html">addStatistics</a></span><span class="op">(</span><span class="va">g</span>, expression_values <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span>
 <span><span class="fu">snapshotSave</span><span class="op">(</span><span class="va">src</span>, <span class="va">g</span>, name <span class="op">=</span> <span class="st">"aggregated"</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -605,13 +617,12 @@ clustering<a class="anchor" aria-label="anchor" href="#neighbors-umap-clustering
 </h2>
 <p>Each Leiden cluster is named from its top markers in section 8.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/annotateGiotto.html" class="external-link">annotateGiotto</a></span><span class="op">(</span><span class="va">g</span>,</span>
-<span>    annotation_vector <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1"</span> <span class="op">=</span> <span class="st">"Epithelial 1"</span>, <span class="st">"2"</span> <span class="op">=</span> <span class="st">"Epithelial 2"</span>,</span>
-<span>                          <span class="st">"3"</span> <span class="op">=</span> <span class="st">"Inflammatory fibroblast"</span>, <span class="st">"4"</span> <span class="op">=</span> <span class="st">"Endothelial"</span>,</span>
-<span>                          <span class="st">"5"</span> <span class="op">=</span> <span class="st">"Myeloid"</span>, <span class="st">"6"</span> <span class="op">=</span> <span class="st">"Fibroblast"</span>,</span>
-<span>                          <span class="st">"7"</span> <span class="op">=</span> <span class="st">"B/Plasma"</span>, <span class="st">"8"</span> <span class="op">=</span> <span class="st">"T/NK"</span>,</span>
-<span>                          <span class="st">"9"</span> <span class="op">=</span> <span class="st">"Proliferating"</span><span class="op">)</span>,</span>
-<span>    cluster_column <span class="op">=</span> <span class="st">"leiden_clus"</span>, name <span class="op">=</span> <span class="st">"cell_type"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">LABELS</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1"</span> <span class="op">=</span> <span class="st">"Epithelial 1"</span>, <span class="st">"2"</span> <span class="op">=</span> <span class="st">"Proliferating epithelial"</span>,</span>
+<span>            <span class="st">"3"</span> <span class="op">=</span> <span class="st">"Inflammatory fibroblast"</span>, <span class="st">"4"</span> <span class="op">=</span> <span class="st">"Endothelial"</span>,</span>
+<span>            <span class="st">"5"</span> <span class="op">=</span> <span class="st">"Myeloid"</span>, <span class="st">"6"</span> <span class="op">=</span> <span class="st">"Plasma"</span>, <span class="st">"7"</span> <span class="op">=</span> <span class="st">"T/NK"</span>,</span>
+<span>            <span class="st">"8"</span> <span class="op">=</span> <span class="st">"Epithelial 2"</span>, <span class="st">"9"</span> <span class="op">=</span> <span class="st">"Fibroblast"</span><span class="op">)</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/annotateGiotto.html" class="external-link">annotateGiotto</a></span><span class="op">(</span><span class="va">g</span>, annotation_vector <span class="op">=</span> <span class="va">LABELS</span>,</span>
+<span>                    cluster_column <span class="op">=</span> <span class="st">"leiden_clus"</span>, name <span class="op">=</span> <span class="st">"cell_type"</span><span class="op">)</span></span>
 <span><span class="va">cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">PAL</span> <span class="op">&lt;-</span> <span class="fu">clus_palette</span><span class="op">(</span><span class="va">cells</span><span class="op">$</span><span class="va">cell_type</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
@@ -635,7 +646,7 @@ clustering<a class="anchor" aria-label="anchor" href="#neighbors-umap-clustering
 <td align="right">16.9</td>
 </tr>
 <tr class="odd">
-<td align="left">T/NK</td>
+<td align="left">Epithelial 2</td>
 <td align="right">86986</td>
 <td align="right">14.1</td>
 </tr>
@@ -645,17 +656,17 @@ clustering<a class="anchor" aria-label="anchor" href="#neighbors-umap-clustering
 <td align="right">11.2</td>
 </tr>
 <tr class="odd">
-<td align="left">Proliferating</td>
+<td align="left">Fibroblast</td>
 <td align="right">55973</td>
 <td align="right">9.1</td>
 </tr>
 <tr class="even">
-<td align="left">B/Plasma</td>
+<td align="left">T/NK</td>
 <td align="right">42793</td>
 <td align="right">7.0</td>
 </tr>
 <tr class="odd">
-<td align="left">Epithelial 2</td>
+<td align="left">Proliferating epithelial</td>
 <td align="right">32755</td>
 <td align="right">5.3</td>
 </tr>
@@ -665,7 +676,7 @@ clustering<a class="anchor" aria-label="anchor" href="#neighbors-umap-clustering
 <td align="right">3.8</td>
 </tr>
 <tr class="odd">
-<td align="left">Fibroblast</td>
+<td align="left">Plasma</td>
 <td align="right">12687</td>
 <td align="right">2.1</td>
 </tr>
@@ -719,9 +730,9 @@ clustering<a class="anchor" aria-label="anchor" href="#neighbors-umap-clustering
 <p><img src="images/merscope_human_colon_cancer_giottodisk/09_spatial-facets.png" alt="" width="100%"></p>
 </div>
 <div class="section level2" number="11">
-<h2 id="cell-boundaries-in-a-400-um-window">
-<span class="header-section-number">11</span> Cell boundaries in a
-400 um window<a class="anchor" aria-label="anchor" href="#cell-boundaries-in-a-400-um-window"></a>
+<h2 id="cells-and-transcripts-in-a-400-um-window">
+<span class="header-section-number">11</span> Cells and transcripts
+in a 400 um window<a class="anchor" aria-label="anchor" href="#cells-and-transcripts-in-a-400-um-window"></a>
 </h2>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 400 um window at the center of the section</span></span>
@@ -734,12 +745,31 @@ clustering<a class="anchor" aria-label="anchor" href="#neighbors-umap-clustering
 <span><span class="va">p_types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">g</span>, show_polygon <span class="op">=</span> <span class="cn">TRUE</span>, polygon_fill <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
 <span>                                polygon_fill_as_factor <span class="op">=</span> <span class="cn">TRUE</span>, polygon_fill_code <span class="op">=</span> <span class="va">PAL</span>,</span>
 <span>                                polygon_color <span class="op">=</span> <span class="st">"black"</span>, polygon_line_size <span class="op">=</span> <span class="fl">0.12</span>,</span>
-<span>                                background_color <span class="op">=</span> <span class="st">"white"</span>,</span>
+<span>                                background_color <span class="op">=</span> <span class="st">"white"</span>, xlim <span class="op">=</span> <span class="va">XL</span>, ylim <span class="op">=</span> <span class="va">YL</span>,</span>
 <span>                                show_plot <span class="op">=</span> <span class="cn">FALSE</span>, return_plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># cropped to the window</span></span>
 <span><span class="va">p_types</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html" class="external-link">coord_fixed</a></span><span class="op">(</span>xlim <span class="op">=</span> <span class="va">XL</span>, ylim <span class="op">=</span> <span class="va">YL</span>, expand <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/merscope_human_colon_cancer_giottodisk/10_polygons.png" alt="" width="100%"></p>
+<p>The transcripts are on disk too. <code>xlim</code> and
+<code>ylim</code> crop inside the point store, so only the window’s
+transcripts are read, not the 151 million on the slide. One marker gene
+per cell type, colored like its cell type, over the same polygons:</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># one marker per cell type (from the marker table), colored like the cell type</span></span>
+<span><span class="va">MARKERS</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>MYC <span class="op">=</span> <span class="st">"Epithelial 1"</span>, MKI67 <span class="op">=</span> <span class="st">"Proliferating epithelial"</span>,</span>
+<span>             MMP1 <span class="op">=</span> <span class="st">"Inflammatory fibroblast"</span>, VWF <span class="op">=</span> <span class="st">"Endothelial"</span>,</span>
+<span>             LYZ <span class="op">=</span> <span class="st">"Myeloid"</span>, MZB1 <span class="op">=</span> <span class="st">"Plasma"</span>, TRAC <span class="op">=</span> <span class="st">"T/NK"</span>,</span>
+<span>             EPCAM <span class="op">=</span> <span class="st">"Epithelial 2"</span>, THBS2 <span class="op">=</span> <span class="st">"Fibroblast"</span><span class="op">)</span></span>
+<span><span class="va">p_tx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">g</span>, feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rna <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">MARKERS</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                             feats_color_code <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">PAL</span><span class="op">[</span><span class="va">MARKERS</span><span class="op">]</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">MARKERS</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                             use_overlap <span class="op">=</span> <span class="cn">FALSE</span>, point_size <span class="op">=</span> <span class="fl">0.3</span>,</span>
+<span>                             show_polygon <span class="op">=</span> <span class="cn">TRUE</span>, polygon_fill <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
+<span>                             polygon_fill_as_factor <span class="op">=</span> <span class="cn">TRUE</span>, polygon_fill_code <span class="op">=</span> <span class="va">PAL</span>,</span>
+<span>                             polygon_alpha <span class="op">=</span> <span class="fl">0.12</span>, polygon_color <span class="op">=</span> <span class="st">"grey35"</span>,</span>
+<span>                             polygon_line_size <span class="op">=</span> <span class="fl">0.1</span>, background_color <span class="op">=</span> <span class="st">"white"</span>,</span>
+<span>                             xlim <span class="op">=</span> <span class="va">XL</span>, ylim <span class="op">=</span> <span class="va">YL</span>,</span>
+<span>                             show_plot <span class="op">=</span> <span class="cn">FALSE</span>, return_plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">p_tx</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html" class="external-link">coord_fixed</a></span><span class="op">(</span>xlim <span class="op">=</span> <span class="va">XL</span>, ylim <span class="op">=</span> <span class="va">YL</span>, expand <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/merscope_human_colon_cancer_giottodisk/11_transcripts.png" alt="" width="100%"></p>
 </div>
 <div class="section level2" number="12">
 <h2 id="spatial-neighborhood-composition">
@@ -753,7 +783,7 @@ of the cells, so a log2 enrichment above 0 means the pairing is more
 common than chance. The clustering used no spatial information, so this
 tests whether the expression-defined populations are spatially
 organized.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span><span class="va">g</span>, method <span class="op">=</span> <span class="st">"kNN"</span>, k <span class="op">=</span> <span class="fl">20</span>, name <span class="op">=</span> <span class="st">"kNN20"</span><span class="op">)</span></span>
 <span><span class="va">cpe</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cellProximityEnrichment.html">cellProximityEnrichment</a></span><span class="op">(</span><span class="va">g</span>, cluster_column <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
 <span>                               spatial_network_name <span class="op">=</span> <span class="st">"kNN20"</span>,</span>
@@ -768,63 +798,63 @@ organized.</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">Fibroblast–Proliferating</td>
+<td align="left">Fibroblast–Plasma</td>
 <td align="right">1.10</td>
 <td align="right">0.000999</td>
 </tr>
 <tr class="even">
-<td align="left">B/Plasma–Myeloid</td>
+<td align="left">Myeloid–T/NK</td>
 <td align="right">0.84</td>
 <td align="right">0.000999</td>
 </tr>
 <tr class="odd">
-<td align="left">B/Plasma–Fibroblast</td>
+<td align="left">Plasma–T/NK</td>
 <td align="right">0.83</td>
 <td align="right">0.000999</td>
 </tr>
 <tr class="even">
-<td align="left">Endothelial–Proliferating</td>
+<td align="left">Endothelial–Fibroblast</td>
 <td align="right">0.59</td>
 <td align="right">0.000999</td>
 </tr>
 <tr class="odd">
-<td align="left">Endothelial–Fibroblast</td>
+<td align="left">Endothelial–Plasma</td>
 <td align="right">0.57</td>
 <td align="right">0.000999</td>
 </tr>
 <tr class="even">
-<td align="left">Epithelial 1–Epithelial 2</td>
+<td align="left">Epithelial 1–Proliferating epithelial</td>
 <td align="right">0.52</td>
 <td align="right">0.000999</td>
 </tr>
 <tr class="odd">
-<td align="left">B/Plasma–Proliferating</td>
+<td align="left">Fibroblast–T/NK</td>
 <td align="right">0.49</td>
 <td align="right">0.000999</td>
 </tr>
 <tr class="even">
-<td align="left">Myeloid–Proliferating</td>
+<td align="left">Fibroblast–Myeloid</td>
 <td align="right">0.44</td>
 <td align="right">0.000999</td>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/cellProximityHeatmap.html">cellProximityHeatmap</a></span><span class="op">(</span><span class="va">g</span>, CPscore <span class="op">=</span> <span class="va">cpe</span>, order_cell_types <span class="op">=</span> <span class="cn">TRUE</span>, scale <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merscope_human_colon_cancer_giottodisk/11_neighbour-heatmap.png" alt="" width="100%"></p>
+<p><img src="images/merscope_human_colon_cancer_giottodisk/12_neighbour-heatmap.png" alt="" width="100%"></p>
 </div>
 <div class="section level2" number="13">
 <h2 id="session">
 <span class="header-section-number">13</span> Session<a class="anchor" aria-label="anchor" href="#session"></a>
 </h2>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## R version 4.5.2 (2025-10-31)</span></span>
+<pre><code><span><span class="co">## R version 4.5.1 (2025-06-13)</span></span>
 <span><span class="co">## Platform: aarch64-apple-darwin20</span></span>
-<span><span class="co">## Running under: macOS 27.0.1</span></span>
+<span><span class="co">## Running under: macOS Sonoma 14.5</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
-<span><span class="co">## BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib </span></span>
+<span><span class="co">## BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib </span></span>
 <span><span class="co">## LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## locale:</span></span>
@@ -837,78 +867,82 @@ organized.</p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] future_1.76.0       terra_1.9-50        Matrix_1.7-4       </span></span>
-<span><span class="co">## [4] cowplot_1.2.0       ggplot2_4.0.3       data.table_1.18.6.1</span></span>
-<span><span class="co">## [7] GiottoDisk_0.0.0.6  Giotto_4.3.5        GiottoClass_0.7.18 </span></span>
+<span><span class="co">##  [1] future_1.70.0       terra_1.9-11        Matrix_1.7-3       </span></span>
+<span><span class="co">##  [4] cowplot_1.2.0       ggplot2_4.0.2       data.table_1.18.2.1</span></span>
+<span><span class="co">##  [7] GiottoDisk_0.0.0.6  Giotto_4.3.5        GiottoClass_0.7.18 </span></span>
+<span><span class="co">## [10] arrow_23.0.1.2     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##   [1] RColorBrewer_1.1-3          shape_1.4.6.1              </span></span>
 <span><span class="co">##   [3] jsonlite_2.0.0              wk_0.9.5                   </span></span>
-<span><span class="co">##   [5] magrittr_2.0.5              magick_2.9.1               </span></span>
-<span><span class="co">##   [7] farver_2.1.2                rmarkdown_2.32             </span></span>
-<span><span class="co">##   [9] GlobalOptions_0.1.4         vctrs_0.7.3                </span></span>
-<span><span class="co">##  [11] memoise_2.0.1               GiottoUtils_0.2.7          </span></span>
-<span><span class="co">##  [13] htmltools_0.5.9             S4Arrays_1.10.1            </span></span>
-<span><span class="co">##  [15] BiocNeighbors_2.4.0         SparseArray_1.10.10        </span></span>
-<span><span class="co">##  [17] sass_0.4.10                 parallelly_1.48.0          </span></span>
-<span><span class="co">##  [19] bslib_0.12.0                htmlwidgets_1.6.4          </span></span>
-<span><span class="co">##  [21] plotly_4.12.1               cachem_1.1.0               </span></span>
-<span><span class="co">##  [23] igraph_2.3.3                lifecycle_1.0.5            </span></span>
-<span><span class="co">##  [25] iterators_1.0.14            pkgconfig_2.0.3            </span></span>
-<span><span class="co">##  [27] rsvd_1.0.5                  R6_2.6.1                   </span></span>
-<span><span class="co">##  [29] fastmap_1.2.0               clue_0.3-68                </span></span>
-<span><span class="co">##  [31] MatrixGenerics_1.22.0       digest_0.6.39              </span></span>
-<span><span class="co">##  [33] colorspace_2.1-3            S4Vectors_0.48.1           </span></span>
-<span><span class="co">##  [35] dqrng_0.4.1                 irlba_2.3.7                </span></span>
-<span><span class="co">##  [37] GenomicRanges_1.62.1        beachmat_2.26.0            </span></span>
-<span><span class="co">##  [39] filelock_1.0.3              labeling_0.4.3             </span></span>
-<span><span class="co">##  [41] progressr_1.0.0             httr_1.4.9                 </span></span>
-<span><span class="co">##  [43] polyclip_1.10-7             abind_1.4-8                </span></span>
-<span><span class="co">##  [45] compiler_4.5.2              bit64_4.8.6                </span></span>
-<span><span class="co">##  [47] withr_3.0.3                 doParallel_1.0.17          </span></span>
-<span><span class="co">##  [49] S7_0.2.2                    backports_1.5.1            </span></span>
-<span><span class="co">##  [51] BiocParallel_1.44.0         viridis_0.6.5              </span></span>
-<span><span class="co">##  [53] ggforce_0.5.0               R.utils_2.13.0             </span></span>
-<span><span class="co">##  [55] MASS_7.3-65                 DelayedArray_0.36.1        </span></span>
-<span><span class="co">##  [57] rjson_0.2.23                bluster_1.20.0             </span></span>
-<span><span class="co">##  [59] gtools_3.9.5                GiottoVisuals_0.2.16       </span></span>
-<span><span class="co">##  [61] tools_4.5.2                 otel_0.2.0                 </span></span>
-<span><span class="co">##  [63] future.apply_1.20.2         R.oo_1.27.1                </span></span>
-<span><span class="co">##  [65] glue_1.8.1                  dbscan_1.2.6               </span></span>
-<span><span class="co">##  [67] grid_4.5.2                  checkmate_2.3.4            </span></span>
-<span><span class="co">##  [69] cluster_2.1.8.1             generics_0.1.4             </span></span>
-<span><span class="co">##  [71] gtable_0.3.6                R.methodsS3_1.8.2          </span></span>
-<span><span class="co">##  [73] tidyr_1.3.2                 BiocSingular_1.26.1        </span></span>
-<span><span class="co">##  [75] tidygraph_1.3.1             ScaledMatrix_1.18.0        </span></span>
-<span><span class="co">##  [77] metapod_1.18.0              XVector_0.50.0             </span></span>
-<span><span class="co">##  [79] BiocGenerics_0.56.0         tilework_1.0.0             </span></span>
-<span><span class="co">##  [81] ggrepel_0.9.8               foreach_1.5.2              </span></span>
-<span><span class="co">##  [83] pillar_1.11.1               RcppHNSW_0.7.0             </span></span>
-<span><span class="co">##  [85] limma_3.66.0                circlize_0.4.18            </span></span>
-<span><span class="co">##  [87] dplyr_1.2.1                 tweenr_2.0.3               </span></span>
-<span><span class="co">##  [89] lattice_0.22-7              bit_4.6.0                  </span></span>
-<span><span class="co">##  [91] tidyselect_1.2.1            ComplexHeatmap_2.26.1      </span></span>
-<span><span class="co">##  [93] SingleCellExperiment_1.32.0 locfit_1.5-9.12            </span></span>
-<span><span class="co">##  [95] scuttle_1.20.0              knitr_1.52                 </span></span>
-<span><span class="co">##  [97] gridExtra_2.3.1             IRanges_2.44.0             </span></span>
-<span><span class="co">##  [99] Seqinfo_1.0.0               edgeR_4.8.2                </span></span>
-<span><span class="co">## [101] SummarizedExperiment_1.40.0 scattermore_1.2            </span></span>
-<span><span class="co">## [103] stats4_4.5.2                xfun_0.61                  </span></span>
-<span><span class="co">## [105] graphlayouts_1.2.5          Biobase_2.70.0             </span></span>
-<span><span class="co">## [107] statmod_1.5.2               matrixStats_1.5.0          </span></span>
-<span><span class="co">## [109] yaml_2.3.12                 evaluate_1.0.5             </span></span>
-<span><span class="co">## [111] codetools_0.2-20            ggraph_2.2.2               </span></span>
-<span><span class="co">## [113] tibble_3.3.1                colorRamp2_0.1.1           </span></span>
-<span><span class="co">## [115] cli_3.6.6                   uwot_0.2.5                 </span></span>
-<span><span class="co">## [117] arrow_25.0.1                jquerylib_0.1.4            </span></span>
-<span><span class="co">## [119] Rcpp_1.1.2                  globals_0.19.1             </span></span>
-<span><span class="co">## [121] png_0.1-9                   parallel_4.5.2             </span></span>
-<span><span class="co">## [123] assertthat_0.2.1            scran_1.38.1               </span></span>
-<span><span class="co">## [125] listenv_1.0.0               viridisLite_0.4.3          </span></span>
-<span><span class="co">## [127] scales_1.4.0                crayon_1.5.3               </span></span>
-<span><span class="co">## [129] purrr_1.2.2                 GetoptLong_1.1.1           </span></span>
-<span><span class="co">## [131] rlang_1.3.0</span></span></code></pre>
-<p>NA ```</p>
+<span><span class="co">##   [5] magrittr_2.0.4              magick_2.9.1               </span></span>
+<span><span class="co">##   [7] farver_2.1.2                rmarkdown_2.31             </span></span>
+<span><span class="co">##   [9] GlobalOptions_0.1.4         vctrs_0.7.2                </span></span>
+<span><span class="co">##  [11] Cairo_1.7-0                 memoise_2.0.1              </span></span>
+<span><span class="co">##  [13] GiottoUtils_0.2.7           htmltools_0.5.9            </span></span>
+<span><span class="co">##  [15] S4Arrays_1.8.1              BiocNeighbors_2.2.0        </span></span>
+<span><span class="co">##  [17] SparseArray_1.8.1           sass_0.4.10                </span></span>
+<span><span class="co">##  [19] parallelly_1.46.1           bslib_0.10.0               </span></span>
+<span><span class="co">##  [21] htmlwidgets_1.6.4           plotly_4.12.0              </span></span>
+<span><span class="co">##  [23] cachem_1.1.0                igraph_2.2.2               </span></span>
+<span><span class="co">##  [25] iterators_1.0.14            lifecycle_1.0.5            </span></span>
+<span><span class="co">##  [27] pkgconfig_2.0.3             rsvd_1.0.5                 </span></span>
+<span><span class="co">##  [29] R6_2.6.1                    fastmap_1.2.0              </span></span>
+<span><span class="co">##  [31] clue_0.3-68                 GenomeInfoDbData_1.2.14    </span></span>
+<span><span class="co">##  [33] MatrixGenerics_1.20.0       digest_0.6.39              </span></span>
+<span><span class="co">##  [35] colorspace_2.1-2            S4Vectors_0.48.1           </span></span>
+<span><span class="co">##  [37] dqrng_0.4.1                 irlba_2.3.7                </span></span>
+<span><span class="co">##  [39] GenomicRanges_1.60.0        beachmat_2.24.0            </span></span>
+<span><span class="co">##  [41] filelock_1.0.3              labeling_0.4.3             </span></span>
+<span><span class="co">##  [43] progressr_0.19.0            httr_1.4.8                 </span></span>
+<span><span class="co">##  [45] polyclip_1.10-7             abind_1.4-8                </span></span>
+<span><span class="co">##  [47] compiler_4.5.1              doParallel_1.0.17          </span></span>
+<span><span class="co">##  [49] bit64_4.6.0-1               withr_3.0.2                </span></span>
+<span><span class="co">##  [51] S7_0.2.1                    backports_1.5.1            </span></span>
+<span><span class="co">##  [53] BiocParallel_1.42.2         viridis_0.6.5              </span></span>
+<span><span class="co">##  [55] ggforce_0.5.0               R.utils_2.13.0             </span></span>
+<span><span class="co">##  [57] sedonadb_0.5.0.9000         MASS_7.3-65                </span></span>
+<span><span class="co">##  [59] DelayedArray_0.34.1         rjson_0.2.23               </span></span>
+<span><span class="co">##  [61] bluster_1.18.0              gtools_3.9.5               </span></span>
+<span><span class="co">##  [63] GiottoVisuals_0.2.16        tools_4.5.1                </span></span>
+<span><span class="co">##  [65] otel_0.2.0                  future.apply_1.20.2        </span></span>
+<span><span class="co">##  [67] R.oo_1.27.1                 glue_1.8.0                 </span></span>
+<span><span class="co">##  [69] dbscan_1.2.4                grid_4.5.1                 </span></span>
+<span><span class="co">##  [71] checkmate_2.3.4             cluster_2.1.8.3            </span></span>
+<span><span class="co">##  [73] generics_0.1.4              gtable_0.3.6               </span></span>
+<span><span class="co">##  [75] R.methodsS3_1.8.2           tidyr_1.3.2                </span></span>
+<span><span class="co">##  [77] metapod_1.18.0              BiocSingular_1.24.0        </span></span>
+<span><span class="co">##  [79] tidygraph_1.3.1             ScaledMatrix_1.16.0        </span></span>
+<span><span class="co">##  [81] XVector_0.48.0              BiocGenerics_0.54.1        </span></span>
+<span><span class="co">##  [83] tilework_1.0.0.9000         foreach_1.5.2              </span></span>
+<span><span class="co">##  [85] ggrepel_0.9.8               pillar_1.11.1              </span></span>
+<span><span class="co">##  [87] limma_3.64.3                nanoarrow_0.9.0            </span></span>
+<span><span class="co">##  [89] RcppHNSW_0.7.0              circlize_0.4.18            </span></span>
+<span><span class="co">##  [91] dplyr_1.2.0                 tweenr_2.0.3               </span></span>
+<span><span class="co">##  [93] lattice_0.22-7              bit_4.6.0                  </span></span>
+<span><span class="co">##  [95] tidyselect_1.2.1            ComplexHeatmap_2.26.1      </span></span>
+<span><span class="co">##  [97] locfit_1.5-9.12             SingleCellExperiment_1.30.1</span></span>
+<span><span class="co">##  [99] scuttle_1.20.0              knitr_1.51                 </span></span>
+<span><span class="co">## [101] gridExtra_2.3               IRanges_2.42.0             </span></span>
+<span><span class="co">## [103] Seqinfo_1.0.0               edgeR_4.6.3                </span></span>
+<span><span class="co">## [105] SummarizedExperiment_1.38.1 scattermore_1.2            </span></span>
+<span><span class="co">## [107] stats4_4.5.1                xfun_0.61                  </span></span>
+<span><span class="co">## [109] graphlayouts_1.2.3          Biobase_2.68.0             </span></span>
+<span><span class="co">## [111] statmod_1.5.1               matrixStats_1.5.0          </span></span>
+<span><span class="co">## [113] UCSC.utils_1.4.0            lazyeval_0.2.2             </span></span>
+<span><span class="co">## [115] yaml_2.3.12                 GiottoKernels_0.3.0        </span></span>
+<span><span class="co">## [117] evaluate_1.0.5              codetools_0.2-20           </span></span>
+<span><span class="co">## [119] ggraph_2.2.2                tibble_3.3.1               </span></span>
+<span><span class="co">## [121] colorRamp2_0.1.0            cli_3.6.5                  </span></span>
+<span><span class="co">## [123] uwot_0.2.4                  jquerylib_0.1.4            </span></span>
+<span><span class="co">## [125] Rcpp_1.1.2                  GenomeInfoDb_1.44.3        </span></span>
+<span><span class="co">## [127] globals_0.19.1              png_0.1-9                  </span></span>
+<span><span class="co">## [129] parallel_4.5.1              assertthat_0.2.1           </span></span>
+<span><span class="co">## [131] scran_1.38.1                listenv_0.10.1             </span></span>
+<span><span class="co">## [133] SpatialExperiment_1.20.0    geoarrow_0.4.4             </span></span>
+<span><span class="co">## [135] viridisLite_0.4.3           scales_1.4.0               </span></span>
+<span><span class="co">## [137] purrr_1.2.1                 crayon_1.5.3               </span></span>
+<span><span class="co">## [139] GetoptLong_1.1.1            rlang_1.1.7</span></span></code></pre>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
