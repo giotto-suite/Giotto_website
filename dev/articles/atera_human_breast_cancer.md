@@ -105,7 +105,8 @@ out like a Xenium run. It is read here with
 
 [`createGiottoAteraObject()`](https://giottosuite.com/dev/reference/createGiottoAteraObject.md)
 is meant for the output of the commercial Atera instrument (Atera v1),
-which ships its data as zarr archives instead. See the Atera kidney
+which ships its data as zarr archives instead. See the [Atera Human
+Kidney](https://giottosuite.com/dev/articles/atera_human_kidney.md)
 tutorial for that layout.
 
 ### 3.2 Download links
@@ -177,10 +178,12 @@ disk-backed project.
 
 Besides genes, the transcripts include several kinds of control probes.
 The reader separates them into their own feature types by matching
-keywords in their names (`split_keyword`). In this dataset the genomic
-control probes are named `Intergenic_Region_*` rather than
-`GenomicControl*`, so that name is added to the last keyword set.
-Without it, 62 control probes would end up among the genes.
+keywords in their names (`split_keyword`). In this dataset the 62
+genomic control probes are named `Intergenic_Region_*` rather than
+`GenomicControl*`; the default keywords match both. *Readers from before
+Giotto 4.3.5 do not, and put these probes among the genes: pass
+`split_keyword = list("NegControlProbe", "UnassignedCodeword", "NegControlCodeword", c("GenomicControl", "Intergenic_Region"))`
+there.*
 
 ``` r
 
@@ -194,13 +197,7 @@ Without it, 62 control probes would end up among the genes.
 # * cell metadata (load_cellmeta = TRUE)
 # * aligned images (load_aligned_images, needs an alignment matrix)
 g <- createGiottoXeniumObject(data_dir,
-    backend = gdsrc, # creates the object as a backed project
-    split_keyword = list(
-        "NegControlProbe",
-        "UnassignedCodeword",
-        "NegControlCodeword",
-        c("GenomicControl", "Intergenic_Region")
-    )
+    backend = gdsrc # creates the object as a backed project
     # load_transcripts = FALSE # skip the transcripts, see Aggregate below
 )
 # items to load can be controlled via `load_*` params

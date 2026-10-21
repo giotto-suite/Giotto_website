@@ -120,6 +120,7 @@
     <li><a class="dropdown-item" href="../articles/xenium_breast_cancer.html">Xenium — Human breast cancer</a></li>
     <li><a class="dropdown-item" href="../articles/xenium_human_breast_cancer_giottodisk.html">Xenium — Human breast cancer (GiottoDisk)</a></li>
     <li><a class="dropdown-item" href="../articles/atera_human_breast_cancer.html">Atera — Human breast cancer</a></li>
+    <li><a class="dropdown-item" href="../articles/atera_human_kidney.html">Atera — Human kidney</a></li>
     <li><a class="dropdown-item" href="../articles/nanostring_cosmx_lung_cancer.html">Nanostring CosMx — Subcellular lung cancer</a></li>
     <li><a class="dropdown-item" href="../articles/cosmx_pancreas.html">Nanostring CosMx — Human pancreas FFPE</a></li>
     <li><a class="dropdown-item" href="../articles/cosmx_colon_wtx_giottodisk.html">Nanostring CosMx — Human colon (GiottoDisk)</a></li>
@@ -369,7 +370,8 @@ Xenium run. It is read here with
 <code><a href="../reference/createGiottoXeniumObject.html">createGiottoXeniumObject()</a></code>.</p>
 <p><code><a href="../reference/createGiottoAteraObject.html">createGiottoAteraObject()</a></code> is meant for the output of the
 commercial Atera instrument (Atera v1), which ships its data as zarr
-archives instead. See the Atera kidney tutorial for that layout.</p>
+archives instead. See the <a href="atera_human_kidney.html">Atera Human
+Kidney</a> tutorial for that layout.</p>
 </div>
 <div class="section level3" number="3.2">
 <h3 id="download-links">
@@ -435,10 +437,13 @@ project.</p>
 <p>Besides genes, the transcripts include several kinds of control
 probes. The reader separates them into their own feature types by
 matching keywords in their names (<code>split_keyword</code>). In this
-dataset the genomic control probes are named
+dataset the 62 genomic control probes are named
 <code>Intergenic_Region_*</code> rather than
-<code>GenomicControl*</code>, so that name is added to the last keyword
-set. Without it, 62 control probes would end up among the genes.</p>
+<code>GenomicControl*</code>; the default keywords match both.
+<em>Readers from before Giotto 4.3.5 do not, and put these probes among
+the genes: pass
+<code>split_keyword = list("NegControlProbe", "UnassignedCodeword", "NegControlCodeword", c("GenomicControl", "Intergenic_Region"))</code>
+there.</em></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># convenience function load defaults:</span></span>
 <span><span class="co"># * transcripts (qv &gt;= 20)</span></span>
@@ -450,13 +455,7 @@ set. Without it, 62 control probes would end up among the genes.</p>
 <span><span class="co"># * cell metadata (load_cellmeta = TRUE)</span></span>
 <span><span class="co"># * aligned images (load_aligned_images, needs an alignment matrix)</span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createGiottoXeniumObject.html">createGiottoXeniumObject</a></span><span class="op">(</span><span class="va">data_dir</span>,</span>
-<span>    backend <span class="op">=</span> <span class="va">gdsrc</span>, <span class="co"># creates the object as a backed project</span></span>
-<span>    split_keyword <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>        <span class="st">"NegControlProbe"</span>,</span>
-<span>        <span class="st">"UnassignedCodeword"</span>,</span>
-<span>        <span class="st">"NegControlCodeword"</span>,</span>
-<span>        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GenomicControl"</span>, <span class="st">"Intergenic_Region"</span><span class="op">)</span></span>
-<span>    <span class="op">)</span></span>
+<span>    backend <span class="op">=</span> <span class="va">gdsrc</span> <span class="co"># creates the object as a backed project</span></span>
 <span>    <span class="co"># load_transcripts = FALSE # skip the transcripts, see Aggregate below</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co"># items to load can be controlled via `load_*` params</span></span>

@@ -114,6 +114,7 @@ that Giotto spatially aggregates."><meta name="robots" content="noindex"><!-- Gl
     <li><a class="dropdown-item" href="../articles/xenium_breast_cancer.html">Xenium — Human breast cancer</a></li>
     <li><a class="dropdown-item" href="../articles/xenium_human_breast_cancer_giottodisk.html">Xenium — Human breast cancer (GiottoDisk)</a></li>
     <li><a class="dropdown-item" href="../articles/atera_human_breast_cancer.html">Atera — Human breast cancer</a></li>
+    <li><a class="dropdown-item" href="../articles/atera_human_kidney.html">Atera — Human kidney</a></li>
     <li><a class="dropdown-item" href="../articles/nanostring_cosmx_lung_cancer.html">Nanostring CosMx — Subcellular lung cancer</a></li>
     <li><a class="dropdown-item" href="../articles/cosmx_pancreas.html">Nanostring CosMx — Human pancreas FFPE</a></li>
     <li><a class="dropdown-item" href="../articles/cosmx_colon_wtx_giottodisk.html">Nanostring CosMx — Human colon (GiottoDisk)</a></li>
@@ -256,9 +257,9 @@ that Giotto spatially aggregates.</p>
 <span>  expression_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cell_metadata_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  feat_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rna"</span>, <span class="st">"NegControlProbe"</span>, <span class="st">"UnassignedCodeword"</span>, <span class="st">"NegControlCodeword"</span>,</span>
-<span>    <span class="st">"GenomicControl"</span><span class="op">)</span>,</span>
+<span>    <span class="st">"GenomicControl"</span>, <span class="st">"DeprecatedCodeword"</span><span class="op">)</span>,</span>
 <span>  split_keyword <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"NegControlProbe"</span>, <span class="st">"UnassignedCodeword"</span>, <span class="st">"NegControlCodeword"</span>,</span>
-<span>    <span class="st">"GenomicControl"</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GenomicControl"</span>, <span class="st">"Intergenic_Region"</span><span class="op">)</span>, <span class="st">"DeprecatedCodeword"</span><span class="op">)</span>,</span>
 <span>  qv_threshold <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  load_images <span class="op">=</span> <span class="st">"focus"</span>,</span>
 <span>  load_aligned_images <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -383,8 +384,9 @@ reinstalled with the following:</p><div class="sourceCode"><pre><code><span></sp
 <p>[<strong>QC feature types</strong>]
 Xenium provides info on feature detections that include more than only the
 Gene Expression specific probes. Additional probes for QC are included:
-<em>blank codeword</em>, <em>negative control codeword</em>, and
-<em>negative control probe</em>. These additional QC probes each occupy and
+<em>blank codeword</em>, <em>negative control codeword</em>,
+<em>negative control probe</em>, <em>genomic control</em> and
+<em>deprecated codeword</em>. These additional QC probes each occupy and
 are treated as their own feature types so that they can largely remain
 independent of the gene expression information.</p>
 <p>[<strong>feat_type and split_keyword</strong>]
@@ -392,7 +394,9 @@ Additional QC probe information is in the subcellular feature detections
 information and must be separated from the gene expression information
 during processing.
 The QC probes have prefixes that allow them to be selected from the rest of
-the feature IDs.
+the feature IDs. Genomic control probes are named either <code>GenomicControl*</code>
+or, in whole-transcriptome panels (Atera WTA), <code>Intergenic_Region_*</code>; the
+default <code>split_keyword</code> matches both.
 Giotto uses <code>feat_type</code> and <code>split_keyword</code> params to select these QC
 probes out as separate feature types. See examples in
 <code>[GiottoClass::createGiottoPoints]</code> for how this works.</p>

@@ -23,9 +23,9 @@ createGiottoXeniumObject(
   expression_path = NULL,
   cell_metadata_path = NULL,
   feat_type = c("rna", "NegControlProbe", "UnassignedCodeword", "NegControlCodeword",
-    "GenomicControl"),
+    "GenomicControl", "DeprecatedCodeword"),
   split_keyword = list("NegControlProbe", "UnassignedCodeword", "NegControlCodeword",
-    "GenomicControl"),
+    c("GenomicControl", "Intergenic_Region"), "DeprecatedCodeword"),
   qv_threshold = 20,
   load_images = "focus",
   load_aligned_images = NULL,
@@ -149,17 +149,21 @@ needs to be reinstalled with the following:
 \[**QC feature types**\] Xenium provides info on feature detections that
 include more than only the Gene Expression specific probes. Additional
 probes for QC are included: *blank codeword*, *negative control
-codeword*, and *negative control probe*. These additional QC probes each
-occupy and are treated as their own feature types so that they can
-largely remain independent of the gene expression information.
+codeword*, *negative control probe*, *genomic control* and *deprecated
+codeword*. These additional QC probes each occupy and are treated as
+their own feature types so that they can largely remain independent of
+the gene expression information.
 
 \[**feat_type and split_keyword**\] Additional QC probe information is
 in the subcellular feature detections information and must be separated
 from the gene expression information during processing. The QC probes
 have prefixes that allow them to be selected from the rest of the
-feature IDs. Giotto uses `feat_type` and `split_keyword` params to
-select these QC probes out as separate feature types. See examples in
-`[GiottoClass::createGiottoPoints]` for how this works.
+feature IDs. Genomic control probes are named either `GenomicControl*`
+or, in whole-transcriptome panels (Atera WTA), `Intergenic_Region_*`;
+the default `split_keyword` matches both. Giotto uses `feat_type` and
+`split_keyword` params to select these QC probes out as separate feature
+types. See examples in `[GiottoClass::createGiottoPoints]` for how this
+works.
 
 The Gene expression subset labeled as `rna` is accepted as the subset of
 feat_IDs that do not get matched to any of the `split_keywords`.

@@ -3,9 +3,10 @@
 Creates a reader with functions for converting individual pieces of
 Atera data into Giotto-compatible representations.
 
-Atera v1 output ships zarr archives only and is read through GiottoDisk:
-pass a `backend` to get a `GiottoDisk::importAteraDisk()` reader, which
-writes each data type to the on-disk project. Atera preview data in the
+Atera v1 output ships zarr archives only and is read on disk: `backend`
+is required and returns a `GiottoDisk::importAteraDisk()` reader, which
+writes each data type to the on-disk project. There is no in-memory
+Atera reader; without a `backend` this stops. Atera preview data in the
 Xenium layout (parquet / h5 files) is read with
 [`importXenium()`](https://giottosuite.com/dev/reference/importXenium.md)
 and
@@ -26,18 +27,16 @@ importAtera(atera_dir = NULL, qv_threshold = 20, backend = NULL)
 - qv_threshold:
 
   Minimum Phred-scaled quality score cutoff to be included as a
-  subcellular transcript detection (default = 20). Only applies when
-  transcript-level data is present.
+  subcellular transcript detection (default = 20).
 
 - backend:
 
-  a `gsource`-inheriting project backend, or a path to one. Required for
-  Atera v1 (zarr) output: creates the `giotto` object as a managed
-  on-disk project.
+  a `gsource`-inheriting project backend (typically
+  `GiottoDisk::sourceCreate()`), or a path to one. Required.
 
 ## Value
 
-`AteraDiskReader` object when `backend` is set, else `AteraReader`
+an `AteraDiskReader` object
 
 ## Examples
 

@@ -94,6 +94,7 @@
     <li><a class="dropdown-item" href="../articles/xenium_breast_cancer.html">Xenium — Human breast cancer</a></li>
     <li><a class="dropdown-item" href="../articles/xenium_human_breast_cancer_giottodisk.html">Xenium — Human breast cancer (GiottoDisk)</a></li>
     <li><a class="dropdown-item" href="../articles/atera_human_breast_cancer.html">Atera — Human breast cancer</a></li>
+    <li><a class="dropdown-item" href="../articles/atera_human_kidney.html">Atera — Human kidney</a></li>
     <li><a class="dropdown-item" href="../articles/nanostring_cosmx_lung_cancer.html">Nanostring CosMx — Subcellular lung cancer</a></li>
     <li><a class="dropdown-item" href="../articles/cosmx_pancreas.html">Nanostring CosMx — Human pancreas FFPE</a></li>
     <li><a class="dropdown-item" href="../articles/cosmx_colon_wtx_giottodisk.html">Nanostring CosMx — Human colon (GiottoDisk)</a></li>
@@ -224,7 +225,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="breaking-changes-4-3-5">breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-4-3-5"></a></h3>
-<ul><li>
+<ul><li>Atera has no in-memory reader: <code><a href="../reference/importAtera.html">importAtera()</a></code> and <code><a href="../reference/createGiottoAteraObject.html">createGiottoAteraObject()</a></code> stop unless <code>backend =</code> is given, and read through <code>GiottoDisk::importAteraDisk()</code>. The <code>AteraReader</code> class (a <code>XeniumReader</code> subclass) is removed. Atera preview data in the Xenium layout reads with <code><a href="../reference/importXenium.html">importXenium()</a></code> / <code><a href="../reference/createGiottoXeniumObject.html">createGiottoXeniumObject()</a></code>.</li>
+<li>
 <code><a href="../reference/createGiottoMerscopeObject.html">createGiottoMerscopeObject()</a></code> loads the vendor outputs through <code><a href="../reference/importMerscope.html">importMerscope()</a></code>: transcripts, cell boundaries, the expression matrix from <code>cell_by_gene.csv</code> and, with <code>data_to_use = "aggregate"</code>, cell centers from <code>cell_metadata.csv</code>. No overlap is calculated; use <code><a href="https://giotto-suite.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap()</a></code> and <code><a href="https://giotto-suite.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix()</a></code> on the created object. Expression values now match <code>cell_by_gene.csv</code>. <code>polygon_format = "parquet"</code> is the default. The y coordinates of transcripts, polygons and cell centers are negated. <code>version</code>, <code>flip_axis</code>, <code>calculate_overlap</code>, <code>overlap_to_matrix</code>, <code>aggregate_stack</code>, <code>aggregate_stack_param</code> and <code>cores</code> are deprecated. <code>version = 1</code> reads the HDF5 cell boundaries when <code>polygon_format</code> is not given.</li>
 <li>
 <code>runPAGEEnrich(return_gobject = FALSE)</code> returns a <code>spatEnrObj</code>, as the other enrichment methods do, instead of <code>list(DT =, matrix =)</code>.</li>
@@ -241,7 +243,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-4-3-5">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-4-3-5"></a></h3>
-<ul><li>Xenium and Atera readers: with the default <code>load_images = "focus"</code>, an output folder without <code>morphology_focus/</code> loaded everything else and then failed with “invalid ‘path’ argument”. The focus images are now skipped with a warning.</li>
+<ul><li>Xenium and Atera readers: genomic control probes named <code>Intergenic_Region_*</code> (Atera WTA panels) and <code>DeprecatedCodeword_*</code> features were not matched by the default <code>split_keyword</code> and were loaded as <code>rna</code> transcripts, so aggregation added them to the gene expression. The defaults now put them in <code>GenomicControl</code> and a new <code>DeprecatedCodeword</code> feature type, matching how the 10x expression matrix is split.</li>
+<li>Xenium and Atera readers: with the default <code>load_images = "focus"</code>, an output folder without <code>morphology_focus/</code> loaded everything else and then failed with “invalid ‘path’ argument”. The focus images are now skipped with a warning.</li>
 <li>Hypergeometric enrichment scored every cell against other cells’ thresholds: the per-cell top-percentage cut was recycled down the features. It also tested P(X &gt; x) instead of P(X &gt;= x), and a cell with a single selected feature scored 0. Scores change.</li>
 <li>PAGE and hypergeometric share one per-feature reference level, the mean of the de-logged values logged back in the same base. PAGE logged it in base e while the values are in <code>logbase</code>, and hypergeometric mixed linear and log scales; PAGE scores shift slightly.</li>
 <li>All enrichment methods count a feature as a marker where its sign-matrix value is &gt; 0, and return cells in the order of the expression matrix.</li>

@@ -6,13 +6,13 @@ Uses
 
 Tutorials built on a Giotto Suite extension package.
 
-GiottoDisk 11
+GiottoDisk 12
 
 GiottoLens 0
 
 Category
 
-Spatial in situ transcriptomics 17
+Spatial in situ transcriptomics 18
 
 Spatial sequencing transcriptomics 17
 
@@ -24,7 +24,7 @@ Single-cell RNA-seq 3
 
 Dataset size
 
-full 38
+full 39
 
 mini 3
 
@@ -32,7 +32,7 @@ Platform
 
 Xenium 2
 
-Atera 1
+Atera 2
 
 CosMx 4
 
@@ -80,11 +80,11 @@ Atera WTA, CosMx WTx, Visium.
 
 500–5,000 4
 
-5,000+ 28
+5,000+ 29
 
 Species
 
-human 20
+human 21
 
 mouse 19
 
@@ -102,7 +102,7 @@ embryo 2
 
 eye 1
 
-kidney 3
+kidney 4
 
 lung 3
 
@@ -120,11 +120,11 @@ Condition
 
 cancer 18
 
-normal 21
+normal 22
 
 Modality
 
-RNA 40
+RNA 41
 
 protein 4
 
@@ -137,7 +137,7 @@ multi-cell spots and bins.
 
 subcellular 8
 
-single cell 19
+single cell 20
 
 spot 15
 
@@ -152,6 +152,9 @@ genessubcellular](https://giottosuite.com/dev/articles/xenium_human_breast_cance
 [Spatial in situ transcriptomics Atera Human Breast Cancer Atera · human
 · breast · cancer GiottoDiskRNA5,000+ genessingle
 cell](https://giottosuite.com/dev/articles/atera_human_breast_cancer.md)
+[Spatial in situ transcriptomics Atera Human Kidney Atera · human ·
+kidney · normal GiottoDiskRNA5,000+ genessingle
+cell](https://giottosuite.com/dev/articles/atera_human_kidney.md)
 [Spatial in situ transcriptomics Nanostring CosMx Subcellular Lung
 Cancer CosMx · human · lung · cancer RNA500–5,000
 genessubcellular](https://giottosuite.com/dev/articles/nanostring_cosmx_lung_cancer.md)

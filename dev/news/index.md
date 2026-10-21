@@ -22,6 +22,17 @@ Downstream packages that stream PAGE (GiottoDisk) should require
 
 ### breaking changes
 
+- Atera has no in-memory reader:
+  [`importAtera()`](https://giottosuite.com/dev/reference/importAtera.md)
+  and
+  [`createGiottoAteraObject()`](https://giottosuite.com/dev/reference/createGiottoAteraObject.md)
+  stop unless `backend =` is given, and read through
+  `GiottoDisk::importAteraDisk()`. The `AteraReader` class (a
+  `XeniumReader` subclass) is removed. Atera preview data in the Xenium
+  layout reads with
+  [`importXenium()`](https://giottosuite.com/dev/reference/importXenium.md)
+  /
+  [`createGiottoXeniumObject()`](https://giottosuite.com/dev/reference/createGiottoXeniumObject.md).
 - [`createGiottoMerscopeObject()`](https://giottosuite.com/dev/reference/createGiottoMerscopeObject.md)
   loads the vendor outputs through
   [`importMerscope()`](https://giottosuite.com/dev/reference/importMerscope.md):
@@ -69,6 +80,13 @@ Downstream packages that stream PAGE (GiottoDisk) should require
 
 ### bug fixes
 
+- Xenium and Atera readers: genomic control probes named
+  `Intergenic_Region_*` (Atera WTA panels) and `DeprecatedCodeword_*`
+  features were not matched by the default `split_keyword` and were
+  loaded as `rna` transcripts, so aggregation added them to the gene
+  expression. The defaults now put them in `GenomicControl` and a new
+  `DeprecatedCodeword` feature type, matching how the 10x expression
+  matrix is split.
 - Xenium and Atera readers: with the default `load_images = "focus"`, an
   output folder without `morphology_focus/` loaded everything else and
   then failed with “invalid ‘path’ argument”. The focus images are now

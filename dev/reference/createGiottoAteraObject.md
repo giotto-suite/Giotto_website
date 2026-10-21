@@ -2,10 +2,12 @@
 
 Convenience wrapper around
 [`importAtera()`](https://giottosuite.com/dev/reference/importAtera.md)
-that builds a `giotto` object in one call. Atera v1 output (zarr) needs
-a `backend`: transcripts, polygons and expression are written to the
-on-disk project, and `load_images = "focus"` loads the `morphology_2d`
-images. Parameters match
+that builds a `giotto` object in one call. Atera output is read on disk,
+so `backend` is required (see
+[`importAtera()`](https://giottosuite.com/dev/reference/importAtera.md)):
+transcripts, polygons and expression are written to the on-disk project,
+and `load_images = "focus"` loads the `morphology_2d` images. Parameters
+match
 [`createGiottoXeniumObject()`](https://giottosuite.com/dev/reference/createGiottoXeniumObject.md);
 `gene_panel_json_path` does not apply, since Atera ships no gene panel.
 Atera preview data in the Xenium layout is read with
@@ -22,9 +24,9 @@ createGiottoAteraObject(
   expression_path = NULL,
   cell_metadata_path = NULL,
   feat_type = c("rna", "NegControlProbe", "UnassignedCodeword", "NegControlCodeword",
-    "GenomicControl"),
+    "GenomicControl", "DeprecatedCodeword"),
   split_keyword = list("NegControlProbe", "UnassignedCodeword", "NegControlCodeword",
-    "GenomicControl"),
+    c("GenomicControl", "Intergenic_Region"), "DeprecatedCodeword"),
   qv_threshold = 20,
   load_images = "focus",
   load_aligned_images = NULL,
