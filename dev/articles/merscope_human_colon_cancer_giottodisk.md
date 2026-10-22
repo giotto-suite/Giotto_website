@@ -28,25 +28,31 @@ parquet once and caches it in the vault.
 
 ``` r
 
-remotes::install_github(c(
-    "giotto-suite/GiottoUtils@24774a1",
-    "giotto-suite/GiottoClass@4a507d60",
-    "giotto-suite/GiottoVisuals@a939c0f",
-    "giotto-suite/Giotto@686fba1a",
-    "giotto-suite/GiottoDisk@674aaf2",
-    "drieslab/tilework@447503b"))
-BiocManager::install("scran")
+remotes::install_github("giotto-suite/GiottoUtils", ref = "dev")
+GiottoUtils::suite_install("GiottoDisk", install_arrow = TRUE)
+BiocManager::install(c("scran", "ComplexHeatmap"))
+install.packages(c("RcppHNSW", "wk"))
 ```
+
+`suite_install()` installs arrow (built with zstd support, only when it
+is missing or lacks it), tilework and the Giotto packages in the order
+GiottoDisk needs. The last two lines add the packages for marker
+detection, the neighborhood heatmap, the approximate nearest-neighbor
+search and the MERSCOPE polygon reader.
 
 ## 3 Setup
 
 ``` r
 
 suppressMessages({
+  library(arrow) # before Giotto and terra
   library(Giotto); library(GiottoClass); library(GiottoDisk)
   library(data.table); library(ggplot2); library(cowplot)
   library(Matrix); library(terra)
 })
+
+# no Python needed: skip Giotto's Python environment check
+options(giotto.use_conda = FALSE, giotto.no_python_warn = TRUE)
 
 # MERSCOPE region directory (the folder containing cell_by_gene.csv)
 MERSCOPE <- "data/region_R1"

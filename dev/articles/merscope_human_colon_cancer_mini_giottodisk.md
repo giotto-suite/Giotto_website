@@ -18,25 +18,31 @@ segmented cells.
 
 ``` r
 
-remotes::install_github(c(
-    "giotto-suite/GiottoUtils@65fb1a9b",
-    "giotto-suite/GiottoClass@b3e79326",
-    "giotto-suite/GiottoVisuals@bec7b11b",
-    "giotto-suite/Giotto@e611ed99",
-    "drieslab/tilework@f4616fa3"))
-remotes::install_local("path/to/GiottoDisk")   # branch feat/merscope-on-dev
-BiocManager::install("scran")
+remotes::install_github("giotto-suite/GiottoUtils", ref = "dev")
+GiottoUtils::suite_install("GiottoDisk", install_arrow = TRUE)
+BiocManager::install(c("scran", "ComplexHeatmap"))
+install.packages(c("RcppHNSW", "wk"))
 ```
+
+`suite_install()` installs arrow (built with zstd support, only when it
+is missing or lacks it), tilework and the Giotto packages in the order
+GiottoDisk needs. The last two lines add the packages for marker
+detection, the neighborhood heatmap, the approximate nearest-neighbor
+search and the MERSCOPE polygon reader.
 
 ## 3 Setup
 
 ``` r
 
 suppressMessages({
+  library(arrow) # before Giotto and terra
   library(Giotto); library(GiottoClass); library(GiottoDisk)
   library(data.table); library(ggplot2); library(cowplot)
   library(Matrix); library(terra)
 })
+
+# no Python needed: skip Giotto's Python environment check
+options(giotto.use_conda = FALSE, giotto.no_python_warn = TRUE)
 
 # MERSCOPE region directory (the folder containing detected_transcripts.parquet)
 merscope_dir <- "data/region_R1"
