@@ -27,7 +27,9 @@ if (!has_arrow || !zstd) {
     # install with compression library needed for 10x parquet files
     # this may take a while
     Sys.setenv(ARROW_WITH_ZSTD = "ON")
-    install.packages("arrow", repos = c("https://apache.r-universe.dev"), type = "source")
+    install.packages("arrow",
+        repos = c("https://apache.r-universe.dev", "https://cloud.r-project.org"),
+        type = "source")
 }
 ```
 
