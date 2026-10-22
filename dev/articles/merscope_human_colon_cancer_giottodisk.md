@@ -1,4 +1,4 @@
-# Human colon cancer MERSCOPE with GiottoDisk
+# MERSCOPE Human Colon Cancer
 
 ## 1 The dataset
 

@@ -177,8 +177,8 @@ Imaging-based in situ platforms, most popular first.
 
 - [Xenium Human Breast Cancer
   Pre-Release](https://giottosuite.com/dev/articles/xenium_breast_cancer.md):
-- [Xenium Human Breast Cancer
-  (GiottoDisk)](https://giottosuite.com/dev/articles/xenium_human_breast_cancer_giottodisk.md):
+- [Xenium Human Breast Cancer: Biomarker
+  Panel](https://giottosuite.com/dev/articles/xenium_human_breast_cancer_giottodisk.md):
 - [Atera Human Breast
   Cancer](https://giottosuite.com/dev/articles/atera_human_breast_cancer.md):
 - [Atera Human
@@ -187,8 +187,8 @@ Imaging-based in situ platforms, most popular first.
   Cancer](https://giottosuite.com/dev/articles/nanostring_cosmx_lung_cancer.md):
 - [Whole transcriptome CosMx Human Pancreas FFPE
   Dataset](https://giottosuite.com/dev/articles/cosmx_pancreas.md):
-- [CosMx Whole Transcriptome with
-  GiottoDisk](https://giottosuite.com/dev/articles/cosmx_colon_wtx_giottodisk.md):
+- [CosMx Whole Transcriptome: Human Colon
+  Cancer](https://giottosuite.com/dev/articles/cosmx_colon_wtx_giottodisk.md):
 - [CosMx Whole Transcriptome: Human Colon Mini
   Dataset](https://giottosuite.com/dev/articles/cosmx_mini_colon_wtx.md):
 - [MERFISH Mouse Hypothalamic Preoptic
@@ -197,10 +197,10 @@ Imaging-based in situ platforms, most popular first.
   BIL](https://giottosuite.com/dev/articles/merfish_mouse_sagittal_bil.md):
 - [Vizgen Mouse Brain Receptor
   Map](https://giottosuite.com/dev/articles/vizgen_mouse_brain.md):
-- [Human colon cancer MERSCOPE with
-  GiottoDisk](https://giottosuite.com/dev/articles/merscope_human_colon_cancer_giottodisk.md):
-- [Human colon cancer MERSCOPE mini dataset with
-  GiottoDisk](https://giottosuite.com/dev/articles/merscope_human_colon_cancer_mini_giottodisk.md):
+- [MERSCOPE Human Colon
+  Cancer](https://giottosuite.com/dev/articles/merscope_human_colon_cancer_giottodisk.md):
+- [MERSCOPE Human Colon Cancer: Mini
+  Dataset](https://giottosuite.com/dev/articles/merscope_human_colon_cancer_mini_giottodisk.md):
 - [Spatial Genomics Mouse
   Kidney](https://giottosuite.com/dev/articles/spatial_genomics_mouse_kidney.md):
 - [mini seqFISH](https://giottosuite.com/dev/articles/mini_seqfish.md):

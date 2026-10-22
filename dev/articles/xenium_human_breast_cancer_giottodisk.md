@@ -1,4 +1,4 @@
-# Xenium Human Breast Cancer (GiottoDisk)
+# Xenium Human Breast Cancer: Biomarker Panel
 
 ## 1 Overview
 

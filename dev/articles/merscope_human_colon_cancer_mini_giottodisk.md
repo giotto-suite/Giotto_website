@@ -1,4 +1,4 @@
-# Human colon cancer MERSCOPE mini dataset with GiottoDisk
+# MERSCOPE Human Colon Cancer: Mini Dataset
 
 ## 1 The dataset
 

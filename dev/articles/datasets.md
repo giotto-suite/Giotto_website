@@ -146,8 +146,8 @@ Clear filters
 [Spatial in situ transcriptomics Xenium Human Breast Cancer Pre-Release
 Xenium · human · breast · cancer RNA0–500
 genessubcellular](https://giottosuite.com/dev/articles/xenium_breast_cancer.md)
-[Spatial in situ transcriptomics Xenium Human Breast Cancer (GiottoDisk)
-Xenium · human · breast · cancer GiottoDiskRNA0–500
+[Spatial in situ transcriptomics Xenium Human Breast Cancer: Biomarker
+Panel Xenium · human · breast · cancer GiottoDiskRNA0–500
 genessubcellular](https://giottosuite.com/dev/articles/xenium_human_breast_cancer_giottodisk.md)
 [Spatial in situ transcriptomics Atera Human Breast Cancer Atera · human
 · breast · cancer GiottoDiskRNA5,000+ genessingle
@@ -161,8 +161,8 @@ genessubcellular](https://giottosuite.com/dev/articles/nanostring_cosmx_lung_can
 [Spatial in situ transcriptomics Whole transcriptome CosMx Human
 Pancreas FFPE Dataset CosMx · human · pancreas RNA5,000+
 genessubcellular](https://giottosuite.com/dev/articles/cosmx_pancreas.md)
-[Spatial in situ transcriptomics CosMx Whole Transcriptome with
-GiottoDisk CosMx · human · colon · cancer GiottoDiskRNA5,000+
+[Spatial in situ transcriptomics CosMx Whole Transcriptome: Human Colon
+Cancer CosMx · human · colon · cancer GiottoDiskRNA5,000+
 genessubcellular](https://giottosuite.com/dev/articles/cosmx_colon_wtx_giottodisk.md)
 [Spatial in situ transcriptomics CosMx Whole Transcriptome: Human Colon
 Mini Dataset CosMx · human · colon · cancer miniRNA5,000+
@@ -176,12 +176,12 @@ cell](https://giottosuite.com/dev/articles/merfish_mouse_sagittal_bil.md)
 [Spatial in situ transcriptomics Vizgen Mouse Brain Receptor Map
 MERFISH/MERSCOPE · mouse · brain · normal RNA0–500
 genessubcellular](https://giottosuite.com/dev/articles/vizgen_mouse_brain.md)
-[Spatial in situ transcriptomics Human colon cancer MERSCOPE with
-GiottoDisk MERFISH/MERSCOPE · human · colon · cancer
-GiottoDiskRNA500–5,000 genessingle
+[Spatial in situ transcriptomics MERSCOPE Human Colon Cancer
+MERFISH/MERSCOPE · human · colon · cancer GiottoDiskRNA500–5,000
+genessingle
 cell](https://giottosuite.com/dev/articles/merscope_human_colon_cancer_giottodisk.md)
-[Spatial in situ transcriptomics Human colon cancer MERSCOPE mini
-dataset with GiottoDisk MERFISH/MERSCOPE · human · colon · cancer
+[Spatial in situ transcriptomics MERSCOPE Human Colon Cancer: Mini
+Dataset MERFISH/MERSCOPE · human · colon · cancer
 GiottoDiskminiRNA500–5,000 genessingle
 cell](https://giottosuite.com/dev/articles/merscope_human_colon_cancer_mini_giottodisk.md)
 [Spatial in situ transcriptomics Spatial Genomics Mouse Kidney GenePS ·

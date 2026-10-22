@@ -1,4 +1,4 @@
-# CosMx Whole Transcriptome with GiottoDisk
+# CosMx Whole Transcriptome: Human Colon Cancer
 
 ## 1 The dataset
 
