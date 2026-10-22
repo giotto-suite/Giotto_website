@@ -21,8 +21,9 @@ GiottoDisk has not been installed yet, use the following:
 
 ``` r
 
-# GiottoDisk install
-GiottoUtils::suite_install("GiottoDisk")
+# GiottoDisk install; also installs arrow (with zstd support) and tilework
+remotes::install_github("giotto-suite/GiottoUtils", ref = "dev")
+GiottoUtils::suite_install("GiottoDisk", install_arrow = TRUE)
 # Optional for matrix maths speedup:
 install.packages("GiottoKernels",
     repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org")

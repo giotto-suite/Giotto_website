@@ -33,28 +33,21 @@ step uses on your machine.
 
 ## 2 Install extra packages
 
-### 2.1 *arrow* installation
+### 2.1 Giotto extensions
 
-GiottoDisk stores the data as parquet files, which requires arrow with
-ZSTD support.
+This tutorial uses GiottoDisk for on-disk processing. These are preview
+dev builds off the dev and gsource Giotto package branches. If
+GiottoDisk has not been installed yet, use the following:
 
 ``` r
 
-has_arrow <- requireNamespace("arrow", quietly = TRUE)
-zstd <- TRUE
-if (has_arrow) {
-    # check arrow_info() to see that zstd support should be TRUE
-    # See https://arrow.apache.org/docs/r/articles/install.html for details
-    zstd <- arrow::arrow_info()$capabilities[["zstd"]]
-}
-if (!has_arrow || !zstd) {
-    # install with compression library needed for parquet files
-    # this may take a while
-    Sys.setenv(ARROW_WITH_ZSTD = "ON")
-    install.packages("arrow",
-        repos = c("https://apache.r-universe.dev", "https://cloud.r-project.org"),
-        type = "source")
-}
+# GiottoDisk install; also installs arrow (with zstd support) and tilework
+remotes::install_github("giotto-suite/GiottoUtils", ref = "dev")
+GiottoUtils::suite_install("GiottoDisk", install_arrow = TRUE)
+# Optional for matrix maths speedup:
+install.packages("GiottoKernels",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org")
+)
 ```
 
 ### 2.2 Zarr readers
@@ -98,22 +91,6 @@ backend smotifrs to count cell type motifs:
 
 install.packages(c("smotif", "smotifrs"),
     repos = c("https://drieslab.r-universe.dev", "https://cloud.r-project.org")
-)
-```
-
-### 2.5 Giotto extensions
-
-This tutorial uses GiottoDisk for on-disk processing. These are preview
-dev builds off the dev and gsource Giotto package branches. If
-GiottoDisk has not been installed yet, use the following:
-
-``` r
-
-# GiottoDisk install
-GiottoUtils::suite_install("GiottoDisk")
-# Optional for matrix maths speedup:
-install.packages("GiottoKernels",
-    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org")
 )
 ```
 

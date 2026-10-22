@@ -10,35 +10,18 @@ typing and spatial niches. Nothing is held in memory: the matrix and the
 
 ## 2 Packages
 
-### 2.1 arrow
-
-GiottoDisk writes its parquet cache with zstd compression, so arrow has
-to be built with zstd support. Install it before Giotto.
-
-``` r
-
-has_arrow <- requireNamespace("arrow", quietly = TRUE)
-zstd <- TRUE
-if (has_arrow) {
-    zstd <- arrow::arrow_info()$capabilities[["zstd"]]
-}
-if (!has_arrow || !zstd) {
-    Sys.setenv(ARROW_WITH_ZSTD = "ON")
-    install.packages("arrow",
-        repos = c("https://apache.r-universe.dev", "https://cloud.r-project.org"),
-        type = "source")
-}
-```
-
-### 2.2 Giotto and other packages
-
 ``` r
 
 remotes::install_github("giotto-suite/GiottoUtils", ref = "dev")
-GiottoUtils::suite_install("GiottoDisk")
+GiottoUtils::suite_install("GiottoDisk", install_arrow = TRUE)
 BiocManager::install(c("scran", "Rarr"))
 install.packages(c("duckdb", "DBI", "dbplyr", "wk", "ggdendro"))
 ```
+
+`suite_install()` installs arrow (built with zstd support, only when it
+is missing or lacks it), tilework and the Giotto packages in the order
+GiottoDisk needs. The last two lines add the packages for the zarr
+reader, marker detection and the spatial engines used below.
 
 ## 3 The dataset
 

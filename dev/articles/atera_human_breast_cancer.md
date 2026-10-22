@@ -17,28 +17,21 @@ compatibility, but this is expected to change in the future.*
 
 ## 2 Install extra packages
 
-### 2.1 *arrow* installation
+### 2.1 Giotto extensions
 
-Atera datasets require arrow with ZSTD support to work with parquet
-files.
+This tutorial uses GiottoDisk for on-disk processing. These are preview
+dev builds off the dev and gsource Giotto package branches. If
+GiottoDisk has not been installed yet, use the following:
 
 ``` r
 
-has_arrow <- requireNamespace("arrow", quietly = TRUE)
-zstd <- TRUE
-if (has_arrow) {
-    # check arrow_info() to see that zstd support should be TRUE
-    # See https://arrow.apache.org/docs/r/articles/install.html for details
-    zstd <- arrow::arrow_info()$capabilities[["zstd"]]
-}
-if (!has_arrow || !zstd) {
-    # install with compression library needed for 10x parquet files
-    # this may take a while
-    Sys.setenv(ARROW_WITH_ZSTD = "ON")
-    install.packages("arrow",
-        repos = c("https://apache.r-universe.dev", "https://cloud.r-project.org"),
-        type = "source")
-}
+# GiottoDisk install; also installs arrow (with zstd support) and tilework
+remotes::install_github("giotto-suite/GiottoUtils", ref = "dev")
+GiottoUtils::suite_install("GiottoDisk", install_arrow = TRUE)
+# Optional for matrix maths speedup:
+install.packages("GiottoKernels",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org")
+)
 ```
 
 ### 2.2 *SedonaDB* and *DuckDB* installation
@@ -68,22 +61,6 @@ backend smotifrs to count cell type motifs:
 
 install.packages(c("smotif", "smotifrs"),
     repos = c("https://drieslab.r-universe.dev", "https://cloud.r-project.org")
-)
-```
-
-### 2.4 Giotto extensions
-
-This tutorial uses GiottoDisk for on-disk processing. These are preview
-dev builds off the dev and gsource Giotto package branches. If
-GiottoDisk has not been installed yet, use the following:
-
-``` r
-
-# GiottoDisk install
-GiottoUtils::suite_install("GiottoDisk")
-# Optional for matrix maths speedup:
-install.packages("GiottoKernels",
-    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org")
 )
 ```
 
