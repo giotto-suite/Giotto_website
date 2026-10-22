@@ -28,8 +28,7 @@ vignette: >
 knitr::opts_chunk$set(
     echo = TRUE, message = FALSE, warning = FALSE, fig.align = "center",
     dpi = 120, cache = FALSE, fig.path = "figures_rmd/")
-options(giotto.use_conda = FALSE, giotto.no_python_warn = TRUE,
-        progressr.enable = FALSE)
+options(progressr.enable = FALSE)
 ```
 
 # The dataset
@@ -59,24 +58,40 @@ and caches it in the vault.
 # Packages
 
 ```{r install, eval = FALSE}
-remotes::install_github(c(
-    "giotto-suite/GiottoUtils@24774a1",
-    "giotto-suite/GiottoClass@4a507d60",
-    "giotto-suite/GiottoVisuals@a939c0f",
-    "giotto-suite/Giotto@686fba1a",
-    "giotto-suite/GiottoDisk@674aaf2",
-    "drieslab/tilework@447503b"))
-BiocManager::install("scran")
+remotes::install_github("giotto-suite/GiottoUtils", ref = "dev")
+GiottoUtils::suite_install("GiottoDisk", install_arrow = TRUE)
+BiocManager::install(c("scran", "ComplexHeatmap"))
+install.packages(c("RcppHNSW", "wk"))
+```
+
+`suite_install()` installs arrow (built with zstd support, only when it is
+missing or lacks it), tilework and the Giotto packages in the order GiottoDisk
+needs. The last two lines add the packages for marker detection, the
+neighborhood heatmap, the approximate nearest-neighbor search and the
+MERSCOPE polygon reader.
+
+```{r version-guard, include=FALSE, eval = FALSE}
+if (!exists("importMerscopeDisk", asNamespace("GiottoDisk")))
+  stop("GiottoDisk has no MERSCOPE disk reader; see section 2.", call. = FALSE)
+if (!isTRUE(arrow::arrow_info()$capabilities[["zstd"]]))
+  stop("arrow lacks zstd support; see section 2.", call. = FALSE)
+for (p in c("scran", "ComplexHeatmap", "RcppHNSW", "wk"))
+  if (!requireNamespace(p, quietly = TRUE))
+    stop(p, " is not installed; see section 2.", call. = FALSE)
 ```
 
 # Setup
 
 ```{r libraries, eval = FALSE}
 suppressMessages({
+  library(arrow) # before Giotto and terra
   library(Giotto); library(GiottoClass); library(GiottoDisk)
   library(data.table); library(ggplot2); library(cowplot)
   library(Matrix); library(terra)
 })
+
+# no Python needed: skip Giotto's Python environment check
+options(giotto.use_conda = FALSE, giotto.no_python_warn = TRUE)
 
 # MERSCOPE region directory (the folder containing cell_by_gene.csv)
 MERSCOPE <- "data/region_R1"
