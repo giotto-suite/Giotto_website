@@ -5,6 +5,10 @@ description: Add, convert or fix a tutorial on the Giotto Suite website (giottos
 
 # Adding a tutorial to giottosuite.com
 
+For what a tutorial should *contain* — section order, what to show or fold,
+figure and naming conventions — see `RULESET.md` beside this file. This file
+covers how to get it onto the site.
+
 This repository holds **website content only** — `vignettes/`, `_pkgdown.yml`, theme,
 landing page. The package source is checked out from `giotto-suite/Giotto` at build time
 and the website content is laid over it. Never merge package code in here.
@@ -26,7 +30,9 @@ review step.
 
 2. **Put figures in `vignettes/images/<slug>/`** and reference them with
    `knitr::include_graphics("images/<slug>/01_plot.png")`. Paths are relative to
-   `vignettes/`.
+   `vignettes/`. **Label every chunk that produces a figure** --
+   `convert-tutorial.R` names each image from the label of the chunk that made
+   it, so an unlabelled one lands as `NN_figure.png` with nothing to tie it to.
 
 3. **Do not evaluate code that touches Giotto data or files.** Chunks running Giotto are
    `eval=FALSE` and their results are committed PNGs. This is why a tutorial can be
