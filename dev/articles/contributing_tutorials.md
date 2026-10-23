@@ -45,12 +45,10 @@ Create a new .Rmd (R markdown) file under the folder “vignettes”.
 Absolutely no `eval=TRUE` for example code. To save time when rendering
 the website, all chunks should not evaluate the code.
 
-The chunk that shows a figure is the one exception.
-[`knitr::include_graphics()`](https://rdrr.io/pkg/knitr/man/include_graphics.html)
-has to run or no image appears, so that chunk keeps its default `eval`
-and hides its source with `echo=FALSE` instead:
+Image results should be included via linking or a `knitr` chunk of this
+style:
 
-    knitr::include_graphics("images/TUTORIAL_FOLDER/#_IMAGE_NAME.png")
+    #knitr::include_graphics("images/TUTORIAL_FOLDER/#_IMAGE_NAME.png")
 
 *The upper case sections just show which areas should be edited, not
 that they need to be upper case*
