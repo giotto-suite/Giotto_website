@@ -16,6 +16,18 @@
 # USAGE
 #   Rscript pkgdown/convert-tutorial.R <source.Rmd> <rendered.html> <slug>
 #
+# A chunk's printed output is carried across too, as a plain fenced block below
+# the code, matching how the tutorials that have it are written by hand today.
+# A chunk that should run noisily but publish quietly says so in its header:
+#
+#   ```{r save-annotated, keep_output = FALSE}
+#
+# knitr ignores the option, so the render is unchanged and you still see the
+# messages while working. The alternative is to suppress at render time with
+# message = FALSE or results = 'hide', which keeps the output out of the HTML
+# altogether -- cheaper to reason about, but you lose it while developing and
+# changing your mind costs another render.
+#
 # Writes vignettes/<slug>.Rmd and vignettes/images/<slug>/NN_<chunk>.png, then
 # prints a report. Register the result in _pkgdown.yml under articles: -- that
 # one is required, and pkgdown fails the build without it. A navbar: entry is
@@ -70,6 +82,21 @@ chunks <- lapply(opens, function(o) {
 
 norm <- function(x) gsub("\\s+", " ", trimws(paste(x, collapse = " ")))
 
+# seq(a, b) counts DOWN when a > b, so an empty range yields two wrong indices
+# instead of none: src[length(src) + 1L] is NA and the line before it repeats.
+# That is where the trailing "NA" and unclosed fence at the end of several
+# published tutorials came from.
+span <- function(from, to) if (from > to) integer() else seq(from, to)
+
+untag <- function(x) {
+  x <- gsub("<[^>]+>", "", x)                  # tags, incl. per-token <span>s
+  x <- gsub("&quot;", '"', x, fixed = TRUE)
+  x <- gsub("&#39;",  "'", x, fixed = TRUE)
+  x <- gsub("&lt;",   "<", x, fixed = TRUE)
+  x <- gsub("&gt;",   ">", x, fixed = TRUE)
+  gsub("&amp;",  "&", x, fixed = TRUE)         # last: & is the escape char
+}
+
 # ---- 2. pull the embedded figures out of the rendered HTML ------------------
 # Only data:image/png;base64 -- a plain "<img" search also hits image tags
 # constructed inside the bundled jQuery, which are not figures.
@@ -100,12 +127,7 @@ code_above <- function(pos) {
   from <- last + attr(hits, "match.length")[[which.max(as.integer(hits))]]
   block <- substr(pre, from, nchar(pre))
   block <- sub("</pre>.*$", "", block)
-  block <- gsub("<[^>]+>", "", block)          # tags, incl. per-token <span>s
-  block <- gsub("&quot;", '"', block, fixed = TRUE)
-  block <- gsub("&#39;",  "'", block, fixed = TRUE)
-  block <- gsub("&lt;",   "<", block, fixed = TRUE)
-  block <- gsub("&gt;",   ">", block, fixed = TRUE)
-  block <- gsub("&amp;",  "&", block, fixed = TRUE)   # last: & is the escape char
+  block <- untag(block)
   # collapse = TRUE folds printed output into the source block; drop it so the
   # comparison sees only what the author wrote.
   keep <- grep("^\\s*(#>|##)", strsplit(block, "\n", fixed = TRUE)[[1]],
@@ -136,7 +158,53 @@ for (i in seq_along(figs)) {
   owner[[i]] <- if (length(hit)) hit[[length(hit)]] else NA_integer_
 }
 
-# ---- 4. write the PNGs -------------------------------------------------------
+# ---- 4. pull printed output out of the rendered HTML -------------------------
+# knitr gives a chunk's output its own <pre> with no class, every line prefixed
+# by `comment` (`##` by default). Source blocks carry class="r" and markdown's
+# own fences carry a language class, so an unclassed <pre> whose every line is
+# prefixed is output and nothing else. A tutorial that overrides `comment` falls
+# outside that test and keeps the old behaviour -- output dropped rather than
+# guessed at.
+pre_m   <- gregexpr("(?s)<pre[^>]*>.*?</pre>", html, perl = TRUE)[[1]]
+pre_txt <- if (identical(as.integer(pre_m), -1L)) character() else
+  substring(html, as.integer(pre_m),
+            as.integer(pre_m) + attr(pre_m, "match.length") - 1L)
+
+is_source <- grepl('^<pre[^>]*class="[^"]*\\br\\b[^"]*"', pre_txt, perl = TRUE)
+is_plain  <- grepl("^<pre>", pre_txt)
+
+pre_lines <- function(x) {
+  strsplit(untag(sub("(?s)^<pre[^>]*>(.*)</pre>$", "\\1", x, perl = TRUE)),
+           "\n", fixed = TRUE)[[1]]
+}
+
+codes <- vapply(chunks, function(ch) norm(ch$code), "")
+chunk_of <- function(x) {
+  code <- norm(grep("^\\s*(#>|##)", pre_lines(x), invert = TRUE, value = TRUE))
+  hit <- which(codes == code)
+  if (!length(hit)) {
+    k <- tailkey(code)
+    hit <- which(nzchar(k) & vapply(codes, function(cd) grepl(k, cd, fixed = TRUE), logical(1)))
+  }
+  if (length(hit)) hit[[length(hit)]] else NA_integer_
+}
+
+outputs <- vector("list", length(chunks))
+orphans <- 0L            # output whose chunk could not be identified
+cur <- NA_integer_
+for (i in seq_along(pre_txt)) {
+  if (is_source[[i]]) { cur <- chunk_of(pre_txt[[i]]); next }
+  if (!is_plain[[i]]) { cur <- NA_integer_; next }   # a markdown fence, e.g. class="sh"
+  ln  <- pre_lines(pre_txt[[i]])
+  txt <- ln[nzchar(trimws(ln))]
+  if (!length(txt) || !all(grepl("^\\s*(##|#>)", txt))) { cur <- NA_integer_; next }
+  # Classify the block before deciding what to do with it, so output that
+  # cannot be placed is counted rather than passed over in silence.
+  if (is.na(cur)) { orphans <- orphans + 1L; next }
+  outputs[[cur]] <- c(outputs[[cur]], sub("^(\\s*)(##|#>) ?", "\\1", ln))
+}
+
+# ---- 5. write the PNGs -------------------------------------------------------
 dir.create(img_dir, recursive = TRUE, showWarnings = FALSE)
 unlink(list.files(img_dir, full.names = TRUE))
 
@@ -153,13 +221,25 @@ for (i in seq_along(figs)) {
   paths[[i]] <- f
 }
 
-# ---- 5. rebuild the Rmd ------------------------------------------------------
+# ---- 6. rebuild the Rmd ------------------------------------------------------
 yaml_end <- if (src[[1]] == "---") grep("^---\\s*$", src)[[2]] else 0L
 body <- src[seq(yaml_end + 1L, length(src))]
 head_src <- if (yaml_end > 0L) src[seq_len(yaml_end)] else character()
 
 title <- sub('^title:\\s*"?(.*?)"?\\s*$', "\\1", grep("^title:", head_src, value = TRUE)[1])
 if (is.na(title)) title <- slug
+
+# tags: drives the dataset browser's filters, is written by hand, and there is
+# nothing here to regenerate it from. Carry the block across verbatim or the
+# tutorial silently drops out of the browser.
+tags_block <- character()
+tstart <- grep("^tags:\\s*$", head_src)
+if (length(tstart)) {
+  tlines <- head_src[span(tstart[[1]] + 1L, length(head_src))]
+  ends   <- which(!grepl("^\\s+\\S", tlines))
+  n_keep <- if (length(ends)) ends[[1]] - 1L else length(tlines)
+  if (n_keep > 0L) tags_block <- c("tags:", tlines[seq_len(n_keep)])
+}
 
 # params: exists only to feed evaluated code. Nothing evaluates here, so surface
 # the values as a visible chunk instead of silently dropping them -- the reader
@@ -182,16 +262,35 @@ if (length(pstart)) {
 
 # every chunk off, and an include_graphics chunk after each producer
 out <- character()
+kept_own <- 0L
 prev <- 1L
 for (ci in seq_along(chunks)) {
   ch <- chunks[[ci]]
-  out <- c(out, body_slice <- src[seq(prev, ch$open - 1L)])
+  out <- c(out, src[span(prev, ch$open - 1L)])
 
   hdr <- ch$header
+  # keep_output is ours, not knitr's: strip it so the published chunk does not
+  # carry an option no reader can look up.
+  hdr <- gsub("\\s*,?\\s*keep_output\\s*=\\s*(TRUE|FALSE|T|F)", "", hdr)
   hdr <- gsub("\\s*,?\\s*eval\\s*=\\s*(TRUE|FALSE|T|F)", "", hdr)
   hdr <- sub("\\s+$", "", hdr)
   hdr <- if (grepl("[^,[:space:]]", hdr)) paste0(hdr, ", eval = FALSE") else " eval = FALSE"
   out <- c(out, sprintf("```{r%s}", hdr), ch$code, "```")
+
+  # output before figures: a chunk that prints and then plots is the common
+  # order, and keeping one include_graphics block per chunk keeps the naming
+  # predictable.
+  # An author who pasted output into the source already has it, and the
+  # following prose carries it through, so adding ours would print it twice.
+  nxt <- ch$close + 1L
+  while (nxt <= length(src) && !nzchar(trimws(src[[nxt]]))) nxt <- nxt + 1L
+  has_own <- nxt <= length(src) && grepl("^\\s*```\\s*$", src[[nxt]])
+
+  keep_out <- !grepl("keep_output\\s*=\\s*(FALSE|F)\\b", ch$header)
+  if (keep_out && !has_own && length(outputs[[ci]])) {
+      out <- c(out, "", "```", outputs[[ci]], "```")
+  }
+  if (has_own && length(outputs[[ci]])) kept_own <- kept_own + 1L
 
   mine <- which(owner == ci)
   if (length(mine)) {
@@ -204,12 +303,13 @@ for (ci in seq_along(chunks)) {
   }
   prev <- ch$close + 1L
 }
-out <- c(out, src[seq(prev, length(src))])
+out <- c(out, src[span(prev, length(src))])
 out <- out[seq(yaml_end + 1L, length(out))]
 
 header <- c(
   "---",
   sprintf('title: "%s"', title),
+  tags_block,
   "output:",
   "  html_document:",
   "    number_sections: true",
@@ -227,7 +327,7 @@ header <- c(
 dir.create("vignettes", showWarnings = FALSE)
 writeLines(c(header, params_chunk, out), rmd_out)
 
-# ---- 6. report ---------------------------------------------------------------
+# ---- 7. report ---------------------------------------------------------------
 left_on <- sum(grepl("eval\\s*=\\s*TRUE", readLines(rmd_out, warn = FALSE)))
 cat(sprintf("\n%s\n", strrep("-", 60)))
 cat(sprintf("  source     %s\n", rmd_in))
@@ -245,7 +345,36 @@ if (anyNA(owner)) {
     cat("             render predates edits to the source. Re-knit and retry.\n")
   }
 }
+dropped <- vapply(chunks, function(ch)
+    grepl("keep_output\\s*=\\s*(FALSE|F)\\b", ch$header), logical(1))
+n_out <- sum(lengths(outputs) > 0L & !dropped)
+cat(sprintf("  output     %d of %d chunk(s) kept their printed output\n",
+            n_out, length(chunks)))
+if (kept_own > 0L) {
+  cat(sprintf("  kept       %d chunk(s) already had output in the source\n",
+              kept_own))
+}
+if (orphans > 0L) {
+  cat(sprintf("  ORPHANED   %d output block(s) could not be traced to a chunk\n",
+              orphans))
+  cat("             and were left out. This follows the same matching as the\n")
+  cat("             figures, so a stale render is the usual cause.\n")
+}
+if (any(dropped & lengths(outputs) > 0L)) {
+  cat(sprintf("  dropped    %d chunk(s) asked for keep_output = FALSE\n",
+              sum(dropped & lengths(outputs) > 0L)))
+}
+if (length(tags_block)) cat("  tags:      carried across from the source header\n")
 if (length(params_chunk)) cat("  params:    surfaced as a visible `paths` chunk\n")
+
+# Restored output is verbatim, so a path a chunk printed now reaches the page.
+leaks <- grep("(?<![A-Za-z0-9_.:])/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/",
+              unlist(outputs), perl = TRUE, value = TRUE)
+if (length(leaks)) {
+  cat(sprintf("  PATHS      %d restored line(s) carry an absolute path:\n", length(leaks)))
+  for (l in head(leaks, 5L)) cat(sprintf("             %s\n", trimws(substr(l, 1L, 70L))))
+  if (length(leaks) > 5L) cat(sprintf("             ... and %d more\n", length(leaks) - 5L))
+}
 cat("\n  Next: add the slug to a contents: list under articles: in _pkgdown.yml\n")
 cat("        (required), optionally a navbar: entry, then pkgdown/check-site.R\n")
 cat(sprintf("%s\n", strrep("-", 60)))
