@@ -104,7 +104,11 @@ Rscript pkgdown/convert-tutorial.R path/to/source.Rmd path/to/rendered.html <slu
 ```
 
 It extracts and downsizes the figures, matches each to the chunk that produced it, flips
-every chunk to `eval = FALSE`, and inserts the `include_graphics()` calls. It refuses to
+every chunk to `eval = FALSE`, and inserts the `include_graphics()` calls. Printed output,
+including `df_print: kable` tables, is carried below its chunk as text; messages and
+warnings are left out when the source's setup chunk sets
+`knitr::opts_chunk$set(class.message = "message", class.warning = "warning")` before
+rendering (see `RULESET.md`, and the report warns when it does not). It refuses to
 run if the `.html` is older than the `.Rmd`, because that silently produces figures which
 do not match the printed code. You still do step 5 yourself.
 
