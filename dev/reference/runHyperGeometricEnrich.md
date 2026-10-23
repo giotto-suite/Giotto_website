@@ -72,9 +72,13 @@ runHyperGeometricEnrich(
 
 - p_value:
 
-  logical. Return p-values instead of scores (default = FALSE). They are
-  computed from the unscaled scores, so `output_enrichment` applies to
-  scores only.
+  logical. Also compute p-values, from the unscaled scores (default =
+  FALSE). The `run*Enrich()` functions store them beside the scores as
+  `<name>_p`, with Benjamini-Hochberg adjusted p-values over all cells
+  and types as `<name>_padj`;
+  [`analyzeData()`](https://giottosuite.com/dev/reference/analyzeData.md)
+  returns the p-values, carrying the scores as their `"scores"`
+  attribute.
 
 - name:
 
@@ -89,7 +93,9 @@ runHyperGeometricEnrich(
 
 ## Value
 
-data.table with enrichment results
+`giotto` (`return_gobject = TRUE`), else a `spatEnrObj`, or with
+`p_value = TRUE` a list of them named by enrichment: the scores, `_p`
+and `_padj`
 
 ## Details
 

@@ -8,7 +8,7 @@ Rank enrichment
 
 ``` r
 # S4 method for class 'ANY,rankEnrichParam'
-analyzeData(x, param, ..., sign_matrix)
+analyzeData(x, param, ..., sign_matrix, ranks = NULL)
 ```
 
 ## Arguments
@@ -39,6 +39,13 @@ analyzeData(x, param, ..., sign_matrix)
   [`makeSignMatrixPAGE`](https://giottosuite.com/dev/reference/enrichment_PAGE.md)
   or
   [`makeSignMatrixRank`](https://giottosuite.com/dev/reference/makeSignMatrixRank.md).
+
+- ranks:
+
+  each feature's rank across all cells, for the cells of `x` (features x
+  cells, named as `x`). Computed from `x` when `NULL`; supply it to
+  score some cells against the ranks of all of them, as a disk-backed
+  engine does window by window.
 
 ## Value
 

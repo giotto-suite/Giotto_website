@@ -223,8 +223,11 @@
 <span>  gobject <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  spat_unit <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  feat_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  enrichment_name <span class="op">=</span> <span class="st">"PAGE_z_score"</span>,</span>
-<span>  return_frequency_table <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  enrichment_name <span class="op">=</span> <span class="st">"PAGE"</span>,</span>
+<span>  return_frequency_table <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  min_score <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  max_padj <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  return_gobject <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -246,31 +249,43 @@ calculated</p></dd>
 
 
 <dt id="arg-enrichment-name">enrichment_name<a class="anchor" aria-label="anchor" href="#arg-enrichment-name"></a></dt>
-<dd><p>name of the spatial enrichment
-i.e. output from GiottoClass::list_spatial_enrichment_names()
-Default value is "PAGE_Z_score"</p></dd>
+<dd><p>name of the spatial enrichment, as listed by
+<code>list_spatial_enrichments_names()</code> (default "PAGE")</p></dd>
 
 
 <dt id="arg-return-frequency-table">return_frequency_table<a class="anchor" aria-label="anchor" href="#arg-return-frequency-table"></a></dt>
 <dd><p>see details. Default FALSE</p></dd>
 
+
+<dt id="arg-min-score">min_score<a class="anchor" aria-label="anchor" href="#arg-min-score"></a></dt>
+<dd><p>leave a cell unassigned (<code>NA</code>) when its top score is below
+this (default NULL: no threshold). Not used for an enrichment of p-values.</p></dd>
+
+
+<dt id="arg-max-padj">max_padj<a class="anchor" aria-label="anchor" href="#arg-max-padj"></a></dt>
+<dd><p>leave a cell unassigned (<code>NA</code>) when the adjusted p-value of
+its top type, from the <code>&lt;enrichment_name&gt;_padj</code> enrichment that
+<code>p_value = TRUE</code> stores, is above this (default NULL: no threshold)</p></dd>
+
+
+<dt id="arg-return-gobject">return_gobject<a class="anchor" aria-label="anchor" href="#arg-return-gobject"></a></dt>
+<dd><p>add the assignment to the cell metadata as
+<code>&lt;enrichment_name&gt;_type</code> and return the giotto object (default FALSE)</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>table</p>
+    <p>a data.table of <code>cell_ID</code> and <code>probable_cell_type</code>, a frequency
+table, or the giotto object (<code>return_gobject = TRUE</code>)</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This function returns a two-column matrix, one column
-will contain cell IDs and the other will contain the
-most likely cell type based on the provided enrichment.</p>
-<p>By setting return_frequency_table to TRUE, a table
-will instead be returned. This table will detail
-the number of occurences for each cell type, based on
-the provided enrichment.</p>
-<p>The cell types are assigned by determining the maximum
-value of the z-score or -log10(p-value) for a cell and
-the associated cell types from the enrichment.</p>
+    <p>Each cell is assigned the cell type with the highest score in the
+enrichment or, for an enrichment of p-values, the lowest p-value. Ties go
+to the first type. <code>min_score</code> and <code>max_padj</code> leave cells without a
+confident type unassigned.</p>
+<p>By setting return_frequency_table to TRUE, a table of the number of cells
+per cell type is returned instead, unassigned cells counted as <code>NA</code>.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

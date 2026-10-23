@@ -295,9 +295,11 @@ standardizes the scores within each cell type.</p></dd>
 
 
 <dt id="arg-p-value">p_value<a class="anchor" aria-label="anchor" href="#arg-p-value"></a></dt>
-<dd><p>logical. Return p-values instead of scores (default =
-FALSE). They are computed from the unscaled scores, so <code>output_enrichment</code>
-applies to scores only.</p></dd>
+<dd><p>logical. Also compute p-values, from the unscaled scores
+(default = FALSE). The <code>run*Enrich()</code> functions store them beside the
+scores as <code>&lt;name&gt;_p</code>, with Benjamini-Hochberg adjusted p-values over all
+cells and types as <code>&lt;name&gt;_padj</code>; <code><a href="analyzeData.html">analyzeData()</a></code> returns the p-values,
+carrying the scores as their <code>"scores"</code> attribute.</p></dd>
 
 
 <dt id="arg-n-times">n_times<a class="anchor" aria-label="anchor" href="#arg-n-times"></a></dt>
@@ -325,7 +327,9 @@ added (default = TRUE), or the result object on its own.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>data.table with enrichment results</p>
+    <p><code>giotto</code> (<code>return_gobject = TRUE</code>), else a <code>spatEnrObj</code>, or with
+<code>p_value = TRUE</code> a list of them named by enrichment: the scores, <code>_p</code> and
+<code>_padj</code></p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

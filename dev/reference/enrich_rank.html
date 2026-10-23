@@ -223,7 +223,7 @@ Rank enrichment"><meta name="robots" content="noindex"><!-- Global site tag (gta
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'ANY,rankEnrichParam'</span></span>
-<span><span class="fu"><a href="analyzeData.html">analyzeData</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">param</span>, <span class="va">...</span>, <span class="va">sign_matrix</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="analyzeData.html">analyzeData</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">param</span>, <span class="va">...</span>, <span class="va">sign_matrix</span>, ranks <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -249,6 +249,13 @@ engine registered from another package can accept its own arguments.</p></dd>
 process (columns); a feature marks a type where its value is &gt; 0. Build one
 with
 <code><a href="enrichment_PAGE.html">makeSignMatrixPAGE</a></code> or <code><a href="makeSignMatrixRank.html">makeSignMatrixRank</a></code>.</p></dd>
+
+
+<dt id="arg-ranks">ranks<a class="anchor" aria-label="anchor" href="#arg-ranks"></a></dt>
+<dd><p>each feature's rank across all cells, for the cells of <code>x</code>
+(features x cells, named as <code>x</code>). Computed from <code>x</code> when <code>NULL</code>; supply
+it to score some cells against the ranks of all of them, as a
+disk-backed engine does window by window.</p></dd>
 
 </dl></div>
     <div class="section level2">

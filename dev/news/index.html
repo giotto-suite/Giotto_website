@@ -222,6 +222,8 @@
 <li>
 <code><a href="../reference/createGiottoMerscopeObject.html">createGiottoMerscopeObject()</a></code> gains <code>load_images</code>: mosaic images (e.g. <code>"DAPI_z3"</code>) placed with <code>images/micron_to_mosaic_pixel_transform.csv</code>.</li>
 <li>Atera docs: Atera v1 output (zarr) is read with <code>importAtera(backend =)</code> / <code>createGiottoAteraObject(backend =)</code>, which use GiottoDisk’s Atera reader. Atera preview data in the Xenium layout reads with the Xenium readers.</li>
+<li>
+<code><a href="../reference/findCellTypesFromEnrichment.html">findCellTypesFromEnrichment()</a></code> (and its bar and pie plots) can leave cells unassigned below a <code>min_score</code> or above a <code>max_padj</code>, and with <code>return_gobject = TRUE</code> writes the assignment to the cell metadata as <code>&lt;enrichment_name&gt;_type</code>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="breaking-changes-4-3-5">breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-4-3-5"></a></h3>
@@ -230,7 +232,7 @@
 <code><a href="../reference/createGiottoMerscopeObject.html">createGiottoMerscopeObject()</a></code> loads the vendor outputs through <code><a href="../reference/importMerscope.html">importMerscope()</a></code>: transcripts, cell boundaries, the expression matrix from <code>cell_by_gene.csv</code> and, with <code>data_to_use = "aggregate"</code>, cell centers from <code>cell_metadata.csv</code>. No overlap is calculated; use <code><a href="https://giotto-suite.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap()</a></code> and <code><a href="https://giotto-suite.github.io/GiottoClass/reference/overlapToMatrix.html" class="external-link">overlapToMatrix()</a></code> on the created object. Expression values now match <code>cell_by_gene.csv</code>. <code>polygon_format = "parquet"</code> is the default. The y coordinates of transcripts, polygons and cell centers are negated. <code>version</code>, <code>flip_axis</code>, <code>calculate_overlap</code>, <code>overlap_to_matrix</code>, <code>aggregate_stack</code>, <code>aggregate_stack_param</code> and <code>cores</code> are deprecated. <code>version = 1</code> reads the HDF5 cell boundaries when <code>polygon_format</code> is not given.</li>
 <li>
 <code>runPAGEEnrich(return_gobject = FALSE)</code> returns a <code>spatEnrObj</code>, as the other enrichment methods do, instead of <code>list(DT =, matrix =)</code>.</li>
-<li>Enrichment <code>p_value = TRUE</code> returns p-values for every method; PAGE returned <code>-log10(p)</code>. They are computed from the unscaled scores, so <code>output_enrichment = "zscore"</code> no longer distorts them.</li>
+<li>Enrichment <code>p_value = TRUE</code> keeps the scores and adds p-values: the <code>run*Enrich()</code> functions store the scores under <code>name</code>, the p-values as <code>&lt;name&gt;_p</code> and Benjamini-Hochberg adjusted p-values as <code>&lt;name&gt;_padj</code>, and with <code>return_gobject = FALSE</code> return the three as a list. PAGE returned <code>-log10(p)</code> in place of the scores. P-values come from the unscaled scores, so <code>output_enrichment = "zscore"</code> no longer distorts them.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-4-3-5">changes<a class="anchor" aria-label="anchor" href="#changes-4-3-5"></a></h3>
@@ -239,11 +241,14 @@
 <li>PAGE p-values are the permutation null in closed form instead of a normal fit to sampled permutations; <code>n_times</code> is no longer used by PAGE.</li>
 <li>All three methods work a block of cells at a time and no longer loop over cells in R: much faster and with a bounded memory peak, most of all for PAGE p-values and hypergeometric enrichment.</li>
 <li>
-<code><a href="../reference/analyzeData.html">analyzeData()</a></code> for PAGE and hypergeometric takes a <code>reference</code> level per feature, so a disk-backed engine can score windows of cells against the reference of all cells.</li>
+<code><a href="../reference/analyzeData.html">analyzeData()</a></code> for PAGE and hypergeometric takes a <code>reference</code> level per feature, and rank takes the features’ <code>ranks</code> across all cells, so a disk-backed engine can score windows of cells against all of them.</li>
+<li>Rank p-values reuse the feature ranks instead of computing them again.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-4-3-5">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-4-3-5"></a></h3>
-<ul><li>Xenium and Atera readers: genomic control probes named <code>Intergenic_Region_*</code> (Atera WTA panels) and <code>DeprecatedCodeword_*</code> features were not matched by the default <code>split_keyword</code> and were loaded as <code>rna</code> transcripts, so aggregation added them to the gene expression. The defaults now put them in <code>GenomicControl</code> and a new <code>DeprecatedCodeword</code> feature type, matching how the 10x expression matrix is split.</li>
+<ul><li>
+<code><a href="../reference/findCellTypesFromEnrichment.html">findCellTypesFromEnrichment()</a></code> defaults to the <code>"PAGE"</code> enrichment that <code><a href="../reference/enrichment_PAGE.html">runPAGEEnrich()</a></code> stores (it looked for <code>"PAGE_z_score"</code>), and gives ties to the first type instead of a random one.</li>
+<li>Xenium and Atera readers: genomic control probes named <code>Intergenic_Region_*</code> (Atera WTA panels) and <code>DeprecatedCodeword_*</code> features were not matched by the default <code>split_keyword</code> and were loaded as <code>rna</code> transcripts, so aggregation added them to the gene expression. The defaults now put them in <code>GenomicControl</code> and a new <code>DeprecatedCodeword</code> feature type, matching how the 10x expression matrix is split.</li>
 <li>Xenium and Atera readers: with the default <code>load_images = "focus"</code>, an output folder without <code>morphology_focus/</code> loaded everything else and then failed with “invalid ‘path’ argument”. The focus images are now skipped with a warning.</li>
 <li>Hypergeometric enrichment scored every cell against other cells’ thresholds: the per-cell top-percentage cut was recycled down the features. It also tested P(X &gt; x) instead of P(X &gt;= x), and a cell with a single selected feature scored 0. Scores change.</li>
 <li>PAGE and hypergeometric share one per-feature reference level, the mean of the de-logged values logged back in the same base. PAGE logged it in base e while the values are in <code>logbase</code>, and hypergeometric mixed linear and log scales; PAGE scores shift slightly.</li>

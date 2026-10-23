@@ -19,6 +19,11 @@ Downstream packages that stream PAGE (GiottoDisk) should require
   `importAtera(backend =)` / `createGiottoAteraObject(backend =)`, which
   use GiottoDisk’s Atera reader. Atera preview data in the Xenium layout
   reads with the Xenium readers.
+- [`findCellTypesFromEnrichment()`](https://giottosuite.com/dev/reference/findCellTypesFromEnrichment.md)
+  (and its bar and pie plots) can leave cells unassigned below a
+  `min_score` or above a `max_padj`, and with `return_gobject = TRUE`
+  writes the assignment to the cell metadata as
+  `<enrichment_name>_type`.
 
 ### breaking changes
 
@@ -51,9 +56,13 @@ Downstream packages that stream PAGE (GiottoDisk) should require
   not given.
 - `runPAGEEnrich(return_gobject = FALSE)` returns a `spatEnrObj`, as the
   other enrichment methods do, instead of `list(DT =, matrix =)`.
-- Enrichment `p_value = TRUE` returns p-values for every method; PAGE
-  returned `-log10(p)`. They are computed from the unscaled scores, so
-  `output_enrichment = "zscore"` no longer distorts them.
+- Enrichment `p_value = TRUE` keeps the scores and adds p-values: the
+  `run*Enrich()` functions store the scores under `name`, the p-values
+  as `<name>_p` and Benjamini-Hochberg adjusted p-values as
+  `<name>_padj`, and with `return_gobject = FALSE` return the three as a
+  list. PAGE returned `-log10(p)` in place of the scores. P-values come
+  from the unscaled scores, so `output_enrichment = "zscore"` no longer
+  distorts them.
 
 ### changes
 
@@ -74,12 +83,18 @@ Downstream packages that stream PAGE (GiottoDisk) should require
   over cells in R: much faster and with a bounded memory peak, most of
   all for PAGE p-values and hypergeometric enrichment.
 - [`analyzeData()`](https://giottosuite.com/dev/reference/analyzeData.md)
-  for PAGE and hypergeometric takes a `reference` level per feature, so
-  a disk-backed engine can score windows of cells against the reference
-  of all cells.
+  for PAGE and hypergeometric takes a `reference` level per feature, and
+  rank takes the features’ `ranks` across all cells, so a disk-backed
+  engine can score windows of cells against all of them.
+- Rank p-values reuse the feature ranks instead of computing them again.
 
 ### bug fixes
 
+- [`findCellTypesFromEnrichment()`](https://giottosuite.com/dev/reference/findCellTypesFromEnrichment.md)
+  defaults to the `"PAGE"` enrichment that
+  [`runPAGEEnrich()`](https://giottosuite.com/dev/reference/enrichment_PAGE.md)
+  stores (it looked for `"PAGE_z_score"`), and gives ties to the first
+  type instead of a random one.
 - Xenium and Atera readers: genomic control probes named
   `Intergenic_Region_*` (Atera WTA panels) and `DeprecatedCodeword_*`
   features were not matched by the default `split_keyword` and were
