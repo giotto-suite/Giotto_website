@@ -23,10 +23,12 @@
 #   ```{r save-annotated, keep_output = FALSE}
 #
 # knitr ignores the option, so the render is unchanged and you still see the
-# messages while working. The alternative is to suppress at render time with
-# message = FALSE or results = 'hide', which keeps the output out of the HTML
-# altogether -- cheaper to reason about, but you lose it while developing and
-# changing your mind costs another render.
+# messages while working. Messages and warnings need no option at all when the
+# setup chunk sets class.message = "message" and class.warning = "warning":
+# the render marks them, and they are left out. The alternative is to suppress
+# at render time with message = FALSE or results = 'hide', which keeps the
+# output out of the HTML altogether -- cheaper to reason about, but you lose it
+# while developing and changing your mind costs another render.
 #
 # Writes vignettes/<slug>.Rmd and vignettes/images/<slug>/NN_<chunk>.png, then
 # prints a report. Register the result in _pkgdown.yml under articles: -- that
@@ -146,16 +148,28 @@ figs <- lapply(seq_along(starts), function(i) {
 # enough to be unique, short enough to survive echo trimming.
 tailkey <- function(x, n = 60L) substr(x, max(1L, nchar(x) - n + 1L), nchar(x))
 
-owner <- integer(length(figs))
-for (i in seq_along(figs)) {
-  above <- figs[[i]]$above
-  codes <- vapply(chunks, function(ch) norm(ch$code), "")
-  hit <- which(codes == above)                       # knitr echoes verbatim
+# A message, warning or printed value splits the echo, so the code above a
+# figure or an output block can be a single short line such as `g` that recurs
+# in later chunks. Chunks render in order, so take the first match at or after
+# the chunk matched last; only a source edited after its render falls back to
+# the last match anywhere.
+codes <- vapply(chunks, function(ch) norm(ch$code), "")
+match_chunk <- function(code, from = 1L) {
+  hit <- which(codes == code)                        # knitr echoes verbatim
   if (!length(hit)) {                                # options can trim the echo
-    k <- tailkey(above)
+    k <- tailkey(code)
     hit <- which(nzchar(k) & vapply(codes, function(cd) grepl(k, cd, fixed = TRUE), logical(1)))
   }
-  owner[[i]] <- if (length(hit)) hit[[length(hit)]] else NA_integer_
+  if (!length(hit)) return(NA_integer_)
+  ahead <- hit[hit >= from]
+  if (length(ahead)) ahead[[1L]] else hit[[length(hit)]]
+}
+
+owner <- integer(length(figs))
+from <- 1L
+for (i in seq_along(figs)) {
+  owner[[i]] <- match_chunk(figs[[i]]$above, from)
+  if (!is.na(owner[[i]])) from <- owner[[i]]
 }
 
 # ---- 4. pull printed output out of the rendered HTML -------------------------
@@ -165,35 +179,59 @@ for (i in seq_along(figs)) {
 # prefixed is output and nothing else. A tutorial that overrides `comment` falls
 # outside that test and keeps the old behaviour -- output dropped rather than
 # guessed at.
-pre_m   <- gregexpr("(?s)<pre[^>]*>.*?</pre>", html, perl = TRUE)[[1]]
+# knitr's df_print: kable prints a data frame as an HTML table instead, and
+# class.message / class.warning mark a message or warning <pre> with that
+# class, which is how a render separates chatter from what a chunk printed.
+pre_m   <- gregexpr('(?s)<pre[^>]*>.*?</pre>|<div class="kable-table">.*?</table>\\s*</div>',
+                    html, perl = TRUE)[[1]]
 pre_txt <- if (identical(as.integer(pre_m), -1L)) character() else
   substring(html, as.integer(pre_m),
             as.integer(pre_m) + attr(pre_m, "match.length") - 1L)
 
 is_source <- grepl('^<pre[^>]*class="[^"]*\\br\\b[^"]*"', pre_txt, perl = TRUE)
 is_plain  <- grepl("^<pre>", pre_txt)
+is_chat   <- grepl('^<pre[^>]*class="[^"]*\\b(message|warning)\\b', pre_txt, perl = TRUE)
+is_kable  <- grepl('^<div class="kable-table">', pre_txt)
+
+# an HTML table back to the fixed-width text a data frame prints as
+kable_text <- function(x) {
+  rows <- regmatches(x, gregexpr("(?s)<tr[^>]*>.*?</tr>", x, perl = TRUE))[[1]]
+  cells <- lapply(rows, function(r) {
+    v <- regmatches(r, gregexpr("(?s)<t[hd][^>]*>.*?</t[hd]>", r, perl = TRUE))[[1]]
+    gsub("\\s+", " ", trimws(untag(v)))
+  })
+  w <- do.call(pmax, lapply(cells, nchar))
+  vapply(cells, function(v) paste(sprintf("%-*s", w[seq_along(v)], v), collapse = "  "), "")
+}
 
 pre_lines <- function(x) {
   strsplit(untag(sub("(?s)^<pre[^>]*>(.*)</pre>$", "\\1", x, perl = TRUE)),
            "\n", fixed = TRUE)[[1]]
 }
 
-codes <- vapply(chunks, function(ch) norm(ch$code), "")
-chunk_of <- function(x) {
-  code <- norm(grep("^\\s*(#>|##)", pre_lines(x), invert = TRUE, value = TRUE))
-  hit <- which(codes == code)
-  if (!length(hit)) {
-    k <- tailkey(code)
-    hit <- which(nzchar(k) & vapply(codes, function(cd) grepl(k, cd, fixed = TRUE), logical(1)))
-  }
-  if (length(hit)) hit[[length(hit)]] else NA_integer_
+chunk_of <- function(x, from) {
+  match_chunk(norm(grep("^\\s*(#>|##)", pre_lines(x), invert = TRUE, value = TRUE)), from)
 }
 
 outputs <- vector("list", length(chunks))
 orphans <- 0L            # output whose chunk could not be identified
+n_chat <- 0L; n_kable <- 0L
 cur <- NA_integer_
+from <- 1L
 for (i in seq_along(pre_txt)) {
-  if (is_source[[i]]) { cur <- chunk_of(pre_txt[[i]]); next }
+  if (is_source[[i]]) {
+    cur <- chunk_of(pre_txt[[i]], from)
+    if (!is.na(cur)) from <- cur
+    next
+  }
+  # a message or warning sits between a chunk's own output; skip it in place
+  if (is_chat[[i]]) { n_chat <- n_chat + 1L; next }
+  if (is_kable[[i]]) {
+    if (is.na(cur)) { orphans <- orphans + 1L; next }
+    n_kable <- n_kable + 1L
+    outputs[[cur]] <- c(outputs[[cur]], kable_text(pre_txt[[i]]))
+    next
+  }
   if (!is_plain[[i]]) { cur <- NA_integer_; next }   # a markdown fence, e.g. class="sh"
   ln  <- pre_lines(pre_txt[[i]])
   txt <- ln[nzchar(trimws(ln))]
@@ -363,6 +401,16 @@ if (orphans > 0L) {
 if (any(dropped & lengths(outputs) > 0L)) {
   cat(sprintf("  dropped    %d chunk(s) asked for keep_output = FALSE\n",
               sum(dropped & lengths(outputs) > 0L)))
+}
+if (n_kable > 0L) {
+  cat(sprintf("  tables     %d HTML table(s) from df_print: kable carried as text\n", n_kable))
+}
+if (n_chat > 0L) {
+  cat(sprintf("  chatter    %d message/warning block(s) left out\n", n_chat))
+} else if (!any(grepl("class.message", src, fixed = TRUE))) {
+  cat("  MESSAGES   this render does not mark messages, so any it printed are\n")
+  cat("             published as output. Add class.message = \"message\" and\n")
+  cat("             class.warning = \"warning\" to the setup chunk and re-render.\n")
 }
 if (length(tags_block)) cat("  tags:      carried across from the source header\n")
 if (length(params_chunk)) cat("  params:    surfaced as a visible `paths` chunk\n")
