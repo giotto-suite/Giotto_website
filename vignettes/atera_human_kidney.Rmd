@@ -33,9 +33,9 @@ kidney](https://www.10xgenomics.com/datasets/atera-wta-ffpe-human-nd-kidney) int
 names the cells, and looks at the tissue's spatial organization: spatially
 variable genes, co-expression modules, signature enrichment and the cell types
 that sit next to each other. The whole tutorial took about 17 minutes with 8
-parallel workers on a 128 GB computer, and about 34 minutes with 4 workers and
-memory use sized for 16 GB. [Run time and memory](#run-time-and-memory) shows
-the time and memory of each step.
+parallel workers on a 128 GB computer, and about 33 minutes in a simulated 16 GB
+setup with 4 workers. [Run time and memory](#run-time-and-memory) shows the time
+and memory of each step.
 
 The data are the output of the commercial Atera instrument (Atera v1), which
 ships its data as zarr archives. They are read with
@@ -309,15 +309,15 @@ GiottoDisk::storeChunkProbe(pe, cells = 20000)
 ── storeChunkProbe ──────────────────────────────────────────────────
    Store    : parquetExprStore, 18,049 features x 399,120 cells
    Probe    : 20,000 cells, 43,392,936 stored values
-   Measured : 1.9 s, 2,966 MB peak (68 bytes per value)
-   Budget   : 18,072 MB (0.25 of 72,416 MB free)
-   Window   : 179,714 cells fit the budget -> 3 windows,
-              about 38 s to read the whole store once
+   Measured : 1.9 s, 4,008 MB peak (92 bytes per value)
+   Budget   : 17,835 MB (0.25 of 71,468 MB free)
+   Window   : 131,269 cells fit the budget -> 4 windows,
+              about 39 s to read the whole store once
 
-   options(giottodisk.chunk_size = 179714) pins this window.
+   options(giottodisk.chunk_size = 131269) pins this window.
 ```
 
-This run had 72 GB free, so three windows cover all 399,120 cells. With 8 GB
+This run had 71 GB free, so four windows cover all 399,120 cells. With 8 GB
 free, the same store is read in about 19 windows of 21,000 cells. The time for
 one pass is scaled up from the probed window and is an upper bound, since a
 larger window reads faster per cell.
@@ -1110,52 +1110,48 @@ Suggested further topics:
 
 # Run time and memory
 
-How long each section of this tutorial took and the most memory it used, in two
-runs on the computer that built this page, an Apple M4 Max with 16 cores and 128
-GB of memory:
+How long each section of this tutorial took and the most memory it used, on the
+computer that built this page, an Apple M4 Max with 16 cores and 128 GB of
+memory:
 
-* **8 workers, 128 GB:** the setup shown above, with about 72 GB free at the
-  start and the default window settings. About 17 minutes in total.
-* **4 workers, sized for 16 GB:** GiottoDisk sized its windows as if 16 GB were
-  free. About 34 minutes in total, 22 of them reading the data.
+* **8 workers, 128 GB:** the setup shown above, with the default window
+  settings. About 17 minutes in total.
+* **4 workers, 16 GB (simulated):** the same computer with 4 workers, and
+  GiottoDisk told that only 16 GB is free, so it reads the data in the smaller
+  windows it would use on a smaller machine. About 33 minutes in total.
 
-Both runs gave identical results, down to the principal components, the
-nearest-neighbor network and the clusters.
+Reading the data takes most of the extra time, 22 minutes instead of 6. The
+analysis after it takes about as long in both runs, 11 and 12 minutes. Both runs
+gave identical results.
 
 ```{r runcost-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
 knitr::include_graphics("images/atera_human_kidney/26_runcost.png")
 ```
 
-Memory is the resident memory of the R session and its workers together,
-sampled once a second; each bar is the highest value during that section.
-Sizing the windows for 16 GB lowered it to 25-34 GB, which is still more
-than 16 GB:
-
-* GiottoDisk sizes its windows to a share of the memory that is free (see
-  [Memory and window size](#memory-and-window-size)). Less free memory means
-  smaller windows, less memory and a longer run, mostly while reading the data.
-* R keeps memory it has used for later steps instead of returning it to the
-  system, so the bars stay high after the first large step.
-* Each worker is a separate R process with its own copy of the loaded packages
-  and its share of the work. Fewer workers in [Setup](#setup) use less memory.
+Memory is what macOS counts for the R session and its workers together (the
+Memory column of Activity Monitor), sampled once a second; each bar is the
+highest value during that section. The 16 GB run is a simulation: it limits how
+much GiottoDisk reads at once, but nothing caps the memory of the processes
+themselves. Fewer workers in [Setup](#setup) and smaller windows (see
+[Memory and window size](#memory-and-window-size)) both lower it.
 
 <details>
 <summary>Time and memory per section</summary>
 
 | Section | Time, 8 workers | Memory, 8 workers | Time, 4 workers | Memory, 4 workers |
 |:--------|-----:|-----:|-----:|-----:|
-| Read the data | 5.9 min | 41 GB | 22.2 min | 25 GB |
-| Save the first snapshot | 29 s | 41 GB | 28 s | 25 GB |
-| Aggregate transcripts | 1.9 min | 55 GB | 2.1 min | 29 GB |
-| QC and filtering | 20 s | 45 GB | 16 s | 30 GB |
-| Normalize, select features | 25 s | 45 GB | 26 s | 30 GB |
-| Dimension reduction | 1.2 min | 47 GB | 1.3 min | 32 GB |
-| Clustering | 1.2 min | 45 GB | 1.2 min | 32 GB |
-| Cell types | 51 s | 45 GB | 1.0 min | 31 GB |
-| Spatially variable genes | 52 s | 50 GB | 1.3 min | 31 GB |
-| Co-expression modules | 1.0 min | 45 GB | 1.1 min | 32 GB |
-| Spatial enrichment | 1.7 min | 54 GB | 1.5 min | 34 GB |
-| Cell-cell interactions | 48 s | 50 GB | 48 s | 28 GB |
+| Read the data | 6.4 min | 25 GB | 22.0 min | 15 GB |
+| Save the first snapshot | 29 s | 26 GB | 27 s | 15 GB |
+| Aggregate transcripts | 1.9 min | 37 GB | 2.1 min | 17 GB |
+| QC and filtering | 21 s | 25 GB | 16 s | 16 GB |
+| Normalize, select features | 26 s | 25 GB | 26 s | 16 GB |
+| Dimension reduction | 1.2 min | 25 GB | 1.3 min | 17 GB |
+| Clustering | 1.2 min | 25 GB | 1.2 min | 15 GB |
+| Cell types | 49 s | 26 GB | 1.0 min | 16 GB |
+| Spatially variable genes | 52 s | 35 GB | 1.3 min | 19 GB |
+| Co-expression modules | 1.1 min | 27 GB | 1.1 min | 17 GB |
+| Spatial enrichment | 1.8 min | 35 GB | 1.6 min | 17 GB |
+| Cell-cell interactions | 47 s | 26 GB | 47 s | 15 GB |
 
 </details>
 
