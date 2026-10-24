@@ -32,9 +32,10 @@ This tutorial reads a [10x Atera whole-transcriptome run of non-diseased human
 kidney](https://www.10xgenomics.com/datasets/atera-wta-ffpe-human-nd-kidney) into an on-disk GiottoDisk project. It then filters, clusters and
 names the cells, and looks at the tissue's spatial organization: spatially
 variable genes, co-expression modules, signature enrichment and the cell types
-that sit next to each other. The whole tutorial took about 17 minutes on the
-computer that built this page; [Run time and memory](#run-time-and-memory)
-shows the time and memory of each step.
+that sit next to each other. The whole tutorial took about 17 minutes with 8
+parallel workers on a 128 GB computer, and about 34 minutes with 4 workers and
+memory use sized for 16 GB. [Run time and memory](#run-time-and-memory) shows
+the time and memory of each step.
 
 The data are the output of the commercial Atera instrument (Atera v1), which
 ships its data as zarr archives. They are read with
@@ -1109,45 +1110,52 @@ Suggested further topics:
 
 # Run time and memory
 
-How long each section of this tutorial took and the most memory it used, while
-this page was built. The computer was an Apple M4 Max with 16 cores and 128 GB
-of memory, about 72 GB of it free at the start, running 8 parallel workers and
-the default window settings. The whole tutorial took about 17 minutes, 35% of it
-reading the data.
+How long each section of this tutorial took and the most memory it used, in two
+runs on the computer that built this page, an Apple M4 Max with 16 cores and 128
+GB of memory:
+
+* **8 workers, 128 GB:** the setup shown above, with about 72 GB free at the
+  start and the default window settings. About 17 minutes in total.
+* **4 workers, sized for 16 GB:** GiottoDisk sized its windows as if 16 GB were
+  free. About 34 minutes in total, 22 of them reading the data.
+
+Both runs gave identical results, down to the principal components, the
+nearest-neighbor network and the clusters.
 
 ```{r runcost-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
 knitr::include_graphics("images/atera_human_kidney/26_runcost.png")
 ```
 
-Memory is the resident memory of the R session and its 8 workers together,
-sampled once a second; each bar is the highest value during that section. These
-numbers depend on the machine more than on the data:
+Memory is the resident memory of the R session and its workers together,
+sampled once a second; each bar is the highest value during that section.
+Sizing the windows for 16 GB lowered it to 25-34 GB, which is still more
+than 16 GB:
 
 * GiottoDisk sizes its windows to a share of the memory that is free (see
-  [Memory and window size](#memory-and-window-size)). A computer with less free
-  memory reads smaller windows, uses less memory and takes somewhat longer.
+  [Memory and window size](#memory-and-window-size)). Less free memory means
+  smaller windows, less memory and a longer run, mostly while reading the data.
 * R keeps memory it has used for later steps instead of returning it to the
   system, so the bars stay high after the first large step.
-* Each worker holds its own copy of the loaded packages, about 1 GB. Fewer
-  workers in [Setup](#setup) use less memory.
+* Each worker is a separate R process with its own copy of the loaded packages
+  and its share of the work. Fewer workers in [Setup](#setup) use less memory.
 
 <details>
 <summary>Time and memory per section</summary>
 
-| Section | Time | Peak memory |
-|:--------|-----:|------------:|
-| Read the data | 5.9 min | 41 GB |
-| Save the first snapshot | 29 s | 41 GB |
-| Aggregate transcripts | 1.9 min | 55 GB |
-| QC and filtering | 20 s | 45 GB |
-| Normalize, select features | 25 s | 45 GB |
-| Dimension reduction | 1.2 min | 47 GB |
-| Clustering | 1.2 min | 45 GB |
-| Cell types | 51 s | 45 GB |
-| Spatially variable genes | 52 s | 50 GB |
-| Co-expression modules | 1.0 min | 45 GB |
-| Spatial enrichment | 1.7 min | 54 GB |
-| Cell-cell interactions | 48 s | 50 GB |
+| Section | Time, 8 workers | Memory, 8 workers | Time, 4 workers | Memory, 4 workers |
+|:--------|-----:|-----:|-----:|-----:|
+| Read the data | 5.9 min | 41 GB | 22.2 min | 25 GB |
+| Save the first snapshot | 29 s | 41 GB | 28 s | 25 GB |
+| Aggregate transcripts | 1.9 min | 55 GB | 2.1 min | 29 GB |
+| QC and filtering | 20 s | 45 GB | 16 s | 30 GB |
+| Normalize, select features | 25 s | 45 GB | 26 s | 30 GB |
+| Dimension reduction | 1.2 min | 47 GB | 1.3 min | 32 GB |
+| Clustering | 1.2 min | 45 GB | 1.2 min | 32 GB |
+| Cell types | 51 s | 45 GB | 1.0 min | 31 GB |
+| Spatially variable genes | 52 s | 50 GB | 1.3 min | 31 GB |
+| Co-expression modules | 1.0 min | 45 GB | 1.1 min | 32 GB |
+| Spatial enrichment | 1.7 min | 54 GB | 1.5 min | 34 GB |
+| Cell-cell interactions | 48 s | 50 GB | 48 s | 28 GB |
 
 </details>
 
