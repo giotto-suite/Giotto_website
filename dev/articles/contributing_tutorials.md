@@ -45,10 +45,12 @@ Create a new .Rmd (R markdown) file under the folder “vignettes”.
 Absolutely no `eval=TRUE` for example code. To save time when rendering
 the website, all chunks should not evaluate the code.
 
-Image results should be included via linking or a `knitr` chunk of this
-style:
+The chunk that shows a figure is the one exception.
+[`knitr::include_graphics()`](https://rdrr.io/pkg/knitr/man/include_graphics.html)
+has to run or no image appears, so that chunk keeps its default `eval`
+and hides its source with `echo=FALSE` instead:
 
-    #knitr::include_graphics("images/TUTORIAL_FOLDER/#_IMAGE_NAME.png")
+    knitr::include_graphics("images/TUTORIAL_FOLDER/#_IMAGE_NAME.png")
 
 *The upper case sections just show which areas should be edited, not
 that they need to be upper case*
@@ -75,8 +77,15 @@ It pulls the figures out of the rendered HTML and downsizes them, works
 out which chunk produced each one, switches every chunk to `eval=FALSE`,
 and inserts the
 [`knitr::include_graphics()`](https://rdrr.io/pkg/knitr/man/include_graphics.html)
-calls. The result is `vignettes/your-slug.Rmd` plus
-`vignettes/images/your-slug/`, ready for the registration step below.
+calls. It also carries across whatever each chunk printed, as a plain
+fenced block below the code, and the `tags:` block from your header,
+which the dataset browser reads. The result is `vignettes/your-slug.Rmd`
+plus `vignettes/images/your-slug/`, ready for the registration step
+below.
+
+Printed output is copied through exactly as it rendered, so read the
+report at the end: it counts the output it restored and flags any
+absolute path inside it.
 
 It refuses to run if the `.html` is older than the `.Rmd`, because a
 stale render silently pairs figures with code that no longer produced

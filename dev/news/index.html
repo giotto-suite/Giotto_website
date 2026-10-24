@@ -352,6 +352,11 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="4.3.1" id="giotto-431">Giotto 4.3.1<a class="anchor" aria-label="anchor" href="#giotto-431"></a></h2>
 <p>Version-only bump. The multicellular motif layer – <code><a href="../reference/cellProximityMotifs.html">cellProximityMotifs()</a></code>, <code>motifParam</code> and its subclasses, and <code><a href="../reference/analyzeData.html">analyzeData()</a></code> handing a backed network to the method registered for its class – is listed under 4.3.0 below but landed on <code>gsource</code> after it had moved to 4.3.0, so a 4.3.0 install may predate it. Downstream packages that import the motif param classes, or provide an <code><a href="../reference/analyzeData.html">analyzeData()</a></code> method for a backed network carrier, should require <code>Giotto (&gt;= 4.3.1)</code>.</p>
+<div class="section level3">
+<h3 id="bug-fixes-4-3-1">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-4-3-1"></a></h3>
+<ul><li>
+<strong><code><a href="../reference/runUMAP.html">runUMAP()</a></code> searched again instead of reusing the stored kNN.</strong> Its default <code>n_neighbors = 40</code> needs 39 neighbours per cell, but <code><a href="https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork()</a></code> stores a <code>k = 30</code> kNN by default, so at defaults the stored graph was always too narrow and a second graph was built. The default is now <code>n_neighbors = NULL</code>: under <code>nn_engine = "giotto"</code> it reuses the stored kNN at its full width (<code>k + 1</code>). With nothing to reuse, or another <code>nn_engine</code>, it falls back to 31 – the default <code>k = 30</code> plus the cell itself. <strong>Results-changing</strong> for calls that left <code>n_neighbors</code> at its default; calls that pass it explicitly are unchanged.</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="4.3.0" id="giotto-430">Giotto 4.3.0<a class="anchor" aria-label="anchor" href="#giotto-430"></a></h2>

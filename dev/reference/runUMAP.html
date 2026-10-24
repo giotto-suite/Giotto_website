@@ -231,7 +231,7 @@
 <span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  feats_to_use <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  return_gobject <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  n_neighbors <span class="op">=</span> <span class="fl">40</span>,</span>
+<span>  n_neighbors <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n_components <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  n_epochs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  min_dist <span class="op">=</span> <span class="fl">0.05</span>,</span>
@@ -301,7 +301,13 @@
 
 
 <dt id="arg-n-neighbors">n_neighbors<a class="anchor" aria-label="anchor" href="#arg-n-neighbors"></a></dt>
-<dd><p>UMAP param: number of neighbors</p></dd>
+<dd><p>UMAP param: number of neighbors, counting the cell
+itself. `NULL` (default) takes it from the stored kNN reused under
+`nn_engine = "giotto"` (its `k + 1`), so no second graph is built, and
+falls back to `31` – the `k = 30` graph
+[GiottoClass::createNearestNetwork()] builds by default, plus the cell
+itself – when there is none to reuse or another `nn_engine` is used. A
+value wider than the stored kNN builds a new graph of that size.</p></dd>
 
 
 <dt id="arg-n-components">n_components<a class="anchor" aria-label="anchor" href="#arg-n-components"></a></dt>

@@ -339,6 +339,21 @@ import the motif param classes, or provide an
 [`analyzeData()`](https://giottosuite.com/dev/reference/analyzeData.md)
 method for a backed network carrier, should require `Giotto (>= 4.3.1)`.
 
+### bug fixes
+
+- **[`runUMAP()`](https://giottosuite.com/dev/reference/runUMAP.md)
+  searched again instead of reusing the stored kNN.** Its default
+  `n_neighbors = 40` needs 39 neighbours per cell, but
+  [`createNearestNetwork()`](https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html)
+  stores a `k = 30` kNN by default, so at defaults the stored graph was
+  always too narrow and a second graph was built. The default is now
+  `n_neighbors = NULL`: under `nn_engine = "giotto"` it reuses the
+  stored kNN at its full width (`k + 1`). With nothing to reuse, or
+  another `nn_engine`, it falls back to 31 – the default `k = 30` plus
+  the cell itself. **Results-changing** for calls that left
+  `n_neighbors` at its default; calls that pass it explicitly are
+  unchanged.
+
 ## Giotto 4.3.0
 
 `gsource` moves to its own minor line. It was previously 4.2.4 against
