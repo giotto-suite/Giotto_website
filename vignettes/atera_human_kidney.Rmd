@@ -28,11 +28,13 @@ knitr::opts_chunk$set(eval = FALSE)
 
 # Overview
 
-This tutorial reads a 10x Atera whole-transcriptome run of non-diseased human
-kidney into an on-disk GiottoDisk project. It then filters, clusters and names
-the cells, and looks at the tissue's spatial organization: spatially variable
-genes, co-expression modules, signature enrichment and the cell types that sit
-next to each other.
+This tutorial reads a [10x Atera whole-transcriptome run of non-diseased human
+kidney](https://www.10xgenomics.com/datasets/atera-wta-ffpe-human-nd-kidney) into an on-disk GiottoDisk project. It then filters, clusters and
+names the cells, and looks at the tissue's spatial organization: spatially
+variable genes, co-expression modules, signature enrichment and the cell types
+that sit next to each other. The whole tutorial took about 17 minutes on the
+computer that built this page; [Run time and memory](#run-time-and-memory)
+shows the time and memory of each step.
 
 The data are the output of the commercial Atera instrument (Atera v1), which
 ships its data as zarr archives. They are read with
@@ -116,10 +118,18 @@ install.packages(c("smotif", "smotifrs"),
 
 # Dataset explanation
 
-This tutorial uses a 10x Genomics _Atera In Situ_ run of an FFPE section of
-non-diseased human kidney, measured with the Atera Human Whole Transcriptome
+This tutorial uses the 10x Genomics _Atera In Situ_
+[FFPE non-diseased human kidney dataset](https://www.10xgenomics.com/datasets/atera-wta-ffpe-human-nd-kidney), an FFPE section measured with the Atera Human Whole Transcriptome
 Gene Expression panel. The panel targets 18,049 genes; the section has 399,120
 segmented cells and 1.08 billion high-quality transcripts.
+
+## Download
+
+The output files are on the [10x Genomics dataset page](https://www.10xgenomics.com/datasets/atera-wta-ffpe-human-nd-kidney). The files this
+tutorial reads take about 20 GB, most of it the 12.8 GB `transcripts.zarr.zip`.
+The whole output folder, with the 3D morphology images and the archives for the
+10x viewer, is about 43 GB. Point `data_dir` in [Setup](#setup) at the unzipped
+folder.
 
 ## Atera v1 output
 
@@ -195,14 +205,14 @@ g
 ```
 
 ```
-An object of class giotto
->Active spat_unit:  cell
->Active feat_type:  rna
+An object of class giotto 
+>Active spat_unit:  cell 
+>Active feat_type:  rna 
 dimensions    : 18049, 399120 (features, cells)
 [SUBCELLULAR INFO]
-polygons      : cell nucleus
+polygons      : cell nucleus 
 features      : rna NegControlProbe UnassignedCodeword NegControlCodeword GenomicControl
- DeprecatedCodeword
+ DeprecatedCodeword 
 [AGGREGATE INFO]
 expression -----------------------
   [cell][rna] raw
@@ -216,7 +226,6 @@ spatial locations ----------------
   [nucleus] raw
 attached images ------------------
 images      : 4 items...
-
 
 Use objHistory() to see steps and params used
 ```
@@ -299,16 +308,16 @@ GiottoDisk::storeChunkProbe(pe, cells = 20000)
 ── storeChunkProbe ──────────────────────────────────────────────────
    Store    : parquetExprStore, 18,049 features x 399,120 cells
    Probe    : 20,000 cells, 43,392,936 stored values
-   Measured : 5.4 s, 2,948 MB peak (68 bytes per value)
-   Budget   : 31,829 MB (0.25 of 127,444 MB free)
-   Window   : 318,514 cells fit the budget -> 2 windows,
-              about 108.1 s to read the whole store once
+   Measured : 1.9 s, 2,966 MB peak (68 bytes per value)
+   Budget   : 18,072 MB (0.25 of 72,416 MB free)
+   Window   : 179,714 cells fit the budget -> 3 windows,
+              about 38 s to read the whole store once
 
-   options(giottodisk.chunk_size = 318514) pins this window.
+   options(giottodisk.chunk_size = 179714) pins this window.
 ```
 
-This run had 127 GB free, so two windows cover all 399,120 cells. With 8 GB
-free, the same store is read in about 18 windows of 22,000 cells. The time for
+This run had 72 GB free, so three windows cover all 399,120 cells. With 8 GB
+free, the same store is read in about 19 windows of 21,000 cells. The time for
 one pass is scaled up from the probed window and is an upper bound, since a
 larger window reads faster per cell.
 
@@ -415,7 +424,7 @@ The kNN network is built first. `runUMAP()` reuses it instead of searching for
 neighbors again, which also makes the UMAP reproducible, and Leiden clusters
 on the same network.
 
-```{r umap-run}
+```{r umap-run, message = TRUE}
 dims_to_use <- 1:30 # use the top 30 PCs for UMAP and clustering
 
 g <- createNearestNetwork(g,
@@ -434,6 +443,7 @@ g <- runUMAP(g,
 
 ```
 runUMAP: using the stored kNN 'kNN.pca' (29 neighbours per cell)
+Setting dimension reduction [cell][rna] umap
 ```
 
 # Clustering
@@ -477,8 +487,8 @@ plotUMAP(g,
 )
 ```
 
-```{r umap-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
-knitr::include_graphics("images/atera_human_kidney/04_umap_leiden.png")
+```{r umap-leiden-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
+knitr::include_graphics("images/atera_human_kidney/04_umap-leiden.png")
 ```
 
 ```{r centroids-global}
@@ -492,8 +502,8 @@ spatPlot2D(g,
 )
 ```
 
-```{r centroids-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
-knitr::include_graphics("images/atera_human_kidney/05_centroids_global.png")
+```{r centroids-global-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
+knitr::include_graphics("images/atera_human_kidney/05_centroids-global.png")
 ```
 
 Establish an ROI around a group of glomeruli and get a zoomed in plot with the
@@ -512,8 +522,8 @@ spatInSituPlotPoints(g,
 )
 ```
 
-```{r roi-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
-knitr::include_graphics("images/atera_human_kidney/06_sissp_roi.png")
+```{r sissp-roi-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
+knitr::include_graphics("images/atera_human_kidney/06_sissp-roi.png")
 ```
 
 # Cell types from cluster markers
@@ -535,27 +545,27 @@ top_markers[order(as.integer(cluster))]
 
 ```
     cluster                                                               top
-      <int>                                                            <char>
+     <char>                                                            <char>
  1:       1                CD53, TRAC, EVL, WIPF1, PIK3IP1, CXCR4, CD3E, TMC8
  2:       2              MS4A1, CD53, LAPTM5, CD37, BANK1, CD79A, SMAP2, CD52
- 3:       3              CD163, C1QC, C1QA, STAB1, LAPTM5, CD14, VSIG4, HCLS1
- 4:       4          PECAM1, HSPG2, EPAS1, EGFL7, SHANK3, TGFBR2, PLAT, RAMP3
- 5:       5        C7, CALD1, RIPOR3, NFASC, PHLDB1, TSPYL2, COL6A2, CRISPLD2
- 6:       6             AQP2, HSD11B2, CALB1, CDH16, MUC1, MAL, SPTBN2, EPCAM
- 7:       7 SLC4A1, ATP6V1C2, SLC26A7, CA12, ATP6V0D2, TMEM213, ATP6V0A4, MAL
- 8:       8             ATP1A1, FARP1, CDH16, PAX8, ECHS1, SPP1, BICDL1, CD24
- 9:       9      CA12, KRT7, SLC26A4, ATP6V0A4, SLC4A9, IGFBP5, TMEM213, HMX2
-10:      10          MMRN1, PKHD1L1, FABP4, TBX1, TGFBR2, FLT4, PROX1, LAPTM5
-11:      11         TXNDC5, JCHAIN, MZB1, IGKC, XBP1, TP53INP1, IGHG1, SEL1L3
-12:      12             CRYAB, PAX8, CLTRN, TNFSF10, CD24, ANPEP, AQP1, FARP1
-13:      13        UMOD, SLC12A1, ATP1A1, MUC1, SERPINA5, SFRP1, EFHD1, KCNJ1
-14:      14           SLC12A1, MUC1, ATP1A1, MAL, CDH16, TFCP2L1, CD24, EFHD1
-15:      15           ANPEP, PCK1, ALDOB, SLC5A12, SMIM24, APOE, CRYAB, CLTRN
-16:      16             ANPEP, CLTRN, SMIM24, CRYAB, LRP2, AQP1, GATM, IL17RB
+ 3:       3              CD163, C1QC, STAB1, C1QA, MS4A7, LAPTM5, CD14, HCLS1
+ 4:       4        C7, CALD1, RIPOR3, NFASC, PHLDB1, CRISPLD2, COL6A2, TSPYL2
+ 5:       5           SLC12A1, MUC1, ATP1A1, MAL, CDH16, TFCP2L1, CD24, EFHD1
+ 6:       6          PECAM1, HSPG2, EPAS1, EGFL7, SHANK3, TGFBR2, PLAT, RAMP3
+ 7:       7             AQP2, HSD11B2, CALB1, CDH16, MUC1, MAL, SPTBN2, EPCAM
+ 8:       8 SLC4A1, ATP6V1C2, SLC26A7, CA12, ATP6V0D2, TMEM213, ATP6V0A4, MAL
+ 9:       9             ATP1A1, FARP1, CDH16, PAX8, ECHS1, SPP1, BICDL1, CD24
+10:      10      CA12, SLC26A4, KRT7, ATP6V0A4, AQP2, SLC4A9, IGFBP5, TMEM213
+11:      11          MMRN1, PKHD1L1, FABP4, TBX1, TGFBR2, FLT4, PROX1, LAPTM5
+12:      12         TXNDC5, JCHAIN, MZB1, IGKC, XBP1, IGHG1, TP53INP1, SEL1L3
+13:      13             CRYAB, CLTRN, PAX8, TNFSF10, ANPEP, CD24, AQP1, FARP1
+14:      14        UMOD, SLC12A1, ATP1A1, MUC1, SERPINA5, SFRP1, EFHD1, KCNJ1
+15:      15            ALDOB, ANPEP, PCK1, SLC5A12, SMIM24, APOE, CRYAB, LRP2
+16:      16            ANPEP, CLTRN, SMIM24, LRP2, CRYAB, SLC5A12, GATM, AQP1
 17:      17         ANPEP, LRP2, CLTRN, IL17RB, CRYAB, TNFSF10, SLC17A1, CUBN
 18:      18             SLC5A12, ALDOB, PCK1, PAH, ANPEP, APOE, LRP2, SLC22A8
 19:      19      SLC12A3, SFRP1, CA12, TMEM52B, SERPINA5, ATP1A1, SPP1, ACSL4
-20:      20               RGS5, NOTCH3, TAGLN, MFGE8, TPM2, EPAS1, MCAM, MYL9
+20:      20               RGS5, NOTCH3, TAGLN, TPM2, MFGE8, EPAS1, MCAM, MYL9
 21:      21              C7, C1R, AEBP1, COL6A2, TAGLN, FBLN5, PDGFRA, COL4A1
 22:      22               KIT, IL1RL1, RGS2, PNMT, GATA2, SYTL3, IL18R1, RHEX
 23:      23            CDH19, SCN7A, LGI4, SAMHD1, PRIMA1, GAS7, GPM6B, ITGB4
@@ -572,21 +582,21 @@ top eight are not enough, and from where it sits in the tissue:
 * The nephron, from glomerulus to collecting duct: podocytes (28: PODXL,
   NPHS1, NPHS2), parietal epithelial cells of Bowman's capsule (26: CFH,
   CLDN1, VCAM1, WT1), proximal tubule (15–18: LRP2, CUBN, SLC5A12, ALDOB),
-  thick ascending limb (13, 14: UMOD, SLC12A1), distal convoluted tubule (19:
-  SLC12A3), principal cells (6: AQP2, HSD11B2) and type A and B intercalated
-  cells (7: SLC4A1, SLC26A7; 9: SLC26A4, SLC4A9).
-* Cluster 12 is proximal tubule that has lost part of its program and gained
+  thick ascending limb (5, 14: UMOD, SLC12A1), distal convoluted tubule (19:
+  SLC12A3), principal cells (7: AQP2, HSD11B2) and type A and B intercalated
+  cells (8: SLC4A1, SLC26A7; 10: SLC26A4, SLC4A9).
+* Cluster 13 is proximal tubule that has lost part of its program and gained
   VCAM1, HAVCR1 (KIM-1) and PROM1, the signature of injured tubule cells.
-  Cluster 8 mixes proximal and distal tubule markers and is kept apart as
+  Cluster 9 mixes proximal and distal tubule markers and is kept apart as
   "tubule, mixed".
 * Vessels: glomerular endothelium (24: EMCN, EHD3, CLIC5), peritubular
-  capillaries (4: PECAM1, PLVAP), arterial endothelium (27: SEMA3G),
-  lymphatics (10: PROX1, FLT4, MMRN1), and pericytes and smooth muscle cells
+  capillaries (6: PECAM1, PLVAP), arterial endothelium (27: SEMA3G),
+  lymphatics (11: PROX1, FLT4, MMRN1), and pericytes and smooth muscle cells
   (20: RGS5, NOTCH3, MYH11).
-* Stroma and nerves: interstitial fibroblasts (5, 21: C7, PDGFRA), a
+* Stroma and nerves: interstitial fibroblasts (4, 21: C7, PDGFRA), a
   MFAP5+/PLA2G2A+ fibroblast population (25) and Schwann cells (23: CDH19,
   SCN7A).
-* Immune cells: T cells (1), B cells (2), plasma cells (11), macrophages (3)
+* Immune cells: T cells (1), B cells (2), plasma cells (12), macrophages (3)
   and mast cells (22).
 
 *Leiden cluster numbers can change between package versions or numbers of
@@ -596,19 +606,19 @@ workers. Check the markers before reusing this mapping on your own run.*
 cell_types <- c(
     "15" = "proximal tubule", "16" = "proximal tubule",
     "17" = "proximal tubule", "18" = "proximal tubule",
-    "12" = "proximal tubule, VCAM1+",
-    "8" = "tubule, mixed",
-    "13" = "thick ascending limb", "14" = "thick ascending limb",
+    "13" = "proximal tubule, VCAM1+",
+    "9" = "tubule, mixed",
+    "14" = "thick ascending limb", "5" = "thick ascending limb",
     "19" = "distal convoluted tubule",
-    "6" = "principal cells",
-    "7" = "intercalated cells, type A", "9" = "intercalated cells, type B",
+    "7" = "principal cells",
+    "8" = "intercalated cells, type A", "10" = "intercalated cells, type B",
     "28" = "podocytes", "26" = "parietal epithelial cells",
-    "24" = "glomerular endothelium", "4" = "endothelial cells",
-    "27" = "arterial endothelium", "10" = "lymphatic endothelium",
+    "24" = "glomerular endothelium", "6" = "endothelial cells",
+    "27" = "arterial endothelium", "11" = "lymphatic endothelium",
     "20" = "pericytes and VSMC",
-    "5" = "fibroblasts", "21" = "fibroblasts", "25" = "fibroblasts, MFAP5+",
+    "4" = "fibroblasts", "21" = "fibroblasts", "25" = "fibroblasts, MFAP5+",
     "23" = "Schwann cells",
-    "1" = "T cells", "2" = "B cells", "11" = "plasma cells",
+    "1" = "T cells", "2" = "B cells", "12" = "plasma cells",
     "3" = "macrophages", "22" = "mast cells"
 )
 g <- annotateGiotto(g,
@@ -637,18 +647,16 @@ sort(table(pDataDT(g)$cell_type), decreasing = TRUE)
 ```
 
 ```
-               fibroblasts            proximal tubule                    T cells                macrophages
-                     66777                      57867                      38594                      36844
-         endothelial cells       thick ascending limb    proximal tubule, VCAM1+            principal cells
-                     32410                      31084                      26315                      23719
-        pericytes and VSMC     glomerular endothelium   distal convoluted tubule                    B cells
-                     20529                       9386                       8101                       6770
-intercalated cells, type A                  podocytes              tubule, mixed       arterial endothelium
-                      6690                       5018                       4982                       4083
-intercalated cells, type B        fibroblasts, MFAP5+  parietal epithelial cells      lymphatic endothelium
-                      3524                       2965                       2923                       1950
-             Schwann cells               plasma cells                 mast cells
-                      1872                       1806                       1397
+               fibroblasts            proximal tubule                    T cells                macrophages          endothelial cells 
+                     71225                      56065                      38640                      32876                      32400 
+      thick ascending limb    proximal tubule, VCAM1+            principal cells         pericytes and VSMC     glomerular endothelium 
+                     31126                      27988                      23180                      20095                       9388 
+  distal convoluted tubule                    B cells intercalated cells, type A                  podocytes              tubule, mixed 
+                      8097                       6756                       6742                       5019                       4980 
+      arterial endothelium intercalated cells, type B        fibroblasts, MFAP5+  parietal epithelial cells      lymphatic endothelium 
+                      4083                       4024                       2968                       2930                       1953 
+             Schwann cells               plasma cells                 mast cells 
+                      1868                       1805                       1398
 ```
 
 ```{r spatial-cell-types}
@@ -663,7 +671,7 @@ spatPlot2D(g,
 ```
 
 ```{r spatial-cell-types-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
-knitr::include_graphics("images/atera_human_kidney/08_spatial_cell_types.png")
+knitr::include_graphics("images/atera_human_kidney/07_spatial-cell-types.png")
 ```
 
 In the ROI, each glomerulus shows podocytes (red) around glomerular
@@ -682,7 +690,7 @@ spatInSituPlotPoints(g,
 ```
 
 ```{r roi-cell-types-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
-knitr::include_graphics("images/atera_human_kidney/09_roi_cell_types.png")
+knitr::include_graphics("images/atera_human_kidney/08_roi-cell-types.png")
 ```
 
 Zooming in on two glomeruli with the DAPI image (default) underneath:
@@ -701,8 +709,8 @@ spatInSituPlotPoints(g,
 )
 ```
 
-```{r roi-refine-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
-knitr::include_graphics("images/atera_human_kidney/07_sissp_roi_refine.png")
+```{r sissp-roi-refine-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
+knitr::include_graphics("images/atera_human_kidney/09_sissp-roi-refine.png")
 ```
 
 ```{r save-annotated}
@@ -769,7 +777,7 @@ spatFeatPlot2D(g,
 ```
 
 ```{r moran-top-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
-knitr::include_graphics("images/atera_human_kidney/10_moran_top.png")
+knitr::include_graphics("images/atera_human_kidney/10_moran-top.png")
 ```
 
 # Spatial co-expression modules
@@ -816,7 +824,7 @@ heatmapCoexpression(g, coexpr)
 ```
 
 ```{r coexpression-heatmap-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
-knitr::include_graphics("images/atera_human_kidney/11_coexpression_heatmap.png")
+knitr::include_graphics("images/atera_human_kidney/12_coexpression-heatmap.png")
 ```
 
 The genes that best represent each of the four top-ranked modules:
@@ -892,8 +900,10 @@ for (m in as.character(top_modules)) {
 ```
 
 ```{r coexpression-spatial-fig, eval = TRUE, echo = FALSE, out.width = "50%", fig.show = "hold"}
-knitr::include_graphics(sprintf(
-    "images/atera_human_kidney/12_module_%d.png", 1:4))
+knitr::include_graphics("images/atera_human_kidney/13_coexpression-spatial.png")
+knitr::include_graphics("images/atera_human_kidney/14_coexpression-spatial.png")
+knitr::include_graphics("images/atera_human_kidney/15_coexpression-spatial.png")
+knitr::include_graphics("images/atera_human_kidney/16_coexpression-spatial.png")
 ```
 
 # Spatial enrichment
@@ -947,8 +957,12 @@ for (sig in c("proximal_tubule", "loop_of_henle", "collecting_duct",
 ```
 
 ```{r page-spatial-fig, eval = TRUE, echo = FALSE, out.width = "50%", fig.show = "hold"}
-knitr::include_graphics(sprintf(
-    "images/atera_human_kidney/13_page_%d.png", 1:6))
+knitr::include_graphics("images/atera_human_kidney/17_page-spatial.png")
+knitr::include_graphics("images/atera_human_kidney/18_page-spatial.png")
+knitr::include_graphics("images/atera_human_kidney/19_page-spatial.png")
+knitr::include_graphics("images/atera_human_kidney/20_page-spatial.png")
+knitr::include_graphics("images/atera_human_kidney/21_page-spatial.png")
+knitr::include_graphics("images/atera_human_kidney/22_page-spatial.png")
 ```
 
 To check the marker-based names against these independent gene sets, ask, for
@@ -1013,8 +1027,8 @@ pairs <- cellProximityMotifs(g,
 plotMotifEnrichment(g, pairs)
 ```
 
-```{r motifs-pairs-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
-knitr::include_graphics("images/atera_human_kidney/14_motif_pairs.png")
+```{r motifs-pairs-plot-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
+knitr::include_graphics("images/atera_human_kidney/23_motifs-pairs-plot.png")
 ```
 
 Each cell type is most enriched next to its own kind, as expected for tubules
@@ -1039,16 +1053,16 @@ head(triplets[order(-z), .(motif_id, observed, expected, fold, p_adj)], 10)
 ```
                                                                       motif_id observed  expected     fold      p_adj
                                                                         <char>    <num>     <num>    <num>      <num>
- 1:                             size3_open_fibroblasts-fibroblasts-fibroblasts    50212 43814.039 1.146025 0.01002828
- 2:                 size3_open_proximal tubule-proximal tubule, VCAM1+-T cells     3056  1624.740 1.880916 0.01002828
- 3: size3_open_proximal tubule-proximal tubule, VCAM1+-proximal tubule, VCAM1+     5259  3340.192 1.574460 0.01002828
- 4:         size3_open_tubule, mixed-thick ascending limb-thick ascending limb     2025  1185.039 1.708805 0.01002828
- 5:                              size3_open_pericytes and VSMC-T cells-T cells     1321   748.024 1.765986 0.01002828
- 6:         size3_open_proximal tubule, VCAM1+-proximal tubule-proximal tubule     9896  7699.868 1.285217 0.01002828
- 7:                             size3_open_macrophages-fibroblasts-fibroblasts    19037 17168.147 1.108856 0.01002828
- 8:                   size3_open_fibroblasts-endothelial cells-proximal tubule    13238 11231.294 1.178671 0.01002828
- 9:                                     size3_open_fibroblasts-T cells-T cells    15902 11088.096 1.434151 0.01002828
-10:                     size3_open_fibroblasts, MFAP5+-fibroblasts-fibroblasts      386   192.563 2.004539 0.01002828
+ 1:                             size3_open_fibroblasts-fibroblasts-fibroblasts    57033 50895.135 1.120598 0.00995318
+ 2:                 size3_open_proximal tubule-proximal tubule, VCAM1+-T cells     3084  1613.056 1.911899 0.00995318
+ 3: size3_open_proximal tubule-proximal tubule, VCAM1+-proximal tubule, VCAM1+     5775  3676.187 1.570921 0.00995318
+ 4:         size3_open_tubule, mixed-thick ascending limb-thick ascending limb     2014  1184.631 1.700107 0.00995318
+ 5:         size3_open_proximal tubule, VCAM1+-proximal tubule-proximal tubule    10199  7952.112 1.282552 0.00995318
+ 6:                             size3_open_proximal tubule-podocytes-podocytes      151    23.414 6.449133 0.00995318
+ 7:                   size3_open_fibroblasts-endothelial cells-proximal tubule    13715 11668.953 1.175341 0.00995318
+ 8:                              size3_open_pericytes and VSMC-T cells-T cells     1246   711.233 1.751887 0.00995318
+ 9:             size3_open_proximal tubule-macrophages-proximal tubule, VCAM1+     4318  3229.494 1.337052 0.00995318
+10:                     size3_open_fibroblasts, MFAP5+-fibroblasts-fibroblasts      414   208.556 1.985078 0.00995318
 ```
 
 In an open motif the first cell type listed is the center that links the
@@ -1058,8 +1072,8 @@ other two. The glyphs draw the top-ranked triplets:
 plotMotifGlyphs(g, triplets, cell_color_code = type_colors)
 ```
 
-```{r motifs-triplets-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
-knitr::include_graphics("images/atera_human_kidney/15_motif_triplets.png")
+```{r motifs-triplets-plot-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
+knitr::include_graphics("images/atera_human_kidney/24_motifs-triplets-plot.png")
 ```
 
 The top triplet is fibroblasts in a row, the large interstitial areas of the
@@ -1076,7 +1090,7 @@ spatMotifPlot(g,
 ```
 
 ```{r motifs-spatial-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
-knitr::include_graphics("images/atera_human_kidney/16_motif_spatial.png")
+knitr::include_graphics("images/atera_human_kidney/25_motifs-spatial.png")
 ```
 
 ```{r save-analyzed}
@@ -1093,6 +1107,50 @@ Suggested further topics:
   for a more systematic annotation than the cluster markers above
 * GiottoLens for [interactive visualization and annotation](giottolens.html)
 
+# Run time and memory
+
+How long each section of this tutorial took and the most memory it used, while
+this page was built. The computer was an Apple M4 Max with 16 cores and 128 GB
+of memory, about 72 GB of it free at the start, running 8 parallel workers and
+the default window settings. The whole tutorial took about 17 minutes, 35% of it
+reading the data.
+
+```{r runcost-fig, eval = TRUE, echo = FALSE, out.width = "100%"}
+knitr::include_graphics("images/atera_human_kidney/26_runcost.png")
+```
+
+Memory is the resident memory of the R session and its 8 workers together,
+sampled once a second; each bar is the highest value during that section. These
+numbers depend on the machine more than on the data:
+
+* GiottoDisk sizes its windows to a share of the memory that is free (see
+  [Memory and window size](#memory-and-window-size)). A computer with less free
+  memory reads smaller windows, uses less memory and takes somewhat longer.
+* R keeps memory it has used for later steps instead of returning it to the
+  system, so the bars stay high after the first large step.
+* Each worker holds its own copy of the loaded packages, about 1 GB. Fewer
+  workers in [Setup](#setup) use less memory.
+
+<details>
+<summary>Time and memory per section</summary>
+
+| Section | Time | Peak memory |
+|:--------|-----:|------------:|
+| Read the data | 5.9 min | 41 GB |
+| Save the first snapshot | 29 s | 41 GB |
+| Aggregate transcripts | 1.9 min | 55 GB |
+| QC and filtering | 20 s | 45 GB |
+| Normalize, select features | 25 s | 45 GB |
+| Dimension reduction | 1.2 min | 47 GB |
+| Clustering | 1.2 min | 45 GB |
+| Cell types | 51 s | 45 GB |
+| Spatially variable genes | 52 s | 50 GB |
+| Co-expression modules | 1.0 min | 45 GB |
+| Spatial enrichment | 1.7 min | 54 GB |
+| Cell-cell interactions | 48 s | 50 GB |
+
+</details>
+
 # Session info
 
 ```{r session}
@@ -1100,16 +1158,16 @@ sessionInfo()
 ```
 
 ```
-R version 4.5.1 (2025-06-13)
+R version 4.5.3 (2026-03-11)
 Platform: aarch64-apple-darwin20
-Running under: macOS Sonoma 14.5
+Running under: macOS Tahoe 26.6.2
 
 Matrix products: default
 BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
 LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
 
 locale:
-[1] en_US/en_US/en_US/C/en_US/en_US
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 time zone: America/New_York
 tzcode source: internal
@@ -1118,41 +1176,47 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] GiottoDisk_0.0.0.6 Giotto_4.3.5       GiottoClass_0.7.18 arrow_23.0.1.2    
+[1] GiottoDisk_0.0.0.6 Giotto_4.3.5       GiottoClass_0.7.26 arrow_23.0.1.2    
 
 loaded via a namespace (and not attached):
-  [1] RColorBrewer_1.1-3          shape_1.4.6.1               jsonlite_2.0.0              wk_0.9.5                   
-  [5] magrittr_2.0.4              magick_2.9.1                farver_2.1.2                GlobalOptions_0.1.4        
-  [9] ragg_1.5.2                  vctrs_0.7.2                 Cairo_1.7-0                 memoise_2.0.1              
- [13] GiottoUtils_0.2.7           terra_1.9-11                htmltools_0.5.9             S4Arrays_1.8.1             
- [17] future.mirai_1.0.0          BiocNeighbors_2.2.0         SparseArray_1.8.1           parallelly_1.46.1          
- [21] htmlwidgets_1.6.4           plotly_4.12.0               cachem_1.1.0                igraph_2.2.2               
- [25] lifecycle_1.0.5             iterators_1.0.14            pkgconfig_2.0.3             rsvd_1.0.5                 
- [29] Matrix_1.7-3                R6_2.6.1                    fastmap_1.2.0               clue_0.3-68                
- [33] GenomeInfoDbData_1.2.14     MatrixGenerics_1.20.0       future_1.70.0               magic_1.6-1                
- [37] digest_0.6.39               colorspace_2.1-2            S4Vectors_0.48.1            irlba_2.3.7                
- [41] textshaping_1.0.5           GenomicRanges_1.60.0        beachmat_2.24.0             filelock_1.0.3             
- [45] labeling_0.4.3              httr_1.4.8                  polyclip_1.10-7             abind_1.4-8                
- [49] compiler_4.5.1              smotif_0.2.0                bit64_4.6.0-1               withr_3.0.2                
- [53] doParallel_1.0.17           smotifrs_0.2.0              S7_0.2.1                    backports_1.5.1            
- [57] BiocParallel_1.42.2         viridis_0.6.5               ggforce_0.5.0               R.utils_2.13.0             
- [61] sedonadb_0.5.0.9000         MASS_7.3-65                 DelayedArray_0.34.1         rjson_0.2.23               
- [65] bluster_1.18.0              gtools_3.9.5                GiottoVisuals_0.2.16        tools_4.5.1                
- [69] otel_0.2.0                  R.oo_1.27.1                 glue_1.8.0                  grid_4.5.1                 
- [73] checkmate_2.3.4             cluster_2.1.8.3             generics_0.1.4              gtable_0.3.6               
- [77] R.methodsS3_1.8.2           tidyr_1.3.2                 data.table_1.18.2.1         BiocSingular_1.24.0        
- [81] tidygraph_1.3.1             ScaledMatrix_1.16.0         XVector_0.48.0              BiocGenerics_0.54.1        
- [85] tilework_1.0.0              ggrepel_0.9.8               foreach_1.5.2               pillar_1.11.1              
- [89] nanoarrow_0.9.0             RcppHNSW_0.7.0              circlize_0.4.18             dplyr_1.2.0                
- [93] tweenr_2.0.3                lattice_0.22-7              bit_4.6.0                   tidyselect_1.2.1           
- [97] ComplexHeatmap_2.26.1       SingleCellExperiment_1.30.1 gridExtra_2.3               IRanges_2.42.0             
-[101] Seqinfo_1.0.0               SummarizedExperiment_1.38.1 scattermore_1.2             stats4_4.5.1               
-[105] graphlayouts_1.2.3          Biobase_2.68.0              matrixStats_1.5.0           UCSC.utils_1.4.0           
-[109] lazyeval_0.2.2              GiottoKernels_0.3.0         codetools_0.2-20            ggraph_2.2.2               
-[113] tibble_3.3.1                colorRamp2_0.1.0            cli_3.6.5                   geometry_0.5.2             
-[117] systemfonts_1.3.2           mirai_2.7.2                 Rcpp_1.1.2                  GenomeInfoDb_1.44.3        
-[121] globals_0.19.1              png_0.1-9                   nanonext_1.10.2             parallel_4.5.1             
-[125] ggplot2_4.0.2               assertthat_0.2.1            listenv_0.10.1              SpatialExperiment_1.20.0   
-[129] geoarrow_0.4.4              viridisLite_0.4.3           scales_1.4.0                purrr_1.2.1                
-[133] crayon_1.5.3                GetoptLong_1.1.1            rlang_1.1.7                 cowplot_1.2.0              
+  [1] smotifrs_0.2.0              filelock_1.0.3              tibble_3.3.1                R.oo_1.27.1                
+  [5] polyclip_1.10-7             lifecycle_1.0.5             httr2_1.3.0                 edgeR_4.8.2                
+  [9] doParallel_1.0.17           globals_0.19.1              processx_3.8.6              lattice_0.22-9             
+ [13] MASS_7.3-65                 backports_1.5.0             magrittr_2.0.4              limma_3.66.0               
+ [17] plotly_4.12.0               sass_0.4.10                 rmarkdown_2.31              jquerylib_0.1.4            
+ [21] yaml_2.3.12                 metapod_1.18.0              otel_0.2.0                  cowplot_1.2.0              
+ [25] DBI_1.3.0                   RColorBrewer_1.1-3          abind_1.4-8                 GenomicRanges_1.62.1       
+ [29] purrr_1.2.1                 R.utils_2.13.0              ggraph_2.2.2                BiocGenerics_0.56.0        
+ [33] tweenr_2.0.3                circlize_0.4.18             IRanges_2.44.0              S4Vectors_0.48.0           
+ [37] ggrepel_0.9.8               irlba_2.3.7                 listenv_0.10.1              future.mirai_1.0.0         
+ [41] terra_1.9-11                dqrng_0.4.1                 parallelly_1.47.0           colorRamp2_0.1.0           
+ [45] codetools_0.2-20            DelayedArray_0.36.0         scuttle_1.20.0              ggforce_0.5.0              
+ [49] shape_1.4.6.1               tidyselect_1.2.1            farver_2.1.2                ScaledMatrix_1.18.0        
+ [53] viridis_0.6.5               matrixStats_1.5.0           stats4_4.5.3                Seqinfo_1.0.0              
+ [57] duckdb_1.5.1                jsonlite_2.0.0              GetoptLong_1.1.1            BiocNeighbors_2.4.0        
+ [61] tidygraph_1.3.1             progressr_0.18.0            iterators_1.0.14            foreach_1.5.2              
+ [65] tools_4.5.3                 Rcpp_1.1.2                  glue_1.8.0                  gridExtra_2.3              
+ [69] SparseArray_1.10.9          smotif_0.2.0                xfun_0.62                   MatrixGenerics_1.22.0      
+ [73] Rarr_1.10.1                 dplyr_1.2.0                 withr_3.0.2                 fastmap_1.2.0              
+ [77] bluster_1.20.0              digest_0.6.39               rsvd_1.0.5                  R6_2.6.1                   
+ [81] colorspace_2.1-2            wk_0.9.5                    scattermore_1.2             gtools_3.9.5               
+ [85] dichromat_2.0-0.1           paws.storage_0.9.0          R.methodsS3_1.8.2           tidyr_1.3.2                
+ [89] generics_0.1.4              data.table_1.18.2.1         GiottoKernels_0.3.0         graphlayouts_1.2.3         
+ [93] httr_1.4.8                  htmlwidgets_1.6.4           S4Arrays_1.10.1             uwot_0.2.4                 
+ [97] pkgconfig_2.0.3             gtable_0.3.6                ComplexHeatmap_2.26.1       tilework_1.0.0             
+[101] GiottoVisuals_0.2.16        S7_0.2.1                    SingleCellExperiment_1.32.0 XVector_0.50.0             
+[105] geoarrow_0.4.4              htmltools_0.5.9             clue_0.3-68                 scales_1.4.0               
+[109] Biobase_2.70.0              GiottoUtils_0.2.9           png_0.1-9                   SpatialExperiment_1.20.0   
+[113] nanonext_1.10.3             sedonadb_0.5.0.9000         scran_1.38.1                geometry_0.5.2             
+[117] knitr_1.51                  rjson_0.2.23                checkmate_2.3.4             magic_1.6-1                
+[121] curl_7.0.0                  GlobalOptions_0.1.4         cachem_1.1.0                parallel_4.5.3             
+[125] pillar_1.11.1               grid_4.5.3                  vctrs_0.7.2                 nanoarrow_0.9.0            
+[129] BiocSingular_1.26.1         beachmat_2.26.0             cluster_2.1.8.2             evaluate_1.0.5             
+[133] magick_2.9.1                cli_3.6.5                   locfit_1.5-9.12             compiler_4.5.3             
+[137] rlang_1.3.0                 crayon_1.5.3                paws.common_0.8.9           future.apply_1.20.2        
+[141] labeling_0.4.3              ps_1.9.1                    viridisLite_0.4.3           BiocParallel_1.44.0        
+[145] assertthat_0.2.1            lazyeval_0.2.2              Matrix_1.7-5                RcppHNSW_0.6.0             
+[149] bit64_4.6.0-1               future_1.70.0               ggplot2_4.0.2               statmod_1.5.2              
+[153] SummarizedExperiment_1.40.0 mirai_2.7.3                 igraph_2.2.2                memoise_2.0.1              
+[157] bslib_0.10.0                bit_4.6.0
 ```
