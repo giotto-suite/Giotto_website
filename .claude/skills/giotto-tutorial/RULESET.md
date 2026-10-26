@@ -97,6 +97,11 @@ last two. An absent situational section is not a gap.
    Further reading: someone on the wrong variant should find out in the first
    paragraph, not the last.
 
+   Link the dataset by name at its first mention, and close with a line on run
+   time and memory: the total time, the parallel workers and the machine's
+   memory, linking to **Run time and memory** at the end. A reader decides
+   here whether the tutorial suits their computer.
+
 2. **Install packages** — the Giotto install, typically `suite_install()`,
    then anything a normal install lacks. The extras are optional; the section
    is not. Anything that must be built before Giotto goes first and alone.
@@ -122,9 +127,11 @@ last two. An absent situational section is not a gap.
    and sizes, and **how it was processed** where you know it: the vendor
    pipeline, the segmentation, whether a matrix shipped with it.
 
-   Give two routes to the data, a command line and a click-through precise
-   enough to reach the exact file. The click-through also reveals when the
-   direct link has gone stale.
+   Link the dataset by name to the page it comes from, such as the vendor's
+   dataset page, here as well as in the Overview. The name says which release
+   this is, and the page outlives direct file URLs. Then give the routes to
+   the files: a command line, and a click-through precise enough to reach the
+   exact file, which also reveals when the direct link has gone stale.
 
 4. **Packages and setup** — library calls, paths, parallel workers, and the
    instructions object if you use one. One chunk holds every path. A seed
@@ -148,10 +155,9 @@ last two. An absent situational section is not a gap.
    what you do when you need it: resegmentation, different boundaries. Where
    no matrix ships, the aggregation is the point and stays open.
 
-   Worth a short section of its own afterwards: **what this costs to run**,
-   and what the reader can turn down. Peak memory, the window or crop, and
-   which setting shrinks it. Two published tutorials do this, and it is the
-   most useful thing on the page for anyone deciding whether to follow along.
+   Worth a short section of its own afterwards on **what the reader can turn
+   down**: the window or crop, and which setting shrinks memory. The measured
+   time and memory go at the end, in **Run time and memory**.
 
 6. **Quality control and filtering** — optionally a dropdown comparing the
    vendor's aggregation against your own. It is a check; nothing downstream
@@ -178,7 +184,7 @@ last two. An absent situational section is not a gap.
 **Past clustering the tutorial is on its own** — cell typing, spatial
 relationships, niches, interoperability, whatever it is for.
 
-**Second to last, Further reading.** Name the two or three tutorials a reader
+**After the analysis, Further reading.** Name the two or three tutorials a reader
 of *this* page would open next, and say in a clause why. The test is whether
 the link answers a question this tutorial raised and left open; a shared
 platform or function is not a reason on its own, and a catalogue of adjacent
@@ -186,6 +192,25 @@ pages is worse than no section. What tends to qualify: a sibling on the same
 specimen, a tutorial covering a method this one used but did not explain, and
 the in-memory or disk-backed counterpart. Browse the site and pick what a
 reader would actually want.
+
+**Then, Run time and memory.** How long each section took and the most memory
+it used, on the machine that built the page. Name the machine (processor,
+cores, memory) and each setup measured: the parallel workers, and if you can,
+a second run limited to what a 16 GB laptop has. Give each setup's total and a
+sentence on where the time goes. Then:
+
+- **A figure:** one bar per section, wall time and peak memory side by side,
+  one color per setup. A section is a top-level heading, so the bars match
+  the page.
+- **How memory was measured**, in a sentence: what was counted (the R session
+  and its parallel workers together), how often it was sampled, and that each
+  bar is the highest value in that section. Report resident memory (section
+  7).
+- **A dropdown** with the same numbers as a table, for readers who want them
+  exactly.
+
+The Atera kidney tutorial is the worked example. This is the most useful
+thing on the page for anyone deciding whether to follow along.
 
 **Last, session info.**
 
@@ -341,15 +366,12 @@ give its coordinates and say what it contains rather than searching for it.
 Title and tags. Tags must satisfy the site's controlled vocabulary, which is
 the authority rather than any example.
 
-Two more are **recommended, not expected**. An **`author`** field, so a
-reader knows who to ask: three tutorials carry one. And a short **run-cost
-note**, saying what the render used and what it takes to run yourself: no
-header carries one, though two tutorials give the same information as a
-section, which is where section 2 suggests putting it. Either place beats
-neither, because a reader with a laptop cannot otherwise tell whether the
-tutorial is for them.
+One more is **recommended, not expected**: an **`author`** field, so a reader
+knows who to ask; three tutorials carry one. Run time and memory belong in the
+body, not the header: a line in the Overview and a section at the end
+(section 2).
 
-If you write one, report peak **resident** memory. Scheduler accounting often
+When you report memory, report peak **resident** memory. Scheduler accounting often
 reports virtual address space instead, which can read in terabytes for a job
 that ran in gigabytes. Measure on a comparable machine rather than
 extrapolating from core count: memory, not cores, decides whether a run
