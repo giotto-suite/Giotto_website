@@ -208,17 +208,33 @@ a short one interrupting the argument can fold.
 
 **Decide what the reader sees, not what the render printed.** Most output is
 chatter: readers and writers announcing themselves, progress lines, disk
-backend status. Once rendered none of it is distinguishable from a deliberate
-`print` or `cat`, so nothing downstream can sort it for you.
+backend status. Nearly all of it is R messages, and once rendered a message
+looks exactly like a deliberate `print` or `cat`. So mark them in the setup
+chunk:
+
+```r
+knitr::opts_chunk$set(class.message = "message", class.warning = "warning")
+```
+
+The render then tags every message and warning, you still see them in your
+HTML, and the converter leaves them out. If a render does not mark them, the
+converter says so in its report. A value the reader needs is therefore
+printed, never left to a message: an assignment such as `k <- best_k(...)`
+prints nothing, so print `k` or `cat()` a summary line.
 
 You never have to ask to see output while rendering; that happens anyway. What
 you write is what to hide, and from whom:
 
 | in the chunk header | you see it rendering | the reader sees it |
 |---|---|---|
-| *nothing* | yes | **yes** |
+| *nothing*, for a message or warning | yes | no |
+| *nothing*, for printed output | yes | **yes** |
 | `keep_output = FALSE` | **yes** | no |
 | `message = FALSE`, `warning = FALSE`, `results = 'hide'` | no | no |
+
+What the setup line cannot catch is a function announcing itself with `cat()`
+or `print()` rather than a message. Turn it off at the call, usually
+`verbose = FALSE`, or mark the chunk `keep_output = FALSE`.
 
 Suppressing at render time is simplest to reason about, because the output
 never exists; use it where the chatter is useless to everyone, including you.
@@ -226,8 +242,12 @@ never exists; use it where the chatter is useless to everyone, including you.
 watch, a saved snapshot announcing itself. Changing your mind about it costs a
 conversion rather than a render.
 
-**The default is that everything printed is published.** Convert once, read
-what came through, and mark what should not have.
+**The default: every figure is published, every printed value is published,
+and no message or warning is.** Printed means a value auto-printed as a
+chunk's last expression, `print()` or `cat()`. A summary line is
+`cat(sprintf(...))`: a bare `sprintf()` is published too, but as a quoted
+string after `[1]`. Convert once, read what came through, and mark what should
+not have.
 
 **Two mechanics, since neither is obvious.** A dropdown is a plain HTML
 `<details>` block around the chunk with a `<summary>` line; markdown has no
@@ -264,11 +284,13 @@ Split them.
 - Keep plotting simple, and prefer the plot's own output over post-hoc
   styling.
 
-**Resolution and size.** The converter resizes every figure to a fixed width
-covering the content column on a high-density display. Nothing above that
-reaches the site, so aim for width × dpi near the cap rather than far above
-it: overshooting is discarded, inflates the HTML, and has broken figure
-extraction outright.
+**Resolution and size.** The converter resizes every figure to at most 1,100
+pixels wide, and the site shows each one at the full width of the content
+column. Nothing above that reaches the site, so aim for width × dpi near
+1,100 (7 inches at dpi 150 is 1,050) rather than far above it: overshooting
+is discarded, inflates the HTML, and has broken figure extraction outright.
+To make a map read better at that size, change point size or figure shape,
+not dpi.
 
 Keep a tutorial's figures to roughly fifteen megabytes. The repository is near
 its hosting limit and images are most of it, so this is a real constraint.
