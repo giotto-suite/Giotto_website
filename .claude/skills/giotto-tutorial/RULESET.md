@@ -10,22 +10,21 @@ registration, tagging, checks, PR — are covered elsewhere.
 * **Contributing guide** — `vignettes/contributing_tutorials.Rmd`, published
   on the site
 
-Read the skill first; it is the more current of the two, so follow it where
-they disagree.
+Read the skill first. Where it and the contributing guide disagree, follow
+the skill: it is kept more current.
 
 **Nothing here is enforced.** The items that break a build or a page are
 mechanics and live in the skill: `pkgdown: as_is: true`, registration under
-`articles:`, tags from the controlled vocabulary, and figure chunks that
-evaluate. Check those there.
+`articles:`, tags from the controlled vocabulary, and which chunks run when
+the site builds (section 8). Check those there.
 
 **What this describes.** The site holds over a hundred tutorials written over
 several years, and they are not one thing. Most of what follows was read off
 the recent disk-backed set, which is the most consistent cohort and the one
-still being added to. The older tutorials often differ: Further reading
-appears in none of the other hundred-odd, and comment density across the site
-runs from nothing to half the lines. So a departure in an older tutorial is
-usually its age, not a mistake, and nothing here is a reason to go back and
-change it.
+still being added to. The older tutorials often differ: few have a Further
+reading section, and comment density runs from nothing to half the lines. So
+a departure in an older tutorial is usually its age, not a mistake, and
+nothing here is a reason to go back and change it.
 
 ## Using this document
 
@@ -64,16 +63,13 @@ silently shows a figure next to code that did not produce it.
 does to your content that a local render does not — layout, spacing, column
 widths.
 
-**Check the numbers in the prose against the numbers in the output.** A
-tutorial states values in its text, comments and tables: a median gene count,
-cells surviving filtering, top genes, file sizes. Each is written once and
-survives every re-render, including the ones where the answer changed. Take
-each number and find it in the output below, or in the file it describes. File
-sizes need this most, because nothing in the tutorial produces them — a table
-of vendor downloads is typed from whatever the files were that day, and no
-later render disagrees with it. Drifted numbers look exactly as plausible as
-correct ones, which is why this is done by reading rather than by noticing
-something wrong.
+**Check the numbers in the prose against the output.** Numbers typed into
+text, comments and tables (a median gene count, cells surviving filtering,
+top genes, file sizes) survive every re-render, including the ones where the
+answer changed. Find each one in the output, or in the file it describes.
+File sizes need this most: nothing in the tutorial produces them, so no later
+render will disagree. A drifted number looks as plausible as a correct one,
+so this is done by reading, not by noticing.
 
 ---
 
@@ -86,11 +82,11 @@ and clustering into one, because they are the road rather than the
 destination. A cell typing tutorial does the reverse. Both are right, and that
 principle outranks the list below.
 
-The overview, dataset explanation, setup, reading the data and session
-information appear in nearly every published tutorial. The rest are
-situational: nothing extra to install skips the install section, a targeted
-panel skips feature selection, a tutorial stopping before clustering skips the
-last two. An absent situational section is not a gap.
+The overview, install, dataset explanation, setup, reading the data and
+session information appear in nearly every published tutorial. The rest are
+situational: a targeted panel skips feature selection, and a tutorial that
+stops before clustering skips clustering. An absent situational section is not
+a gap.
 
 1. **Overview** — what this does, in about three sentences, ending with what
    the reader will have. Name close relatives here rather than saving them for
@@ -138,11 +134,10 @@ last two. An absent situational section is not a gap.
    belongs wherever it is first needed.
 
    Order the library calls so anything that must precede Giotto goes first,
-   then Giotto, then the rest. With GiottoDisk that means `arrow` first; the
-   tutorials loading it are exactly the disk-backed ones, and an in-memory
-   tutorial needs none of this. Set the parallel plan here and say it is the
-   reader's to change: worker count is a property of their machine, and each
-   worker costs memory.
+   then Giotto, then the rest. With GiottoDisk that means `arrow` first: it
+   must load before terra and GiottoClass. Set the parallel plan here and say
+   it is the reader's to change: worker count is a property of their machine,
+   and each worker costs memory.
 
 5. **Read the data** — the platform's convenience reader.
 
@@ -154,6 +149,17 @@ last two. An absent situational section is not a gap.
    and optionally put rebuilding it from transcripts in a dropdown, framed as
    what you do when you need it: resegmentation, different boundaries. Where
    no matrix ships, the aggregation is the point and stays open.
+
+   *NOTE:* restarting the parallel workers once the data are read is
+   recommended: `future::plan(future::sequential)`, then the same
+   `future::plan(future::multisession, workers = ...)` as in setup, with a
+   comment saying why. Each worker is a separate R session and keeps the
+   memory it used while reading, which nothing later needs: a few GB per
+   worker on a large dataset. New workers start empty, in a few seconds. The
+   Xenium human breast cancer tutorial does this. If nothing after the
+   reading runs in parallel, `future::plan(future::sequential)` alone is
+   enough, as in the Visium HD colorectal cancer and Stereo-seq mouse testis
+   tutorials that aggregate bins into polygons the reader supplies.
 
    Worth a short section of its own afterwards on **what the reader can turn
    down**: the window or crop, and which setting shrinks memory. The measured
@@ -184,28 +190,31 @@ last two. An absent situational section is not a gap.
 **Past clustering the tutorial is on its own** — cell typing, spatial
 relationships, niches, interoperability, whatever it is for.
 
-**After the analysis, Further reading.** Name the two or three tutorials a reader
-of *this* page would open next, and say in a clause why. The test is whether
-the link answers a question this tutorial raised and left open; a shared
+**After the analysis, Further reading.** Name the tutorials, one or more, that
+a reader of *this* page would open next, and say in a clause why. The test is
+whether the link answers a question this tutorial raised and left open; a shared
 platform or function is not a reason on its own, and a catalogue of adjacent
 pages is worse than no section. What tends to qualify: a sibling on the same
 specimen, a tutorial covering a method this one used but did not explain, and
-the in-memory or disk-backed counterpart. Browse the site and pick what a
-reader would actually want.
+the in-memory or disk-backed counterpart.
 
 **Then, Run time and memory.** How long each section took and the most memory
 it used, on the machine that built the page. Name the machine (processor,
 cores, memory) and each setup measured: the parallel workers, and if you can,
-a second run limited to what a 16 GB laptop has. Give each setup's total and a
-sentence on where the time goes. Then:
+a second run limited to what a 16 GB laptop has. Measure on a comparable
+machine rather than extrapolating from core count: memory, not cores, decides
+whether a run finishes. Give each setup's total and a sentence on where the
+time goes. Then:
 
 - **A figure:** one bar per section, wall time and peak memory side by side,
   one color per setup. A section is a top-level heading, so the bars match
   the page.
 - **How memory was measured**, in a sentence: what was counted (the R session
   and its parallel workers together), how often it was sampled, and that each
-  bar is the highest value in that section. Report resident memory (section
-  7).
+  bar is the highest value in that section. Count physical memory, as a task
+  manager shows it (the Memory column of Activity Monitor on macOS, resident
+  memory or RSS on Linux). Scheduler accounting often reports virtual address
+  space instead, which can read in terabytes for a job that ran in gigabytes.
 - **A dropdown** with the same numbers as a table, for readers who want them
   exactly.
 
@@ -267,32 +276,27 @@ never exists; use it where the chatter is useless to everyone, including you.
 watch, a saved snapshot announcing itself. Changing your mind about it costs a
 conversion rather than a render.
 
-**The default: every figure is published, every printed value is published,
-and no message or warning is.** Printed means a value auto-printed as a
-chunk's last expression, `print()` or `cat()`. A summary line is
-`cat(sprintf(...))`: a bare `sprintf()` is published too, but as a quoted
-string after `[1]`. Convert once, read what came through, and mark what should
-not have.
+**By default every figure and every printed value is published, and no
+message or warning is.** Printed means auto-printed as a chunk's last
+expression, `print()` or `cat()`. Write a summary line as `cat(sprintf(...))`;
+a bare `sprintf()` shows as a quoted string after `[1]`. Convert once, read
+what came through, and mark what should not have.
 
 **Two mechanics, since neither is obvious.** A dropdown is a plain HTML
 `<details>` block around the chunk with a `<summary>` line; markdown has no
 syntax for it. And printed output reaches the page as a fenced block below its
-chunk with knitr's `##` prefix stripped. Both styles exist in the corpus, so
-when editing an older tutorial match the one already there.
+chunk, without knitr's `##` at the start of each line. A few older tutorials
+keep the `##`; when editing one, keep the style it already uses.
 
 Two constraints on top:
 
-- **Folded is allowed; absent is not.** Code producing a figure must appear
-  somewhere, open or in a dropdown. No hidden chunk may make a figure or an
-  object used later.
-- **Visuals stay visible.** Plotting code is not folded, except checks already
-  inside a dropdown.
+- **Folded is allowed; absent is not.** Code making a figure or an object used
+  later must be on the page, open or in a dropdown. No hidden chunk.
+- **Plotting calls stay open,** except checks already inside a dropdown. To
+  fold the preparation behind a figure, put it in its own chunk.
 
 Length is not the test: a long block of curated marker genes stays open,
 because it feeds a figure and a reader on another tissue must replace it.
-
-**A chunk you want folded cannot also be the one producing a visible figure.**
-Split them.
 
 ---
 
@@ -301,11 +305,16 @@ Split them.
 - **Every figure chunk labeled.** Images are named from the label.
 - The figure must reach the rendered HTML or conversion finds nothing. Let the
   plot print, or return it as the chunk's last expression — both work.
-- Compose with care: a saver captures a plot at the moment of the call and
-  misses anything added afterwards. Route composed figures through the
-  function that saves an already-built plot.
-- Name every saved figure. Defaults collide when the same plot function is
-  called twice.
+  Saving to an output folder (`save_plot = TRUE`) is up to you: the site
+  takes its figures from the HTML either way.
+- Show the finished figure once. If you add to a plot after the call
+  (`+ ggplot2::theme()`, a combined panel), call it with `show_plot = FALSE,
+  return_plot = TRUE` and print the result; a file saved at the call would
+  also miss the additions.
+- If you save figures, name each one. Defaults collide when the same plot
+  function is called twice.
+- Set figure dimensions once, so a per-figure override carries only a name
+  and a genuine difference.
 - Keep plotting simple, and prefer the plot's own output over post-hoc
   styling.
 
@@ -370,16 +379,12 @@ give its coordinates and say what it contains rather than searching for it.
   default. No absolute path anywhere else.
 - No machine-specific path may survive into the published page, including
   inside printed output.
-- Set figure dimensions once, so per-figure overrides carry only a name and a
-  genuine difference.
 - **Name the platform and the specimen, and leave the rest to the browser.**
-  The published titles settle on one shape: the technology, the tissue, and
-  where a page has siblings a short phrase saying what makes it different.
-  *Visium HD Human Colorectal Cancer: Segmented Cells*. *Stereo-seq Mouse
-  Testis: 10 um Bins*. The package name has already been removed from the
-  titles that carried it. The dataset size has not: a couple still say *Mini
-  Dataset*, which the browser filters on anyway. The exception is a tutorial
-  whose subject *is* the package.
+  A title is the technology, the tissue and, where a page has siblings, a
+  short phrase saying what makes it different: *Visium HD Human Colorectal
+  Cancer: Segmented Cells*, *Stereo-seq Mouse Testis: 10 µm Bins*. Leave out
+  the package name, unless the package is the subject, and the dataset size
+  (*Mini Dataset*), which the browser filters on.
 
 ---
 
@@ -389,15 +394,8 @@ Title and tags. Tags must satisfy the site's controlled vocabulary, which is
 the authority rather than any example.
 
 One more is **recommended, not expected**: an **`author`** field, so a reader
-knows who to ask; three tutorials carry one. Run time and memory belong in the
-body, not the header: a line in the Overview and a section at the end
-(section 2).
-
-When you report memory, report peak **resident** memory. Scheduler accounting often
-reports virtual address space instead, which can read in terabytes for a job
-that ran in gigabytes. Measure on a comparable machine rather than
-extrapolating from core count: memory, not cores, decides whether a run
-finishes.
+knows who to ask. Run time and memory belong in the body, not the header: a
+line in the Overview and a section at the end (section 2).
 
 ---
 
@@ -405,15 +403,26 @@ finishes.
 
 `pkgdown/check-site.R` is the only automated check and the only thing here
 that can block a build. It runs in CI on every pull request, takes about a
-second, and reads text and YAML without building the site: registration under
-`articles:`, navbar links that resolve, `pkgdown: as_is: true`, referenced
-images that exist, and tags from the controlled vocabulary. It warns rather
-than fails on a chunk that evaluates, because self-contained presentation code
-legitimately does.
+second, and reads text and YAML without building the site. Run it before the
+PR too (`Rscript pkgdown/check-site.R`): a local render shows none of this.
 
-Everything else here is yours to apply by eye. Two failure modes deserve a
-deliberate look before the PR, because a local render shows neither:
+- **Errors** fail the build: a tutorial not registered under `articles:`, a
+  navbar link that does not resolve, a missing `pkgdown: as_is: true`, a
+  referenced image that does not exist, tags outside the controlled
+  vocabulary.
+- **Warnings** do not, but each deserves a look: a code fence never closed
+  (it swallows everything after it), headings numbered by hand, a
+  machine-specific path in code or output, a figure never matched to a
+  chunk, and a chunk that evaluates.
 
-- **An unbalanced code fence** swallows everything after it and appears only
-  once the page is built.
-- **A machine-specific path** reaching the page, in code or in output.
+**What runs on the site.** The site does not rerun your analysis. The
+converter sets every chunk to `eval = FALSE` and copies its printed output
+(tables, `print()`, `cat()`, `sprintf()` lines) from your render as text
+below the chunk, so output you chose to show (section 3) still appears. Only
+two kinds of chunk run when the site builds: figure chunks calling
+`include_graphics()`, which must run or the image is missing, and small
+self-contained display code, such as `kable()` over a table typed into the
+chunk. Anything reading Giotto data or files must not run; the warning is
+there so someone checks.
+
+Everything else here is yours to apply by eye.
