@@ -246,6 +246,8 @@ popular first.
   Bins](https://giottosuite.com/dev/articles/stereoseq_testis_bins_giottodisk.md):
 - [Stereo-seq Mouse Testis: 0.5 µm Bins into Your Own
   Polygons](https://giottosuite.com/dev/articles/stereoseq_testis_own_polygons_giottodisk.md):
+- [Stereo-seq Human Colon: Segmented
+  Cells](https://giottosuite.com/dev/articles/stereoseq_human_colon_cells_giottodisk.md):
 - [Slide-seq Mouse
   brain](https://giottosuite.com/dev/articles/slideseq_mouse_brain.md):
 - [Open-ST Mouse

@@ -478,6 +478,8 @@ Functions to reduce dimensions.
   : create_screeplot
 - [`jackstrawPlot()`](https://giottosuite.com/dev/reference/jackstrawPlot.md)
   : jackstrawPlot
+- [`plotDimCovariateCor()`](https://giottosuite.com/dev/reference/plotDimCovariateCor.md)
+  : Correlate reduced dimensions with cell covariates
 - [`reduceDims()`](https://giottosuite.com/dev/reference/reduceDims.md)
   : Run dimension reduction method
 - [`runNMF()`](https://giottosuite.com/dev/reference/runNMF.md) : Run
@@ -550,6 +552,8 @@ Functions to cluster cells.
   : Projection of cluster labels
 - [`doGiottoClustree()`](https://giottosuite.com/dev/reference/doGiottoClustree.md)
   : doGiottoClustree
+- [`sweepClusterK()`](https://giottosuite.com/dev/reference/sweepClusterK.md)
+  : Sweep a range of cluster numbers
 - [`LeidenIgraphClusParam-class`](https://giottosuite.com/dev/reference/LeidenIgraphClusParam-class.md)
   [`LeidenIgraphClusParam`](https://giottosuite.com/dev/reference/LeidenIgraphClusParam-class.md)
   : Leiden Clustering

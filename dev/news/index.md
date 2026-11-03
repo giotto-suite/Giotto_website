@@ -24,6 +24,19 @@ Downstream packages that stream PAGE (GiottoDisk) should require
   `min_score` or above a `max_padj`, and with `return_gobject = TRUE`
   writes the assignment to the cell metadata as
   `<enrichment_name>_type`.
+- [`plotDimCovariateCor()`](https://giottosuite.com/dev/reference/plotDimCovariateCor.md)
+  correlates each component of a linear reduction (PCA, NMF, Harmony,
+  LSI) with numeric cell covariates such as sequencing depth, as a bar
+  per component for one covariate or a heatmap for several, to show
+  whether a component tracks a technical variable before it is used
+  downstream.
+- [`sweepClusterK()`](https://giottosuite.com/dev/reference/sweepClusterK.md)
+  scores a partition at each k over a range (silhouette, within-cluster
+  sum of squares, gap statistic), so the number of clusters is chosen
+  from the data. It reads a linear reduction or a spatial enrichment
+  (for niches) from the giotto object, or takes a matrix, a `dist`, or a
+  `spatialCoexpression(return_gobject = FALSE)` result, whose own tree
+  it cuts to choose `n_modules`.
 
 ### breaking changes
 
@@ -414,9 +427,9 @@ too, and will ship from there under that version.
 
 - **[`runIntegratedUMAP()`](https://giottosuite.com/dev/reference/runIntegratedUMAP.md)
   built its embedding on the wrong graph.** It passed
-  [`dbscan::kNN()`](http://michael.hahsler.net/dbscan/reference/kNN.md)
+  [`dbscan::kNN()`](https://michael.hahsler.net/dbscan/reference/kNN.html)
   output to uwot as `nn_method` unchanged, but
-  [`dbscan::kNN()`](http://michael.hahsler.net/dbscan/reference/kNN.md)
+  [`dbscan::kNN()`](https://michael.hahsler.net/dbscan/reference/kNN.html)
   removes self-matches while uwot requires each cell to be its own first
   neighbour and drops column 1 when fitting the local connectivity
   offset. The integrated UMAP was therefore built from `k - 1`

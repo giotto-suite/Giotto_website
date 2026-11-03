@@ -77,7 +77,7 @@ giotto object with new clusters appended to cell metadata
 ## Details
 
 See
-[`sNNclust`](http://michael.hahsler.net/dbscan/reference/sNNclust.md)
+[`sNNclust`](https://michael.hahsler.net/dbscan/reference/sNNclust.html)
 from dbscan package
 
 ## Examples
