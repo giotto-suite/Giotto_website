@@ -31,7 +31,7 @@ project, clusters them, and names the clusters with a cluster tree. It then
 sums the 0.5 µm spots into hexagonal bins of about 10 and 40 cells and finds
 larger spatial domains in two ways: by clustering the bins' expression, and by
 grouping the bins on their mix of cell types. The whole tutorial runs in about
-5.5 minutes with 8 parallel workers;
+6.5 minutes with 8 parallel workers;
 [Run time and memory](#run-time-and-memory) shows the time and memory of each
 step.
 
@@ -729,37 +729,45 @@ spots the cells were built from and analyzed with the same functions.
 ## Read the spots
 
 The cellbin GEF holds counts per cell only. The spots are in the tissue GEF,
-which the reader for cells can also load: `importStereoSeq()` returns a reader
-whose `load_binpoints()` reads the spots, one point per spot with its gene
-counts. `setGiotto()` adds them to the object as the `rna` features and
-writes them to the project directory. This is the largest step of the
-tutorial: the 70 million gene counts of 21.7 million spots are read into memory once before they are
-written, which peaks at about 28 GB here.
+which the reader for cells can also load. Given the project as `backend`,
+`importStereoSeq()` returns a disk reader whose `load_binpoints()` streams the
+spots into the project directory: their gene counts into an expression store
+and one point per spot into a tiled point store. `setGiotto()` then adds them
+to the object as the `rna` features.
+
+This is the largest step of the tutorial, 70 million gene counts on 21.7
+million spots. The read works in batches sized from the free memory: by
+default it may take a quarter of it, which on a large machine means reading
+everything in one batch. `options(giottodisk.gef_batch_rows = 5e6)` caps the
+batch at 5 million records.
 
 ```{r read-spots, message = FALSE, warning = FALSE, eval = FALSE}
-reader <- importStereoSeq(data_dir, type = "cell", gef_type = "adjusted_cellbin")
+reader <- importStereoSeq(data_dir,
+    type = "cell",
+    gef_type = "adjusted_cellbin",
+    backend = gdsrc # a disk reader: the spots stream into the project
+)
 spots <- reader$load_binpoints()
 spots
 
 g <- setGiotto(g, spots, verbose = FALSE)
-# the spots are on disk now; free the in-memory copy
-rm(spots)
-invisible(gc())
 ```
 
 ```
 An object of class giottoBinPoints
 feat_type : "rna"
-dimensions : 70502825, 2
-compact    : TRUE
-   feat_ID count
-    <char> <num>
-1:    BTG1     1
-2:    MAOA     1
-3:    MCM9     1
-4:  MT-ND2     1
-5:   SF3B2     1
-6:  SLC7A1     1
+bins     : 21,666,942
+features : 39,947
+<parquetGeomTileStore>
+path     : path/to/stereoseq_colon_cells_project/artifacts/[...]/data
+geomtype : points
+extent   : 2067, 11308, -12732, -2225 (xmin, xmax, ymin, ymax)
+columns  : feat_ID [row_index, source_id, x_index, y_index, geom, tile_index (internal)]
+nrows    : 21,666,942
+tiles    : 29
+
+lazy ops:
+<none>
 ```
 
 The GEF records the distance between spots (`resolution`, in nm), so the grid
@@ -1160,9 +1168,12 @@ How long each section of this tutorial took and the most memory it used, on a
 run of this tutorial on an Apple M2 Ultra with 24 cores and 192 GB of memory,
 with the 8 workers set in [Setup](#setup). The data were read from an external
 SSD and the project written to the internal disk. The whole tutorial took
-about 5.5 minutes. The cell analysis peaks at 4.8 GB while reading the data;
-reading the spots for the hexagonal bins raises the peak to 28 GB, and the
-memory R takes for it stays with the session until it ends.
+about 6.5 minutes. The cell analysis peaks at 4.6 GB while reading the data.
+Streaming the spots into the project raises the peak to 21 GB, because by
+default that read may take a quarter of the free memory, here about 120 GB.
+With `options(giottodisk.gef_batch_rows = 5e6)` the R session stayed at about
+12 GB for the same read, 20 seconds slower. The memory R takes stays with the
+session until it ends.
 
 ```{r runcost-fig, echo = FALSE, out.width = "100%"}
 knitr::include_graphics("images/stereoseq_human_colon_cells_giottodisk/26_runcost.png")
@@ -1177,17 +1188,17 @@ highest value during that section. Fewer workers in [Setup](#setup) lower it.
 
 | Section | Time | Memory |
 |:--------|-----:|-----:|
-| Read the data | 22 s | 4.8 GB |
-| Save the first snapshot | 2 s | 2.9 GB |
-| QC and filtering | 4 s | 3.1 GB |
-| Normalize, select features | 2 s | 3.0 GB |
-| Dimension reduction | 10 s | 3.1 GB |
-| Clustering | 43 s | 4.2 GB |
-| Cluster tree and markers | 35 s | 3.5 GB |
-| Results | 19 s | 3.6 GB |
-| Read the spots | 2.0 min | 28.0 GB |
-| Hexbin size and aggregate | 19 s | 21.4 GB |
-| Hexbin domains and niches | 47 s | 26.0 GB |
+| Read the data | 20 s | 4.6 GB |
+| Save the first snapshot | 1 s | 2.8 GB |
+| QC and filtering | 3 s | 3.0 GB |
+| Normalize, select features | 2 s | 2.9 GB |
+| Dimension reduction | 12 s | 3.1 GB |
+| Clustering | 39 s | 3.5 GB |
+| Cluster tree and markers | 32 s | 3.4 GB |
+| Results | 17 s | 3.5 GB |
+| Read the spots | 2.4 min | 20.8 GB |
+| Hexbin size and aggregate | 24 s | 22.5 GB |
+| Hexbin domains and niches | 1.4 min | 22.5 GB |
 
 </details>
 
