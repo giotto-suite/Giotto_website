@@ -1,6 +1,27 @@
 # Changelog
 
-## Giotto 4.3.5 (in development)
+## Giotto 4.3.6 (in development)
+
+Requires GiottoClass 0.7.27.
+
+### changes
+
+- Stereo-seq bin1 points (`load_binpoints = TRUE`) carry the DNB
+  geometry and `bin_overlap = "area"`:
+  [`calculateOverlap()`](https://giotto-suite.github.io/GiottoClass/reference/calculateOverlap.html)
+  gives each DNB to the cell outline that covers it, as the cellbin GEF
+  counts it, instead of testing the DNB’s corner point.
+  `calculateOverlap(bin_overlap = "inside")` keeps the old assignment.
+- The Stereo-seq cellbin and
+  [`readPolygonVizgenParquet()`](https://giottosuite.com/dev/reference/readPolygonVizgenParquet.md)
+  polygons are built with
+  [`createGiottoPolygon()`](https://giotto-suite.github.io/GiottoClass/reference/createGiottoPolygon.html),
+  so invalid outlines are repaired as in every other reader (option
+  `giotto.make_valid`).
+  [`readPolygonVizgenParquet()`](https://giottosuite.com/dev/reference/readPolygonVizgenParquet.md)
+  no longer returns `NULL`s when `calc_centroids = FALSE`.
+
+## Giotto 4.3.5
 
 Downstream packages that stream PAGE (GiottoDisk) should require
 `Giotto (>= 4.3.5)` so both backends compute the same scores.
@@ -103,6 +124,10 @@ Downstream packages that stream PAGE (GiottoDisk) should require
 
 ### bug fixes
 
+- [`createGiottoVisiumHDObjectCell()`](https://giottosuite.com/dev/reference/createGiottoVisiumHDObjectCell.md)
+  loads cell and nucleus polygons from a direct `geojson_path`, and with
+  `micron = TRUE` finds the scale factors in the segmented outputs
+  folder; both stopped with an error before.
 - [`findCellTypesFromEnrichment()`](https://giottosuite.com/dev/reference/findCellTypesFromEnrichment.md)
   defaults to the `"PAGE"` enrichment that
   [`runPAGEEnrich()`](https://giottosuite.com/dev/reference/enrichment_PAGE.md)

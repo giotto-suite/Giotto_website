@@ -61,7 +61,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.5</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -214,7 +214,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="4.3.5" id="giotto-435-in-development">Giotto 4.3.5 (in development)<a class="anchor" aria-label="anchor" href="#giotto-435-in-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="4.3.6" id="giotto-436-in-development">Giotto 4.3.6 (in development)<a class="anchor" aria-label="anchor" href="#giotto-436-in-development"></a></h2>
+<p>Requires GiottoClass 0.7.27.</p>
+<div class="section level3">
+<h3 id="changes-4-3-6">changes<a class="anchor" aria-label="anchor" href="#changes-4-3-6"></a></h3>
+<ul><li>Stereo-seq bin1 points (<code>load_binpoints = TRUE</code>) carry the DNB geometry and <code>bin_overlap = "area"</code>: <code><a href="https://giotto-suite.github.io/GiottoClass/reference/calculateOverlap.html" class="external-link">calculateOverlap()</a></code> gives each DNB to the cell outline that covers it, as the cellbin GEF counts it, instead of testing the DNB’s corner point. <code>calculateOverlap(bin_overlap = "inside")</code> keeps the old assignment.</li>
+<li>The Stereo-seq cellbin and <code><a href="../reference/readPolygonVizgenParquet.html">readPolygonVizgenParquet()</a></code> polygons are built with <code><a href="https://giotto-suite.github.io/GiottoClass/reference/createGiottoPolygon.html" class="external-link">createGiottoPolygon()</a></code>, so invalid outlines are repaired as in every other reader (option <code>giotto.make_valid</code>). <code><a href="../reference/readPolygonVizgenParquet.html">readPolygonVizgenParquet()</a></code> no longer returns <code>NULL</code>s when <code>calc_centroids = FALSE</code>.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="4.3.5" id="giotto-435">Giotto 4.3.5<a class="anchor" aria-label="anchor" href="#giotto-435"></a></h2>
 <p>Downstream packages that stream PAGE (GiottoDisk) should require <code>Giotto (&gt;= 4.3.5)</code> so both backends compute the same scores.</p>
 <div class="section level3">
 <h3 id="new-4-3-5">new<a class="anchor" aria-label="anchor" href="#new-4-3-5"></a></h3>
@@ -252,6 +261,8 @@
 <div class="section level3">
 <h3 id="bug-fixes-4-3-5">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-4-3-5"></a></h3>
 <ul><li>
+<code><a href="../reference/createGiottoVisiumHDObjectCell.html">createGiottoVisiumHDObjectCell()</a></code> loads cell and nucleus polygons from a direct <code>geojson_path</code>, and with <code>micron = TRUE</code> finds the scale factors in the segmented outputs folder; both stopped with an error before.</li>
+<li>
 <code><a href="../reference/findCellTypesFromEnrichment.html">findCellTypesFromEnrichment()</a></code> defaults to the <code>"PAGE"</code> enrichment that <code><a href="../reference/enrichment_PAGE.html">runPAGEEnrich()</a></code> stores (it looked for <code>"PAGE_z_score"</code>), and gives ties to the first type instead of a random one.</li>
 <li>Xenium and Atera readers: genomic control probes named <code>Intergenic_Region_*</code> (Atera WTA panels) and <code>DeprecatedCodeword_*</code> features were not matched by the default <code>split_keyword</code> and were loaded as <code>rna</code> transcripts, so aggregation added them to the gene expression. The defaults now put them in <code>GenomicControl</code> and a new <code>DeprecatedCodeword</code> feature type, matching how the 10x expression matrix is split.</li>
 <li>Xenium and Atera readers: with the default <code>load_images = "focus"</code>, an output folder without <code>morphology_focus/</code> loaded everything else and then failed with “invalid ‘path’ argument”. The focus images are now skipped with a warning.</li>
