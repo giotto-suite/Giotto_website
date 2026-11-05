@@ -6,7 +6,7 @@ Uses
 
 Tutorials built on a Giotto Suite extension package.
 
-GiottoDisk 13
+GiottoDisk 14
 
 GiottoLens 0
 
@@ -14,7 +14,7 @@ Category
 
 Spatial in situ transcriptomics 18
 
-Spatial sequencing transcriptomics 18
+Spatial sequencing transcriptomics 19
 
 Spatial proteomics 1
 
@@ -24,7 +24,7 @@ Single-cell RNA-seq 3
 
 Dataset size
 
-full 40
+full 41
 
 mini 3
 
@@ -54,7 +54,7 @@ Visium CytAssist 2
 
 Visium HD 5
 
-Stereo-seq 6
+Stereo-seq 7
 
 Slide-seq 1
 
@@ -80,13 +80,13 @@ Atera WTA, CosMx WTx, Visium.
 
 500–5,000 4
 
-5,000+ 30
+5,000+ 31
 
 Species
 
 human 22
 
-mouse 19
+mouse 20
 
 rhesus macaque 1
 
@@ -98,7 +98,7 @@ breast 3
 
 colon 9
 
-embryo 2
+embryo 3
 
 eye 1
 
@@ -124,7 +124,7 @@ normal 23
 
 Modality
 
-RNA 42
+RNA 43
 
 protein 4
 
@@ -137,7 +137,7 @@ multi-cell spots and bins.
 
 subcellular 8
 
-single cell 21
+single cell 22
 
 spot 15
 
@@ -252,6 +252,9 @@ cell](https://giottosuite.com/dev/articles/stereoseq_testis_own_polygons_giottod
 Cells Stereo-seq · human · colon · normal GiottoDiskRNA5,000+
 genessingle
 cell](https://giottosuite.com/dev/articles/stereoseq_human_colon_cells_giottodisk.md)
+[Spatial sequencing transcriptomics Stereo-seq Mouse Embryo: Segmented
+Cells Stereo-seq · mouse · embryo GiottoDiskRNA5,000+ genessingle
+cell](https://giottosuite.com/dev/articles/stereoseq_mouse_embryo_cells_giottodisk.md)
 [Spatial sequencing transcriptomics Slide-seq Mouse brain Slide-seq ·
 mouse · brain · normal RNA5,000+
 genesspot](https://giottosuite.com/dev/articles/slideseq_mouse_brain.md)
