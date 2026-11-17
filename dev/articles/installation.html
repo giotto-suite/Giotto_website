@@ -257,151 +257,103 @@
 
     
     
-<p>If you prefer to test Giotto Suite first without installing
-everything, check the tutorials for using Giotto Suite with our <a href="https://giotto-suite.github.io/Giotto_website/articles/docker.html" class="external-link">Docker</a>
-and <a href="https://giotto-suite.github.io/Giotto_website/articles/singularity.html" class="external-link">Singularity</a>
-containers.</p>
+<p>Giotto Suite needs R 4.4.1 or later. Python is optional.</p>
 <div class="section level2">
-<h2 id="prerequisite-packages">1. Prerequisite packages:<a class="anchor" aria-label="anchor" href="#prerequisite-packages"></a>
+<h2 id="install">Install<a class="anchor" aria-label="anchor" href="#install"></a>
 </h2>
-<p>When installing for the first time, it is recommended to first ensure
-that all pre-requisite software is available, and then install Giotto
-Suite using {pak}</p>
-<div class="section level3">
-<h3 id="basic-requirements">1.1 Basic requirements<a class="anchor" aria-label="anchor" href="#basic-requirements"></a>
-</h3>
-<ul>
-<li>Latest version of R (check <a href="https://cran.r-project.org" class="external-link uri">https://cran.r-project.org</a>)</li>
-<li>Python (&gt;= 3.6)</li>
-<li>Windows, MacOS or Linux specific installation tools for <a href="https://support.posit.co/hc/en-us/articles/200486498-Package-Development-Prerequisites" class="external-link">Posit</a>
-(previously RStudio)</li>
-</ul>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"GiottoUtils"</span>,</span>
+<span>    repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://giotto-suite.r-universe.dev"</span>, <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu">GiottoUtils</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoUtils/reference/suite_install.html" class="external-link">suite_install</a></span><span class="op">(</span>ref <span class="op">=</span> <span class="st">"disk_full"</span>, install_arrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>This installs Giotto, GiottoDisk for large datasets, and the optional
+speed-ups (GiottoKernels, GiottoIngest, SedonaDB, smotif and others).
+The first run builds <em>arrow</em> with zstd support from source, which
+can take a while.</p>
 </div>
-<div class="section level3">
-<h3 id="terra-installation">1.2 {terra} installation<a class="anchor" aria-label="anchor" href="#terra-installation"></a>
-</h3>
-<p>{terra} is a major dependency of Giotto Suite. It may have some
-additional steps when installing depending on which system you are on.
-Please see the {terra} <a href="https://github.com/rspatial/terra" class="external-link">repo</a> for up-to-date
-specifics. Installations of the CRAN release on Windows and Mac are
-expected to be simple, only requiring the code below.</p>
-<p>For Linux, there are several prerequisite installs:</p>
-<pre><code>GDAL (&gt;= 2.2.3), GEOS (&gt;= 3.4.0), PROJ (&gt;= 4.9.3), sqlite3</code></pre>
-<p>On our AlmaLinux 8 HPC, the following versions have been working
-well:</p>
-<ul>
-<li><p>gdal/3.6.4</p></li>
-<li><p>geos/3.11.1</p></li>
-<li><p>proj/9.2.0</p></li>
-<li><p>sqlite3/3.37.2</p></li>
-</ul>
+<div class="section level2">
+<h2 id="more-options">More options<a class="anchor" aria-label="anchor" href="#more-options"></a>
+</h2>
+<details><summary><strong>Lighter install: Giotto and GiottoDisk only</strong>
+</summary><p>Skips the optional speed-ups. They can be added later, one by
+one.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"terra"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="matrix-installation">1.3 {Matrix} installation<a class="anchor" aria-label="anchor" href="#matrix-installation"></a>
-</h3>
-<p>(Only important for R versions lower than 4.4.0)</p>
-<p>{Giotto} requires {Matrix} 1.6-2 or greater, but when installing
-{Giotto} with {pak} on an <em>R</em> version lower than 4.4.0, the
-installation can fail asking for R 4.5 which doesn’t exist yet. We can
-solve this by installing the 1.6-5 version directly by un-commenting and
-running the line below.</p>
+<code class="sourceCode R"><span><span class="fu">GiottoUtils</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoUtils/reference/suite_install.html" class="external-link">suite_install</a></span><span class="op">(</span><span class="st">"GiottoDisk"</span>, install_arrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+</details><details><summary><strong>Release version</strong>
+</summary><p>The current release of Giotto. GiottoDisk is not part of a release
+yet and will be added in a future one.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># devtools::install_version("Matrix", version = "1.6-5")</span></span></code></pre></div>
-<p><br></p>
-<p><strong>After these are installed, you should be able to proceed with
-one of the installation methods below for Giotto Suite.</strong></p>
-</div>
-</div>
-<div class="section level2">
-<h2 id="giotto-suite-installation">2. Giotto Suite installation<a class="anchor" aria-label="anchor" href="#giotto-suite-installation"></a>
-</h2>
-<div class="section level3">
-<h3 id="option1-pak-installation-of-giotto-suite">[<strong>Option1</strong>] {pak} installation of Giotto Suite<a class="anchor" aria-label="anchor" href="#option1-pak-installation-of-giotto-suite"></a>
-</h3>
-<p>This method can only be used to install the currently released
-version of Giotto.</p>
-<p>For installation of another branch (such as dev), see options 2 or
-3.</p>
-<p>To install the currently released version of Giotto in a single
-step:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"pak"</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/Giotto"</span><span class="op">)</span></span></code></pre></div>
-<p>This should automatically install all the Giotto dependencies and
-other Giotto module packages (main branch).</p>
-<hr>
-</div>
-<div class="section level3">
-<h3 id="option2-suite_install-convenient-installer">[<strong>Option2</strong>] <code>suite_install()</code> convenient
-installer<a class="anchor" aria-label="anchor" href="#option2-suite_install-convenient-installer"></a>
-</h3>
-<p>First ensure that you have {devools} and {GiottoUtils} installed:</p>
+</details><details><summary><strong>Other branches</strong>
+</summary><p><code>suite_install()</code> installs the Giotto Suite modules in the
+right order from a chosen set of branches, set with
+<code>ref</code>:</p>
+<table class="table">
+<thead><tr class="header">
+<th><code>ref</code></th>
+<th>Installs</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>
+<code>"main"</code> (default)</td>
+<td>the release branches</td>
+</tr>
+<tr class="even">
+<td><code>"dev"</code></td>
+<td>the development branches</td>
+</tr>
+<tr class="odd">
+<td><code>"disk"</code></td>
+<td>the branches GiottoDisk builds against</td>
+</tr>
+<tr class="even">
+<td><code>"disk_full"</code></td>
+<td>
+<code>"disk"</code>, plus GiottoLens and the optional speed-ups</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">GiottoUtils</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoUtils/reference/suite_install.html" class="external-link">suite_install</a></span><span class="op">(</span>ref <span class="op">=</span> <span class="st">"dev"</span><span class="op">)</span></span></code></pre></div>
+<p>Add <code>dry_run = TRUE</code> to print the install commands without
+running them. See the <a href="https://giotto-suite.github.io/GiottoUtils/reference/suite_install.html" class="external-link"><code>suite_install()</code>
+reference</a> for all options.</p>
+</details><details><summary><strong>System requirements</strong>
+</summary><ul>
+<li>
+<strong>Build tools:</strong> packages installed from GitHub may
+need the <a href="https://support.posit.co/hc/en-us/articles/200486498-Package-Development-Prerequisites" class="external-link">Posit
+package development prerequisites</a> for your system.</li>
+<li>
+<strong>{terra} on Linux:</strong> needs GDAL (&gt;= 2.2.3), GEOS
+(&gt;= 3.4.0), PROJ (&gt;= 4.9.3) and sqlite3. On our AlmaLinux 8 HPC,
+gdal 3.6.4, geos 3.11.1, proj 9.2.0 and sqlite3 3.37.2 work well. See
+the <a href="https://github.com/rspatial/terra" class="external-link">{terra} repository</a>
+for details. On Windows and macOS,
+<code>install.packages("terra")</code> is enough.</li>
+<li>
+<strong>R older than 4.4.1:</strong> the release install
+(<code>ref = "main"</code>) switches to the R 4.4.0 branches
+automatically. On R older than 4.4.0, install {Matrix} 1.6-5 first:
+<code>remotes::install_version("Matrix", version = "1.6-5")</code>.</li>
+</ul></details><details><summary><strong>Python features</strong>
+</summary><p>Most of Giotto runs without Python. A few functions use Python
+packages, for example Leiden clustering through Python, cell
+segmentation and image registration. To use them, create Giotto’s Python
+environment once:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"giotto-suite/GiottoUtils"</span><span class="op">)</span> <span class="co"># you can add the `@branch` desired tag here</span></span></code></pre></div>
-<p>Then you can run <code>suite_install()</code> with <code>ref</code>
-param pointing to the desired version of the package. Please see <a href="https://giotto-suite.github.io/GiottoUtils/reference/suite_install.html" class="external-link">here</a>
-for further info.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>GiottoUtils<span class="sc">::</span><span class="fu">suite_install</span>(<span class="at">ref =</span> ???)</span></code></pre></div>
-<hr>
-</div>
-<div class="section level3">
-<h3 id="option3-manual">[<strong>Option3</strong>] Manual<a class="anchor" aria-label="anchor" href="#option3-manual"></a>
-</h3>
-<p>Giotto Suite is a set of <a href="https://giotto-suite.github.io/Giotto_website/articles/ecosystem.html" class="external-link">modular
-packages</a> and {pak} tends to forcibly install the stable version
-despite dev versions with higher version numbers. This can make it
-difficult to install the dev branch.</p>
-<p>Instead, you can install dev branch versions by using
-<code>devtools::install_github()</code> alongside one of the following
-dev branch paths as shown below. Do not update other Giotto modules that
-should be installed from dev branch if prompted.</p>
-<p>Core module dev branchs:</p>
-<ul>
-<li><code>"giotto-suite/Giotto@suite_dev"</code></li>
-<li><code>"giotto-suite/GiottoVisuals@dev"</code></li>
-<li><code>"giotto-suite/GiottoClass@dev"</code></li>
-<li><code>"giotto-suite/GiottoUtils@dev"</code></li>
-</ul>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"devtools"</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"[dev branch path]"</span><span class="op">)</span></span></code></pre></div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="giotto-python-environment-installation">3. Giotto python environment installation<a class="anchor" aria-label="anchor" href="#giotto-python-environment-installation"></a>
-</h2>
-<p>Giotto uses some python packages through <em>reticulate</em>. A
-default python 3.10.2 environment named ‘giotto_env’ that covers
-Giotto’s commonly used python packages can be installed using
-<code><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment()</a></code>. This is just a convenient
-default installation and users are free to create their own preferred
-python environment(s) for use with Giotto.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giottosuite.com">Giotto</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="try-giotto-in-the-cloud">Try Giotto in the cloud<a class="anchor" aria-label="anchor" href="#try-giotto-in-the-cloud"></a>
-</h2>
-<p>You can also run analyses in Giotto on Terra.bio. Take a look on the
-<a href="https://giotto-suite.github.io/Giotto_website/articles/terra.html" class="external-link">Terra
-tutorial</a>.</p>
+<code class="sourceCode R"><span><span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>You can also point Giotto at an existing environment; see the <a href="configuration.html">configuration page</a>.</p>
+</details>
 </div>
 <div class="section level2">
 <h2 id="help">Help<a class="anchor" aria-label="anchor" href="#help"></a>
 </h2>
-<p>Encountering errors? See our <a href="https://giotto-suite.github.io/Giotto_website/articles/troubleshooting.html" class="external-link">Troubleshooting
-page</a> or post to an issue to the Giotto GitHub page <a href="https://github.com/giotto-suite/Giotto" class="external-link">here</a>. Please include
-the version numbers of R, Giotto, and the OS in use at the time of the
-issue.</p>
+<p>Running into errors? See the <a href="troubleshooting.html">troubleshooting page</a> or open an issue on
+<a href="https://github.com/giotto-suite/Giotto/issues" class="external-link">GitHub</a>.
+Please include your R, Giotto and operating system versions.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
