@@ -1,6 +1,6 @@
 ---
 title: "Installation"
-output: 
+output:
   html_document:
     number_sections: false
     toc: true
@@ -12,136 +12,104 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-If you prefer to test Giotto Suite first without installing everything, check the tutorials for using Giotto Suite with our [Docker](https://giotto-suite.github.io/Giotto_website/articles/docker.html) and [Singularity](https://giotto-suite.github.io/Giotto_website/articles/singularity.html) containers.
+Giotto Suite needs R 4.4.1 or later. Python is optional.
 
-# 1. Prerequisite packages:
-
-When installing for the first time, it is recommended to first ensure that all pre-requisite software is available, and then install Giotto Suite using {pak}
-
-## 1.1 Basic requirements
-
-- Latest version of R (check https://cran.r-project.org)
-- Python (\>= 3.6)
-- Windows, MacOS or Linux specific installation tools for [Posit](https://support.posit.co/hc/en-us/articles/200486498-Package-Development-Prerequisites) (previously RStudio)
-
-
-## 1.2 {terra} installation
-
-{terra} is a major dependency of Giotto Suite. It may have some additional steps when installing depending on which system you are on. Please see the {terra} [repo](https://github.com/rspatial/terra) for up-to-date specifics. Installations of the CRAN release on Windows and Mac are expected to be simple, only requiring the code below.
-
-For Linux, there are several prerequisite installs:
-
-```         
-GDAL (>= 2.2.3), GEOS (>= 3.4.0), PROJ (>= 4.9.3), sqlite3
-```
-
-On our AlmaLinux 8 HPC, the following versions have been working well:
-
--   gdal/3.6.4
-
--   geos/3.11.1
-
--   proj/9.2.0
-
--   sqlite3/3.37.2
+# Install
 
 ```{r, eval=FALSE}
-install.packages("terra")
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org")
+)
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
 ```
 
+This installs Giotto, GiottoDisk for large datasets, and the optional speed-ups
+(GiottoKernels, GiottoIngest, SedonaDB, smotif and others). The first run builds
+*arrow* with zstd support from source, which can take a while.
 
-## 1.3 {Matrix} installation
+# More options
 
-(Only important for R versions lower than 4.4.0)
+<details>
+<summary><strong>Lighter install: Giotto and GiottoDisk only</strong></summary>
 
-{Giotto} requires {Matrix} 1.6-2 or greater, but when installing {Giotto} with {pak} on an *R* version lower than 4.4.0, the installation can fail asking for R 4.5 which doesn't exist yet. We can solve this by installing the 1.6-5 version directly by un-commenting and running the line below.
+Skips the optional speed-ups. They can be added later, one by one.
 
 ```{r, eval=FALSE}
-# devtools::install_version("Matrix", version = "1.6-5")
+GiottoUtils::suite_install("GiottoDisk", install_arrow = TRUE)
 ```
 
-<br>
+</details>
 
-**After these are installed, you should be able to proceed with one of the installation methods below for Giotto Suite.**
+<details>
+<summary><strong>Release version</strong></summary>
 
+The current release of Giotto. GiottoDisk is not part of a release yet and will
+be added in a future one.
 
-
-# 2. Giotto Suite installation
-
-## [**Option1**] {pak} installation of Giotto Suite
-
-This method can only be used to install the currently released version of Giotto.
-
-For installation of another branch (such as dev), see options 2 or 3.
-
-To install the currently released version of Giotto in a single step:
 ```{r, eval=FALSE}
-if(!"pak" %in% installed.packages()) {
-  install.packages("pak")
-}
-
+install.packages("pak")
 pak::pkg_install("giotto-suite/Giotto")
 ```
 
-This should automatically install all the Giotto dependencies and other Giotto module packages (main branch).
+</details>
 
-<hr>
+<details>
+<summary><strong>Other branches</strong></summary>
 
-## [**Option2**] `suite_install()` convenient installer
+`suite_install()` installs the Giotto Suite modules in the right order from a
+chosen set of branches, set with `ref`:
 
-First ensure that you have {devools} and {GiottoUtils} installed:
-
-```{r, eval=FALSE}
-devtools::install_github("giotto-suite/GiottoUtils") # you can add the `@branch` desired tag here
-```
-
-Then you can run `suite_install()` with `ref` param pointing to the desired version of the package. Please see [here](https://giotto-suite.github.io/GiottoUtils/reference/suite_install.html) for further info.
-
-```{r, eval=FALSE}
-GiottoUtils::suite_install(ref = ???)
-```
-
-<hr>
-
-## [**Option3**] Manual
-
-Giotto Suite is a set of [modular packages](https://giotto-suite.github.io/Giotto_website/articles/ecosystem.html) and {pak} tends to forcibly install the stable version despite dev versions with higher version numbers. This can make it difficult to install the dev branch.
-
-Instead, you can install dev branch versions by using `devtools::install_github()` alongside one of the following dev branch paths as shown below. Do not update other Giotto modules that should be installed from dev branch if prompted.
-
-Core module dev branchs:
-
-- `"giotto-suite/Giotto@suite_dev"`
-- `"giotto-suite/GiottoVisuals@dev"`
-- `"giotto-suite/GiottoClass@dev"`
-- `"giotto-suite/GiottoUtils@dev"`
+| `ref` | Installs |
+|---|---|
+| `"main"` (default) | the release branches |
+| `"dev"` | the development branches |
+| `"disk"` | the branches GiottoDisk builds against |
+| `"disk_full"` | `"disk"`, plus GiottoLens and the optional speed-ups |
 
 ```{r, eval=FALSE}
-if(!"devtools" %in% installed.packages()) {
-  install.packages("devtools")
-}
-
-devtools::install_github("[dev branch path]")
+GiottoUtils::suite_install(ref = "dev")
 ```
 
-# 3. Giotto python environment installation
+Add `dry_run = TRUE` to print the install commands without running them. See
+the [`suite_install()` reference](https://giotto-suite.github.io/GiottoUtils/reference/suite_install.html)
+for all options.
 
-Giotto uses some python packages through _reticulate_. A default python 3.10.2 environment named 'giotto_env' that covers Giotto's commonly used python packages can be installed using `installGiottoEnvironment()`. This is just a convenient default installation and users are free to create their own preferred python environment(s) for use with Giotto.
+</details>
+
+<details>
+<summary><strong>System requirements</strong></summary>
+
+- **Build tools:** packages installed from GitHub may need the
+  [Posit package development prerequisites](https://support.posit.co/hc/en-us/articles/200486498-Package-Development-Prerequisites)
+  for your system.
+- **{terra} on Linux:** needs GDAL (>= 2.2.3), GEOS (>= 3.4.0), PROJ (>= 4.9.3)
+  and sqlite3. On our AlmaLinux 8 HPC, gdal 3.6.4, geos 3.11.1, proj 9.2.0 and
+  sqlite3 3.37.2 work well. See the [{terra} repository](https://github.com/rspatial/terra)
+  for details. On Windows and macOS, `install.packages("terra")` is enough.
+- **R older than 4.4.1:** the release install (`ref = "main"`) switches to the
+  R 4.4.0 branches automatically. On R older than 4.4.0, install {Matrix} 1.6-5 first:
+  `remotes::install_version("Matrix", version = "1.6-5")`.
+
+</details>
+
+<details>
+<summary><strong>Python features</strong></summary>
+
+Most of Giotto runs without Python. A few functions use Python packages, for
+example Leiden clustering through Python, cell segmentation and image
+registration. To use them, create Giotto's Python environment once:
 
 ```{r, eval=FALSE}
-library(Giotto)
-installGiottoEnvironment()
+Giotto::installGiottoEnvironment()
 ```
 
+You can also point Giotto at an existing environment; see the
+[configuration page](configuration.html).
 
-# Try Giotto in the cloud
-
-You can also run analyses in Giotto on Terra.bio. Take a look on the [Terra tutorial](https://giotto-suite.github.io/Giotto_website/articles/terra.html).
+</details>
 
 # Help
 
-Encountering errors? See our [Troubleshooting page](https://giotto-suite.github.io/Giotto_website/articles/troubleshooting.html) or post to an issue to the Giotto GitHub page [here](https://github.com/giotto-suite/Giotto). Please include the version numbers of R, Giotto, and the OS in use at the time of the issue.
-
-
-
-
+Running into errors? See the [troubleshooting page](troubleshooting.html) or
+open an issue on [GitHub](https://github.com/giotto-suite/Giotto/issues). Please
+include your R, Giotto and operating system versions.

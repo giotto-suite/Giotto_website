@@ -1,7 +1,4 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-<!-- This line is from RStudio -->
-
 # Giotto Suite <img src="man/figures/GiottoLogo.png" align="right" alt="" width="160" />
 
 <!-- badges: start -->
@@ -11,14 +8,19 @@
 [![R-CMD-check](https://github.com/giotto-suite/Giotto/actions/workflows/main_check.yaml/badge.svg?branch=suite)](https://github.com/giotto-suite/Giotto/actions/workflows/main_check.yaml)
 <!-- badges: end -->
 
-Giotto Suite is a major upgrade to the Giotto package that provides tools to process, analyze and visualize **spatial multi-omics data at all scales and multiple resolutions**. The underlying framework is generalizable to virtually all current and emerging spatial technologies. Our Giotto Suite prototype pipeline is generally applicable on various different datasets, such as those created by state-of-the-art spatial technologies, including *in situ* hybridization, sequencing, and imaging-based multiplexing/proteomics. These technologies differ in terms of resolution (subcellular, single cell or multiple cells), spatial dimension (2D vs 3D), molecular modality (protein, RNA, DNA, …), and throughput (number of cells and analytes).
+Giotto Suite processes, analyzes and visualizes **spatial multi-omics data at all scales and resolutions**. It works with virtually any spatial technology: *in situ* hybridization, sequencing and imaging-based proteomics, in 2D or 3D, from subcellular to multi-cell resolution.
+
+- **Scalable with GiottoDisk:** datasets larger than memory stay on disk, from ingest to analysis. See the [ecosystem](articles/ecosystem.html).
+- **Interactive with GiottoLens:** explore every cell and transcript at full resolution, and send selections back to R for analysis. See [GiottoLens](articles/giottolens.html).
+- **Faster spatial analysis:** optional compiled backends speed up matrix maths, spatial joins and cell type motif counting.
+- **Interoperability (work in progress):** move data between Giotto and AnnData, Seurat, SpatialExperiment and SpatialData.
 
 ## Start here
 
 <div class="gallery">
 <a class="tile" href="articles/installation.html">
 <strong>1 · Install</strong>
-Set up Giotto Suite and its Python environment.
+Install Giotto Suite in a few lines.
 </a>
 <a class="tile" href="articles/general_workflow.html">
 <strong>2 · Learn the workflow</strong>
@@ -28,40 +30,29 @@ The end-to-end path from raw data to a spatial result.
 <strong>3 · Find your platform</strong>
 Worked examples for Xenium, CosMx, Visium, Stereo-seq and more.
 </a>
+<a class="tile" href="articles/tutorials.html">
+<strong>4 · Find your analysis</strong>
+Tutorials for each analysis step, filterable by topic.
+</a>
 <a class="tile" href="reference/index.html">
-<strong>4 · Look up a function</strong>
+<strong>5 · Look up a function</strong>
 Every Giotto function, grouped by purpose.
 </a>
 </div>
 
 New to spatial omics? Start with the [Giotto object](articles/object_creation.html) — it is the structure everything else operates on.
 
-## Installation
+## More to explore
 
-### Local installation
-
-To install Giotto suite, please see our [installation page](articles/installation.html)
-
-Visit the Giotto [Discussions](https://github.com/giotto-suite/Giotto/discussions) page for more information.
-
-### Containers
-
-If you prefer to skip the installation process, check the tutorials for using Giotto Suite with our [Docker](articles/docker.html) and [Singularity](articles/singularity.html) containers.
-
-## Finding your way around
-
-- **[Get started](articles/index.html#get-started):** the Giotto object, the Giotto ecosystem, configuration, and installation FAQs.
-- **[Documentation](reference/index.html):** all Giotto functions grouped by their purpose (helpers, getters & setters, visualization, …).
-- **[Examples](articles/datasets.html):** end-to-end examples for different technologies and datasets, filterable by platform, species, tissue and more.
-- **[Tutorials](articles/tutorials.html):** working with Giotto — analysis, visualization, interoperability, and more, filterable by topic.
 - **[News](news/index.html):** the changelog for every Giotto release, plus recordings of previous presentations.
 - **[Contributing](articles/index.html#contributing):** submitting a pull request, the Giotto code style, writing tutorials for this website.
+- **[Discussions](https://github.com/giotto-suite/Giotto/discussions):** questions and ideas from the Giotto community.
 
 ## Giotto Workshop 2024
 
-Take a look at our 3-day workshop recordings. The materials in bookdown format are available [here](https://giotto-suite.github.io/giotto_workshop_2024/)
+Recordings of our 3-day workshop, with the [materials in bookdown format](https://giotto-suite.github.io/giotto_workshop_2024/).
 
-[![](articles/images/presentations/giottoworkshop2024.png){.align-center}](https://www.youtube.com/playlist?list=PL48rCHQx71I1ZptEotKvvCYRliGrqVXLW)
+[![Giotto Workshop 2024 recordings](articles/images/presentations/giottoworkshop2024.png){.align-center}](https://www.youtube.com/playlist?list=PL48rCHQx71I1ZptEotKvvCYRliGrqVXLW)
 
 
 ## References
