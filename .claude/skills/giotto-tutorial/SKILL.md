@@ -48,15 +48,15 @@ review step.
 
 4. **End with a session-info section**, as existing tutorials do.
 
-5. **Register it in `_pkgdown.yml`.** Two entries, and they are *not* equally important:
+5. **Register it in `_pkgdown.yml`.** Two entries:
 
    - **`articles:` — required.** Add the slug to the `contents:` list of the section it
      belongs to. pkgdown hard-fails the whole build with "Vignettes missing from index"
      without this, producing nothing.
-   - **`navbar:` — optional.** A menu entry pointing at `articles/<slug>.html` makes it
-     directly reachable. Skip it for long-tail material: 43 of the 101 tutorials have no
-     navbar entry and are reached through `articles/index.html`, which is the documented
-     design.
+   - **`navbar:` — expected for new tutorials.** Add a menu entry pointing at
+     `articles/<slug>.html` in the menu it belongs to. The build does not enforce this
+     (`check-site.R` only warns), but navigation is how readers find tutorials. Older
+     tutorials without an entry are left as they are.
 
    Edit this file **textually**. Do not round-trip it through a YAML writer — it is ~1000
    hand-commented lines and the comments and section anchors are load-bearing.
