@@ -32,8 +32,9 @@
 #
 # Writes vignettes/<slug>.Rmd and vignettes/images/<slug>/NN_<chunk>.png, then
 # prints a report. Register the result in _pkgdown.yml under articles: -- that
-# one is required, and pkgdown fails the build without it. A navbar: entry is
-# optional and only affects discoverability. Then run pkgdown/check-site.R.
+# one is required, and pkgdown fails the build without it. Add a navbar: entry
+# too; the build does not enforce it, but new tutorials are expected to have
+# one. Then run pkgdown/check-site.R.
 
 suppressPackageStartupMessages({
   library(magick)
@@ -424,5 +425,5 @@ if (length(leaks)) {
   if (length(leaks) > 5L) cat(sprintf("             ... and %d more\n", length(leaks) - 5L))
 }
 cat("\n  Next: add the slug to a contents: list under articles: in _pkgdown.yml\n")
-cat("        (required), optionally a navbar: entry, then pkgdown/check-site.R\n")
+cat("        (required), a navbar: entry (expected), then pkgdown/check-site.R\n")
 cat(sprintf("%s\n", strrep("-", 60)))
