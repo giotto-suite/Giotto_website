@@ -117,18 +117,16 @@ its `contents:` list:
 Without this, pkgdown fails the entire build with *“Vignettes missing
 from index”* and produces nothing.
 
-**2. Under `navbar:` — optional.** A menu entry makes the tutorial
+**2. Under `navbar:` — expected.** A menu entry makes the tutorial
 directly reachable from the top of the site:
 
           - text: A short, descriptive title
             href: articles/YOUR_VIGNETTE_NAME.html
 
-This is discoverability, not a build requirement. The navbar
-deliberately does not list everything — 43 of the current tutorials have
-no entry and are found through the [tutorial
-index](https://giottosuite.com/dev/articles/index.md) instead. Add one
-if your tutorial belongs in the analytical core; leave it out for more
-specialised material.
+The build does not require it, but please add one: the navbar is how
+most readers find tutorials. Some older tutorials have no entry and are
+found through the [tutorial
+index](https://giottosuite.com/dev/articles/index.md) instead.
 
 One thing to be careful of: if you *rename* an `articles:` section, the
 navbar links into it will silently stop working. Each section’s `desc:`

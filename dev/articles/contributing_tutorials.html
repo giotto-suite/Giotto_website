@@ -382,16 +382,14 @@ without <code>.Rmd</code>) to its <code>contents:</code> list:</p>
 <span>  <span class="op">-</span> <span class="va">YOUR_VIGNETTE_NAME</span></span></code></pre>
 <p>Without this, pkgdown fails the entire build with <em>“Vignettes
 missing from index”</em> and produces nothing.</p>
-<p><strong>2. Under <code>navbar:</code> — optional.</strong> A menu
+<p><strong>2. Under <code>navbar:</code> — expected.</strong> A menu
 entry makes the tutorial directly reachable from the top of the
 site:</p>
 <pre><code>      - text: A short, descriptive title
         href: articles/YOUR_VIGNETTE_NAME.html</code></pre>
-<p>This is discoverability, not a build requirement. The navbar
-deliberately does not list everything — 43 of the current tutorials have
-no entry and are found through the <a href="index.html">tutorial
-index</a> instead. Add one if your tutorial belongs in the analytical
-core; leave it out for more specialised material.</p>
+<p>The build does not require it, but please add one: the navbar is how
+most readers find tutorials. Some older tutorials have no entry and are
+found through the <a href="index.html">tutorial index</a> instead.</p>
 <p>One thing to be careful of: if you <em>rename</em> an
 <code>articles:</code> section, the navbar links into it will silently
 stop working. Each section’s <code>desc:</code> carries a
