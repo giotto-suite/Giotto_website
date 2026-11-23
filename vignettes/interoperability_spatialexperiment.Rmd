@@ -28,6 +28,7 @@ In this part of the tutorial, we show the conversion of a an example Giotto obje
 ```{r, eval=FALSE}
 library(Giotto)
 library(GiottoData)
+library(GiottoConnect)
 library(SpatialExperiment)
 ```
 
@@ -41,17 +42,14 @@ g <- loadGiottoMini(dataset = "visium")
 
 ## Convert to a SpatialExperiment obj
 
-We now convert this imported giotto object into a SpatialExperiment object using the “giottoToSpatialExperiment” function.
+We now convert this imported giotto object into a SpatialExperiment object using the `giottoToSpatialExperiment()` function from [GiottoConnect](https://github.com/giotto-suite/GiottoConnect).
 
 ```{r, eval=FALSE}
-gspe <- giottoToSpatialExperiment(g)
+spe <- giottoToSpatialExperiment(g)
+spe
 ```
 
-For each spatial unit the converter function returns a separate SpatialExperiment object. The output is a list of objects (one object for each unit) therefore we select the first object and use it downstream.
-
-```{r, eval=FALSE}
-spe <- gspe[[1]]
-```
+One spatial unit and feature type is converted at a time (the active ones by default; see the `spat_unit` and `feat_type` arguments). The raw counts become the `counts` assay and the normalized values `logcounts`; reductions are named as in scater (`PCA`, `UMAP`, `TSNE`), nearest neighbour networks become `colPairs` and the tissue image goes to `imgData`. Because the Visium object also has spot polygons and spatial networks, the result is a SpatialFeatureExperiment (a SpatialExperiment that also holds geometries); use `sfe = "no"` for a plain SpatialExperiment.
 
 
 ## Downstream Analysis using SpatialExperiment object
@@ -76,7 +74,7 @@ is_mito <- grepl("(^MT-)|(^mt-)", rownames(spe))
 table(is_mito)
 
 # calculate per-spot QC metrics and store in colData
-spe <- addPerCellQC(spe, subsets = list(mito = is_mito), assay.type = "raw_rna_cell")
+spe <- addPerCellQC(spe, subsets = list(mito = is_mito), assay.type = "counts")
 head(colData(spe))
 ```
 
@@ -124,7 +122,7 @@ Now we calculate log-transformed normalized counts(logcounts) using library size
 library(scran)
 
 # calculate library size factors
-spe <- computeLibraryFactors(spe, assay.type = "raw_rna_cell")
+spe <- computeLibraryFactors(spe, assay.type = "counts")
 summary(sizeFactors(spe))
 
 hist(sizeFactors(spe), breaks = 20)
@@ -134,7 +132,7 @@ hist(sizeFactors(spe), breaks = 20)
 
 ```{r, eval=FALSE}
 # calculate logcounts and store in object
-spe <- logNormCounts(spe, assay.type = "raw_rna_cell")
+spe <- logNormCounts(spe, assay.type = "counts")
 
 # check
 assayNames(spe)
@@ -173,7 +171,7 @@ spe <- runPCA(spe)
 reducedDimNames(spe)
 
 # plot top 2 PCA dimensions
-plotDimRed(spe, type = "PCA")
+plotDimRed(spe, plot_type = "PCA")
 ```
 
 ![](images/interoperability_spatialexperiment/4-PCA.png)
@@ -184,7 +182,7 @@ To visualize the clusters, we use a non-linear method “UMAP”, perform cluste
 spe <- scater::runUMAP(spe)
 colnames(reducedDim(spe,"UMAP")) <- c("UMAP1","UMAP2")
 
-plotDimRed(spe, type = "UMAP")
+plotDimRed(spe, plot_type = "UMAP")
 ```
 
 ![](images/interoperability_spatialexperiment/5-UMAP.png)
@@ -206,9 +204,9 @@ table(clus)
 colData(spe)$label <- clus
 
 plotDimRed(spe, 
-           type = "UMAP",
+           plot_type = "UMAP",
            annotate = "label", 
-           palette = "libd_layer_colors")
+           pal = "libd_layer_colors")
 ```
 
 ![](images/interoperability_spatialexperiment/6-UMAP.png)
@@ -264,12 +262,10 @@ spe
 
 ## Convert to a giotto obj
 
-Converting SpatialExperiment Object to giottoobj. The new giottoobject is n_g.
+Converting the SpatialExperiment object to a Giotto object with `spatialExperimentToGiotto()`. The counts become the `raw` expression values of the feature type `rna`, the Visium spot positions are converted from image pixels to microns, and the reductions and tissue image are carried over. The new Giotto object is `n_g`.
 
 ```{r, eval=FALSE}
-#create giottoObject from spe
-n_g <- spatialExperimentToGiotto(spe, 
-                                 python_path = instructions(g)$python_path)
+n_g <- spatialExperimentToGiotto(spe)
 ```
 
 

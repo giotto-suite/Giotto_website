@@ -63,8 +63,7 @@ python_path <- NULL # alternatively, "/local/python/path/python" if desired.
 data_path <- "/path/to/data/"
 
 ## create the object directly from the h5ad file
-giotto_object <- anndataToGiotto(file.path(data_path, "openst_demo_adult_mouse_by_cell.h5ad"),
-                                 python_path = python_path)
+giotto_object <- GiottoConnect::anndataToGiotto(file.path(data_path, "openst_demo_adult_mouse_by_cell.h5ad"))
 
 ## update instructions
 instructions(giotto_object, "save_plot") <- TRUE

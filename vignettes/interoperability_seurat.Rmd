@@ -17,11 +17,11 @@ vignette: >
 
 # Introduction
 
-Giotto facilitates seamless interoperability with various tools, including Seurat. The conversion between Giotto and Seurat relies on four primary functions. "giottoToSeurat_v4" and "SeuratToGiotto_v4" cater to Seurat version 4 , while "giottoToSeurat_v5" and "SeuratToGiotto_v5" are specifically for Seurat version 5. These functions play a vital role in ensuring effortless data transitions between Giotto and Seurat across different versions, ensuring compatibility and ease of use.
+Giotto facilitates seamless interoperability with various tools, including Seurat. The conversion between Giotto and Seurat relies on two functions from [GiottoConnect](https://github.com/giotto-suite/GiottoConnect): `seuratToGiotto()` and `giottoToSeurat()`. They work with Seurat v3/v4 and v5 objects alike: the converter recognises the layout of the object (assays, images, reductions, graphs) instead of depending on the Seurat version.
 
-## Conversion of Seurat V5 to Giotto
+## Conversion of Seurat to Giotto
 
-In this section, we outline the steps to convert a Seurat V5 object to Giotto, offering a seamless transition between these two.
+In this section, we outline the steps to convert a Seurat object to Giotto.
 
 ### Load required Libraries 
 
@@ -31,6 +31,7 @@ To start, we load the required libraries.
 library(data.table)
 library(Giotto)
 library(GiottoData)
+library(GiottoConnect)
 library(Seurat)
 library(SeuratData)
 ```
@@ -45,10 +46,16 @@ brain <- LoadData("stxBrain", type = "anterior1")
 
 ### Convert Seurat object to Giotto
 
-To convert Seurat object to Giotto object, we use the function seuratToGiottoV5().
+To convert the Seurat object to a Giotto object, we use the function `seuratToGiotto()`. The counts of the `Spatial` assay become the `raw` expression values of the feature type `rna`, the Visium spot positions are converted from image pixels to microns, and the tissue image (and any reductions and nearest neighbour graphs) are carried over.
 
 ```{r, eval=FALSE}
-brainG <- seuratToGiottoV5(sobject = brain, spatial_assay = "Spatial")
+brainG <- seuratToGiotto(brain)
+```
+
+`mappingProvenance()` lists what was converted and what could not be carried over or was estimated, such as the micron-per-pixel scale:
+
+```{r, eval=FALSE}
+mappingProvenance(brainG)$losses
 ```
 
 ### Print Giotto object
@@ -231,17 +238,19 @@ graph4 <- spatCellPlot(
 
 ![](images/interoperability_seurat/5-spatCellPlot2D.png)
 
-## Conversion of Giotto to Seurat V5
+## Conversion of Giotto to Seurat
 
-With Seurat's recent upgrade to version 5, ensuring compatibility is essential. The "giottoToSeuratV5()" function simplifies the process by seamlessly converting Giotto objects to the latest Seurat object.
+The `giottoToSeurat()` function converts a Giotto object to a Seurat v5 object.
 
 ### Reverting GiottoObj to Seurat
 
 In this step, we revert the Giotto object, previously converted from Seurat, back to its original Seurat format:
 
 ```{r, eval=FALSE}
-brain2 <- giottoToSeuratV5(brainG)
+brain2 <- giottoToSeurat(brainG)
 ```
+
+One spatial unit and feature type is converted at a time (the active ones by default; see the `spat_unit` and `feat_type` arguments). The feature type becomes the assay (`rna`) with the raw counts in its `counts` layer and the normalized values in `data`. Reductions (with the PCA loadings), every nearest neighbour network and the cell metadata are carried over, and the spots and tissue image become a Visium image named `fov`, so Seurat's spatial plots show the tissue.
 
 ### Print Seurat Object
 
@@ -249,9 +258,9 @@ brain2 <- giottoToSeuratV5(brainG)
 brain2
 ```
 
-### Downstream Analysis of Giotto to Seurat V5:
+### Downstream Analysis of the converted Seurat object
 
-Following the conversion of Giotto to Seurat V5, downstream analysis can be conducted as outlined below:
+Following the conversion of Giotto to Seurat, downstream analysis can be conducted as outlined below:
 
 #### Load libraries
 
@@ -335,7 +344,7 @@ we identify spatially variable features within the spatial data. This is achieve
 ```{r, eval=FALSE}
 brain2 <- FindSpatiallyVariableFeatures(brain2, 
                                         assay = "SCT", 
-                                        features = VariableFeatures(brain2)[1:1000],
+                                        features = head(VariableFeatures(brain2), 1000),
                                         selection.method = "moransi")
 ```
 
@@ -345,9 +354,6 @@ This section focuses on subsetting anatomical regions from the dataset and visua
 
 ```{r, eval=FALSE}
 cortex <- subset(brain2, idents = c(1, 2, 3, 4, 6, 7))
-cortex <- subset(cortex, anterior1_imagerow > 400 | anterior1_imagecol < 150, invert = TRUE)
-cortex <- subset(cortex, anterior1_imagerow > 275 & anterior1_imagecol > 370, invert = TRUE)
-cortex <- subset(cortex, anterior1_imagerow > 250 & anterior1_imagecol > 440, invert = TRUE)
 p1 <- SpatialDimPlot(cortex, crop = TRUE, label = TRUE)
 p2 <- SpatialDimPlot(cortex, crop = FALSE, label = TRUE, pt.size.factor = 1, label.size = 3)
 p1 + p2
@@ -375,7 +381,7 @@ We set the default assay to "SCT" and combine variable features from both datase
 
 ```{r, eval=FALSE}
 DefaultAssay(brain.merge) <- "SCT"
-VariableFeatures(brain.merge) <- c(VariableFeatures(brain), VariableFeatures(brain2))
+VariableFeatures(brain.merge) <- c(VariableFeatures(brain2), VariableFeatures(brainP))
 brain.merge <- RunPCA(brain.merge, verbose = FALSE)
 brain.merge <- FindNeighbors(brain.merge, dims = 1:30)
 brain.merge <- FindClusters(brain.merge, verbose = FALSE)
