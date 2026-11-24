@@ -19,13 +19,19 @@ tool. It reuses what the Suite already has: the five analysis verbs and their
 `package_check()` for tools that are installed only when used. No method needs
 its own package, and nothing is installed for users who never run it.
 
-# Two kinds of integration
+# Three kinds of integration
 
-- **A native reimplementation** recomputes a published method with Suite
-  code, for example the BANKSY embedding (`runNeighborhoodPCA()`) or HMRF
-  (`runHMRF()`). It lives in **Giotto**. A small engine with no Giotto
-  dependency can be its own package that Giotto suggests, as `spatialHMRF`
-  and `spatialDWLS` are.
+- **A native reimplementation** recomputes a published method inside Giotto,
+  built from Suite building blocks. The BANKSY embedding
+  (`runNeighborhoodPCA()`) is the example: a stored spatial network, the
+  Suite's PCA, and only BANKSY's neighbour weights and gradient as new code.
+  It lives in **Giotto**.
+- **An engine package** holds a method's computation in its own small R
+  package with no Giotto dependency, and Giotto adds the `Param`, the verb
+  method and the wrapper. HMRF (`spatialHMRF`, used by `runHMRF()`) and
+  spatialDWLS work this way. Use it when the engine is substantial, useful on
+  its own, or credited to other authors; the package is in Giotto's
+  `Suggests` and checked when the method runs.
 - **A connection** runs the original tool and moves data in and out, for
   example ONTraC (Python) or CellChat (R). It lives in **GiottoConnect**, one
   file per tool: `R/tool-<name>.R`.
@@ -125,7 +131,8 @@ settings only, never data.
 # Names and credit
 
 - The `Param` class is named after the method: `ontracParam`,
-  `cellchatParam`. A connection's wrapper is `run<Tool>()`.
+  `cellchatParam`, `hmrfParam`. A connection's or engine package's wrapper is
+  `run<Method>()`.
 - A native reimplementation gets a descriptive name, not the tool's, so a
   wrapper of the original can sit beside it: `runNeighborhoodPCA()` next to
   `GiottoConnect::runBanksy()`.
