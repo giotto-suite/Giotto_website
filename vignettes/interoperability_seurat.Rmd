@@ -171,72 +171,45 @@ ranktest = binSpect(
 )
 ```
 
-Here, we'll narrow down our analysis by selecting the top 300 spatial genes identified through binSpect. Additionally, we"ll illustrate how to identify the genes that exhibit the highest spatial correlation.
+Here, we narrow the analysis down to the top 300 spatial genes from binSpect and group them into spatial co-expression modules with `spatialCoexpression()`. It smooths each spot's expression with its neighbours', correlates the genes on the smoothed values, clusters the correlation into modules and scores every module in every spot.
 
 ```{r, eval=FALSE}
-# 3.1 cluster the top 500 spatial genes into 20 clusters
-ext_spatial_genes <- ranktest[1:300,]$feats
+ext_spatial_genes <- ranktest[1:300, ]$feats
 
-# here we use existing detectSpatialCorFeats function to calculate pairwise distances between genes (but set network_smoothing=0 to use default clustering)
-spat_cor_netw_DT = detectSpatialCorFeats(
-    brainG,
-    method = "network",
+brainG <- spatialCoexpression(brainG,
+    feats = ext_spatial_genes,
     spatial_network_name = "Delaunay_network",
-    subset_feats = ext_spatial_genes
+    n_modules = 7
 )
-# 3.2 identify most similar spatially correlated genes for one gene
-top10_genes <- showSpatialCorFeats(spat_cor_netw_DT, 
-                                   feats = "Dsp", 
-                                   show_top_feats = 10)
+
+# the modules, their genes and correlations as a list
+coexpr <- spatialCoexpression(brainG,
+    feats = ext_spatial_genes,
+    spatial_network_name = "Delaunay_network",
+    n_modules = 7,
+    return_gobject = FALSE
+)
+coexpr$summary
 ```
 
-Employing the pheatmap function, we can visualize spatial co-expression modules and iteratively adjust the number of clusters (k) for optimal representation.
+The heatmap shows the gene-gene correlation, ordered and annotated by module:
 
 ```{r, eval=FALSE}
-# 3.3 identify potenial spatial co-expression
-spat_cor_netw_DT <- clusterSpatialCorFeats(spat_cor_netw_DT, 
-                                           name = "spat_netw_clus", 
-                                           k = 7)
+heatmapCoexpression(brainG, coexpr)
+```
 
-# visualize clusters
-graph3 <- heatmSpatialCorFeats(
-    brainG,
-    spatCorObject = spat_cor_netw_DT,
-    use_clus_name = "spat_netw_clus",
-    heatmap_legend_param = list(title = NULL),
-    save_param = list(base_height = 6, base_width = 8, units = "cm"), 
-    show_plot =  TRUE,
-    return_plot = FALSE,
-    save_plot = TRUE
+The module scores are stored as the spatial enrichment `spatial_module`:
+
+```{r, eval=FALSE}
+spatCellPlot(brainG,
+    spat_enr_names = "spatial_module",
+    cell_annotation_values = as.character(1:7),
+    point_size = 1,
+    cow_n_col = 3
 )
 ```
 
-![](images/interoperability_seurat/4-heatmSpatialCorFeats.png)
-
-We'll proceed by isolating genes from individual co-expression modules and then consolidate them into meta-genes through aggregation.
-
-```{r, eval=FALSE}
-# 3.4 create metagenes / co-expression modules
-cluster_genes <- getBalancedSpatCoexpressionFeats(spat_cor_netw_DT, 
-                                                  maximum = 30)
-```
-
-```{r, eval=FALSE}
-brainG <- createMetafeats(brainG, 
-                          feat_clusters = cluster_genes, 
-                          name = "cluster_metagene")                     
-    
-graph4 <- spatCellPlot(
-    brainG,
-    spat_enr_names = "cluster_metagene",
-    cell_annotation_values = as.character(c(1:7)),
-    point_size = 1, 
-    cow_n_col = 3, 
-    gradient_style = "sequential"
-)   
-```
-
-![](images/interoperability_seurat/5-spatCellPlot2D.png)
+See the [spatial co-expression modules](spatial_coexpression_modules.html) tutorial for more options.
 
 ## Conversion of Giotto to Seurat
 
