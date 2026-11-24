@@ -1,0 +1,115 @@
+---
+title: "Adding methods and tools"
+output:
+  html_document:
+    number_sections: true
+    toc: true
+pkgdown:
+  as_is: true
+vignette: >
+  %\VignetteIndexEntry{Adding methods and tools}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This guide describes how to add an external spatial method to the Giotto
+Suite, either by reimplementing it natively or by connecting the original
+tool. It reuses what the Suite already has: the five analysis verbs and their
+`Param` classes, the setters for every slot, the analysis history, and
+`package_check()` for tools that are installed only when used. No method needs
+its own package, and nothing is installed for users who never run it.
+
+# Two kinds of integration
+
+- **A native reimplementation** recomputes a published method with Suite
+  code, for example the BANKSY embedding (`runNeighborhoodPCA()`) or HMRF
+  (`runHMRF()`). It lives in **Giotto**. A small engine with no Giotto
+  dependency can be its own package that Giotto suggests, as `spatialHMRF`
+  and `spatialDWLS` are.
+- **A connection** runs the original tool and moves data in and out, for
+  example ONTraC (Python) or CellChat (R). It lives in **GiottoConnect**, one
+  file per tool: `R/tool-<name>.R`.
+
+# Verbs return, wrappers write
+
+Each method is a `Param` class plus a method on one of the five verbs, chosen
+by what it returns:
+
+| Verb | Returns |
+|---|---|
+| `processData()` | values of the same shape (normalized, smoothed) |
+| `filterData()` | the IDs to keep |
+| `reduceData()` | an embedding or decomposition |
+| `clusterData()` | one label per cell |
+| `analyzeData()` | statistics and other outputs |
+
+The method on a data class (a matrix, a table) returns what its verb
+promises and never touches a giotto object. A thin `run<Name>()` wrapper
+reads the inputs from the giotto object, calls the verb, and writes the
+result with the existing setters.
+
+# Where results go
+
+Results go into the slots that already exist:
+
+| Output | Slot | Written with |
+|---|---|---|
+| a label or value per cell | cell metadata | `addCellMetadata()` |
+| a value per feature | feature metadata | `addFeatMetadata()` |
+| cells x dimensions | dimension reduction | `createDimObj()` + `setDimReduction()` |
+| cells x categories (proportions, probabilities) | spatial enrichment | `createSpatEnrObj()` + `setSpatialEnrichment()` |
+| features x cells values | expression | `setExpression()` |
+| a graph on expression or an embedding | nearest-neighbour network | `setNearestNetwork()` |
+| a spatial graph | spatial network | `setSpatialNetwork()` |
+| anything else (interaction tables, fitted models, tool objects) | none | returned to the caller |
+
+Prefer existing visualizations (`spatPlot2D()`, `spatCellPlot2D()`,
+`dimPlot2D()`) over plots written for one method.
+
+# Recording what was run
+
+The wrapper ends with
+
+```{r, eval=FALSE}
+update_giotto_params(gobject, description = "_<name>",
+    attachments = list(param = param))
+```
+
+so the analysis history keeps the `Param` with its settings. A `Param` holds
+settings only, never data.
+
+# Dependencies
+
+- The tool is never in `Imports`. It goes in `Suggests` (CRAN,
+  Bioconductor), or in `Remotes` plus an install hint for GitHub-only tools,
+  and is checked with `package_check()` when the function runs. Call
+  functions of a GitHub-only tool with `getExportedValue()` so `R CMD check`
+  stays clean.
+- Python tools get their environment when first run, with
+  `reticulate::py_require()` (reticulate >= 1.41). Pin the tool's version.
+- Tests use `skip_if_not_installed()`, so a broken tool release breaks only
+  its own function.
+- A function shared with another package is exported as a documented
+  `snake_case` utility, not reached with `:::`.
+
+# Names and credit
+
+- The `Param` class is named after the method: `ontracParam`,
+  `cellchatParam`. A connection's wrapper is `run<Tool>()`.
+- A native reimplementation gets a descriptive name, not the tool's, so a
+  wrapper of the original can sit beside it: `runNeighborhoodPCA()` next to
+  `GiottoConnect::runBanksy()`.
+- Its help page names the original method and paper under `@references`,
+  asks users to cite it, and says how it differs from the original and how
+  closely it matches.
+
+# Checking an integration
+
+- Compare against the original tool on the same input, with a seed, and keep
+  the comparison script outside the package (for example in
+  `examples/<tool>_comparison/`).
+- `GiottoConnect::checkGiottoMethod()` (and `expect_giotto_method()` in
+  tests) checks a wrapper against these rules: which slots it wrote, that
+  the history holds its `Param`, and that its help page has references.
+- Templates for both kinds are in GiottoConnect's
+  `giotto-integrate-tool` skill.
