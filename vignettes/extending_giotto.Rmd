@@ -63,8 +63,28 @@ Results go into the slots that already exist:
 | a spatial graph | spatial network | `setSpatialNetwork()` |
 | anything else (interaction tables, fitted models, tool objects) | none | returned to the caller |
 
-Prefer existing visualizations (`spatPlot2D()`, `spatCellPlot2D()`,
-`dimPlot2D()`) over plots written for one method.
+# Plots
+
+Results in existing slots can be drawn with existing plots, so most
+integrations need none of their own. ONTraC is the example: niche clusters
+with `spatPlot2D(cell_color = )`, their probabilities with
+`spatCellPlot2D(spat_enr_names = )`, NT scores per cell type with
+`ridgePlot(group_by = )`, and cell type composition with
+`plotLabelComposition()`. List these in the wrapper's help page.
+
+When a tool has a view no Giotto plot covers, and that view only makes sense
+for this tool, add one plot function to the tool's file:
+
+- name it `plot<Tool><What>()`, as `plotONTraCConnectivity()` (the graph of
+  ONTraC's niche clusters);
+- read what it draws from the slots the wrapper wrote (for ONTraC, the
+  spatial enrichment's `misc`), never from the tool's output files;
+- put `ggplot2` (and any other plotting package) in `Suggests`, check it with
+  `package_check()`, and return through
+  `GiottoVisuals::plot_output_handler()` so `show_plot`, `return_plot` and
+  `save_plot` work as in the other Giotto plots.
+
+A view that several tools would use belongs in GiottoVisuals instead.
 
 # Recording what was run
 
