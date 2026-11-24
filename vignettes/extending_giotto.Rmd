@@ -30,6 +30,16 @@ its own package, and nothing is installed for users who never run it.
   example ONTraC (Python) or CellChat (R). It lives in **GiottoConnect**, one
   file per tool: `R/tool-<name>.R`.
 
+# Reuse before writing
+
+Build on what the Suite already has and write only what is specific to the
+method. Spatial neighbours come from a stored spatial network
+(`createSpatialNetwork()`), PCA from `reduceData(x, pcaParam())`, clustering
+from the existing clustering functions. BANKSY's native embedding adds only
+its neighbour weights and gradient (`neighborhood_operators()`) on top of a
+stored kNN network. If an existing building block is too slow for the new
+method, improve it there rather than working around it.
+
 # Verbs return, wrappers write
 
 Each method is a `Param` class plus a method on one of the five verbs, chosen
