@@ -365,6 +365,30 @@ if (!file.exists(file.path(pkg_src, "DESCRIPTION"))) {
   }
 }
 
+# ---- reference: packages the build installs ---------------------------------
+# A `Pkg::topic` entry needs Pkg installed in the build, or pkgdown aborts with
+# "The package \"Pkg\" is required as it's used in the reference index". A
+# local check cannot see this when Pkg happens to be installed here, so compare
+# the prefixes against what the dev workflow installs: the documented package,
+# its `extra-packages:` and its `pins:`.
+wf_file <- ".github/workflows/pkgdown-dev.yaml"
+if (file.exists(wf_file)) {
+  wf <- yaml::read_yaml(wf_file)$jobs$site$with
+  wf_pkgs <- unlist(strsplit(paste(wf$`extra-packages`, wf$pins), "[,[:space:]]+"))
+  wf_pkgs <- sub("@.*$", "", sub("^.*(::|/)", "", wf_pkgs[nzchar(wf_pkgs)]))
+  documented <- sub("^.*/", "", wf$`package-repo`)
+  ref_entries <- unlist(lapply(cfg$reference, function(sec) sec$contents))
+  prefixes <- unique(sub("::.*$", "", grep("::", ref_entries, value = TRUE)))
+  not_installed <- setdiff(prefixes, c(documented, wf_pkgs))
+  if (length(not_installed)) {
+    err(paste0("`reference:` lists topics from %s, which %s does not install.\n",
+               "         pkgdown will abort with \"The package ... is required\".",
+               " Add %s to\n         `pins:` or `extra-packages:` there."),
+        paste(not_installed, collapse = ", "), wf_file,
+        if (length(not_installed) == 1) "it" else "them")
+  }
+}
+
 # ---- warnings ---------------------------------------------------------------
 no_nav <- setdiff(vig_names, linked)
 if (length(no_nav)) {

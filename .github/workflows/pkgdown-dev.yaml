@@ -26,7 +26,8 @@
 # earlier one -- but it is built against whatever is installed at that moment.
 # GiottoVisuals@gsource needs GiottoClass >= 0.7.2, so installed before the
 # GiottoClass pin it failed and R silently restored the release version. Giotto
-# itself is installed after all of them by the shared workflow.
+# itself is installed after all of them by the shared workflow. GiottoConnect
+# is pinned because `reference:` lists its converters; its main branch is empty.
 
 name: pkgdown (dev)
 
@@ -94,6 +95,7 @@ jobs:
         giotto-suite/GiottoUtils@main
         giotto-suite/GiottoClass@gsource
         giotto-suite/GiottoVisuals@gsource
+        giotto-suite/GiottoConnect@dev_connect
       # Floors, not exact versions: the failure being guarded against is main
       # (GiottoClass 0.5.1, GiottoVisuals 0.2.15) or suite (Giotto 4.2.3)
       # displacing the pins, and an exact version failed every time gsource
