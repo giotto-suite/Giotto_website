@@ -320,7 +320,7 @@ cells nearby, so another source drives it there as well.
 ## Where it happens
 
 A 600 µm window around the macrophages with the most T cells nearby. The cell
-types, and the macrophages coloured by their CXCL9 counts:
+outlines coloured by cell type, and by their CXCL9 counts:
 
 ```{r zoom}
 roi <- c(8454, 9054, -3209, -2609) # xmin, xmax, ymin, ymax
@@ -337,23 +337,15 @@ type_colors <- c(
     "T cells" = "#17becf", "B cells" = "#1f78b4", "plasma cells" = "#a6cee3",
     "macrophages" = "#6a3d9a", "mast cells" = "#b15928", "adipocytes" = "#ffff99"
 )
-spatPlot2D(gz, cell_color = "cell_type", color_as_factor = TRUE,
-    cell_color_code = type_colors, point_size = 1.4)
+spatInSituPlotPoints(gz, show_polygon = TRUE, polygon_feat_type = "cell",
+    polygon_fill = "cell_type", polygon_fill_as_factor = TRUE,
+    polygon_fill_code = type_colors, polygon_alpha = 1, polygon_line_size = 0.1)
 
-# CXCL9 counts of the macrophages, as a cell metadata column
-mac <- pDataDT(g)[cell_type == "macrophages", cell_ID]
-raw <- getExpression(g, values = "raw", output = "exprObj")[]
-cxcl9 <- storeRead(raw["CXCL9", mac], output = "dgcmatrix",
-    max_rows = Inf, max_cols = Inf)
-g <- addCellMetadata(g,
-    new_metadata = data.frame(cell_ID = mac,
-        CXCL9_macrophage = pmin(as.numeric(cxcl9["CXCL9", mac]), 5)),
-    by_column = TRUE, column_cell_ID = "cell_ID"
-)
-gz <- subsetGiottoLocs(g,
-    x_min = roi[1], x_max = roi[2], y_min = roi[3], y_max = roi[4])
-spatPlot2D(gz, cell_color = "CXCL9_macrophage", color_as_factor = FALSE,
-    gradient_style = "sequential", point_size = 1.6)
+# raw CXCL9 counts per cell
+spatInSituPlotPoints(gz, show_polygon = TRUE, polygon_feat_type = "cell",
+    polygon_fill = "CXCL9", polygon_fill_as_factor = FALSE,
+    polygon_fill_gradient_style = "sequential",
+    polygon_alpha = 1, polygon_line_size = 0.1)
 ```
 
 ```{r zoom-fig, eval = TRUE, echo = FALSE, out.width = "49%", fig.show = "hold"}
@@ -363,9 +355,14 @@ knitr::include_graphics(c(
 ))
 ```
 
-The CXCL9-high macrophages (yellow, right) sit in the dense patch of T cells
-(cyan, left) at the lower right of the window; macrophages in the tumour and
-stroma above have none.
+The CXCL9-high cells (yellow, right) sit in the dense patch of T cells (cyan,
+left) at the lower right of the window; cells in the tumour and stroma above
+have almost none. They are mostly macrophages, but CAFs and fibroblasts in the
+same patch express CXCL9 too (15% of the CAFs in this window have 10 or more
+counts, against 19% of the macrophages). edgeicg calls the response to T cells
+in macrophages (niche q < 1e-10); in CAFs the effect points the same way but is
+not significant (q = 0.08). A map shows every cell; the test asks, per receiver
+type, whether expression follows the exposure to a sender.
 
 ## Which neighbour explains a niche effect?
 
