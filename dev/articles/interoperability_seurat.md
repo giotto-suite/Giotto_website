@@ -4,9 +4,9 @@
 
 [GiottoConnect](https://github.com/giotto-suite/GiottoConnect) converts
 between Giotto and Seurat with
-[`seuratToGiotto()`](https://rdrr.io/pkg/GiottoConnect/man/seuratToGiotto.html)
+[`seuratToGiotto()`](https://giotto-suite.github.io/GiottoConnect/reference/seuratToGiotto.html)
 and
-[`giottoToSeurat()`](https://rdrr.io/pkg/GiottoConnect/man/giottoToSeurat.html).
+[`giottoToSeurat()`](https://giotto-suite.github.io/GiottoConnect/reference/giottoToSeurat.html).
 Both work with Seurat v3, v4 and v5 objects: the converter reads the
 layout of the object (assays, images, reductions, graphs) instead of
 depending on the Seurat version.
@@ -57,7 +57,7 @@ The counts of the `Spatial` assay become the `raw` expression values of
 the feature type `rna`. The Visium spot positions are converted from
 image pixels to microns, and the tissue image, reductions and nearest
 neighbour graphs are carried over.
-[`mappingProvenance()`](https://rdrr.io/pkg/GiottoConnect/man/mappingProvenance.html)
+[`mappingProvenance()`](https://giotto-suite.github.io/GiottoConnect/reference/mappingProvenance.html)
 lists what could not be carried over or was estimated, such as the
 micron-per-pixel scale:
 
@@ -126,7 +126,7 @@ SpatialDimPlot(brain2, group.by = "leiden_clus", label = TRUE, label.size = 3)
 
 ![](images/interoperability_seurat/2-seuratClusters.png)
 
-[`readbackCheck()`](https://rdrr.io/pkg/GiottoConnect/man/readbackCheck.html)
+[`readbackCheck()`](https://giotto-suite.github.io/GiottoConnect/reference/readbackCheck.html)
 compares the Seurat object with the Giotto object, part by part:
 
 ``` r

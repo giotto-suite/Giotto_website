@@ -192,7 +192,7 @@
     <li><a class="dropdown-item" href="../articles/spatial_genes.html">Detection of spatially variable genes</a></li>
     <li><a class="dropdown-item" href="../articles/spatial_coexpression_modules.html">Detection of spatial co-expression modules</a></li>
     <li><a class="dropdown-item" href="../articles/spatial_informed_clusters.html">Spatially informed clusters</a></li>
-    <li><a class="dropdown-item" href="../articles/hmrf.html">Spatial domain analysis using HMRF</a></li>
+    <li><a class="dropdown-item" href="../articles/spatial_domains.html">Spatial domains with BANKSY and HMRF</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Cell-cell interactions</h6></li>
     <li><a class="dropdown-item" href="../articles/interaction_changed_features.html">Interaction-changed features</a></li>
@@ -445,7 +445,7 @@ table is sorted by <code>z</code>.</p>
 <p>With <code>return_gobject = TRUE</code> (the default), the results
 are written to the feature metadata instead, as <code>binspect.z</code>,
 <code>binspect.p</code> and <code>binspect.padj</code> (and
-<code>binSpect.pval</code>, which <code><a href="../reference/doHMRF.html">doHMRF()</a></code> reads):</p>
+<code>binSpect.pval</code>, which <code>doHMRF()</code> reads):</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_xen</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialAutoCor.html">spatialAutoCor</a></span><span class="op">(</span><span class="va">g_xen</span>, method <span class="op">=</span> <span class="st">"binspect"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">g_xen</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">binspect.z</span><span class="op">)</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="fu">.</span><span class="op">(</span><span class="va">feat_ID</span>, <span class="va">binspect.z</span>, <span class="va">binspect.padj</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
@@ -892,8 +892,8 @@ automatically when you use options only it has
 modules</a>: more on <code><a href="../reference/spatialCoexpression.html">spatialCoexpression()</a></code> and its
 options.</li>
 <li>
-<a href="hmrf.html">Spatial domains with HMRF</a> reads
-<code>binSpect.pval</code> from the feature metadata.</li>
+<a href="spatial_domains.html">Spatial domains with BANKSY and
+HMRF</a>: HMRF on co-expression modules of spatial genes.</li>
 <li>
 <a href="spatial_informed_clusters.html">Spatially informed
 clusters</a>: cluster cells on spatial genes only.</li>

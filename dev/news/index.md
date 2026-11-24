@@ -12,6 +12,13 @@ Requires GiottoClass 0.8.0.
   Use [`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md)
   or [`spark()`](https://giottosuite.com/dev/reference/spark.md) for
   spatially variable features.
+- The legacy HMRF workflow is removed: `doHMRF()`, `initHMRF_V2()`,
+  `doHMRF_V2()`, `addHMRF()`, `addHMRF_V2()`, `loadHMRF()`,
+  `writeHMRFresults()`, `viewHMRFresults()` (and its `_V2`, `2D`, `3D`
+  variants) and the spatial gene selectors `filterSpatialGenes()`,
+  `chooseAvailableSpatialGenes()`, `checkAndFixSpatialGenes()`. Use
+  [`runHMRF()`](https://giottosuite.com/dev/reference/runHMRF.md), which
+  needs neither Python nor smfishHmrf, graphcoloring or tidygraph.
 
 ### new
 
@@ -22,6 +29,9 @@ Requires GiottoClass 0.8.0.
   instead of expression. `hmrfParam(zscore = "feature")` scales each
   input column, the default for an enrichment. Needs spatialHMRF \>=
   0.1.1.
+- `calculateHVF(method = "var")` selects the `n_top_feats` features with
+  the highest variance of `expression_values`, from the same statistics
+  pass as `cov_groups`, so it also runs on GiottoDisk stores.
 - [`findInteractionChangedFeats()`](https://giottosuite.com/dev/reference/findInteractionChangedFeats.md)
   (edgeicg) gains `region_column`: a cell metadata column with a region
   per cell (spatial domains, niches). Every effect is then also
@@ -127,16 +137,16 @@ Requires GiottoClass 0.8.0.
   either.
 - The legacy Seurat, AnnData and Bento converters are no longer
   re-exported:
-  [`seuratToGiotto()`](https://rdrr.io/pkg/GiottoConnect/man/seuratToGiotto.html),
-  [`giottoToSeurat()`](https://rdrr.io/pkg/GiottoConnect/man/giottoToSeurat.html),
-  [`anndataToGiotto()`](https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html)
+  [`seuratToGiotto()`](https://giotto-suite.github.io/GiottoConnect/reference/seuratToGiotto.html),
+  [`giottoToSeurat()`](https://giotto-suite.github.io/GiottoConnect/reference/giottoToSeurat.html),
+  [`anndataToGiotto()`](https://giotto-suite.github.io/GiottoConnect/reference/anndataToGiotto.html)
   and
-  [`createBentoAdata()`](https://rdrr.io/pkg/GiottoConnect/man/createBentoAdata.html)
+  [`createBentoAdata()`](https://giotto-suite.github.io/GiottoConnect/reference/createBentoAdata.html)
   are in GiottoConnect. `seuratToGiottoV4/V5()` and
   `giottoToSeuratV4/V5()` are replaced by GiottoConnect’s
-  [`seuratToGiotto()`](https://rdrr.io/pkg/GiottoConnect/man/seuratToGiotto.html)
+  [`seuratToGiotto()`](https://giotto-suite.github.io/GiottoConnect/reference/seuratToGiotto.html)
   /
-  [`giottoToSeurat()`](https://rdrr.io/pkg/GiottoConnect/man/giottoToSeurat.html).
+  [`giottoToSeurat()`](https://giotto-suite.github.io/GiottoConnect/reference/giottoToSeurat.html).
 - 10x feature names are the same whichever file they come from.
   [`get10Xmatrix_h5()`](https://giottosuite.com/dev/reference/get10Xmatrix_h5.md)
   names repeated features like
@@ -205,13 +215,11 @@ Requires GiottoClass 0.8.0.
   per sample (e.g. per FOV) on views built from the whole slide, as
   mistyR’s `run_misty()` per sample and `collect_results()`; samples run
   in parallel on a `future` plan.
-- [`runBanksy()`](https://giottosuite.com/dev/reference/runBanksy.md)
-  finds spatial domains with BANKSY (Singhal et al. 2024, package ) from
-  a stored dimension reduction and the spatial locations; with
-  [`runBlockPCA()`](https://giottosuite.com/dev/reference/runBlockPCA.md)’s
-  joint embedding the domains use RNA and protein together. Only the
-  embedding is passed, so it works on whole slides and GiottoDisk-backed
-  objects.
+- [`runBanksy()`](https://giotto-suite.github.io/GiottoConnect/reference/runBanksy.html),
+  which runs the Bioconductor package (Singhal et al. 2024), is in
+  GiottoConnect
+  ([`GiottoConnect::runBanksy()`](https://giotto-suite.github.io/GiottoConnect/reference/runBanksy.html)),
+  where connections to outside tools live.
 - [`runBlockPCA()`](https://giottosuite.com/dev/reference/runBlockPCA.md)
   integrates two or more feature types by block-weighted PCs: each
   feature type’s PCs are scaled to unit total variance, weighted
@@ -1893,10 +1901,7 @@ too, and will ship from there under that version.
 
 - [`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md)
   param passing error introduced in *v4.0.6*
-- updated
-  [`viewHMRFresults3D()`](https://giottosuite.com/dev/reference/viewHMRFresults3D.md)
-  and
-  [`viewHMRFresults2D()`](https://giottosuite.com/dev/reference/viewHMRFresults2D.md)
+- updated `viewHMRFresults3D()` and `viewHMRFresults2D()`
 - updated `createCrossSections()`,
   [`insertCrossSectionSpatPlot3D()`](https://giottosuite.com/dev/reference/insertCrossSectionSpatPlot3D.md),
   [`crossSectionPlot()`](https://giottosuite.com/dev/reference/crossSectionPlot.md),
@@ -1949,8 +1954,7 @@ too, and will ship from there under that version.
 ### Bug fixes
 
 - Fix metadata appending/sorting issues introduced by *GiottoClass
-  v0.1.3* (2024/01/12). Affected functions:
-  [`addHMRF()`](https://giottosuite.com/dev/reference/addHMRF.md),
+  v0.1.3* (2024/01/12). Affected functions: `addHMRF()`,
   [`addFeatsPerc()`](https://giottosuite.com/dev/reference/addFeatsPerc.md),
   [`doScrubletDetect()`](https://giottosuite.com/dev/reference/doScrubletDetect.md)
 - [`findNetworkNeighbors()`](https://giottosuite.com/dev/reference/findNetworkNeighbors.md)
@@ -2214,12 +2218,12 @@ too, and will ship from there under that version.
 ### Added
 
 - New implementations of
-  [`anndataToGiotto()`](https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html)
+  [`anndataToGiotto()`](https://giotto-suite.github.io/GiottoConnect/reference/anndataToGiotto.html)
   and
   [`giottoToAnnData()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html)
   for Nearest Neighbor and Spatial Networks
 - New `check_py_for_scanpy()` function, shifting code around in
-  [`anndataToGiotto()`](https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html)
+  [`anndataToGiotto()`](https://giotto-suite.github.io/GiottoConnect/reference/anndataToGiotto.html)
 - Add [`initialize()`](https://rdrr.io/r/methods/new.html) method for
   `giotto`
 - Add exported `create` constructor functions for Giotto S4 subobjects
@@ -2523,7 +2527,7 @@ too, and will ship from there under that version.
 ### Added
 
 - New
-  [`anndataToGiotto()`](https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html)
+  [`anndataToGiotto()`](https://giotto-suite.github.io/GiottoConnect/reference/anndataToGiotto.html)
   to convert scanpy anndata to Giotto
 
 ## Giotto 2.0.0.998

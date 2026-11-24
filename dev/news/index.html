@@ -165,7 +165,7 @@
     <li><a class="dropdown-item" href="../articles/spatial_genes.html">Detection of spatially variable genes</a></li>
     <li><a class="dropdown-item" href="../articles/spatial_coexpression_modules.html">Detection of spatial co-expression modules</a></li>
     <li><a class="dropdown-item" href="../articles/spatial_informed_clusters.html">Spatially informed clusters</a></li>
-    <li><a class="dropdown-item" href="../articles/hmrf.html">Spatial domain analysis using HMRF</a></li>
+    <li><a class="dropdown-item" href="../articles/spatial_domains.html">Spatial domains with BANKSY and HMRF</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Cell-cell interactions</h6></li>
     <li><a class="dropdown-item" href="../articles/interaction_changed_features.html">Interaction-changed features</a></li>
@@ -225,11 +225,14 @@
 <h3 id="breaking-changes-4-3-7">breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-4-3-7"></a></h3>
 <ul><li>
 <code>spatialDE()</code> and <code>spatialAEH()</code> are removed, together with the <code>"spatialDE"</code> method of <code><a href="../reference/runPatternSimulation.html">runPatternSimulation()</a></code>. Use <code><a href="../reference/binSpect.html">binSpect()</a></code> or <code><a href="../reference/spark.html">spark()</a></code> for spatially variable features.</li>
+<li>The legacy HMRF workflow is removed: <code>doHMRF()</code>, <code>initHMRF_V2()</code>, <code>doHMRF_V2()</code>, <code>addHMRF()</code>, <code>addHMRF_V2()</code>, <code>loadHMRF()</code>, <code>writeHMRFresults()</code>, <code>viewHMRFresults()</code> (and its <code>_V2</code>, <code>2D</code>, <code>3D</code> variants) and the spatial gene selectors <code>filterSpatialGenes()</code>, <code>chooseAvailableSpatialGenes()</code>, <code>checkAndFixSpatialGenes()</code>. Use <code><a href="../reference/runHMRF.html">runHMRF()</a></code>, which needs neither Python nor smfishHmrf, graphcoloring or tidygraph.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-4-3-7">new<a class="anchor" aria-label="anchor" href="#new-4-3-7"></a></h3>
 <ul><li>
 <code><a href="../reference/runHMRF.html">runHMRF()</a></code> and <code>findSpatialDomains(method = "hmrf")</code> gain <code>spat_enr_name</code>: fit HMRF on a stored spatial enrichment, such as the module scores of <code><a href="../reference/spatialCoexpression.html">spatialCoexpression()</a></code>, instead of expression. <code>hmrfParam(zscore = "feature")</code> scales each input column, the default for an enrichment. Needs spatialHMRF &gt;= 0.1.1.</li>
+<li>
+<code>calculateHVF(method = "var")</code> selects the <code>n_top_feats</code> features with the highest variance of <code>expression_values</code>, from the same statistics pass as <code>cov_groups</code>, so it also runs on GiottoDisk stores.</li>
 <li>
 <code><a href="../reference/findInteractionChangedFeats.html">findInteractionChangedFeats()</a></code> (edgeicg) gains <code>region_column</code>: a cell metadata column with a region per cell (spatial domains, niches). Every effect is then also estimated within each region, with a test of whether it differs between regions (<code>$ICFregion</code>: effect, log2 FC, z and q per region; <code>Q</code>, <code>q_het</code> and a <code>pattern</code> of <code>shared</code>, <code>specific</code>, <code>opposite</code> or <code>variable</code>). The leak model stays global. <code><a href="../reference/plotICF_edgeicg.html">plotICFRegion()</a></code> draws the effect per region. Needs edgeicg &gt;= 0.2.0.</li>
 <li>
@@ -267,7 +270,7 @@
 <h3 id="breaking-changes-4-3-6">breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-4-3-6"></a></h3>
 <ul><li>
 <code><a href="../reference/findInteractionChangedFeats.html">findInteractionChangedFeats()</a></code> / <code><a href="../reference/findInteractionChangedFeats.html">findICF()</a></code> use <code>method = "edgeicg"</code> by default (needs the suggested edgeicg package). The original proximity test is kept as a baseline with <code>method = "classic"</code>; its specific arguments (<code>expression_values</code>, <code>diff_test</code>, <code>nr_permutations</code>, …) are ignored, with a message, by the default method. <code><a href="../reference/filterInteractionChangedFeats.html">filterICF()</a></code>, <code><a href="../reference/combineInteractionChangedFeats.html">combineICF()</a></code>, <code><a href="../reference/plotCellProximityFeats.html">plotCellProximityFeats()</a></code> and the spot variants need a classic result and say so; <code><a href="../reference/plotICF.html">plotICF()</a></code> draws either.</li>
-<li>The legacy Seurat, AnnData and Bento converters are no longer re-exported: <code><a href="https://rdrr.io/pkg/GiottoConnect/man/seuratToGiotto.html" class="external-link">seuratToGiotto()</a></code>, <code><a href="https://rdrr.io/pkg/GiottoConnect/man/giottoToSeurat.html" class="external-link">giottoToSeurat()</a></code>, <code><a href="https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code> and <code><a href="https://rdrr.io/pkg/GiottoConnect/man/createBentoAdata.html" class="external-link">createBentoAdata()</a></code> are in GiottoConnect. <code>seuratToGiottoV4/V5()</code> and <code>giottoToSeuratV4/V5()</code> are replaced by GiottoConnect’s <code><a href="https://rdrr.io/pkg/GiottoConnect/man/seuratToGiotto.html" class="external-link">seuratToGiotto()</a></code> / <code><a href="https://rdrr.io/pkg/GiottoConnect/man/giottoToSeurat.html" class="external-link">giottoToSeurat()</a></code>.</li>
+<li>The legacy Seurat, AnnData and Bento converters are no longer re-exported: <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/seuratToGiotto.html" class="external-link">seuratToGiotto()</a></code>, <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/giottoToSeurat.html" class="external-link">giottoToSeurat()</a></code>, <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code> and <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/createBentoAdata.html" class="external-link">createBentoAdata()</a></code> are in GiottoConnect. <code>seuratToGiottoV4/V5()</code> and <code>giottoToSeuratV4/V5()</code> are replaced by GiottoConnect’s <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/seuratToGiotto.html" class="external-link">seuratToGiotto()</a></code> / <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/giottoToSeurat.html" class="external-link">giottoToSeurat()</a></code>.</li>
 <li>10x feature names are the same whichever file they come from. <code><a href="../reference/get10Xmatrix_h5.html">get10Xmatrix_h5()</a></code> names repeated features like <code><a href="../reference/get10Xmatrix.html">get10Xmatrix()</a></code> and GiottoDisk: every copy gets <code>--N</code> (<code>Ptp4a1--1</code>, <code>Ptp4a1--2</code>; it gave <code>Ptp4a1</code>, <code>Ptp4a1_1</code>), and features of every type are named from the name column in symbol mode (antibodies gave their ids). With <code>split_by_type = TRUE</code> (the default) repeats are counted within each feature type, so a gene keeps its name when an antibody shares it: CytAssist protein runs read from the matrix directory gave <code>CD4--1</code> for the gene. This reaches the Visium, Visium HD and Xenium readers.</li>
 <li>
 <code><a href="../reference/get10Xmatrix.html">get10Xmatrix()</a></code> returns a <code>dgCMatrix</code> (it gave a <code>dgTMatrix</code>) without names on its row and column names.</li>
@@ -281,7 +284,7 @@
 <li>
 <code><a href="../reference/runMisty.html">runMisty()</a></code> explains each target feature (e.g. a protein) from views of the same cell, its direct neighbours (juxtaview), the tissue around it (paraview) and, optionally, the neighbourhood’s cell-type composition and other feature types (e.g. RNA), as MISTy (Tanevski et al. 2022) does. Views are sparse network products and the meta-model’s p-values are computed without an N x N matrix, so it runs on whole slides and on GiottoDisk-backed objects. On the same views it gives mistyR’s results (random forest through ranger, or linear models), writes mistyR’s result files (read by <code>mistyR::collect_results()</code>) and stores each target’s R2 in the feature metadata. <code>sample_by</code> fits one model per sample (e.g. per FOV) on views built from the whole slide, as mistyR’s <code>run_misty()</code> per sample and <code>collect_results()</code>; samples run in parallel on a <code>future</code> plan.</li>
 <li>
-<code><a href="../reference/runBanksy.html">runBanksy()</a></code> finds spatial domains with BANKSY (Singhal et al. 2024, package ) from a stored dimension reduction and the spatial locations; with <code><a href="../reference/runBlockPCA.html">runBlockPCA()</a></code>’s joint embedding the domains use RNA and protein together. Only the embedding is passed, so it works on whole slides and GiottoDisk-backed objects.</li>
+<code><a href="https://giotto-suite.github.io/GiottoConnect/reference/runBanksy.html" class="external-link">runBanksy()</a></code>, which runs the Bioconductor package  (Singhal et al. 2024), is in GiottoConnect (<code><a href="https://giotto-suite.github.io/GiottoConnect/reference/runBanksy.html" class="external-link">GiottoConnect::runBanksy()</a></code>), where connections to outside tools live.</li>
 <li>
 <code><a href="../reference/runBlockPCA.html">runBlockPCA()</a></code> integrates two or more feature types by block-weighted PCs: each feature type’s PCs are scaled to unit total variance, weighted (equally by default), concatenated and rotated to their principal axes. Linear in the number of cells, so it runs on whole slides and on GiottoDisk-backed objects. The joint embedding is stored under every integrated feature type (reduction method <code>"blockpca"</code>), and its integrated kNN, with an optional sNN, under the first, with the same arguments as <code><a href="../reference/runWNN.html">runWNN()</a></code> (<code>integrated_k</code>, <code>integrated_network_name</code>, <code>integrated_snn</code>, …): cluster on the sNN and embed with <code>runIntegratedUMAP(graph = "knn")</code>, as for WNN.</li>
 <li>
@@ -980,7 +983,7 @@
 <ul><li>
 <code><a href="../reference/binSpect.html">binSpect()</a></code> param passing error introduced in <em>v4.0.6</em>
 </li>
-<li>updated <code><a href="../reference/viewHMRFresults3D.html">viewHMRFresults3D()</a></code> and <code><a href="../reference/viewHMRFresults2D.html">viewHMRFresults2D()</a></code>
+<li>updated <code>viewHMRFresults3D()</code> and <code>viewHMRFresults2D()</code>
 </li>
 <li>updated <code>createCrossSections()</code>, <code><a href="../reference/insertCrossSectionSpatPlot3D.html">insertCrossSectionSpatPlot3D()</a></code>, <code><a href="../reference/crossSectionPlot.html">crossSectionPlot()</a></code>, <code><a href="../reference/crossSectionFeatPlot3D.html">crossSectionFeatPlot3D()</a></code>, <code><a href="../reference/insertCrossSectionFeatPlot3D.html">insertCrossSectionFeatPlot3D()</a></code>, <code><a href="../reference/crossSectionPlot3D.html">crossSectionPlot3D()</a></code>, <code><a href="../reference/crossSectionFeatPlot.html">crossSectionFeatPlot()</a></code>
 </li>
@@ -1027,7 +1030,7 @@
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-4-0-4">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-4-0-4"></a></h3>
-<ul><li>Fix metadata appending/sorting issues introduced by <em>GiottoClass v0.1.3</em> (2024/01/12). Affected functions: <code><a href="../reference/addHMRF.html">addHMRF()</a></code>, <code><a href="../reference/addFeatsPerc.html">addFeatsPerc()</a></code>, <code><a href="../reference/doScrubletDetect.html">doScrubletDetect()</a></code>
+<ul><li>Fix metadata appending/sorting issues introduced by <em>GiottoClass v0.1.3</em> (2024/01/12). Affected functions: <code>addHMRF()</code>, <code><a href="../reference/addFeatsPerc.html">addFeatsPerc()</a></code>, <code><a href="../reference/doScrubletDetect.html">doScrubletDetect()</a></code>
 </li>
 <li>
 <code><a href="../reference/findNetworkNeighbors.html">findNetworkNeighbors()</a></code> now has default <code>spatial_network_name</code> value of <code>NULL</code>
@@ -1203,8 +1206,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="added-3-3-0">Added<a class="anchor" aria-label="anchor" href="#added-3-3-0"></a></h3>
-<ul><li>New implementations of <code><a href="https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code> and <code><a href="https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code> for Nearest Neighbor and Spatial Networks</li>
-<li>New <code>check_py_for_scanpy()</code> function, shifting code around in <code><a href="https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code>
+<ul><li>New implementations of <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code> and <code><a href="https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code> for Nearest Neighbor and Spatial Networks</li>
+<li>New <code>check_py_for_scanpy()</code> function, shifting code around in <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code>
 </li>
 <li>Add <code><a href="https://rdrr.io/r/methods/new.html" class="external-link">initialize()</a></code> method for <code>giotto</code>
 </li>
@@ -1380,7 +1383,7 @@
 </ul></div>
 <div class="section level3">
 <h3 id="added-2-1-0">Added<a class="anchor" aria-label="anchor" href="#added-2-1-0"></a></h3>
-<ul><li>New <code><a href="https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code> to convert scanpy anndata to Giotto</li>
+<ul><li>New <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code> to convert scanpy anndata to Giotto</li>
 </ul></div>
 </div>
     <div class="section level2">

@@ -10,7 +10,7 @@ calculateHVF(
   spat_unit = NULL,
   feat_type = NULL,
   expression_values = c("normalized", "scaled", "custom"),
-  method = c("cov_groups", "cov_loess", "var_p_resid"),
+  method = c("cov_groups", "cov_loess", "var_p_resid", "var"),
   reverse_log_scale = FALSE,
   logbase = 2,
   expression_threshold = 0,
@@ -18,8 +18,10 @@ calculateHVF(
   zscore_threshold = 1.5,
   HVFname = "hvf",
   difference_in_cov = 0.1,
-  var_threshold = 1.5,
-  var_number = NULL,
+  var_threshold = 1,
+  n_top_feats = 2000,
+  theta = 100,
+  var_number = deprecated(),
   random_subset = NULL,
   set_seed = TRUE,
   seed_number = 1234,
@@ -86,11 +88,30 @@ calculateHVF(
 
 - var_threshold:
 
-  (var_p_resid) variance threshold for features for var_p_resid method
+  (var_p_resid) noise floor on the residual variance. Under analytic
+  Pearson residuals a feature with no biological signal has variance
+  close to 1 by construction, so the default `1` drops features that are
+  *less* variable than Poisson noise. It is a guard, not a selector: on
+  real data it keeps most features (94.5% of a Stereo-seq transcriptome,
+  82% of a Xenium panel). Raise it to select on variance alone. `NULL`
+  disables it.
+
+- n_top_feats:
+
+  maximum number of features to keep, taken from the top of that
+  method's own ranking. Default `2000`. Applies to every method. `NULL`
+  disables it.
+
+- theta:
+
+  (var_p_resid) negative-binomial overdispersion used when forming the
+  Pearson residuals. Default 100, following Lause/Kobak and matching
+  `normalizeGiotto(norm_methods = "pearson_resid")`. Larger values
+  approach a Poisson model.
 
 - var_number:
 
-  (var_p_resid) number of top variance features for var_p_resid method
+  **\[deprecated\]** use `n_top_feats`.
 
 - random_subset:
 
@@ -147,7 +168,7 @@ giotto object highly variable features appended to feature metadata
 
 ## Details
 
-Currently we provide 2 ways to calculate highly variable genes:
+Currently we provide 4 ways to calculate highly variable genes:
 
 **1. high coeff of variance (COV) within groups:**  
 First genes are binned (*nr_expression_groups*) into average expression
@@ -159,6 +180,37 @@ each bin. Features with a z-score higher than the threshold
 A predicted COV is calculated for each feature using loess regression
 (COV~log(mean expression)) Features that show a higher than predicted
 COV (*difference_in_cov*) are considered highly variable.  
+
+**3. variance of Pearson residuals (`var_p_resid`):**  
+see `var_threshold`.  
+
+**4. variance (`var`):**  
+the `n_top_feats` features with the highest variance of
+`expression_values` (by default the normalized values). It favours
+highly expressed features.  
+
+## Feature selection
+
+Every method applies two constraints and the more restrictive one
+decides: its own threshold (`zscore_threshold` for `cov_groups`,
+`difference_in_cov` for `cov_loess`, `var_threshold` for `var_p_resid`)
+and the shared `n_top_feats` count. Setting either to `NULL` falls back
+to the other.
+
+The two cover different failure modes. A count keeps the selection a
+predictable size across samples, but pads the list when a dataset has
+few genuinely variable features, and cannot bind at all on a panel
+smaller than `n_top_feats`. A threshold is scale-free but its yield
+swings with the data.
+
+Each method ranks on its own score — residual variance, within-bin COV
+z-score, or COV above the LOESS fit. For `cov_groups` the z-score is
+standardised within expression bins, so a global ranking stays balanced
+across expression levels: on a Stereo-seq transcriptome a top-2000 cut
+drew 9.6-12.4% from each of 19 of 20 bins, the exception being the
+highest-expression bin, where COV is compressed by construction. Ties
+resolve by [`order()`](https://rdrr.io/r/base/order.html), so the
+selected count is exact.
 
 ## Examples
 

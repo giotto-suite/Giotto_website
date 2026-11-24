@@ -192,7 +192,7 @@
     <li><a class="dropdown-item" href="../articles/spatial_genes.html">Detection of spatially variable genes</a></li>
     <li><a class="dropdown-item" href="../articles/spatial_coexpression_modules.html">Detection of spatial co-expression modules</a></li>
     <li><a class="dropdown-item" href="../articles/spatial_informed_clusters.html">Spatially informed clusters</a></li>
-    <li><a class="dropdown-item" href="../articles/hmrf.html">Spatial domain analysis using HMRF</a></li>
+    <li><a class="dropdown-item" href="../articles/spatial_domains.html">Spatial domains with BANKSY and HMRF</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Cell-cell interactions</h6></li>
     <li><a class="dropdown-item" href="../articles/interaction_changed_features.html">Interaction-changed features</a></li>
@@ -391,10 +391,10 @@ tissue<a class="anchor" aria-label="anchor" href="#module-scores-in-the-tissue">
 <span class="header-section-number">6</span> Top genes per
 module<a class="anchor" aria-label="anchor" href="#top-genes-per-module"></a>
 </h2>
-<p>For downstream analyses such as <a href="spatial_informed_clusters.html">spatially informed clusters</a> or
-<a href="hmrf.html">spatial domains with HMRF</a>, take the genes that
-belong most firmly to each module. In a full-size dataset, about 30
-genes per module is a common choice.</p>
+<p>For downstream analyses such as <a href="spatial_informed_clusters.html">spatially informed clusters</a>,
+take the genes that belong most firmly to each module. <a href="spatial_domains.html">Spatial domains with HMRF</a> use the module
+scores directly. In a full-size dataset, about 30 genes per module is a
+common choice.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">top_genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">spatial_module</span><span class="op">)</span><span class="op">]</span><span class="op">[</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">spatial_module_cor</span><span class="op">)</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">10</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">spatial_module</span><span class="op">]</span></span>

@@ -135,7 +135,7 @@ holds settings only, never data.
   a wrapper of the original can sit beside it:
   [`runNeighborhoodPCA()`](https://giottosuite.com/dev/reference/runNeighborhoodPCA.md)
   next to
-  [`GiottoConnect::runBanksy()`](https://rdrr.io/pkg/GiottoConnect/man/runBanksy.html).
+  [`GiottoConnect::runBanksy()`](https://giotto-suite.github.io/GiottoConnect/reference/runBanksy.html).
 - Its help page names the original method and paper under `@references`,
   asks users to cite it, and says how it differs from the original and
   how closely it matches.
@@ -145,7 +145,7 @@ holds settings only, never data.
 - Compare against the original tool on the same input, with a seed, and
   keep the comparison script outside the package (for example in
   `examples/<tool>_comparison/`).
-- [`GiottoConnect::checkGiottoMethod()`](https://rdrr.io/pkg/GiottoConnect/man/checkGiottoMethod.html)
+- [`GiottoConnect::checkGiottoMethod()`](https://giotto-suite.github.io/GiottoConnect/reference/checkGiottoMethod.html)
   (and `expect_giotto_method()` in tests) checks a wrapper against these
   rules: which slots it wrote, that the history holds its `Param`, and
   that its help page has references.

@@ -89,8 +89,8 @@ Spatial genes, co-expression modules and spatial domains.
   modules](https://giottosuite.com/dev/articles/spatial_coexpression_modules.md):
 - [Spatially Informed
   clusters](https://giottosuite.com/dev/articles/spatial_informed_clusters.md):
-- [Spatial domain analysis using
-  HMRF](https://giottosuite.com/dev/articles/hmrf.md):
+- [Spatial domains with BANKSY and
+  HMRF](https://giottosuite.com/dev/articles/spatial_domains.md):
 
 ### Cell-cell interactions
 

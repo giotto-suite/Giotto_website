@@ -147,11 +147,11 @@ spatCellPlot(g,
 ## 6 Top genes per module
 
 For downstream analyses such as [spatially informed
-clusters](https://giottosuite.com/dev/articles/spatial_informed_clusters.md)
-or [spatial domains with
-HMRF](https://giottosuite.com/dev/articles/hmrf.md), take the genes that
-belong most firmly to each module. In a full-size dataset, about 30
-genes per module is a common choice.
+clusters](https://giottosuite.com/dev/articles/spatial_informed_clusters.md),
+take the genes that belong most firmly to each module. [Spatial domains
+with HMRF](https://giottosuite.com/dev/articles/spatial_domains.md) use
+the module scores directly. In a full-size dataset, about 30 genes per
+module is a common choice.
 
 ``` r
 

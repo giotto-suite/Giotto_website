@@ -165,7 +165,7 @@
     <li><a class="dropdown-item" href="../articles/spatial_genes.html">Detection of spatially variable genes</a></li>
     <li><a class="dropdown-item" href="../articles/spatial_coexpression_modules.html">Detection of spatial co-expression modules</a></li>
     <li><a class="dropdown-item" href="../articles/spatial_informed_clusters.html">Spatially informed clusters</a></li>
-    <li><a class="dropdown-item" href="../articles/hmrf.html">Spatial domain analysis using HMRF</a></li>
+    <li><a class="dropdown-item" href="../articles/spatial_domains.html">Spatial domains with BANKSY and HMRF</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Cell-cell interactions</h6></li>
     <li><a class="dropdown-item" href="../articles/interaction_changed_features.html">Interaction-changed features</a></li>
@@ -230,7 +230,7 @@
 <span>  spat_unit <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  feat_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  expression_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"normalized"</span>, <span class="st">"scaled"</span>, <span class="st">"custom"</span><span class="op">)</span>,</span>
-<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cov_groups"</span>, <span class="st">"cov_loess"</span>, <span class="st">"var_p_resid"</span><span class="op">)</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cov_groups"</span>, <span class="st">"cov_loess"</span>, <span class="st">"var_p_resid"</span>, <span class="st">"var"</span><span class="op">)</span>,</span>
 <span>  reverse_log_scale <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  logbase <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  expression_threshold <span class="op">=</span> <span class="fl">0</span>,</span>
@@ -238,8 +238,10 @@
 <span>  zscore_threshold <span class="op">=</span> <span class="fl">1.5</span>,</span>
 <span>  HVFname <span class="op">=</span> <span class="st">"hvf"</span>,</span>
 <span>  difference_in_cov <span class="op">=</span> <span class="fl">0.1</span>,</span>
-<span>  var_threshold <span class="op">=</span> <span class="fl">1.5</span>,</span>
-<span>  var_number <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  var_threshold <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  n_top_feats <span class="op">=</span> <span class="fl">2000</span>,</span>
+<span>  theta <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  var_number <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  random_subset <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  set_seed <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  seed_number <span class="op">=</span> <span class="fl">1234</span>,</span>
@@ -310,13 +312,29 @@ variance required</p></dd>
 
 
 <dt id="arg-var-threshold">var_threshold<a class="anchor" aria-label="anchor" href="#arg-var-threshold"></a></dt>
-<dd><p>(var_p_resid) variance threshold for features for
-var_p_resid method</p></dd>
+<dd><p>(var_p_resid) noise floor on the residual variance.
+Under analytic Pearson residuals a feature with no biological signal has
+variance close to 1 by construction, so the default <code>1</code> drops features that
+are <em>less</em> variable than Poisson noise. It is a guard, not a selector: on
+real data it keeps most features (94.5% of a Stereo-seq transcriptome, 82%
+of a Xenium panel). Raise it to select on variance alone. <code>NULL</code> disables it.</p></dd>
+
+
+<dt id="arg-n-top-feats">n_top_feats<a class="anchor" aria-label="anchor" href="#arg-n-top-feats"></a></dt>
+<dd><p>maximum number of features to keep, taken from the top of
+that method's own ranking. Default <code>2000</code>. Applies to every method.
+<code>NULL</code> disables it.</p></dd>
+
+
+<dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
+<dd><p>(var_p_resid) negative-binomial overdispersion used when
+forming the Pearson residuals. Default 100, following Lause/Kobak and
+matching <code>normalizeGiotto(norm_methods = "pearson_resid")</code>. Larger values
+approach a Poisson model.</p></dd>
 
 
 <dt id="arg-var-number">var_number<a class="anchor" aria-label="anchor" href="#arg-var-number"></a></dt>
-<dd><p>(var_p_resid) number of top variance features for
-var_p_resid method</p></dd>
+<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> use <code>n_top_feats</code>.</p></dd>
 
 
 <dt id="arg-random-subset">random_subset<a class="anchor" aria-label="anchor" href="#arg-random-subset"></a></dt>
@@ -374,7 +392,7 @@ Set to FALSE for performance with large datasets or dbMatrix objects.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Currently we provide 2 ways to calculate highly variable genes:</p>
+    <p>Currently we provide 4 ways to calculate highly variable genes:</p>
 <p><strong>1. high coeff of variance (COV) within groups: </strong> <br>
 First genes are binned (<em>nr_expression_groups</em>) into average expression
 groups and the COV for each feature is converted into a z-score within each
@@ -385,6 +403,32 @@ A predicted COV is calculated for each feature using loess regression
 (COV~log(mean expression))
 Features that show a higher than predicted COV (<em>difference_in_cov</em>)
 are considered highly variable. <br></p>
+<p><strong>3. variance of Pearson residuals (<code>var_p_resid</code>): </strong> <br>
+see <code>var_threshold</code>. <br></p>
+<p><strong>4. variance (<code>var</code>): </strong> <br>
+the <code>n_top_feats</code> features with the highest variance of
+<code>expression_values</code> (by default the normalized values). It favours highly
+expressed features. <br></p>
+    </div>
+    <div class="section level2">
+    <h2 id="feature-selection">Feature selection<a class="anchor" aria-label="anchor" href="#feature-selection"></a></h2>
+    <p>Every method applies two constraints and the more restrictive one decides:
+its own threshold (<code>zscore_threshold</code> for <code>cov_groups</code>,
+<code>difference_in_cov</code> for <code>cov_loess</code>, <code>var_threshold</code> for <code>var_p_resid</code>)
+and the shared <code>n_top_feats</code> count. Setting either to <code>NULL</code> falls back to
+the other.</p>
+<p>The two cover different failure modes. A count keeps the selection a
+predictable size across samples, but pads the list when a dataset has few
+genuinely variable features, and cannot bind at all on a panel smaller than
+<code>n_top_feats</code>. A threshold is scale-free but its yield swings with the
+data.</p>
+<p>Each method ranks on its own score — residual variance, within-bin COV
+z-score, or COV above the LOESS fit. For <code>cov_groups</code> the z-score is
+standardised within expression bins, so a global ranking stays balanced
+across expression levels: on a Stereo-seq transcriptome a top-2000 cut drew
+9.6-12.4% from each of 19 of 20 bins, the exception being the
+highest-expression bin, where COV is compressed by construction.
+Ties resolve by <code><a href="https://rdrr.io/r/base/order.html" class="external-link">order()</a></code>, so the selected count is exact.</p>
     </div>
 
     <div class="section level2">

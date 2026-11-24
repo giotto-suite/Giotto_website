@@ -97,9 +97,9 @@ modules](https://giottosuite.com/dev/articles/spatial_coexpression_modules.md)
 [Dimension reduction & clustering · Spatial domains & niches Spatially
 Informed
 clusters](https://giottosuite.com/dev/articles/spatial_informed_clusters.md)
-[Spatial domains & niches Spatial domain analysis using
-HMRF](https://giottosuite.com/dev/articles/hmrf.md) [Cell-cell
-interactions Interaction-changed features
+[Spatial domains & niches Spatial domains with BANKSY and
+HMRF](https://giottosuite.com/dev/articles/spatial_domains.md)
+[Cell-cell interactions Interaction-changed features
 GiottoDisk](https://giottosuite.com/dev/articles/interaction_changed_features.md)
 [Visualization & interactive exploration
 Visualizations](https://giottosuite.com/dev/articles/visualizations.md)

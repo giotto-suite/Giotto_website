@@ -20,7 +20,7 @@ Banksy.
 
 This is a reimplementation of BANKSY's embedding. **If you use it,
 please cite the original paper** (see References).
-[`GiottoConnect::runBanksy()`](https://rdrr.io/pkg/GiottoConnect/man/runBanksy.html)
+[`GiottoConnect::runBanksy()`](https://giotto-suite.github.io/GiottoConnect/reference/runBanksy.html)
 runs the original Banksy package.
 
 ## Usage
@@ -121,7 +121,7 @@ Genetics* 56, 431–441 (2024).
 ## See also
 
 [`runNeighborhoodPCA()`](https://giottosuite.com/dev/reference/runNeighborhoodPCA.md),
-[`GiottoConnect::runBanksy()`](https://rdrr.io/pkg/GiottoConnect/man/runBanksy.html)
+[`GiottoConnect::runBanksy()`](https://giotto-suite.github.io/GiottoConnect/reference/runBanksy.html)
 
 ## Examples
 

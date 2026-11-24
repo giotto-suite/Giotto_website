@@ -192,7 +192,7 @@
     <li><a class="dropdown-item" href="../articles/spatial_genes.html">Detection of spatially variable genes</a></li>
     <li><a class="dropdown-item" href="../articles/spatial_coexpression_modules.html">Detection of spatial co-expression modules</a></li>
     <li><a class="dropdown-item" href="../articles/spatial_informed_clusters.html">Spatially informed clusters</a></li>
-    <li><a class="dropdown-item" href="../articles/hmrf.html">Spatial domain analysis using HMRF</a></li>
+    <li><a class="dropdown-item" href="../articles/spatial_domains.html">Spatial domains with BANKSY and HMRF</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Cell-cell interactions</h6></li>
     <li><a class="dropdown-item" href="../articles/interaction_changed_features.html">Interaction-changed features</a></li>
@@ -267,8 +267,8 @@
 <span class="header-section-number">1</span> Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p><a href="https://github.com/giotto-suite/GiottoConnect" class="external-link">GiottoConnect</a>
-converts between Giotto and Seurat with <code><a href="https://rdrr.io/pkg/GiottoConnect/man/seuratToGiotto.html" class="external-link">seuratToGiotto()</a></code>
-and <code><a href="https://rdrr.io/pkg/GiottoConnect/man/giottoToSeurat.html" class="external-link">giottoToSeurat()</a></code>. Both work with Seurat v3, v4 and v5
+converts between Giotto and Seurat with <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/seuratToGiotto.html" class="external-link">seuratToGiotto()</a></code>
+and <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/giottoToSeurat.html" class="external-link">giottoToSeurat()</a></code>. Both work with Seurat v3, v4 and v5
 objects: the converter reads the layout of the object (assays, images,
 reductions, graphs) instead of depending on the Seurat version.</p>
 <p>This tutorial converts a Visium dataset in both directions and checks
@@ -276,7 +276,7 @@ that the result can be used on each side. For analysis in either
 package, see their own tutorials.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giottosuite.com">Giotto</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">GiottoConnect</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giotto-suite.github.io/GiottoConnect/" class="external-link">GiottoConnect</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">SeuratData</span><span class="op">)</span></span>
 <span></span>
@@ -289,7 +289,7 @@ package, see their own tutorials.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">brain</span> <span class="op">&lt;-</span> <span class="fu">LoadData</span><span class="op">(</span><span class="st">"stxBrain"</span>, type <span class="op">=</span> <span class="st">"anterior1"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">brainG</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoConnect/man/seuratToGiotto.html" class="external-link">seuratToGiotto</a></span><span class="op">(</span><span class="va">brain</span><span class="op">)</span></span>
+<span><span class="va">brainG</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoConnect/reference/seuratToGiotto.html" class="external-link">seuratToGiotto</a></span><span class="op">(</span><span class="va">brain</span><span class="op">)</span></span>
 <span><span class="va">brainG</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>An object of class giotto </span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="sc">&gt;</span>Active spat_unit<span class="sc">:</span>  cell </span>
@@ -310,10 +310,10 @@ package, see their own tutorials.</p>
 <code>raw</code> expression values of the feature type <code>rna</code>.
 The Visium spot positions are converted from image pixels to microns,
 and the tissue image, reductions and nearest neighbour graphs are
-carried over. <code><a href="https://rdrr.io/pkg/GiottoConnect/man/mappingProvenance.html" class="external-link">mappingProvenance()</a></code> lists what could not be
+carried over. <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/mappingProvenance.html" class="external-link">mappingProvenance()</a></code> lists what could not be
 carried over or was estimated, such as the micron-per-pixel scale:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/GiottoConnect/man/mappingProvenance.html" class="external-link">mappingProvenance</a></span><span class="op">(</span><span class="va">brainG</span><span class="op">)</span><span class="op">$</span><span class="va">losses</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoConnect/reference/mappingProvenance.html" class="external-link">mappingProvenance</a></span><span class="op">(</span><span class="va">brainG</span><span class="op">)</span><span class="op">$</span><span class="va">losses</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>  part_id                      kind field</span>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="dv">1</span>    locs recovered_from_parameters units</span>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>                                                                note   source</span>
@@ -340,7 +340,7 @@ it:</p>
 <span class="header-section-number">3</span> Giotto to Seurat<a class="anchor" aria-label="anchor" href="#giotto-to-seurat"></a>
 </h2>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">brain2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoConnect/man/giottoToSeurat.html" class="external-link">giottoToSeurat</a></span><span class="op">(</span><span class="va">brainG</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">brain2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoConnect/reference/giottoToSeurat.html" class="external-link">giottoToSeurat</a></span><span class="op">(</span><span class="va">brainG</span><span class="op">)</span></span>
 <span><span class="va">brain2</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>An object of class Seurat </span>
 <span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="dv">31053</span> features across <span class="dv">2696</span> samples within <span class="dv">1</span> assay </span>
@@ -360,10 +360,10 @@ with Seurat’s spatial plots:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">SpatialDimPlot</span><span class="op">(</span><span class="va">brain2</span>, group.by <span class="op">=</span> <span class="st">"leiden_clus"</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, label.size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/interoperability_seurat/2-seuratClusters.png"></p>
-<p><code><a href="https://rdrr.io/pkg/GiottoConnect/man/readbackCheck.html" class="external-link">readbackCheck()</a></code> compares the Seurat object with the
+<p><code><a href="https://giotto-suite.github.io/GiottoConnect/reference/readbackCheck.html" class="external-link">readbackCheck()</a></code> compares the Seurat object with the
 Giotto object, part by part:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/GiottoConnect/man/readbackCheck.html" class="external-link">readbackCheck</a></span><span class="op">(</span><span class="va">brainG</span>, <span class="va">brain2</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoConnect/reference/readbackCheck.html" class="external-link">readbackCheck</a></span><span class="op">(</span><span class="va">brainG</span>, <span class="va">brain2</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="sc">&lt;</span>giottoReadback<span class="sc">&gt;</span> PASS<span class="sc">:</span> <span class="dv">28</span> MATCH, <span class="dv">0</span> DECLARED, <span class="dv">0</span> UNDECLARED</span></code></pre></div>
 </div>
 <div class="section level2" number="4">

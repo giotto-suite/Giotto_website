@@ -15,7 +15,7 @@ neighbourhood-aware cell types).
 This reimplements BANKSY's embedding, including its gradient (AGF)
 features with `compute_agf = TRUE`. **If you use it, please cite the
 original paper** (see References).
-[`GiottoConnect::runBanksy()`](https://rdrr.io/pkg/GiottoConnect/man/runBanksy.html)
+[`GiottoConnect::runBanksy()`](https://giotto-suite.github.io/GiottoConnect/reference/runBanksy.html)
 runs the original Banksy package.
 
 ## Usage
@@ -125,7 +125,7 @@ Genetics* 56, 431–441 (2024).
 ## See also
 
 [`neighborhoodPCAParam()`](https://giottosuite.com/dev/reference/neighborhoodPCAParam.md),
-[`GiottoConnect::runBanksy()`](https://rdrr.io/pkg/GiottoConnect/man/runBanksy.html)
+[`GiottoConnect::runBanksy()`](https://giotto-suite.github.io/GiottoConnect/reference/runBanksy.html)
 
 ## Examples
 

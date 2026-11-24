@@ -65,7 +65,8 @@ For troubleshooting help, see this
   features?](https://giottosuite.com/dev/articles/find_degs.md)
 - [How do I use Harmony with Giotto to remove batch
   effects?](https://giottosuite.com/dev/articles/harmony.md)
-- [How do I use HMRF?](https://giottosuite.com/dev/articles/hmrf.md)
+- [How do I find spatial domains with BANKSY or
+  HMRF?](https://giottosuite.com/dev/articles/spatial_domains.md)
 - [How do I deconvolve my
   data?](https://giottosuite.com/dev/articles/deconvolution.md)
 - [How do I perform kriging to super-resolve my Visium

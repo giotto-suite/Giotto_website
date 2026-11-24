@@ -162,8 +162,7 @@ the 2 × 2 table of edges by the on/off state of their two cells (the
 
 With `return_gobject = TRUE` (the default), the results are written to
 the feature metadata instead, as `binspect.z`, `binspect.p` and
-`binspect.padj` (and `binSpect.pval`, which
-[`doHMRF()`](https://giottosuite.com/dev/reference/doHMRF.md) reads):
+`binspect.padj` (and `binSpect.pval`, which `doHMRF()` reads):
 
 ``` r
 
@@ -637,9 +636,9 @@ Spatial genes are the input to several downstream analyses:
   more on
   [`spatialCoexpression()`](https://giottosuite.com/dev/reference/spatialCoexpression.md)
   and its options.
-- [Spatial domains with
-  HMRF](https://giottosuite.com/dev/articles/hmrf.md) reads
-  `binSpect.pval` from the feature metadata.
+- [Spatial domains with BANKSY and
+  HMRF](https://giottosuite.com/dev/articles/spatial_domains.md): HMRF
+  on co-expression modules of spatial genes.
 - [Spatially informed
   clusters](https://giottosuite.com/dev/articles/spatial_informed_clusters.md):
   cluster cells on spatial genes only.

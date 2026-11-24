@@ -569,8 +569,8 @@ Functions to cluster cells.
   : Projection of cluster labels
 - [`doGiottoClustree()`](https://giottosuite.com/dev/reference/doGiottoClustree.md)
   : doGiottoClustree
-- [`runBanksy()`](https://giottosuite.com/dev/reference/runBanksy.md) :
-  Spatial domains with BANKSY
+- [`runBanksy()`](https://giotto-suite.github.io/GiottoConnect/reference/runBanksy.html)
+  : Spatial domains with BANKSY (from GiottoConnect)
 - [`sweepClusterK()`](https://giottosuite.com/dev/reference/sweepClusterK.md)
   : Sweep a range of cluster numbers
 - [`LeidenIgraphClusParam-class`](https://giottosuite.com/dev/reference/LeidenIgraphClusParam-class.md)
@@ -750,8 +750,6 @@ Methods to detect spatially coherent expression patterns.
 - [`trendSceek()`](https://giottosuite.com/dev/reference/trendSceek.md)
   : trendSceek
 - [`spark()`](https://giottosuite.com/dev/reference/spark.md) : spark
-- [`filterSpatialGenes()`](https://giottosuite.com/dev/reference/filterSpatialGenes.md)
-  : filterSpatialGenes
 
 ## Simulate Spatial Expression Patterns
 
@@ -787,27 +785,6 @@ Functions to identify spatial domains with HMRF.
   : HMRF clustering parameters
 - [`hmrfSummary()`](https://giottosuite.com/dev/reference/hmrfSummary.md)
   : Compare HMRF settings
-- [`doHMRF()`](https://giottosuite.com/dev/reference/doHMRF.md) : doHMRF
-- [`doHMRF_V2()`](https://giottosuite.com/dev/reference/doHMRF_V2.md) :
-  doHMRF_V2
-- [`initHMRF_V2()`](https://giottosuite.com/dev/reference/initHMRF_V2.md)
-  : initHMRF_V2
-- [`loadHMRF()`](https://giottosuite.com/dev/reference/loadHMRF.md) :
-  loadHMRF
-- [`viewHMRFresults()`](https://giottosuite.com/dev/reference/viewHMRFresults.md)
-  : viewHMRFresults
-- [`viewHMRFresults_V2()`](https://giottosuite.com/dev/reference/viewHMRFresults_V2.md)
-  : viewHMRFresults_V2
-- [`writeHMRFresults()`](https://giottosuite.com/dev/reference/writeHMRFresults.md)
-  : writeHMRFresults
-- [`addHMRF()`](https://giottosuite.com/dev/reference/addHMRF.md) :
-  addHMRF
-- [`addHMRF_V2()`](https://giottosuite.com/dev/reference/addHMRF_V2.md)
-  : addHMRF_V2
-- [`viewHMRFresults2D()`](https://giottosuite.com/dev/reference/viewHMRFresults2D.md)
-  : viewHMRFresults2D
-- [`viewHMRFresults3D()`](https://giottosuite.com/dev/reference/viewHMRFresults3D.md)
-  : viewHMRFresults3D
 
 ## Basic Visualizations
 
@@ -1208,15 +1185,15 @@ Function to detect doublets in raw expression data.
 
 Convert other type of objects into a Giotto object and vice versa.
 
-- [`seuratToGiotto()`](https://rdrr.io/pkg/GiottoConnect/man/seuratToGiotto.html)
+- [`seuratToGiotto()`](https://giotto-suite.github.io/GiottoConnect/reference/seuratToGiotto.html)
   : Convert a Seurat object to a Giotto object (from GiottoConnect)
-- [`giottoToSeurat()`](https://rdrr.io/pkg/GiottoConnect/man/giottoToSeurat.html)
+- [`giottoToSeurat()`](https://giotto-suite.github.io/GiottoConnect/reference/giottoToSeurat.html)
   : Convert a Giotto object to a Seurat object (from GiottoConnect)
 - [`spatialExperimentToGiotto()`](https://giottosuite.com/dev/reference/NA)
   : Convert a SpatialExperiment to a Giotto object (from GiottoConnect)
 - [`giottoToSpatialExperiment()`](https://giottosuite.com/dev/reference/NA)
   : Convert a Giotto object to a SpatialExperiment (from GiottoConnect)
-- [`anndataToGiotto()`](https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html)
+- [`anndataToGiotto()`](https://giotto-suite.github.io/GiottoConnect/reference/anndataToGiotto.html)
   : Convert an AnnData .h5ad file to a Giotto object (from
   GiottoConnect)
 - [`giottoToAnnData()`](https://giottosuite.com/dev/reference/NA) :

@@ -192,7 +192,7 @@
     <li><a class="dropdown-item" href="../articles/spatial_genes.html">Detection of spatially variable genes</a></li>
     <li><a class="dropdown-item" href="../articles/spatial_coexpression_modules.html">Detection of spatial co-expression modules</a></li>
     <li><a class="dropdown-item" href="../articles/spatial_informed_clusters.html">Spatially informed clusters</a></li>
-    <li><a class="dropdown-item" href="../articles/hmrf.html">Spatial domain analysis using HMRF</a></li>
+    <li><a class="dropdown-item" href="../articles/spatial_domains.html">Spatial domains with BANKSY and HMRF</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Cell-cell interactions</h6></li>
     <li><a class="dropdown-item" href="../articles/interaction_changed_features.html">Interaction-changed features</a></li>
@@ -727,7 +727,7 @@ co-expression patterns<a class="anchor" aria-label="anchor" href="#spatial-co-ex
 <span><span class="co"># if Rscript is not found, you might have to create a symbolic link, e.g.</span></span>
 <span><span class="co"># cd /usr/local/bin</span></span>
 <span><span class="co"># sudo ln -s /Library/Frameworks/R.framework/Resources/Rscript Rscript</span></span>
-<span><span class="va">HMRF_spatial_genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/doHMRF.html">doHMRF</a></span><span class="op">(</span></span>
+<span><span class="va">HMRF_spatial_genes</span> <span class="op">&lt;-</span> <span class="fu">doHMRF</span><span class="op">(</span></span>
 <span>    gobject <span class="op">=</span> <span class="va">visium_kidney</span>,</span>
 <span>    expression_values <span class="op">=</span> <span class="st">"scaled"</span>,</span>
 <span>    spatial_network_name <span class="op">=</span> <span class="st">"Delaunay_full"</span>,</span>
@@ -744,7 +744,7 @@ co-expression patterns<a class="anchor" aria-label="anchor" href="#spatial-co-ex
 <span></span>
 <span></span>
 <span><span class="co">## add HMRF of interest to giotto object</span></span>
-<span><span class="va">visium_kidney</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addHMRF.html">addHMRF</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_kidney</span>,</span>
+<span><span class="va">visium_kidney</span> <span class="op">&lt;-</span> <span class="fu">addHMRF</span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">visium_kidney</span>,</span>
 <span>                         HMRFoutput <span class="op">=</span> <span class="va">HMRF_spatial_genes</span>,</span>
 <span>                         k <span class="op">=</span> <span class="fl">5</span>, </span>
 <span>                         betas_to_add <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span>,</span>

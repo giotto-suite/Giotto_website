@@ -6,7 +6,7 @@ This tutorial shows how to write a Giotto object as AnnData `.h5ad`
 files with
 [`giottoToAnnData()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html)
 and read them back with
-[`anndataToGiotto()`](https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html).
+[`anndataToGiotto()`](https://giotto-suite.github.io/GiottoConnect/reference/anndataToGiotto.html).
 Both functions are part of
 [GiottoConnect](https://github.com/giotto-suite/GiottoConnect) and read
 and write `.h5ad` files directly from R: no python environment is
@@ -142,7 +142,7 @@ adata = sc.read_h5ad("aggregate_rna.h5ad")
 sc.tl.leiden(adata, neighbors_key = "kNN.umap")
 ```
 
-[`readbackCheck()`](https://rdrr.io/pkg/GiottoConnect/man/readbackCheck.html)
+[`readbackCheck()`](https://giotto-suite.github.io/GiottoConnect/reference/readbackCheck.html)
 compares the written file with the Giotto object, part by part:
 
 ``` r
@@ -156,7 +156,7 @@ readbackCheck(g, file.path(results_folder, "aggregate_rna.h5ad"))
 
 ## 5 AnnData to Giotto
 
-[`anndataToGiotto()`](https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html)
+[`anndataToGiotto()`](https://giotto-suite.github.io/GiottoConnect/reference/anndataToGiotto.html)
 reads an `.h5ad` file into a Giotto object. Files written by
 [`giottoToAnnData()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html)
 come back with their networks, reductions and expression values under
@@ -194,7 +194,7 @@ list_expression(aggregate_rna)
 Each file becomes a Giotto object with the spatial unit `cell` and the
 feature type `rna`.
 
-[`mappingProvenance()`](https://rdrr.io/pkg/GiottoConnect/man/mappingProvenance.html)
+[`mappingProvenance()`](https://giotto-suite.github.io/GiottoConnect/reference/mappingProvenance.html)
 shows how the file was converted, including anything that could not be
 carried over or was estimated:
 

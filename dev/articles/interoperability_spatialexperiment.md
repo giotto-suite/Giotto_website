@@ -74,7 +74,7 @@ plotVisium(spe, annotate = "leiden_clus")
 
 ![](images/interoperability_spatialexperiment/1-speClusters.png)
 
-[`readbackCheck()`](https://rdrr.io/pkg/GiottoConnect/man/readbackCheck.html)
+[`readbackCheck()`](https://giotto-suite.github.io/GiottoConnect/reference/readbackCheck.html)
 compares the SpatialExperiment with the Giotto object, part by part:
 
 ``` r
@@ -121,7 +121,7 @@ The counts become the `raw` expression values of the feature type `rna`,
 the `colData` becomes the cell metadata, the Visium spot positions are
 converted from image pixels to microns, and reductions and the tissue
 image are carried over.
-[`mappingProvenance()`](https://rdrr.io/pkg/GiottoConnect/man/mappingProvenance.html)
+[`mappingProvenance()`](https://giotto-suite.github.io/GiottoConnect/reference/mappingProvenance.html)
 lists what could not be carried over or was estimated:
 
 ``` r

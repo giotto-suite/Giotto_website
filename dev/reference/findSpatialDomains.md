@@ -6,7 +6,7 @@ One command for spatial domains, with two native methods:
   ([`runNeighborhoodPCA()`](https://giottosuite.com/dev/reference/runNeighborhoodPCA.md),
   Singhal et al. 2024) at `lambda`, clustered by Leiden on an sNN
   network of all its PCs, with the defaults of
-  [`GiottoConnect::runBanksy()`](https://rdrr.io/pkg/GiottoConnect/man/runBanksy.html)
+  [`GiottoConnect::runBanksy()`](https://giotto-suite.github.io/GiottoConnect/reference/runBanksy.html)
   so the native and original BANKSY can be compared directly;
 
 - `"hmrf"`: the hidden Markov random field
