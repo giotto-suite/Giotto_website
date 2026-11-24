@@ -114,6 +114,14 @@ edgeicg:
   is `$ICFregion` (see `edgeicg::edgeicg_region_results()`). The leak
   model stays global.
 
+- `leak_genes`:
+
+  features the leak (transcripts from touching neighbours) is fitted on
+  when only `selected_feats` are tested: `"all"` (default; edgeicg \>=
+  0.3.0) fits it on all features, so the contact results do not depend
+  on the selection, at the cost of one extra pass over all features;
+  `"tested"` fits it on `selected_feats` only (faster).
+
 - other:
 
   passed to `edgeicg::edgeicg()` (e.g. `min_cells`, `min_det`,

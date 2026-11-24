@@ -374,13 +374,14 @@ variable features, which favour genes that separate cell types.</p>
 <span>    workers <span class="op">=</span> <span class="fl">8</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">icf</span><span class="op">$</span><span class="va">edgeicg</span></span></code></pre></div>
-<pre><code>EdgeICG: 169528 cells, 15 types, 2101 genes, 210 pairs (pass1 53 s, pass2 43 s, pass3 4 s)
+<pre><code>EdgeICG: 169528 cells, 15 types, 2101 genes, 210 pairs (pass1 64 s, pass2 73 s, pass3 6 s)
+  leak fitted on: all (17423 genes)
   hits: q &lt; 0.05 and |log2 FC| &gt;= 0.25 (q &lt; 0.05 alone)
-  contact   3166 (5600)
-  paracrine 1309 (1984)
-  niche     1455 (1626), screen
-            attributed (receiver, gene): 931</code></pre>
-<p>This takes about 2 minutes with 8 workers, with a peak of about 19 GB
+  contact   3552 (6176)
+  paracrine 1354 (2055)
+  niche     1462 (1630), screen
+            attributed (receiver, gene): 936</code></pre>
+<p>This takes about 5 minutes with 8 workers, with a peak of about 18 GB
 of memory. The expression is read from the GiottoDisk store in spatial
 windows; fewer <code>workers</code> use less memory. What the settings
 do:</p>
@@ -389,9 +390,9 @@ do:</p>
 <code>cluster_column</code>: the cell types. Every ordered pair of
 types is a receiver and sender pair (210 here).</li>
 <li>
-<code>selected_feats</code>: the features to test. The leak is
-estimated across the tested features, so it shifts somewhat with the
-panel; niche results are stable.</li>
+<code>selected_feats</code>: the features to test. The leak is still
+estimated from all 17,423 detected features, which takes one extra pass
+over them (about 2 of the 5 minutes); see <a href="#the-leak-and-why-the-classes-matter">The leak</a>.</li>
 <li>
 <code>spatial_covariates = TRUE</code>: adjusts the niche scale for
 smooth trends across the section (tissue zones), which otherwise produce
@@ -483,9 +484,9 @@ much less</td>
 <span>    value.var <span class="op">=</span> <span class="st">"feats"</span><span class="op">)</span></span></code></pre></div>
 <pre><code>       scale clean other_marker own_down sender_marker
       &lt;char&gt; &lt;int&gt;        &lt;int&gt;    &lt;int&gt;         &lt;int&gt;
-1:   contact   980          863     1018           305
-2:     niche   623          389      296           147
-3: paracrine   522          343      337           107</code></pre>
+1:   contact  1063          906     1084           499
+2:     niche   625          391      296           150
+3: paracrine   535          358      344           117</code></pre>
 <p>At contact scale, more than two thirds of the significant hits are of
 an artefact class. That is the leak problem in numbers; the rest of this
 tutorial uses the <code>clean</code> hits.</p>
@@ -515,26 +516,64 @@ classes matter<a class="anchor" aria-label="anchor" href="#the-leak-and-why-the-
 </h3>
 <p><code><a href="../reference/plotICF_edgeicg.html">plotICFLeak()</a></code> shows the estimated leak: the share of a
 touching sender’s expression that turns up in the receiver.</p>
+<p>The leak is one number per receiver and sender pair, the same for
+every gene. edgeicg estimates it from all genes at once: in receivers
+touching the sender, each gene rises in proportion to how much the
+sender expresses it, and the slope of that relation across genes is the
+leak. A robust fit keeps genes with a real response to the sender from
+pulling the slope.</p>
+<p>Which genes go into that fit matters. Genes chosen for being variable
+or for marking cell types are the genes with the strongest real
+differences, and they pull the estimate. On this section, the leak
+estimated from the 2,101 selected features agreed only moderately with
+the one from all genes (correlation 0.60, on average about 30% higher),
+while 3,000 random genes reproduced it closely (0.99). That is why
+edgeicg estimates the leak from all features in the expression, even
+when you test only <code>selected_feats</code>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotICF_edgeicg.html">plotICFLeak</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">icf</span>, cell_order <span class="op">=</span> <span class="va">type_order</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/interaction_changed_features/02_leak.png" alt="" width="70%"></p>
-<p>Small cells with large neighbours, such as T cells and macrophages
-next to epithelial cells, pick up the most. The largest value,
-fibroblasts next to CAFs, also reflects that the two types grade into
-each other.</p>
+<p>Small cells with large neighbours pick up the most: T cells next to
+tumour cells (0.41 next to ANKRD30A+ and 0.28 next to luminal tumour
+cells), and mast cells next to T cells and macrophages. Fibroblasts next
+to ANKRD30A+ tumour cells and CAFs are also high, which partly reflects
+how these types grade into each other.</p>
+<p>Two settings change how the leak is estimated:</p>
+<ul>
+<li>
+<code>leak_genes = "tested"</code> estimates it from
+<code>selected_feats</code> only. This saves the extra pass, but the
+leak then depends on your selection.</li>
+<li>
+<code>leak</code> reuses the leak of an earlier run,
+e.g. <code>leak = icf$edgeicg</code>. This is useful when you rerun with
+other settings on the same data, as in <a href="#region-specific-effects">Region-specific effects</a> below.</li>
+</ul>
+<p>With a targeted panel of a few hundred genes there is no broader set
+to use, so the leak estimate is less certain; rely more on the classes
+below.</p>
 <p><code><a href="../reference/plotICF_edgeicg.html">plotICFPair()</a></code> shows every feature tested for one pair at
 one scale. For T cells touching luminal tumour cells:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotICF_edgeicg.html">plotICFPair</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">icf</span>, receiver <span class="op">=</span> <span class="st">"T cells"</span>, sender <span class="op">=</span> <span class="st">"tumor, luminal"</span>,</span>
 <span>    scale <span class="op">=</span> <span class="st">"contact"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/interaction_changed_features/03_pair.png" alt="" width="80%"></p>
-<p>The strongest increases (MSMB, TSPAN8, TNFSF10) are tumour genes,
-flagged <code>sender_marker</code>: the leak model removes most, but not
-all, of the transcripts a T cell picks up from a tumour cell it touches.
-Many decreases are genes of other stromal types
-(<code>other_marker</code>) or the T cell’s own genes going down
-(<code>own_down</code>). Few clean hits remain, all small. T cells
-touching tumour cells look much like the other T cells.</p>
+<p>No tumour gene goes up significantly: the leak model removes the
+transcripts a T cell picks up from the tumour cells it touches. Most
+decreases are genes of other stromal types (<code>other_marker</code>)
+or the T cell’s own genes going down (<code>own_down</code>). Few clean
+hits remain, all small. T cells touching tumour cells look much like the
+other T cells.</p>
+<p>This is where estimating the leak from all genes pays off. With
+<code>leak_genes = "tested"</code>, the leak for this pair is estimated
+at 0 from the 2,101 selected features, and three tumour genes, MSMB,
+TSPAN8 and TNFSF10, come out as significant increases
+(<code>sender_marker</code>, log2 FC 0.5–2.6). The class would still
+have warned you, but the leak model should have removed them.</p>
+<p>Where the leak is estimated lower than a strong marker’s spillover,
+some of that marker remains. The <code>sender_marker</code> class flags
+these hits: 499 at contact scale here, most between macrophages,
+myoepithelial cells and stromal cells.</p>
 </div>
 </div>
 <div class="section level2" number="6">
@@ -550,18 +589,18 @@ cells:</p>
 <span>    <span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, <span class="fu">.</span><span class="op">(</span><span class="va">feats</span>, <span class="va">scale</span>, <span class="va">log2fc</span>, <span class="va">z</span>, <span class="va">p.adj</span>, <span class="va">top_sender</span>, <span class="va">alpha</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <pre><code>      feats     scale log2fc     z   p.adj top_sender alpha
      &lt;char&gt;    &lt;char&gt;  &lt;num&gt; &lt;num&gt;   &lt;num&gt;     &lt;char&gt; &lt;num&gt;
- 1:    FGL2 paracrine   0.93   7.9 1.9e-11       &lt;NA&gt;    NA
- 2:   CXCL9     niche   4.25   7.6 7.8e-11    T cells  1.00
- 3:   CIITA   contact   0.70   7.1 1.1e-09       &lt;NA&gt;    NA
- 4:    CD74   contact   0.48   6.5 5.3e-08       &lt;NA&gt;    NA
- 5:    TAP1     niche   2.11   6.6 6.2e-08    T cells  0.96
- 6:    FGL2   contact   0.60   6.3 1.0e-07       &lt;NA&gt;    NA
- 7: CLEC10A   contact   0.84   6.1 4.3e-07       &lt;NA&gt;    NA
- 8:    IRF1     niche   2.62   6.0 1.5e-06    T cells  0.67
- 9:   WARS1     niche   1.88   5.9 3.4e-06    T cells  0.92
-10:  LAPTM5   contact  -0.50  -5.6 6.5e-06       &lt;NA&gt;    NA
-11:   DAPP1   contact   1.17   5.6 7.9e-06       &lt;NA&gt;    NA
-12:  SAMHD1 paracrine   0.64   5.7 9.9e-06       &lt;NA&gt;    NA</code></pre>
+ 1:    FGL2 paracrine   0.93   7.9 1.7e-11       &lt;NA&gt;    NA
+ 2:   CXCL9     niche   4.25   7.6 8.8e-11    T cells  1.00
+ 3:   CIITA   contact   0.71   7.2 5.6e-10       &lt;NA&gt;    NA
+ 4:    CD74   contact   0.50   6.7 1.3e-08       &lt;NA&gt;    NA
+ 5:    FGL2   contact   0.62   6.6 3.0e-08       &lt;NA&gt;    NA
+ 6:    TAP1     niche   2.13   6.6 6.0e-08    T cells  0.96
+ 7: CLEC10A   contact   0.86   6.2 2.1e-07       &lt;NA&gt;    NA
+ 8:    IRF1     niche   2.64   6.0 1.6e-06    T cells  0.68
+ 9:   WARS1     niche   1.93   5.9 3.0e-06    T cells  0.89
+10:   DAPP1   contact   1.19   5.6 4.7e-06       &lt;NA&gt;    NA
+11:  SAMHD1   contact   0.48   5.6 6.1e-06       &lt;NA&gt;    NA
+12: CD200R1   contact   0.79   5.6 7.3e-06       &lt;NA&gt;    NA</code></pre>
 <p>Two programmes stand out. In T-cell-rich niches, macrophages switch
 on the interferon-γ response: the chemokines CXCL9 and CXCL10, which
 attract more T cells, the transcription factor IRF1, the
@@ -592,7 +631,7 @@ T cells nearby, so another source drives it there as well.</p>
 <span class="header-section-number">6.2</span> Where it happens<a class="anchor" aria-label="anchor" href="#where-it-happens"></a>
 </h3>
 <p>A 600 µm window around the macrophages with the most T cells nearby.
-The cell types, and the macrophages coloured by their CXCL9 counts:</p>
+The cell outlines coloured by cell type, and by their CXCL9 counts:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">roi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8454</span>, <span class="fl">9054</span>, <span class="op">-</span><span class="fl">3209</span>, <span class="op">-</span><span class="fl">2609</span><span class="op">)</span> <span class="co"># xmin, xmax, ymin, ymax</span></span>
 <span><span class="va">gz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/subsetGiottoLocs.html" class="external-link">subsetGiottoLocs</a></span><span class="op">(</span><span class="va">g</span>,</span>
@@ -608,27 +647,25 @@ The cell types, and the macrophages coloured by their CXCL9 counts:</p>
 <span>    <span class="st">"T cells"</span> <span class="op">=</span> <span class="st">"#17becf"</span>, <span class="st">"B cells"</span> <span class="op">=</span> <span class="st">"#1f78b4"</span>, <span class="st">"plasma cells"</span> <span class="op">=</span> <span class="st">"#a6cee3"</span>,</span>
 <span>    <span class="st">"macrophages"</span> <span class="op">=</span> <span class="st">"#6a3d9a"</span>, <span class="st">"mast cells"</span> <span class="op">=</span> <span class="st">"#b15928"</span>, <span class="st">"adipocytes"</span> <span class="op">=</span> <span class="st">"#ffff99"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">gz</span>, cell_color <span class="op">=</span> <span class="st">"cell_type"</span>, color_as_factor <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>    cell_color_code <span class="op">=</span> <span class="va">type_colors</span>, point_size <span class="op">=</span> <span class="fl">1.4</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">gz</span>, show_polygon <span class="op">=</span> <span class="cn">TRUE</span>, polygon_feat_type <span class="op">=</span> <span class="st">"cell"</span>,</span>
+<span>    polygon_fill <span class="op">=</span> <span class="st">"cell_type"</span>, polygon_fill_as_factor <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    polygon_fill_code <span class="op">=</span> <span class="va">type_colors</span>, polygon_alpha <span class="op">=</span> <span class="fl">1</span>, polygon_line_size <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># CXCL9 counts of the macrophages, as a cell metadata column</span></span>
-<span><span class="va">mac</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">[</span><span class="va">cell_type</span> <span class="op">==</span> <span class="st">"macrophages"</span>, <span class="va">cell_ID</span><span class="op">]</span></span>
-<span><span class="va">raw</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/getExpression.html" class="external-link">getExpression</a></span><span class="op">(</span><span class="va">g</span>, values <span class="op">=</span> <span class="st">"raw"</span>, output <span class="op">=</span> <span class="st">"exprObj"</span><span class="op">)</span><span class="op">[</span><span class="op">]</span></span>
-<span><span class="va">cxcl9</span> <span class="op">&lt;-</span> <span class="fu">storeRead</span><span class="op">(</span><span class="va">raw</span><span class="op">[</span><span class="st">"CXCL9"</span>, <span class="va">mac</span><span class="op">]</span>, output <span class="op">=</span> <span class="st">"dgcmatrix"</span>,</span>
-<span>    max_rows <span class="op">=</span> <span class="cn">Inf</span>, max_cols <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/addCellMetadata.html" class="external-link">addCellMetadata</a></span><span class="op">(</span><span class="va">g</span>,</span>
-<span>    new_metadata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>cell_ID <span class="op">=</span> <span class="va">mac</span>,</span>
-<span>        CXCL9_macrophage <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">cxcl9</span><span class="op">[</span><span class="st">"CXCL9"</span>, <span class="va">mac</span><span class="op">]</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    by_column <span class="op">=</span> <span class="cn">TRUE</span>, column_cell_ID <span class="op">=</span> <span class="st">"cell_ID"</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">gz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/subsetGiottoLocs.html" class="external-link">subsetGiottoLocs</a></span><span class="op">(</span><span class="va">g</span>,</span>
-<span>    x_min <span class="op">=</span> <span class="va">roi</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, x_max <span class="op">=</span> <span class="va">roi</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, y_min <span class="op">=</span> <span class="va">roi</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>, y_max <span class="op">=</span> <span class="va">roi</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">gz</span>, cell_color <span class="op">=</span> <span class="st">"CXCL9_macrophage"</span>, color_as_factor <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>    gradient_style <span class="op">=</span> <span class="st">"sequential"</span>, point_size <span class="op">=</span> <span class="fl">1.6</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># raw CXCL9 counts per cell</span></span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatInSituPlotPoints.html" class="external-link">spatInSituPlotPoints</a></span><span class="op">(</span><span class="va">gz</span>, show_polygon <span class="op">=</span> <span class="cn">TRUE</span>, polygon_feat_type <span class="op">=</span> <span class="st">"cell"</span>,</span>
+<span>    polygon_fill <span class="op">=</span> <span class="st">"CXCL9"</span>, polygon_fill_as_factor <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    polygon_fill_gradient_style <span class="op">=</span> <span class="st">"sequential"</span>,</span>
+<span>    polygon_alpha <span class="op">=</span> <span class="fl">1</span>, polygon_line_size <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/interaction_changed_features/05_zoom_types.png" alt="" width="49%"><img src="images/interaction_changed_features/05_zoom_cxcl9.png" alt="" width="49%"></p>
-<p>The CXCL9-high macrophages (yellow, right) sit in the dense patch of
-T cells (cyan, left) at the lower right of the window; macrophages in
-the tumour and stroma above have none.</p>
+<p>The CXCL9-high cells (yellow, right) sit in the dense patch of T
+cells (cyan, left) at the lower right of the window; cells in the tumour
+and stroma above have almost none. They are mostly macrophages, but CAFs
+and fibroblasts in the same patch express CXCL9 too (15% of the CAFs in
+this window have 10 or more counts, against 19% of the macrophages).
+edgeicg calls the response to T cells in macrophages (niche q &lt;
+1e-10); in CAFs the effect points the same way but is not significant (q
+= 0.08). A map shows every cell; the test asks, per receiver type,
+whether expression follows the exposure to a sender.</p>
 </div>
 <div class="section level3" number="6.3">
 <h3 id="which-neighbour-explains-a-niche-effect">
@@ -658,21 +695,21 @@ macrophages<a class="anchor" aria-label="anchor" href="#beyond-macrophages"></a>
 cells:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ifn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CXCL9"</span>, <span class="st">"CXCL10"</span>, <span class="st">"IRF1"</span>, <span class="st">"STAT1"</span>, <span class="st">"GBP1"</span>, <span class="st">"TAP1"</span>, <span class="st">"IDO1"</span><span class="op">)</span></span>
-<span><span class="va">sc</span><span class="op">[</span><span class="va">int_cell_type</span> <span class="op">==</span> <span class="st">"T cells"</span> <span class="op">&amp;</span> <span class="va">feats</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="va">ifn</span> <span class="op">&amp;</span> <span class="va">class</span> <span class="op">==</span> <span class="st">"clean"</span> <span class="op">&amp;</span></span>
-<span>    <span class="va">p.adj</span> <span class="op">&lt;</span> <span class="fl">0.05</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">cell_type</span>, <span class="va">p.adj</span><span class="op">)</span>,</span>
+<span><span class="va">sc</span><span class="op">[</span><span class="va">int_cell_type</span> <span class="op">==</span> <span class="st">"T cells"</span> <span class="op">&amp;</span> <span class="va">cell_type</span> <span class="op">!=</span> <span class="st">"macrophages"</span> <span class="op">&amp;</span></span>
+<span>    <span class="va">feats</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="va">ifn</span> <span class="op">&amp;</span> <span class="va">class</span> <span class="op">==</span> <span class="st">"clean"</span> <span class="op">&amp;</span> <span class="va">p.adj</span> <span class="op">&lt;</span> <span class="fl">0.05</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">cell_type</span>, <span class="va">p.adj</span><span class="op">)</span>,</span>
 <span>    <span class="fu">.</span><span class="op">(</span><span class="va">cell_type</span>, <span class="va">feats</span>, <span class="va">scale</span>, <span class="va">log2fc</span>, <span class="va">p.adj</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <pre><code>            cell_type  feats     scale log2fc   p.adj
                &lt;char&gt; &lt;char&gt;    &lt;char&gt;  &lt;num&gt;   &lt;num&gt;
- 1:              CAFs   IRF1 paracrine   1.41 1.5e-03
- 2:              CAFs   TAP1 paracrine   1.08 1.3e-02
- 3: endothelial cells  STAT1   contact   0.31 8.5e-04
- 4:       fibroblasts  STAT1   contact   0.36 2.3e-07
- 5:       fibroblasts  STAT1 paracrine   0.33 1.1e-04
- 6:       fibroblasts  STAT1     niche   0.46 8.9e-04
- 7:       fibroblasts   GBP1   contact   0.37 6.6e-03
- 8:       fibroblasts   IRF1   contact   0.42 7.2e-03
- 9:       fibroblasts   GBP1 paracrine   0.35 9.4e-03
-10:       fibroblasts   IRF1 paracrine   0.57 1.5e-02</code></pre>
+ 1:              CAFs   IRF1 paracrine   1.44 1.1e-03
+ 2:              CAFs   TAP1 paracrine   1.12 8.3e-03
+ 3: endothelial cells  STAT1   contact   0.31 4.7e-04
+ 4:       fibroblasts  STAT1   contact   0.38 4.0e-08
+ 5:       fibroblasts  STAT1 paracrine   0.34 8.8e-05
+ 6:       fibroblasts  STAT1     niche   0.46 7.9e-04
+ 7:       fibroblasts   IRF1   contact   0.45 2.7e-03
+ 8:       fibroblasts   GBP1   contact   0.39 3.1e-03
+ 9:       fibroblasts   GBP1 paracrine   0.35 8.1e-03
+10:       fibroblasts   IRF1 paracrine   0.57 1.3e-02</code></pre>
 </div>
 </div>
 <div class="section level2" number="7">
@@ -727,20 +764,24 @@ tumour.</p>
 <h3 id="run-with-regions">
 <span class="header-section-number">7.2</span> Run with regions<a class="anchor" aria-label="anchor" href="#run-with-regions"></a>
 </h3>
-<p>The same run as above, with <code>region_column</code>:</p>
+<p>The same run as above, with <code>region_column</code>. The leak does
+not change with regions, so we reuse it from the first run with
+<code>leak</code>:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">icf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/findInteractionChangedFeats.html">findInteractionChangedFeats</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    cluster_column <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
 <span>    selected_feats <span class="op">=</span> <span class="va">feats</span>,</span>
 <span>    spatial_covariates <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>    workers <span class="op">=</span> <span class="fl">8</span>,</span>
-<span>    region_column <span class="op">=</span> <span class="st">"region"</span></span>
+<span>    region_column <span class="op">=</span> <span class="st">"region"</span>,</span>
+<span>    leak <span class="op">=</span> <span class="va">icf</span><span class="op">$</span><span class="va">edgeicg</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>This takes about 2.2 minutes instead of 2.0, with a peak of about 22
-GB. The results for the whole section (<code>icf$ICFscores</code>) are
-exactly those of the run above; <code>icf$ICFregion</code> holds the
-region effects: for every entry that differs between regions or is
-significant in at least one, one row per region with</p>
+<p>Reusing the leak skips the pass over all features, so this takes
+about 3 minutes, with a peak of about 12 GB. The results for the whole
+section (<code>icf$ICFscores</code>) are exactly those of the run above;
+<code>icf$ICFregion</code> holds the region effects: for every entry
+that differs between regions or is significant in at least one, one row
+per region with</p>
 <ul>
 <li>
 <code>effect</code>, <code>log2fc</code>, <code>z</code>,
@@ -771,9 +812,9 @@ another) or <code>variable</code> (different strengths);</li>
 <span>    <span class="va">scale</span> <span class="op">~</span> <span class="va">pattern</span>, fun.aggregate <span class="op">=</span> <span class="va">length</span>, value.var <span class="op">=</span> <span class="st">"feats"</span><span class="op">)</span></span></code></pre></div>
 <pre><code>       scale opposite specific variable
       &lt;char&gt;    &lt;int&gt;    &lt;int&gt;    &lt;int&gt;
-1:   contact      104      221      288
-2:     niche       88      121       75
-3: paracrine       98      242      154</code></pre>
+1:   contact      101      225      294
+2:     niche       86      119       70
+3: paracrine       93      241      151</code></pre>
 </div>
 <div class="section level3" number="7.3">
 <h3 id="is-the-interferon-response-local">
@@ -791,15 +832,15 @@ macrophages and T cells:</p>
 <span>    regions <span class="op">=</span> <span class="va">region_order</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/interaction_changed_features/08_region_macrophages.png" alt="" width="100%"></p>
 <pre><code>   feats              region n_exposed log2fc    z       q   q_het  pattern
-1: CXCL9 tumour with T cells      2947   4.25  9.5 1.4e-17 8.7e-14 variable
-2: CXCL9    tumour (luminal)       128   4.25 15.3 4.5e-48 8.7e-14 variable
-3: CXCL9              stroma       298   2.41  5.5 2.0e-05 8.7e-14 variable
-4:  IRF1 tumour with T cells      2947   2.97  6.3 3.2e-07 1.0e+00   shared
-5:  IRF1    tumour (luminal)       128   2.41  5.5 2.4e-05 1.0e+00   shared
-6:  IRF1              stroma       298   1.09  2.1 7.4e-01 1.0e+00   shared
-7:  TAP1 tumour with T cells      2947   2.73  6.7 3.1e-08 8.2e-01   shared
-8:  TAP1    tumour (luminal)       128   1.53  4.7 1.0e-03 8.2e-01   shared
-9:  TAP1              stroma       298   0.88  2.2 6.4e-01 8.2e-01   shared</code></pre>
+1: CXCL9 tumour with T cells      2947   4.25  9.5 1.4e-17 7.8e-14 variable
+2: CXCL9    tumour (luminal)       128   4.25 15.3 1.3e-48 7.8e-14 variable
+3: CXCL9              stroma       298   2.47  5.5 2.9e-05 7.8e-14 variable
+4:  IRF1 tumour with T cells      2947   2.96  6.2 4.6e-07 1.0e+00   shared
+5:  IRF1    tumour (luminal)       128   2.44  5.5 2.3e-05 1.0e+00   shared
+6:  IRF1              stroma       298   1.08  2.0 7.5e-01 1.0e+00   shared
+7:  TAP1 tumour with T cells      2947   2.74  6.6 4.5e-08 8.7e-01   shared
+8:  TAP1    tumour (luminal)       128   1.56  4.8 8.3e-04 8.7e-01   shared
+9:  TAP1              stroma       298   0.90  2.3 6.2e-01 8.7e-01   shared</code></pre>
 <p>The response is not confined to the T-cell-rich niche. Wherever
 macrophages have T cells around them, in the tumour or in the stroma,
 they raise IRF1 and TAP1 to a similar degree (<code>shared</code>).
@@ -808,27 +849,13 @@ in the stroma (<code>variable</code>). The other two niches have too few
 macrophages near T cells to test.</p>
 </div>
 <div class="section level3" number="7.4">
-<h3 id="a-leak-that-varies">
-<span class="header-section-number">7.4</span> A leak that
-varies<a class="anchor" aria-label="anchor" href="#a-leak-that-varies"></a>
+<h3 id="other-region-specific-candidates">
+<span class="header-section-number">7.4</span> Other region-specific
+candidates<a class="anchor" aria-label="anchor" href="#other-region-specific-candidates"></a>
 </h3>
-<p>The region view also helps with the artefacts. The T cells touching
-luminal tumour cells pick up MSMB, a tumour gene
-(<code>sender_marker</code>):</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotICF_edgeicg.html">plotICFRegion</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">icf</span>, receiver <span class="op">=</span> <span class="st">"T cells"</span>, sender <span class="op">=</span> <span class="st">"tumor, luminal"</span>,</span>
-<span>    feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MSMB"</span>, <span class="st">"TSPAN8"</span><span class="op">)</span>, scale <span class="op">=</span> <span class="st">"contact"</span>, regions <span class="op">=</span> <span class="va">region_order</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/interaction_changed_features/09_region_tcells.png" alt="" width="80%"></p>
-<p>MSMB differs between regions and TSPAN8 does not. Leaked transcripts
-follow how much the sender itself expresses, and the luminal tumour
-cells’ own MSMB differs between the niches: about 0.85 per 1,000 counts
-in the luminal tumour niche, 0.37 in the T-cell-rich niche and 0.06 next
-to the ANKRD30A+ tumour, where the T cells show no MSMB at all. A
-<code>sender_marker</code> hit that differs between regions therefore
-says more about the sender than about the T cells.</p>
 <p>To list the candidate interactions that are confined to a region or
 go in opposite directions:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reg</span><span class="op">[</span><span class="va">class</span> <span class="op">==</span> <span class="st">"clean"</span> <span class="op">&amp;</span> <span class="va">pattern</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"specific"</span>, <span class="st">"opposite"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">q</span> <span class="op">&lt;</span> <span class="fl">0.05</span><span class="op">]</span><span class="op">[</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">q_het</span><span class="op">)</span>, <span class="fu">.</span><span class="op">(</span><span class="va">feats</span>, <span class="va">cell_type</span>, <span class="va">int_cell_type</span>, <span class="va">scale</span>, <span class="va">region</span>, <span class="va">log2fc</span>,</span>
 <span>    <span class="va">q</span>, <span class="va">q_het</span>, <span class="va">pattern</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
@@ -957,6 +984,17 @@ neighbours</td>
 <td>memory per task: genes per block and cells per spatial window</td>
 </tr>
 <tr class="even">
+<td><code>leak_genes</code></td>
+<td><code>"all"</code></td>
+<td>features the leak is estimated from: all features, or
+<code>"tested"</code> (only <code>selected_feats</code>)</td>
+</tr>
+<tr class="odd">
+<td><code>leak</code></td>
+<td>none</td>
+<td>reuse the leak of an earlier run (<code>icf$edgeicg</code>)</td>
+</tr>
+<tr class="even">
 <td><code>region_column</code></td>
 <td>none</td>
 <td>cell metadata column with a region per cell; adds
@@ -981,7 +1019,7 @@ the full expression matrix, and it is kept for comparison only.</p>
 <h2 id="session-info">
 <span class="header-section-number">10</span> Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -398,7 +398,7 @@ functionalities.
 operations will coerce `giottoLargeImage` to `giottoAffineImage`, which
 is much the same, except it contains an `affine2d` object that tracks
 spatial manipulations performed, so that they can be applied through
-[`magick::image_distort()`](https://rdrr.io/pkg/magick/man/transform.html)
+[`magick::image_distort()`](https://docs.ropensci.org/magick/reference/transform.html)
 processing after sampled values are pulled into memory.
 `giottoAffineImage` also has alternative
 [`ext()`](https://rspatial.github.io/terra/reference/ext.html) and

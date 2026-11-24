@@ -255,7 +255,7 @@ of <span class="pkg">smfishHmrf</span>. <strong>If you use it, please cite the o
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">hmrfParam</span><span class="op">(</span></span>
 <span>  k <span class="op">=</span> <span class="fl">10L</span>,</span>
 <span>  beta <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  zscore <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cell"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
+<span>  zscore <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cell"</span>, <span class="st">"feature"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
 <span>  nstart <span class="op">=</span> <span class="fl">200L</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">100L</span>,</span>
 <span>  subsample <span class="op">=</span> <span class="fl">20000L</span>,</span>
@@ -285,8 +285,10 @@ of <span class="pkg">smfishHmrf</span>. <strong>If you use it, please cite the o
 
 <dt id="arg-zscore">zscore<a class="anchor" aria-label="anchor" href="#arg-zscore"></a></dt>
 <dd><p><code>"cell"</code> (default, as <span class="pkg">smfishHmrf</span> in Giotto): z-score each cell
-across the features after the input values; <code>"none"</code>: use the values as
-given</p></dd>
+across the features after the input values; <code>"feature"</code>: z-score each
+feature across the cells, for a few features on different scales such
+as module scores (needs <span class="pkg">spatialHMRF</span> &gt;= 0.1.1); <code>"none"</code>: use the
+values as given</p></dd>
 
 
 <dt id="arg-nstart">nstart<a class="anchor" aria-label="anchor" href="#arg-nstart"></a></dt>

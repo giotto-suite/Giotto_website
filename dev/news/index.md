@@ -15,6 +15,13 @@ Requires GiottoClass 0.8.0.
 
 ### new
 
+- [`runHMRF()`](https://giottosuite.com/dev/reference/runHMRF.md) and
+  `findSpatialDomains(method = "hmrf")` gain `spat_enr_name`: fit HMRF
+  on a stored spatial enrichment, such as the module scores of
+  [`spatialCoexpression()`](https://giottosuite.com/dev/reference/spatialCoexpression.md),
+  instead of expression. `hmrfParam(zscore = "feature")` scales each
+  input column, the default for an enrichment. Needs spatialHMRF \>=
+  0.1.1.
 - [`findInteractionChangedFeats()`](https://giottosuite.com/dev/reference/findInteractionChangedFeats.md)
   (edgeicg) gains `region_column`: a cell metadata column with a region
   per cell (spatial domains, niches). Every effect is then also
@@ -24,6 +31,13 @@ Requires GiottoClass 0.8.0.
   `variable`). The leak model stays global.
   [`plotICFRegion()`](https://giottosuite.com/dev/reference/plotICF_edgeicg.md)
   draws the effect per region. Needs edgeicg \>= 0.2.0.
+- [`findInteractionChangedFeats()`](https://giottosuite.com/dev/reference/findInteractionChangedFeats.md)
+  (edgeicg) with `selected_feats` now fits the leak (transcripts from
+  touching neighbours) on all features and tests only the selected ones,
+  so the contact results no longer depend on the selection.
+  `leak_genes = "tested"` restores the faster fit on the selected
+  features. Needs edgeicg \>= 0.3.0 (older versions keep the old
+  behaviour).
 - `importCosMx(backend =)` returns `GiottoDisk::importCosMxDisk()`, and
   `createGiottoCosMxObject(backend =)` creates the `giotto` object as a
   managed on-disk project from the same arguments: polygons from the

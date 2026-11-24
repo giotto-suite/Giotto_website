@@ -26,6 +26,7 @@ findSpatialDomains(
   spat_unit = NULL,
   feat_type = NULL,
   feats_to_use = "hvf",
+  spat_enr_name = NULL,
   k = 10L,
   beta = 2,
   lambda = 0.8,
@@ -55,6 +56,15 @@ findSpatialDomains(
 
   features (character vector or a logical feature metadata column such
   as `"hvf"`)
+
+- spat_enr_name:
+
+  `"hmrf"` only: a spatial enrichment to fit instead of expression, such
+  as the module scores of
+  [`spatialCoexpression()`](https://giottosuite.com/dev/reference/spatialCoexpression.md)
+  (built beforehand, from spatial genes of any
+  [`spatialAutoCor()`](https://giottosuite.com/dev/reference/spatialAutoCor.md)
+  method)
 
 - k:
 

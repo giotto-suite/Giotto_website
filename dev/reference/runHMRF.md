@@ -9,9 +9,17 @@ call. For each setting the domains are added to the cell metadata
 stored as a spatial enrichment of the same name. All `beta` share one
 k-means start.
 
-This reimplements the model of smfishHmrf without its spatial gene
-selection: pass the features with `feats_to_use`. **If you use it,
-please cite the original paper** (see References).
+The input is either expression of the features in `feats_to_use`, or a
+stored spatial enrichment (`spat_enr_name`) such as the module scores of
+[`spatialCoexpression()`](https://giottosuite.com/dev/reference/spatialCoexpression.md):
+a few spatially informed values per cell that make a fast and stable
+start. Selecting spatial genes and building the modules are separate
+steps (e.g.
+[`spatialAutoCor()`](https://giottosuite.com/dev/reference/spatialAutoCor.md)
+with any of its methods, then
+[`spatialCoexpression()`](https://giottosuite.com/dev/reference/spatialCoexpression.md)),
+so any method that stores a spatial enrichment can feed HMRF. **If you
+use it, please cite the original paper** (see References).
 
 ## Usage
 
@@ -22,10 +30,11 @@ runHMRF(
   feat_type = NULL,
   expression_values = "scaled",
   feats_to_use = NULL,
+  spat_enr_name = NULL,
   spatial_network_name = "Delaunay_network",
   k = 10L,
   betas = 2,
-  zscore = c("cell", "none"),
+  zscore = NULL,
   nstart = 200L,
   seed = 100L,
   subsample = 20000L,
@@ -56,7 +65,14 @@ runHMRF(
 
   features: a character vector (e.g. spatial genes from
   [`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md)) or
-  the name of a logical feature metadata column such as `"hvf"`
+  the name of a logical feature metadata column such as `"hvf"`; ignored
+  with `spat_enr_name`
+
+- spat_enr_name:
+
+  name of a spatial enrichment to use instead of expression, e.g. the
+  module scores of
+  [`spatialCoexpression()`](https://giottosuite.com/dev/reference/spatialCoexpression.md)
 
 - spatial_network_name:
 
@@ -70,7 +86,14 @@ runHMRF(
 
   numeric vector of `beta` values
 
-- zscore, nstart, seed, subsample, maxit, err, label_tol, n_icm:
+- zscore:
+
+  see
+  [`hmrfParam()`](https://giottosuite.com/dev/reference/hmrfParam.md);
+  `NULL` (default) uses `"feature"` with `spat_enr_name` and `"cell"`
+  with expression
+
+- nstart, seed, subsample, maxit, err, label_tol, n_icm:
 
   see
   [`hmrfParam()`](https://giottosuite.com/dev/reference/hmrfParam.md)
@@ -117,4 +140,10 @@ fluorescence in situ hybridization data. *Nature Biotechnology* 36,
 g <- GiottoData::loadGiottoMini("visium")
 g <- runHMRF(g, feats_to_use = "hvf", k = 5, betas = c(0, 2),
     nstart = 20)
+
+# on spatial co-expression module scores
+sv <- spatialAutoCor(g, method = "moran", return_gobject = FALSE)
+g <- spatialCoexpression(g, feats = head(sv$feats, 200), n_modules = 8)
+g <- runHMRF(g, spat_enr_name = "spatial_module", k = 5, nstart = 20,
+    name = "hmrf_modules")
 ```

@@ -338,6 +338,14 @@ estimated within each region, with a test of whether it differs between
 regions; the table is <code>$ICFregion</code> (see
 <code>edgeicg::edgeicg_region_results()</code>). The leak model stays global.</p></dd>
 
+<dt><code>leak_genes</code></dt>
+<dd><p>features the leak (transcripts from touching
+neighbours) is fitted on when only <code>selected_feats</code> are tested:
+<code>"all"</code> (default; edgeicg &gt;= 0.3.0) fits it on all features, so the
+contact results do not depend on the selection, at the cost of one
+extra pass over all features; <code>"tested"</code> fits it on <code>selected_feats</code>
+only (faster).</p></dd>
+
 <dt>other</dt>
 <dd><p>passed to <code>edgeicg::edgeicg()</code> (e.g. <code>min_cells</code>,
 <code>min_det</code>, <code>min_exposed</code>, <code>calib_cond</code>).</p></dd>

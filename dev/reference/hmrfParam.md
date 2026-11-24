@@ -19,7 +19,7 @@ References).
 hmrfParam(
   k = 10L,
   beta = 2,
-  zscore = c("cell", "none"),
+  zscore = c("cell", "feature", "none"),
   nstart = 200L,
   seed = 100L,
   subsample = 20000L,
@@ -48,7 +48,10 @@ clusterData(x, param, ..., network, blocks = NULL, init = NULL)
 - zscore:
 
   `"cell"` (default, as smfishHmrf in Giotto): z-score each cell across
-  the features after the input values; `"none"`: use the values as given
+  the features after the input values; `"feature"`: z-score each feature
+  across the cells, for a few features on different scales such as
+  module scores (needs spatialHMRF \>= 0.1.1); `"none"`: use the values
+  as given
 
 - nstart:
 
