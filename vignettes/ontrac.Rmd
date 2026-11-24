@@ -128,7 +128,7 @@ set_giotto_python_path(python_path = python_path)
 reticulate::conda_install(envname = env_name, packages = c('scanpy'), pip = TRUE)
 
 ## Create Giotto object from expression counts. This file contains 61 slices here.
-giotto_all_slices_obj <- anndataToGiotto(file.path(data_path, "counts.h5ad"), python_path = python_path)
+giotto_all_slices_obj <- GiottoConnect::anndataToGiotto(file.path(data_path, "counts.h5ad"))
 
 ## Load meta_data
 meta_df <- read.csv(file.path(data_path, "cell_labels.csv"),
