@@ -199,6 +199,7 @@
     <li><a class="dropdown-item" href="../articles/package_imports.html">Package imports</a></li>
     <li><a class="dropdown-item" href="../articles/getters_setters.html">Getters and Setters</a></li>
     <li><a class="dropdown-item" href="../articles/python_code.html">Python code</a></li>
+    <li><a class="dropdown-item" href="../articles/extending_giotto.html">Adding methods and tools</a></li>
     <li><a class="dropdown-item" href="../articles/contributing_tutorials.html">Contributing tutorials to the website</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../articles/team.html">Team</a></li>
@@ -221,6 +222,11 @@
 <h2 class="pkg-version" data-toc-text="4.3.7" id="giotto-437-in-development">Giotto 4.3.7 (in development)<a class="anchor" aria-label="anchor" href="#giotto-437-in-development"></a></h2>
 <p>Requires GiottoClass 0.8.0.</p>
 <div class="section level3">
+<h3 id="breaking-changes-4-3-7">breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-4-3-7"></a></h3>
+<ul><li>
+<code>spatialDE()</code> and <code>spatialAEH()</code> are removed, together with the <code>"spatialDE"</code> method of <code><a href="../reference/runPatternSimulation.html">runPatternSimulation()</a></code>. Use <code><a href="../reference/binSpect.html">binSpect()</a></code> or <code><a href="../reference/spark.html">spark()</a></code> for spatially variable features.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="new-4-3-7">new<a class="anchor" aria-label="anchor" href="#new-4-3-7"></a></h3>
 <ul><li>
 <code><a href="../reference/findInteractionChangedFeats.html">findInteractionChangedFeats()</a></code> (edgeicg) gains <code>region_column</code>: a cell metadata column with a region per cell (spatial domains, niches). Every effect is then also estimated within each region, with a test of whether it differs between regions (<code>$ICFregion</code>: effect, log2 FC, z and q per region; <code>Q</code>, <code>q_het</code> and a <code>pattern</code> of <code>shared</code>, <code>specific</code>, <code>opposite</code> or <code>variable</code>). The leak model stays global. <code><a href="../reference/plotICF_edgeicg.html">plotICFRegion()</a></code> draws the effect per region. Needs edgeicg &gt;= 0.2.0.</li>
@@ -239,7 +245,10 @@
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-4-3-7">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-4-3-7"></a></h3>
-<ul><li>CosMx images and label masks of AtoMx exports, whose file names pad the FOV number to five digits (<code>CellComposite_F00033.jpg</code>), failed to load (“No images found matching fov [F033]”). The digits are now read from the files, so both these and the three-digit names of older exports load without setting <code>file_fov_fmt</code>.</li>
+<ul><li>Clustering runs on a <code>giottoMulti</code>: <code><a href="../reference/doLeidenCluster.html">doLeidenCluster()</a></code> and <code><a href="../reference/clusterData.html">clusterData()</a></code> write clusters to the multi’s joint cell metadata.</li>
+<li>
+<code><a href="../reference/addStatistics.html">addStatistics()</a></code> on a <code>giottoMulti</code> computes polygon area per sample.</li>
+<li>CosMx images and label masks of AtoMx exports, whose file names pad the FOV number to five digits (<code>CellComposite_F00033.jpg</code>), failed to load (“No images found matching fov [F033]”). The digits are now read from the files, so both these and the three-digit names of older exports load without setting <code>file_fov_fmt</code>.</li>
 <li>CosMx csv polygons with <code>FOVs</code> failed on exports that write a coordinate as <code>1e+05</code> (“CSV conversion error to int32”); the column types now come from the header.</li>
 <li>
 <code><a href="../reference/createGiottoCosMxObject.html">createGiottoCosMxObject()</a></code> in memory matches the RNA cells to the polygons: polygons of cells without expression (e.g. from the CellLabels masks) were kept, so the object failed GiottoClass’s ID check later. A warning names the cells left out.</li>
@@ -254,7 +263,7 @@
 <h3 id="breaking-changes-4-3-6">breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-4-3-6"></a></h3>
 <ul><li>
 <code><a href="../reference/findInteractionChangedFeats.html">findInteractionChangedFeats()</a></code> / <code><a href="../reference/findInteractionChangedFeats.html">findICF()</a></code> use <code>method = "edgeicg"</code> by default (needs the suggested edgeicg package). The original proximity test is kept as a baseline with <code>method = "classic"</code>; its specific arguments (<code>expression_values</code>, <code>diff_test</code>, <code>nr_permutations</code>, …) are ignored, with a message, by the default method. <code><a href="../reference/filterInteractionChangedFeats.html">filterICF()</a></code>, <code><a href="../reference/combineInteractionChangedFeats.html">combineICF()</a></code>, <code><a href="../reference/plotCellProximityFeats.html">plotCellProximityFeats()</a></code> and the spot variants need a classic result and say so; <code><a href="../reference/plotICF.html">plotICF()</a></code> draws either.</li>
-<li>The legacy Seurat, AnnData and Bento converters are no longer re-exported: <code>seuratToGiotto()</code>, <code>giottoToSeurat()</code>, <code>anndataToGiotto()</code> and <code>createBentoAdata()</code> are in GiottoConnect. <code>seuratToGiottoV4/V5()</code> and <code>giottoToSeuratV4/V5()</code> are replaced by GiottoConnect’s <code>seuratToGiotto()</code> / <code>giottoToSeurat()</code>.</li>
+<li>The legacy Seurat, AnnData and Bento converters are no longer re-exported: <code><a href="https://rdrr.io/pkg/GiottoConnect/man/seuratToGiotto.html" class="external-link">seuratToGiotto()</a></code>, <code><a href="https://rdrr.io/pkg/GiottoConnect/man/giottoToSeurat.html" class="external-link">giottoToSeurat()</a></code>, <code><a href="https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code> and <code><a href="https://rdrr.io/pkg/GiottoConnect/man/createBentoAdata.html" class="external-link">createBentoAdata()</a></code> are in GiottoConnect. <code>seuratToGiottoV4/V5()</code> and <code>giottoToSeuratV4/V5()</code> are replaced by GiottoConnect’s <code><a href="https://rdrr.io/pkg/GiottoConnect/man/seuratToGiotto.html" class="external-link">seuratToGiotto()</a></code> / <code><a href="https://rdrr.io/pkg/GiottoConnect/man/giottoToSeurat.html" class="external-link">giottoToSeurat()</a></code>.</li>
 <li>10x feature names are the same whichever file they come from. <code><a href="../reference/get10Xmatrix_h5.html">get10Xmatrix_h5()</a></code> names repeated features like <code><a href="../reference/get10Xmatrix.html">get10Xmatrix()</a></code> and GiottoDisk: every copy gets <code>--N</code> (<code>Ptp4a1--1</code>, <code>Ptp4a1--2</code>; it gave <code>Ptp4a1</code>, <code>Ptp4a1_1</code>), and features of every type are named from the name column in symbol mode (antibodies gave their ids). With <code>split_by_type = TRUE</code> (the default) repeats are counted within each feature type, so a gene keeps its name when an antibody shares it: CytAssist protein runs read from the matrix directory gave <code>CD4--1</code> for the gene. This reaches the Visium, Visium HD and Xenium readers.</li>
 <li>
 <code><a href="../reference/get10Xmatrix.html">get10Xmatrix()</a></code> returns a <code>dgCMatrix</code> (it gave a <code>dgTMatrix</code>) without names on its row and column names.</li>
@@ -297,6 +306,8 @@
 <div class="section level3">
 <h3 id="bug-fixes-4-3-6">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-4-3-6"></a></h3>
 <ul><li>
+<code><a href="../reference/calculateHVF.html">calculateHVF()</a></code> shows, saves and returns its plot by default again (a <code>NULL</code> <code>show_plot</code> / <code>save_plot</code> / <code>return_plot</code> turned the plot off), and the <code>cov_loess</code> / <code>cov_groups</code> HVF plots no longer fail on a missing column.</li>
+<li>
 <code><a href="../reference/read10xAffineImage.html">read10xAffineImage()</a></code> placed images wrongly when the 10x alignment matrix has shear or unequal scale; rotations and uniform scale were unaffected.</li>
 <li>
 <code>normParam("arcsinh", c = )</code> stopped with “invalid name for slot of class arcsinhNormParam”; the cofactor is now set, also per feature.</li>
@@ -990,7 +1001,7 @@
 <h2 class="pkg-version" data-toc-text="4.0.5" id="giotto-405-20240312">Giotto 4.0.5 (2024/03/12)<a class="anchor" aria-label="anchor" href="#giotto-405-20240312"></a></h2>
 <div class="section level3">
 <h3 id="bug-fixes-4-0-5">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-4-0-5"></a></h3>
-<ul><li>Fix Error “cannot coerce class ‘structure(”spatLocsObj”, package = “Giotto”)’ to a data.frame” in <code><a href="../reference/spatialDE.html">spatialDE()</a></code>
+<ul><li>Fix Error “cannot coerce class ‘structure(”spatLocsObj”, package = “Giotto”)’ to a data.frame” in <code>spatialDE()</code>
 </li>
 </ul></div>
 <div class="section level3">
@@ -1188,8 +1199,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="added-3-3-0">Added<a class="anchor" aria-label="anchor" href="#added-3-3-0"></a></h3>
-<ul><li>New implementations of <code>anndataToGiotto()</code> and <code><a href="https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code> for Nearest Neighbor and Spatial Networks</li>
-<li>New <code>check_py_for_scanpy()</code> function, shifting code around in <code>anndataToGiotto()</code>
+<ul><li>New implementations of <code><a href="https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code> and <code><a href="https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code> for Nearest Neighbor and Spatial Networks</li>
+<li>New <code>check_py_for_scanpy()</code> function, shifting code around in <code><a href="https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code>
 </li>
 <li>Add <code><a href="https://rdrr.io/r/methods/new.html" class="external-link">initialize()</a></code> method for <code>giotto</code>
 </li>
@@ -1365,7 +1376,7 @@
 </ul></div>
 <div class="section level3">
 <h3 id="added-2-1-0">Added<a class="anchor" aria-label="anchor" href="#added-2-1-0"></a></h3>
-<ul><li>New <code>anndataToGiotto()</code> to convert scanpy anndata to Giotto</li>
+<ul><li>New <code><a href="https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code> to convert scanpy anndata to Giotto</li>
 </ul></div>
 </div>
     <div class="section level2">

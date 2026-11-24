@@ -109,7 +109,7 @@ clusterData(
   ...
 )
 
-# S4 method for class 'giotto,BlusterParam'
+# S4 method for class 'gAny,BlusterParam'
 clusterData(
   x,
   param,
@@ -126,7 +126,7 @@ clusterData(
   ...
 )
 
-# S4 method for class 'giotto,NNClusParam'
+# S4 method for class 'gAny,NNClusParam'
 clusterData(
   x,
   param,

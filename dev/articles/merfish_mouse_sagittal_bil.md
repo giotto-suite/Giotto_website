@@ -62,8 +62,7 @@ to a Giotto object.
 
 ``` r
 
-g <- anndataToGiotto("/path/to/counts_mouse4_sagittal.h5ad",
-                    python_path = python_path)
+g <- GiottoConnect::anndataToGiotto("/path/to/counts_mouse4_sagittal.h5ad")
 ```
 
 ## 5 Set Giotto global instructions

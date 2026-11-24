@@ -257,9 +257,7 @@ packages link to their own documentation site.
 | [`spark`](https://giottosuite.com/dev/reference/spark.md) | spark |
 | [`spatCellCellcom`](https://giottosuite.com/dev/reference/spatCellCellcom.md) | Spatial cell cell communication scoring |
 | [`spatCellCellcomSpots`](https://giottosuite.com/dev/reference/spatCellCellcomSpots.md) | spatCellCellcomSpots |
-| [`spatialAEH`](https://giottosuite.com/dev/reference/spatialAEH.md) | spatialAEH |
 | [`spatialAutoCor`](https://giottosuite.com/dev/reference/spatialAutoCor.md) | Spatial autocorrelation |
-| [`spatialDE`](https://giottosuite.com/dev/reference/spatialDE.md) | spatialDE |
 | [`spatialSplitCluster`](https://giottosuite.com/dev/reference/spatialSplitCluster.md) | Split cluster annotations based on a spatial network |
 | [`spdepAutoCorr`](https://giottosuite.com/dev/reference/spdepAutoCorr.md) | Compute spatial auto correlation using spdep |
 | [`subClusterCells`](https://giottosuite.com/dev/reference/subClusterCells.md) | Cell subclustering |

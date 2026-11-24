@@ -506,6 +506,14 @@ Functions to reduce dimensions.
   : Run integrated UMAP
 - [`runBlockPCA()`](https://giottosuite.com/dev/reference/runBlockPCA.md)
   : Multi omics integration with block-weighted PCs
+- [`runNeighborhoodPCA()`](https://giottosuite.com/dev/reference/runNeighborhoodPCA.md)
+  : Neighborhood PCA (BANKSY embedding)
+- [`neighborhoodPCAParam()`](https://giottosuite.com/dev/reference/neighborhoodPCAParam.md)
+  [`reduceData(`*`<allMatrix>`*`,`*`<neighborhoodPCAParam>`*`)`](https://giottosuite.com/dev/reference/neighborhoodPCAParam.md)
+  : Neighborhood PCA parameters
+- [`neighborhood_operators()`](https://giottosuite.com/dev/reference/neighborhood_operators.md)
+  [`neighborhood_agf()`](https://giottosuite.com/dev/reference/neighborhood_operators.md)
+  : Neighbourhood operators of the BANKSY embedding
 - [`runPCAprojection()`](https://giottosuite.com/dev/reference/runPCAprojection.md)
   : runPCAprojection
 - [`runPCAprojectionBatch()`](https://giottosuite.com/dev/reference/runPCAprojectionBatch.md)
@@ -590,8 +598,8 @@ Functions to cluster cells.
   [`clusterData(`*`<igraph>`*`,`*`<LouvainMultinetClusParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
   [`clusterData(`*`<igraph>`*`,`*`<LeidenPythonClusParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
   [`clusterData(`*`<igraph>`*`,`*`<LeidenIgraphClusParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
-  [`clusterData(`*`<giotto>`*`,`*`<BlusterParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
-  [`clusterData(`*`<giotto>`*`,`*`<NNClusParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
+  [`clusterData(`*`<gAny>`*`,`*`<BlusterParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
+  [`clusterData(`*`<gAny>`*`,`*`<NNClusParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
   : Data clustering
 - [`clusterParam()`](https://giottosuite.com/dev/reference/clusterParam.md)
   : Clustering Parameter Classes
@@ -739,10 +747,6 @@ Methods to detect spatially coherent expression patterns.
   : binSpect
 - [`binSpectMultiMatrix()`](https://giottosuite.com/dev/reference/binSpectMultiMatrix.md)
   : binSpectMultiMatrix
-- [`spatialDE()`](https://giottosuite.com/dev/reference/spatialDE.md) :
-  spatialDE
-- [`spatialAEH()`](https://giottosuite.com/dev/reference/spatialAEH.md)
-  : spatialAEH
 - [`trendSceek()`](https://giottosuite.com/dev/reference/trendSceek.md)
   : trendSceek
 - [`spark()`](https://giottosuite.com/dev/reference/spark.md) : spark
@@ -774,6 +778,15 @@ Method to detect spatially co-expressed feature modules.
 
 Functions to identify spatial domains with HMRF.
 
+- [`runHMRF()`](https://giottosuite.com/dev/reference/runHMRF.md) :
+  Spatial domains with HMRF
+- [`findSpatialDomains()`](https://giottosuite.com/dev/reference/findSpatialDomains.md)
+  : Find spatial domains
+- [`hmrfParam()`](https://giottosuite.com/dev/reference/hmrfParam.md)
+  [`clusterData(`*`<allMatrix>`*`,`*`<hmrfParam>`*`)`](https://giottosuite.com/dev/reference/hmrfParam.md)
+  : HMRF clustering parameters
+- [`hmrfSummary()`](https://giottosuite.com/dev/reference/hmrfSummary.md)
+  : Compare HMRF settings
 - [`doHMRF()`](https://giottosuite.com/dev/reference/doHMRF.md) : doHMRF
 - [`doHMRF_V2()`](https://giottosuite.com/dev/reference/doHMRF_V2.md) :
   doHMRF_V2
@@ -1195,11 +1208,19 @@ Function to detect doublets in raw expression data.
 
 Convert other type of objects into a Giotto object and vice versa.
 
-- [`giottoToSpatialExperiment()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToSpatialExperiment.html)
-  : Utility function to convert a Giotto object to a SpatialExperiment
-  object. (from GiottoClass)
-- [`giottoToAnnData()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html)
-  : Convert Giotto to anndata (from GiottoClass)
+- [`seuratToGiotto()`](https://rdrr.io/pkg/GiottoConnect/man/seuratToGiotto.html)
+  : Convert a Seurat object to a Giotto object (from GiottoConnect)
+- [`giottoToSeurat()`](https://rdrr.io/pkg/GiottoConnect/man/giottoToSeurat.html)
+  : Convert a Giotto object to a Seurat object (from GiottoConnect)
+- [`spatialExperimentToGiotto()`](https://giottosuite.com/dev/reference/NA)
+  : Convert a SpatialExperiment to a Giotto object (from GiottoConnect)
+- [`giottoToSpatialExperiment()`](https://giottosuite.com/dev/reference/NA)
+  : Convert a Giotto object to a SpatialExperiment (from GiottoConnect)
+- [`anndataToGiotto()`](https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html)
+  : Convert an AnnData .h5ad file to a Giotto object (from
+  GiottoConnect)
+- [`giottoToAnnData()`](https://giottosuite.com/dev/reference/NA) :
+  Convert a Giotto object to an AnnData .h5ad file (from GiottoConnect)
 - [`giottoToAnndataZarr()`](https://giottosuite.com/dev/reference/giottoToAnndataZarr.md)
   : Create a local anndata zarr folder
 - [`giottoMasterToSuite()`](https://giotto-suite.github.io/GiottoClass/reference/giottoMasterToSuite.html)

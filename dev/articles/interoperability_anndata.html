@@ -230,6 +230,7 @@
     <li><a class="dropdown-item" href="../articles/package_imports.html">Package imports</a></li>
     <li><a class="dropdown-item" href="../articles/getters_setters.html">Getters and Setters</a></li>
     <li><a class="dropdown-item" href="../articles/python_code.html">Python code</a></li>
+    <li><a class="dropdown-item" href="../articles/extending_giotto.html">Adding methods and tools</a></li>
     <li><a class="dropdown-item" href="../articles/contributing_tutorials.html">Contributing tutorials to the website</a></li>
   </ul>
 </li>
@@ -261,175 +262,253 @@
     
     
 <div class="section level2" number="1">
-<h2 id="converting-to-and-from-anndata-squidpy-flavor">
+<h2 id="converting-to-and-from-anndata">
 <span class="header-section-number">1</span> Converting to and from
-AnnData (squidpy-flavor)<a class="anchor" aria-label="anchor" href="#converting-to-and-from-anndata-squidpy-flavor"></a>
+AnnData<a class="anchor" aria-label="anchor" href="#converting-to-and-from-anndata"></a>
 </h2>
-<p>This tutorial details how to use the conversion functions
-<code>anndataToGiotto()</code> and <code><a href="https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code>. A
-mini Giotto object will be used for minimal computational requirements.
-Please note that these functions are inherently in active development,
-since changes to either squidpy or anndata are possible.</p>
+<p>This tutorial shows how to write a Giotto object as AnnData
+<code>.h5ad</code> files with <code><a href="https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code> and read
+them back with <code><a href="https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code>. Both functions are part
+of <a href="https://github.com/giotto-suite/GiottoConnect" class="external-link">GiottoConnect</a>
+and read and write <code>.h5ad</code> files directly from R: no python
+environment is needed. The files use the layout scanpy and squidpy
+expect, so they can be analysed there as well.</p>
+<p>A mini Giotto object is used to keep the computational requirements
+low.</p>
 </div>
 <div class="section level2" number="2">
 <h2 id="start-giotto">
 <span class="header-section-number">2</span> Start Giotto<a class="anchor" aria-label="anchor" href="#start-giotto"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed</span></span>
-<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/Giotto"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite, GiottoData and GiottoConnect are installed</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/Giotto"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="st">"GiottoData"</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/GiottoData"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="st">"GiottoConnect"</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/GiottoConnect"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giottosuite.com">Giotto</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Ensure Giotto Data is installed</span></span>
-<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"GiottoData"</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/GiottoData"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giotto-suite.github.io/GiottoData/" class="external-link">GiottoData</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Ensure the Python environment for Giotto has been installed</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="co"># The following command need only be run once to install the Giotto environment</span></span>
-<span>  <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">GiottoConnect</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="3">
-<h2 id="create-a-giotto-object">
-<span class="header-section-number">3</span> Create a Giotto
-object<a class="anchor" aria-label="anchor" href="#create-a-giotto-object"></a>
+<h2 id="load-a-giotto-object">
+<span class="header-section-number">3</span> Load a Giotto
+object<a class="anchor" aria-label="anchor" href="#load-a-giotto-object"></a>
 </h2>
+<p>The vizgen mini object has three spatial units (<code>z0</code>,
+<code>z1</code> and <code>aggregate</code>), each with the
+<code>rna</code> feature type.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Specify path to which results may be saved</span></span>
-<span><span class="va">results_folder</span> <span class="op">&lt;-</span> <span class="st">"/path/to/results/"</span></span>
+<code class="sourceCode R"><span><span class="va">results_folder</span> <span class="op">&lt;-</span> <span class="st">"/path/to/results/"</span></span>
 <span></span>
-<span><span class="co"># Optional: Specify a path to a Python executable within a conda or miniconda </span></span>
-<span><span class="co"># environment. If set to NULL (default), the Python executable within the previously</span></span>
-<span><span class="co"># installed Giotto environment will be used.</span></span>
-<span><span class="va">python_path</span> <span class="op">&lt;-</span> <span class="cn">NULL</span> <span class="co"># alternatively, "/local/python/path/python" if desired.</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoData/reference/loadGiottoMini.html" class="external-link">loadGiottoMini</a></span><span class="op">(</span><span class="st">"vizgen"</span><span class="op">)</span></span></code></pre></div>
+<p>Squidpy uses a kNN network by default, while Giotto’s default is an
+sNN. We add two kNN networks next to the existing sNN to show that every
+network is converted under its own name.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    spat_unit <span class="op">=</span> <span class="st">"aggregate"</span>,</span>
+<span>    feat_type <span class="op">=</span> <span class="st">"rna"</span>,</span>
+<span>    type <span class="op">=</span> <span class="st">"kNN"</span>,</span>
+<span>    dim_reduction_to_use <span class="op">=</span> <span class="st">"umap"</span>,</span>
+<span>    dim_reduction_name <span class="op">=</span> <span class="st">"umap"</span>,</span>
+<span>    k <span class="op">=</span> <span class="fl">15</span>,</span>
+<span>    name <span class="op">=</span> <span class="st">"kNN.umap"</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">mini_gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoData/reference/loadGiottoMini.html" class="external-link">loadGiottoMini</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"vizgen"</span>, </span>
-<span>                               python_path <span class="op">=</span> <span class="va">python_path</span><span class="op">)</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    spat_unit <span class="op">=</span> <span class="st">"aggregate"</span>,</span>
+<span>    feat_type <span class="op">=</span> <span class="st">"rna"</span>,</span>
+<span>    type <span class="op">=</span> <span class="st">"kNN"</span>,</span>
+<span>    dim_reduction_to_use <span class="op">=</span> <span class="st">"umap"</span>,</span>
+<span>    dim_reduction_name <span class="op">=</span> <span class="st">"umap"</span>,</span>
+<span>    k <span class="op">=</span> <span class="fl">6</span>,</span>
+<span>    name <span class="op">=</span> <span class="st">"new_network"</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">instructions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/showGiottoInstructions.html" class="external-link">showGiottoInstructions</a></span><span class="op">(</span><span class="va">mini_gobject</span><span class="op">)</span></span>
-<span><span class="va">instructions</span><span class="op">$</span><span class="va">save_dir</span> <span class="op">&lt;-</span> <span class="va">results_directory</span></span>
-<span></span>
-<span><span class="va">mini_gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/replaceGiottoInstructions.html" class="external-link">replaceGiottoInstructions</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">mini_gobject</span>,</span>
-<span>                                          instructions <span class="op">=</span> <span class="va">instructions</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/list_nearest_networks.html" class="external-link">list_nearest_networks</a></span><span class="op">(</span><span class="va">g</span>, spat_unit <span class="op">=</span> <span class="st">"aggregate"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>   spat_unit feat_type nn_type        name</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>      <span class="sc">&lt;</span>char<span class="sc">&gt;</span>    <span class="er">&lt;</span>char<span class="sc">&gt;</span>  <span class="er">&lt;</span>char<span class="sc">&gt;</span>      <span class="er">&lt;</span>char<span class="sc">&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span> aggregate       rna     sNN     sNN.pca</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="dv">2</span><span class="sc">:</span> aggregate       rna     kNN    kNN.umap</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="dv">3</span><span class="sc">:</span> aggregate       rna     kNN new_network</span></code></pre></div>
 </div>
 <div class="section level2" number="4">
-<h2 id="convert-giotto-to-anndata">
-<span class="header-section-number">4</span> Convert Giotto to
-AnnData<a class="anchor" aria-label="anchor" href="#convert-giotto-to-anndata"></a>
+<h2 id="giotto-to-anndata">
+<span class="header-section-number">4</span> Giotto to AnnData<a class="anchor" aria-label="anchor" href="#giotto-to-anndata"></a>
 </h2>
-<p>Since Giotto is structured hierarchically, converting Giotto to
-AnnData will result in multiple <code>.h5ad</code> files. Each file will
-correspond to a Giotto <code>spat_unit</code> <code>feat_type</code>
-pair. Furthermore, each expression slot will be treated as a
-<code>layer</code> in the resulting AnnData slot.</p>
-<p>Squidpy anndata objects take different defaults for various
-operations compared to Giotto. For instance, the default nearest
-neighbor network is a kNN for squidpy, while the default for Giotto is a
-sNN. We”ll create a kNN in addition to the sNN within this object
-already to show how it they are handled.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mini_gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">mini_gobject</span>,</span>
-<span>                                     spat_unit <span class="op">=</span> <span class="st">"aggregate"</span>,</span>
-<span>                                     feat_type <span class="op">=</span> <span class="st">"rna"</span>,</span>
-<span>                                     type <span class="op">=</span> <span class="st">"kNN"</span>,</span>
-<span>                                     dim_reduction_to_use <span class="op">=</span> <span class="st">"umap"</span>,</span>
-<span>                                     dim_reduction_name <span class="op">=</span> <span class="st">"umap"</span>,</span>
-<span>                                     k <span class="op">=</span> <span class="fl">15</span>,</span>
-<span>                                     name <span class="op">=</span> <span class="st">"kNN.umap"</span><span class="op">)</span></span></code></pre></div>
-<p>The above cell creates a nearest network with almost all default
-parameters. We”ll change some and make a new network to show how the
-converter handles this.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mini_gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">mini_gobject</span>,</span>
-<span>                                     spat_unit <span class="op">=</span> <span class="st">"aggregate"</span>,</span>
-<span>                                     feat_type <span class="op">=</span> <span class="st">"rna"</span>,</span>
-<span>                                     type <span class="op">=</span> <span class="st">"kNN"</span>,</span>
-<span>                                     dim_reduction_to_use <span class="op">=</span> <span class="st">"umap"</span>,</span>
-<span>                                     dim_reduction_name <span class="op">=</span> <span class="st">"umap"</span>,</span>
-<span>                                     k <span class="op">=</span> <span class="fl">6</span>,</span>
-<span>                                     name <span class="op">=</span> <span class="st">"new_network"</span><span class="op">)</span></span></code></pre></div>
-<p>Since we have multiple <code>spat_unit</code> <code>feat_type</code>
-pairs, there will be multiple files created by this function. The names
-of the <code>.h5ad</code> files will be returned. In the case of a
-non-anndata-default nearest network or spatial network name, the
-key_added terms will be recorded and saved in <code>.txt</code> files
-named accordingly. Please see the documentation for further details.</p>
+<p>An AnnData object holds one table of cells by features, so each
+<code>.h5ad</code> file holds one spatial unit and feature type of the
+Giotto object. By default <code><a href="https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code> writes the
+active ones; <code>spat_unit</code> and <code>feat_type</code> choose
+others. Here we write one file per spatial unit.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">anndata_conversions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html" class="external-link">giottoToAnnData</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">mini_gobject</span>,</span>
-<span>                                       save_directory <span class="op">=</span> <span class="va">results_directory</span>,</span>
-<span>                                       python_path <span class="op">=</span> <span class="va">my_python_path</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw">for</span> <span class="op">(</span><span class="va">su</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"z0"</span>, <span class="st">"z1"</span>, <span class="st">"aggregate"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html" class="external-link">giottoToAnnData</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>        file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">results_folder</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">su</span>, <span class="st">"_rna.h5ad"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>        spat_unit <span class="op">=</span> <span class="va">su</span>,</span>
+<span>        feat_type <span class="op">=</span> <span class="st">"rna"</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>The parts of the Giotto object go to their usual AnnData places:</p>
+<ul>
+<li>normalized values in <code>X</code>, raw counts in
+<code>layers/counts</code>, and every other expression value (here
+<code>scaled</code> and <code>pearson</code>) as a layer of the same
+name;</li>
+<li>cell and feature metadata in <code>obs</code> and
+<code>var</code>;</li>
+<li>spatial locations in <code>obsm/spatial</code>, dimension reductions
+in <code>obsm/X_&lt;name&gt;</code> and the PCA loadings in
+<code>varm/PCs</code>;</li>
+<li>every nearest neighbour and spatial network in <code>obsp</code>
+(<code>&lt;name&gt;_distances</code> and
+<code>&lt;name&gt;_connectivities</code>) with a record of the same name
+in <code>uns</code>;</li>
+<li>the tissue image in <code>uns/spatial</code>.</li>
+</ul>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">anndataR</span><span class="fu">::</span><span class="fu">read_h5ad</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">results_folder</span>, <span class="st">"aggregate_rna.h5ad"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>InMemoryAnnData object with n_obs × n_vars <span class="ot">=</span> <span class="dv">462</span> × <span class="dv">337</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>    obs<span class="sc">:</span> <span class="st">'nr_feats'</span>, <span class="st">'perc_feats'</span>, <span class="st">'total_expr'</span>, <span class="st">'leiden_clus'</span>, <span class="st">'louvain_clus'</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>    var<span class="sc">:</span> <span class="st">'nr_cells'</span>, <span class="st">'perc_cells'</span>, <span class="st">'total_expr'</span>, <span class="st">'mean_expr'</span>, <span class="st">'mean_expr_det'</span>, <span class="st">'hvg_orig'</span>, <span class="st">'var'</span>, <span class="st">'hvf'</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>    uns<span class="sc">:</span> <span class="st">'giottoConnect'</span>, <span class="st">'kNN.umap'</span>, <span class="st">'new_network'</span>, <span class="st">'pca'</span>, <span class="st">'sNN.pca'</span>, <span class="st">'spatial'</span>, <span class="st">'spatial_Delaunay_network'</span>, <span class="st">'spatial_kNN_network'</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>    obsm<span class="sc">:</span> <span class="st">'X_pca'</span>, <span class="st">'X_tsne'</span>, <span class="st">'X_umap'</span>, <span class="st">'spatial'</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>    varm<span class="sc">:</span> <span class="st">'PCs'</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>    layers<span class="sc">:</span> <span class="st">'counts'</span>, <span class="st">'pearson'</span>, <span class="st">'scaled'</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>    obsp<span class="sc">:</span> <span class="st">'kNN.umap_connectivities'</span>, <span class="st">'kNN.umap_distances'</span>, <span class="st">'new_network_connectivities'</span>, <span class="st">'new_network_distances'</span>, <span class="st">'sNN.pca_connectivities'</span>, <span class="st">'sNN.pca_distances'</span>, <span class="st">'spatial_Delaunay_network_connectivities'</span>, <span class="st">'spatial_Delaunay_network_distances'</span>, <span class="st">'spatial_kNN_network_connectivities'</span>, <span class="st">'spatial_kNN_network_distances'</span></span></code></pre></div>
+<p>In scanpy, a network is used by its name, for example:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="im">import</span> scanpy <span class="im">as</span> sc</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>adata <span class="op">=</span> sc.read_h5ad(<span class="st">"aggregate_rna.h5ad"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>sc.tl.leiden(adata, neighbors_key <span class="op">=</span> <span class="st">"kNN.umap"</span>)</span></code></pre></div>
+<p><code><a href="https://rdrr.io/pkg/GiottoConnect/man/readbackCheck.html" class="external-link">readbackCheck()</a></code> compares the written file with the
+Giotto object, part by part:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/GiottoConnect/man/readbackCheck.html" class="external-link">readbackCheck</a></span><span class="op">(</span><span class="va">g</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">results_folder</span>, <span class="st">"aggregate_rna.h5ad"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="sc">&lt;</span>giottoReadback<span class="sc">&gt;</span> PASS<span class="sc">:</span> <span class="dv">44</span> MATCH, <span class="dv">0</span> DECLARED, <span class="dv">0</span> UNDECLARED</span></code></pre></div>
 </div>
 <div class="section level2" number="5">
 <h2 id="anndata-to-giotto">
 <span class="header-section-number">5</span> AnnData to Giotto<a class="anchor" aria-label="anchor" href="#anndata-to-giotto"></a>
 </h2>
-<p>To convert an AnnData Object back into a Giotto object, it must first
-be saved as a <code>.h5ad</code> file. The name of said file may then be
-provided to <code>anndataToGiotto()</code> for conversion.</p>
-<p>If a nearest neighbor network or spatial network was created using
-the <code>key_added</code> argument, they may be provided to arguments
-n_key_added and/or spatial_n_key_added, respectively. If converting an
-anndata object that was originally a giotto object, the
-<code>.txt</code> files generated by <code><a href="https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code> may
-be provided to these arguments as well.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">z0_rna_gobject</span> <span class="op">&lt;-</span> <span class="fu">anndataToGiotto</span><span class="op">(</span>anndata_path <span class="op">=</span> <span class="st">"./giotto_anndata_conversion/z0_rna_converted_gobject.h5ad"</span>,</span>
-<span>                                  python_path <span class="op">=</span> <span class="va">python_path</span><span class="op">)</span></span>
+<p><code><a href="https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code> reads an <code>.h5ad</code> file into
+a Giotto object. Files written by <code><a href="https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code> come
+back with their networks, reductions and expression values under the
+same names; files from scanpy or squidpy are read the same way.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">aggregate_rna</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html" class="external-link">anndataToGiotto</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">results_folder</span>, <span class="st">"aggregate_rna.h5ad"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">z1_rna_gobject</span> <span class="op">&lt;-</span> <span class="fu">anndataToGiotto</span><span class="op">(</span>anndata_path <span class="op">=</span> <span class="st">"./giotto_anndata_conversion/z1_rna_converted_gobject.h5ad"</span>,</span>
-<span>                                  python_path <span class="op">=</span> <span class="va">python_path</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">aggregate_rna_gobject</span> <span class="op">&lt;-</span> <span class="fu">anndataToGiotto</span><span class="op">(</span>anndata_path <span class="op">=</span> <span class="st">"./giotto_anndata_conversion/aggregate_rna_converted_gobject.h5ad"</span>,</span>
-<span>                                         python_path <span class="op">=</span> <span class="va">python_path</span>,</span>
-<span>                                         n_key_added <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"sNN.pca"</span>,<span class="st">"new_network"</span><span class="op">)</span>,</span>
-<span>                                         spatial_n_key_added <span class="op">=</span> <span class="st">"aggregate_rna_spatial_network_keys_added.txt"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/list_nearest_networks.html" class="external-link">list_nearest_networks</a></span><span class="op">(</span><span class="va">aggregate_rna</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/list_spatial_networks.html" class="external-link">list_spatial_networks</a></span><span class="op">(</span><span class="va">aggregate_rna</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/list_expression.html" class="external-link">list_expression</a></span><span class="op">(</span><span class="va">aggregate_rna</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>   spat_unit feat_type nn_type        name</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>      <span class="sc">&lt;</span>char<span class="sc">&gt;</span>    <span class="er">&lt;</span>char<span class="sc">&gt;</span>  <span class="er">&lt;</span>char<span class="sc">&gt;</span>      <span class="er">&lt;</span>char<span class="sc">&gt;</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span>      cell       rna     kNN    kNN.umap</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="dv">2</span><span class="sc">:</span>      cell       rna     kNN new_network</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="dv">3</span><span class="sc">:</span>      cell       rna     sNN     sNN.pca</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>   spat_unit             name</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>      <span class="sc">&lt;</span>char<span class="sc">&gt;</span>           <span class="er">&lt;</span>char<span class="sc">&gt;</span></span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span>      cell Delaunay_network</span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a><span class="dv">2</span><span class="sc">:</span>      cell      kNN_network</span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>   spat_unit feat_type       name</span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a>      <span class="sc">&lt;</span>char<span class="sc">&gt;</span>    <span class="er">&lt;</span>char<span class="sc">&gt;</span>     <span class="er">&lt;</span>char<span class="sc">&gt;</span></span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span>      cell       rna        raw</span>
+<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a><span class="dv">2</span><span class="sc">:</span>      cell       rna normalized</span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a><span class="dv">3</span><span class="sc">:</span>      cell       rna    pearson</span>
+<span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a><span class="dv">4</span><span class="sc">:</span>      cell       rna     scaled</span></code></pre></div>
+<p>Each file becomes a Giotto object with the spatial unit
+<code>cell</code> and the feature type <code>rna</code>.</p>
+<p><code><a href="https://rdrr.io/pkg/GiottoConnect/man/mappingProvenance.html" class="external-link">mappingProvenance()</a></code> shows how the file was converted,
+including anything that could not be carried over or was estimated:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/GiottoConnect/man/mappingProvenance.html" class="external-link">mappingProvenance</a></span><span class="op">(</span><span class="va">aggregate_rna</span><span class="op">)</span><span class="op">$</span><span class="va">losses</span></span></code></pre></div>
+<p><code>anndataToGiotto(..., source = "my_project/")</code> builds a
+GiottoDisk-backed object instead, for files that do not fit in
+memory.</p>
 </div>
 <div class="section level2" number="6">
 <h2 id="session-info">
 <span class="header-section-number">6</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>    R version <span class="dv">4</span>.<span class="fl">2.2</span> (<span class="dv">2022-10-31</span> ucrt)</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>    Platform<span class="sc">:</span> x86_64<span class="sc">-</span>w64<span class="sc">-</span>mingw32<span class="sc">/</span><span class="fu">x64</span> (<span class="dv">64</span><span class="sc">-</span>bit)</span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>    Running under<span class="sc">:</span> Windows <span class="dv">10</span> <span class="fu">x64</span> (build <span class="dv">22621</span>)</span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>    Matrix products<span class="sc">:</span> default</span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a></span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>    locale<span class="sc">:</span></span>
-<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>    [<span class="dv">1</span>] LC_COLLATE<span class="ot">=</span>English_United States.utf8 </span>
-<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>    [<span class="dv">2</span>] LC_CTYPE<span class="ot">=</span>English_United States.utf8   </span>
-<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>    [<span class="dv">3</span>] LC_MONETARY<span class="ot">=</span>English_United States.utf8</span>
-<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>    [<span class="dv">4</span>] LC_NUMERIC<span class="ot">=</span>C                          </span>
-<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>    [<span class="dv">5</span>] LC_TIME<span class="ot">=</span>English_United States.utf8    </span>
-<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a></span>
-<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>    attached base packages<span class="sc">:</span></span>
-<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a>    [<span class="dv">1</span>] stats     graphics  grDevices utils     datasets  methods   base     </span>
-<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a></span>
-<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a>    other attached packages<span class="sc">:</span></span>
-<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a>    [<span class="dv">1</span>] GiottoData_0.<span class="fl">2.1</span> Giotto_3.<span class="fl">2.1</span>    </span>
-<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a></span>
-<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a>    loaded via a <span class="fu">namespace</span> (and not attached)<span class="sc">:</span></span>
-<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a>     [<span class="dv">1</span>] Rcpp_1.<span class="fl">0.10</span>       pillar_1.<span class="fl">9.0</span>      compiler_4.<span class="fl">2.2</span>    tools_4.<span class="fl">2.2</span>      </span>
-<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a>     [<span class="dv">5</span>] digest_0.<span class="fl">6.30</span>     jsonlite_1.<span class="fl">8.3</span>    evaluate_0<span class="fl">.20</span>     lifecycle_1.<span class="fl">0.3</span>  </span>
-<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a>     [<span class="dv">9</span>] tibble_3.<span class="fl">2.1</span>      gtable_0.<span class="fl">3.3</span>      lattice_0<span class="fl">.20</span><span class="dv">-45</span>   png_0<span class="fl">.1</span><span class="dv">-7</span>        </span>
-<span id="cb8-24"><a href="#cb8-24" tabindex="-1"></a>    [<span class="dv">13</span>] pkgconfig_2.<span class="fl">0.3</span>   rlang_1.<span class="fl">1.0</span>       igraph_1.<span class="fl">4.1</span>      Matrix_1<span class="fl">.5</span><span class="dv">-1</span>     </span>
-<span id="cb8-25"><a href="#cb8-25" tabindex="-1"></a>    [<span class="dv">17</span>] cli_3.<span class="fl">4.1</span>         rstudioapi_0<span class="fl">.14</span>   parallel_4.<span class="fl">2.2</span>    yaml_2.<span class="fl">3.7</span>       </span>
-<span id="cb8-26"><a href="#cb8-26" tabindex="-1"></a>    [<span class="dv">21</span>] xfun_0<span class="fl">.38</span>         fastmap_1.<span class="fl">1.0</span>     terra_1<span class="fl">.7</span><span class="dv">-18</span>      dplyr_1.<span class="fl">1.1</span>      </span>
-<span id="cb8-27"><a href="#cb8-27" tabindex="-1"></a>    [<span class="dv">25</span>] knitr_1<span class="fl">.42</span>        rappdirs_0.<span class="fl">3.3</span>    generics_0.<span class="fl">1.3</span>    vctrs_0.<span class="fl">6.1</span>      </span>
-<span id="cb8-28"><a href="#cb8-28" tabindex="-1"></a>    [<span class="dv">29</span>] rprojroot_2.<span class="fl">0.3</span>   grid_4.<span class="fl">2.2</span>        tidyselect_1.<span class="fl">2.0</span>  here_1.<span class="fl">0.1</span>       </span>
-<span id="cb8-29"><a href="#cb8-29" tabindex="-1"></a>    [<span class="dv">33</span>] reticulate_1<span class="fl">.26</span>   glue_1.<span class="fl">6.2</span>        data.table_1.<span class="fl">14.6</span> R6_2.<span class="fl">5.1</span>         </span>
-<span id="cb8-30"><a href="#cb8-30" tabindex="-1"></a>    [<span class="dv">37</span>] fansi_1.<span class="fl">0.4</span>       rmarkdown_2<span class="fl">.21</span>    ggplot2_3.<span class="fl">4.1</span>     magrittr_2.<span class="fl">0.3</span>   </span>
-<span id="cb8-31"><a href="#cb8-31" tabindex="-1"></a>    [<span class="dv">41</span>] scales_1.<span class="fl">2.1</span>      codetools_0<span class="fl">.2</span><span class="dv">-18</span>  htmltools_0.<span class="fl">5.4</span>   colorspace_2<span class="fl">.1</span><span class="dv">-0</span> </span>
-<span id="cb8-32"><a href="#cb8-32" tabindex="-1"></a>    [<span class="dv">45</span>] utf8_1.<span class="fl">2.3</span>        munsell_0.<span class="fl">5.0</span>     dbscan_1<span class="fl">.1</span><span class="dv">-11</span>    </span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>R version <span class="dv">4</span>.<span class="fl">5.3</span> (<span class="dv">2026-03-11</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>Platform<span class="sc">:</span> aarch64<span class="sc">-</span>apple<span class="sc">-</span>darwin20</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>Running under<span class="sc">:</span> macOS Tahoe <span class="dv">26</span>.<span class="fl">7.3</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>Matrix products<span class="sc">:</span> default</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>BLAS<span class="sc">:</span>   <span class="er">/</span>Library<span class="sc">/</span>Frameworks<span class="sc">/</span>R.framework<span class="sc">/</span>Versions<span class="sc">/</span><span class="fl">4.5</span><span class="sc">-</span>arm64<span class="sc">/</span>Resources<span class="sc">/</span>lib<span class="sc">/</span>libRblas.<span class="fl">0.</span>dylib </span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>LAPACK<span class="sc">:</span> <span class="er">/</span>Library<span class="sc">/</span>Frameworks<span class="sc">/</span>R.framework<span class="sc">/</span>Versions<span class="sc">/</span><span class="fl">4.5</span><span class="sc">-</span>arm64<span class="sc">/</span>Resources<span class="sc">/</span>lib<span class="sc">/</span>libRlapack.dylib;  LAPACK version <span class="dv">3</span>.<span class="fl">12.1</span></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>locale<span class="sc">:</span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>[<span class="dv">1</span>] C.UTF<span class="dv">-8</span><span class="sc">/</span>C.UTF<span class="dv">-8</span><span class="sc">/</span>C.UTF<span class="dv">-8</span><span class="sc">/</span>C<span class="sc">/</span>C.UTF<span class="dv">-8</span><span class="sc">/</span>C.UTF<span class="dv">-8</span></span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a>time zone<span class="sc">:</span> America<span class="sc">/</span>New_York</span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a>tzcode source<span class="sc">:</span> internal</span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a>attached base packages<span class="sc">:</span></span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a>[<span class="dv">1</span>] stats     graphics  grDevices utils     datasets  methods   base     </span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a></span>
+<span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a>other attached packages<span class="sc">:</span></span>
+<span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a>[<span class="dv">1</span>] GiottoConnect_0.<span class="fl">1.0</span> GiottoData_0.<span class="fl">3.8</span>    Giotto_4.<span class="fl">3.7</span>        GiottoClass_0.<span class="fl">8.0</span>  </span>
+<span id="cb15-20"><a href="#cb15-20" tabindex="-1"></a></span>
+<span id="cb15-21"><a href="#cb15-21" tabindex="-1"></a>loaded via a <span class="fu">namespace</span> (and not attached)<span class="sc">:</span></span>
+<span id="cb15-22"><a href="#cb15-22" tabindex="-1"></a>  [<span class="dv">1</span>] RColorBrewer_1<span class="fl">.1</span><span class="dv">-3</span>          jsonlite_2.<span class="fl">0.0</span>              magrittr_2.<span class="fl">0.5</span>             </span>
+<span id="cb15-23"><a href="#cb15-23" tabindex="-1"></a>  [<span class="dv">4</span>] magick_2.<span class="fl">9.1</span>                farver_2.<span class="fl">1.2</span>                vctrs_0.<span class="fl">7.3</span>                </span>
+<span id="cb15-24"><a href="#cb15-24" tabindex="-1"></a>  [<span class="dv">7</span>] memoise_2.<span class="fl">0.1</span>               GiottoUtils_0.<span class="fl">2.10</span>          terra_1<span class="fl">.9</span><span class="dv">-11</span>               </span>
+<span id="cb15-25"><a href="#cb15-25" tabindex="-1"></a> [<span class="dv">10</span>] htmltools_0.<span class="fl">5.9</span>             S4Arrays_1.<span class="fl">10.1</span>             BiocNeighbors_2.<span class="fl">4.0</span>        </span>
+<span id="cb15-26"><a href="#cb15-26" tabindex="-1"></a> [<span class="dv">13</span>] Rhdf5lib_1.<span class="fl">32.0</span>             rhdf5_2.<span class="fl">54.1</span>                SparseArray_1.<span class="fl">10.9</span>         </span>
+<span id="cb15-27"><a href="#cb15-27" tabindex="-1"></a> [<span class="dv">16</span>] sctransform_0.<span class="fl">4.3</span>           parallelly_1.<span class="fl">50.0</span>           KernSmooth_2<span class="fl">.23</span><span class="dv">-26</span>         </span>
+<span id="cb15-28"><a href="#cb15-28" tabindex="-1"></a> [<span class="dv">19</span>] htmlwidgets_1.<span class="fl">6.4</span>           ica_1<span class="fl">.0</span><span class="dv">-3</span>                   plyr_1.<span class="fl">8.9</span>                 </span>
+<span id="cb15-29"><a href="#cb15-29" tabindex="-1"></a> [<span class="dv">22</span>] plotly_4.<span class="fl">12.1</span>               cachem_1.<span class="fl">1.0</span>                igraph_2.<span class="fl">3.4</span>               </span>
+<span id="cb15-30"><a href="#cb15-30" tabindex="-1"></a> [<span class="dv">25</span>] lifecycle_1.<span class="fl">0.5</span>             pkgconfig_2.<span class="fl">0.3</span>             anndataR_1.<span class="fl">0.2</span>             </span>
+<span id="cb15-31"><a href="#cb15-31" tabindex="-1"></a> [<span class="dv">28</span>] rsvd_1.<span class="fl">0.5</span>                  Matrix_1<span class="fl">.7</span><span class="dv">-5</span>                R6_2.<span class="fl">6.1</span>                   </span>
+<span id="cb15-32"><a href="#cb15-32" tabindex="-1"></a> [<span class="dv">31</span>] fastmap_1.<span class="fl">2.0</span>               MatrixGenerics_1.<span class="fl">22.0</span>       future_1.<span class="fl">82.0</span>              </span>
+<span id="cb15-33"><a href="#cb15-33" tabindex="-1"></a> [<span class="dv">34</span>] digest_0.<span class="fl">6.39</span>               colorspace_2<span class="fl">.1</span><span class="dv">-4</span>            patchwork_1.<span class="fl">3.2</span>            </span>
+<span id="cb15-34"><a href="#cb15-34" tabindex="-1"></a> [<span class="dv">37</span>] S4Vectors_0.<span class="fl">48.1</span>            Seurat_6.<span class="fl">0.0</span>                RSpectra_0<span class="fl">.16</span><span class="dv">-2</span>            </span>
+<span id="cb15-35"><a href="#cb15-35" tabindex="-1"></a> [<span class="dv">40</span>] irlba_2.<span class="fl">4.1</span>                 GenomicRanges_1.<span class="fl">62.1</span>        beachmat_2.<span class="fl">26.0</span>            </span>
+<span id="cb15-36"><a href="#cb15-36" tabindex="-1"></a> [<span class="dv">43</span>] progressr_0.<span class="fl">18.0</span>            httr_1.<span class="fl">4.9</span>                  polyclip_1<span class="fl">.10</span><span class="dv">-7</span>            </span>
+<span id="cb15-37"><a href="#cb15-37" tabindex="-1"></a> [<span class="dv">46</span>] abind_1<span class="fl">.4</span><span class="dv">-8</span>                 compiler_4.<span class="fl">5.3</span>              proxy_0<span class="fl">.4</span><span class="dv">-29</span>               </span>
+<span id="cb15-38"><a href="#cb15-38" tabindex="-1"></a> [<span class="dv">49</span>] bit64_4.<span class="fl">6.0</span><span class="dv">-1</span>               withr_3.<span class="fl">0.3</span>                 S7_1.<span class="fl">0.0</span>                   </span>
+<span id="cb15-39"><a href="#cb15-39" tabindex="-1"></a> [<span class="dv">52</span>] backports_1.<span class="fl">5.1</span>             BiocParallel_1.<span class="fl">44.0</span>         DBI_1.<span class="fl">3.0</span>                  </span>
+<span id="cb15-40"><a href="#cb15-40" tabindex="-1"></a> [<span class="dv">55</span>] viridis_0.<span class="fl">6.5</span>               fastDummies_1.<span class="fl">7.6</span>           ggforce_0.<span class="fl">5.0</span>              </span>
+<span id="cb15-41"><a href="#cb15-41" tabindex="-1"></a> [<span class="dv">58</span>] MASS_7<span class="fl">.3</span><span class="dv">-65</span>                 DelayedArray_0.<span class="fl">36.0</span>         classInt_0<span class="fl">.4</span><span class="dv">-11</span>            </span>
+<span id="cb15-42"><a href="#cb15-42" tabindex="-1"></a> [<span class="dv">61</span>] rjson_0.<span class="fl">2.23</span>                bluster_1.<span class="fl">20.0</span>              gtools_3.<span class="fl">9.5</span>               </span>
+<span id="cb15-43"><a href="#cb15-43" tabindex="-1"></a> [<span class="dv">64</span>] units_1<span class="fl">.0</span><span class="dv">-1</span>                 GiottoVisuals_0.<span class="fl">2.16</span>        tools_4.<span class="fl">5.3</span>                </span>
+<span id="cb15-44"><a href="#cb15-44" tabindex="-1"></a> [<span class="dv">67</span>] otel_0.<span class="fl">3.0</span>                  future.apply_1.<span class="fl">21.0</span>         glue_1.<span class="fl">8.1</span>                 </span>
+<span id="cb15-45"><a href="#cb15-45" tabindex="-1"></a> [<span class="dv">70</span>] dbscan_1.<span class="fl">2.4</span>                rhdf5filters_1.<span class="fl">22.0</span>         grid_4.<span class="fl">5.3</span>                 </span>
+<span id="cb15-46"><a href="#cb15-46" tabindex="-1"></a> [<span class="dv">73</span>] sf_1<span class="fl">.1</span><span class="dv">-1</span>                    checkmate_2.<span class="fl">3.4</span>             Rtsne_0<span class="fl">.17</span>                 </span>
+<span id="cb15-47"><a href="#cb15-47" tabindex="-1"></a> [<span class="dv">76</span>] cluster_2.<span class="dv">1</span>.<span class="fl">8.2</span>             reshape2_1.<span class="fl">4.5</span>              generics_0.<span class="fl">1.4</span>             </span>
+<span id="cb15-48"><a href="#cb15-48" tabindex="-1"></a> [<span class="dv">79</span>] hdf5r_1.<span class="fl">3.12</span>                gtable_0.<span class="fl">3.6</span>                class_7<span class="fl">.3</span><span class="dv">-23</span>               </span>
+<span id="cb15-49"><a href="#cb15-49" tabindex="-1"></a> [<span class="dv">82</span>] tidyr_1.<span class="fl">3.2</span>                 data.table_1.<span class="dv">18</span>.<span class="fl">6.1</span>         BiocSingular_1.<span class="fl">26.1</span>        </span>
+<span id="cb15-50"><a href="#cb15-50" tabindex="-1"></a> [<span class="dv">85</span>] tidygraph_1.<span class="fl">3.1</span>             ScaledMatrix_1.<span class="fl">18.0</span>         sp_2<span class="fl">.2</span><span class="dv">-1</span>                   </span>
+<span id="cb15-51"><a href="#cb15-51" tabindex="-1"></a> [<span class="dv">88</span>] XVector_0.<span class="fl">50.0</span>              BiocGenerics_0.<span class="fl">56.0</span>         tilework_1.<span class="fl">0.0</span>             </span>
+<span id="cb15-52"><a href="#cb15-52" tabindex="-1"></a> [<span class="dv">91</span>] RcppAnnoy_0.<span class="fl">0.23</span>            ggrepel_0.<span class="fl">9.8</span>               RANN_2.<span class="fl">6.2</span>                 </span>
+<span id="cb15-53"><a href="#cb15-53" tabindex="-1"></a> [<span class="dv">94</span>] pillar_1.<span class="fl">11.1</span>               stringr_1.<span class="fl">6.0</span>               spam_2<span class="fl">.11</span><span class="dv">-3</span>                </span>
+<span id="cb15-54"><a href="#cb15-54" tabindex="-1"></a> [<span class="dv">97</span>] RcppHNSW_0.<span class="fl">6.0</span>              dplyr_1.<span class="fl">2.1</span>                 tweenr_2.<span class="fl">0.3</span>               </span>
+<span id="cb15-55"><a href="#cb15-55" tabindex="-1"></a>[<span class="dv">100</span>] lattice_0<span class="fl">.22</span><span class="dv">-9</span>              bit_4.<span class="fl">6.0</span>                   tidyselect_1.<span class="fl">2.1</span>           </span>
+<span id="cb15-56"><a href="#cb15-56" tabindex="-1"></a>[<span class="dv">103</span>] SingleCellExperiment_1.<span class="fl">32.0</span> pbapply_1<span class="fl">.7</span><span class="dv">-5</span>               gridExtra_2.<span class="fl">3.1</span>            </span>
+<span id="cb15-57"><a href="#cb15-57" tabindex="-1"></a>[<span class="dv">106</span>] IRanges_2.<span class="fl">44.0</span>              Seqinfo_1.<span class="fl">0.0</span>               SummarizedExperiment_1.<span class="fl">40.0</span></span>
+<span id="cb15-58"><a href="#cb15-58" tabindex="-1"></a>[<span class="dv">109</span>] scattermore_1<span class="fl">.2</span>             stats4_4.<span class="fl">5.3</span>                pls_2<span class="fl">.9</span><span class="dv">-0</span>                  </span>
+<span id="cb15-59"><a href="#cb15-59" tabindex="-1"></a>[<span class="dv">112</span>] graphlayouts_1.<span class="fl">2.3</span>          Biobase_2.<span class="fl">70.0</span>              matrixStats_1.<span class="fl">5.0</span>          </span>
+<span id="cb15-60"><a href="#cb15-60" tabindex="-1"></a>[<span class="dv">115</span>] stringi_1.<span class="fl">8.9</span>               yaml_2.<span class="fl">3.12</span>                 codetools_0<span class="fl">.2</span><span class="dv">-20</span>           </span>
+<span id="cb15-61"><a href="#cb15-61" tabindex="-1"></a>[<span class="dv">118</span>] ggraph_2.<span class="fl">2.2</span>                tibble_3.<span class="fl">3.1</span>                colorRamp2_0.<span class="fl">1.0</span>           </span>
+<span id="cb15-62"><a href="#cb15-62" tabindex="-1"></a>[<span class="dv">121</span>] cli_3.<span class="fl">6.6</span>                   uwot_0.<span class="fl">2.4</span>                  reticulate_1.<span class="fl">47.0</span>          </span>
+<span id="cb15-63"><a href="#cb15-63" tabindex="-1"></a>[<span class="dv">124</span>] dichromat_2<span class="fl">.0-0.1</span>           Rcpp_1.<span class="fl">1.2</span>                  globals_0.<span class="fl">20.0</span>             </span>
+<span id="cb15-64"><a href="#cb15-64" tabindex="-1"></a>[<span class="dv">127</span>] png_0<span class="fl">.1</span><span class="dv">-9</span>                   parallel_4.<span class="fl">5.3</span>              ggplot2_4.<span class="fl">0.4</span>              </span>
+<span id="cb15-65"><a href="#cb15-65" tabindex="-1"></a>[<span class="dv">130</span>] dotCall64_1<span class="fl">.2</span>               listenv_1.<span class="fl">1.0</span>               SpatialExperiment_1.<span class="fl">20.0</span>   </span>
+<span id="cb15-66"><a href="#cb15-66" tabindex="-1"></a>[<span class="dv">133</span>] viridisLite_0.<span class="fl">4.3</span>           e1071_1<span class="fl">.7</span><span class="dv">-17</span>                scales_1.<span class="fl">4.0</span>               </span>
+<span id="cb15-67"><a href="#cb15-67" tabindex="-1"></a>[<span class="dv">136</span>] ggridges_0.<span class="fl">5.7</span>              SeuratObject_5.<span class="fl">4.0</span>          purrr_1.<span class="fl">2.2</span>                </span>
+<span id="cb15-68"><a href="#cb15-68" tabindex="-1"></a>[<span class="dv">139</span>] rlang_1.<span class="fl">3.0</span>                 cowplot_1.<span class="fl">2.0</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

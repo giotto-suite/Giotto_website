@@ -4,6 +4,15 @@
 
 Requires GiottoClass 0.8.0.
 
+### breaking changes
+
+- `spatialDE()` and `spatialAEH()` are removed, together with the
+  `"spatialDE"` method of
+  [`runPatternSimulation()`](https://giottosuite.com/dev/reference/runPatternSimulation.md).
+  Use [`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md)
+  or [`spark()`](https://giottosuite.com/dev/reference/spark.md) for
+  spatially variable features.
+
 ### new
 
 - [`findInteractionChangedFeats()`](https://giottosuite.com/dev/reference/findInteractionChangedFeats.md)
@@ -55,6 +64,13 @@ Requires GiottoClass 0.8.0.
 
 ### bug fixes
 
+- Clustering runs on a `giottoMulti`:
+  [`doLeidenCluster()`](https://giottosuite.com/dev/reference/doLeidenCluster.md)
+  and
+  [`clusterData()`](https://giottosuite.com/dev/reference/clusterData.md)
+  write clusters to the multi’s joint cell metadata.
+- [`addStatistics()`](https://giottosuite.com/dev/reference/addStatistics.md)
+  on a `giottoMulti` computes polygon area per sample.
 - CosMx images and label masks of AtoMx exports, whose file names pad
   the FOV number to five digits (`CellComposite_F00033.jpg`), failed to
   load (“No images found matching fov \[F033\]”). The digits are now
@@ -96,10 +112,17 @@ Requires GiottoClass 0.8.0.
   [`plotICF()`](https://giottosuite.com/dev/reference/plotICF.md) draws
   either.
 - The legacy Seurat, AnnData and Bento converters are no longer
-  re-exported: `seuratToGiotto()`, `giottoToSeurat()`,
-  `anndataToGiotto()` and `createBentoAdata()` are in GiottoConnect.
-  `seuratToGiottoV4/V5()` and `giottoToSeuratV4/V5()` are replaced by
-  GiottoConnect’s `seuratToGiotto()` / `giottoToSeurat()`.
+  re-exported:
+  [`seuratToGiotto()`](https://rdrr.io/pkg/GiottoConnect/man/seuratToGiotto.html),
+  [`giottoToSeurat()`](https://rdrr.io/pkg/GiottoConnect/man/giottoToSeurat.html),
+  [`anndataToGiotto()`](https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html)
+  and
+  [`createBentoAdata()`](https://rdrr.io/pkg/GiottoConnect/man/createBentoAdata.html)
+  are in GiottoConnect. `seuratToGiottoV4/V5()` and
+  `giottoToSeuratV4/V5()` are replaced by GiottoConnect’s
+  [`seuratToGiotto()`](https://rdrr.io/pkg/GiottoConnect/man/seuratToGiotto.html)
+  /
+  [`giottoToSeurat()`](https://rdrr.io/pkg/GiottoConnect/man/giottoToSeurat.html).
 - 10x feature names are the same whichever file they come from.
   [`get10Xmatrix_h5()`](https://giottosuite.com/dev/reference/get10Xmatrix_h5.md)
   names repeated features like
@@ -269,6 +292,11 @@ Requires GiottoClass 0.8.0.
 
 ### bug fixes
 
+- [`calculateHVF()`](https://giottosuite.com/dev/reference/calculateHVF.md)
+  shows, saves and returns its plot by default again (a `NULL`
+  `show_plot` / `save_plot` / `return_plot` turned the plot off), and
+  the `cov_loess` / `cov_groups` HVF plots no longer fail on a missing
+  column.
 - [`read10xAffineImage()`](https://giottosuite.com/dev/reference/read10xAffineImage.md)
   placed images wrongly when the 10x alignment matrix has shear or
   unequal scale; rotations and uniform scale were unaffected.
@@ -1886,8 +1914,7 @@ too, and will ship from there under that version.
 ### Bug fixes
 
 - Fix Error “cannot coerce class ‘structure(”spatLocsObj”, package =
-  “Giotto”)’ to a data.frame” in
-  [`spatialDE()`](https://giottosuite.com/dev/reference/spatialDE.md)
+  “Giotto”)’ to a data.frame” in `spatialDE()`
 
 ### Enhancements
 
@@ -2172,11 +2199,13 @@ too, and will ship from there under that version.
 
 ### Added
 
-- New implementations of `anndataToGiotto()` and
+- New implementations of
+  [`anndataToGiotto()`](https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html)
+  and
   [`giottoToAnnData()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html)
   for Nearest Neighbor and Spatial Networks
 - New `check_py_for_scanpy()` function, shifting code around in
-  `anndataToGiotto()`
+  [`anndataToGiotto()`](https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html)
 - Add [`initialize()`](https://rdrr.io/r/methods/new.html) method for
   `giotto`
 - Add exported `create` constructor functions for Giotto S4 subobjects
@@ -2479,7 +2508,9 @@ too, and will ship from there under that version.
 
 ### Added
 
-- New `anndataToGiotto()` to convert scanpy anndata to Giotto
+- New
+  [`anndataToGiotto()`](https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html)
+  to convert scanpy anndata to Giotto
 
 ## Giotto 2.0.0.998
 

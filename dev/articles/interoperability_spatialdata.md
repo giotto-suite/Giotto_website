@@ -6,7 +6,8 @@ SpatialData is a versatile data framework for processing spatial omics
 data in python. This tutorial demonstrates how to convert Giotto objects
 to and from SpatialData object using
 [`giottoToSpatialData()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToSpatialData.html)
-and `spatialdataToGiotto()`.
+and
+[`spatialdataToGiotto()`](https://rdrr.io/pkg/GiottoConnect/man/spatialdataToGiotto.html).
 
 ## 2 Set up Giotto Environment
 

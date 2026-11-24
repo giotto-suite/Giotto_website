@@ -1,144 +1,210 @@
 # Interoperability: AnnData
 
-## 1 Converting to and from AnnData (squidpy-flavor)
+## 1 Converting to and from AnnData
 
-This tutorial details how to use the conversion functions
-`anndataToGiotto()` and
-[`giottoToAnnData()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html).
-A mini Giotto object will be used for minimal computational
-requirements. Please note that these functions are inherently in active
-development, since changes to either squidpy or anndata are possible.
+This tutorial shows how to write a Giotto object as AnnData `.h5ad`
+files with
+[`giottoToAnnData()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html)
+and read them back with
+[`anndataToGiotto()`](https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html).
+Both functions are part of
+[GiottoConnect](https://github.com/giotto-suite/GiottoConnect) and read
+and write `.h5ad` files directly from R: no python environment is
+needed. The files use the layout scanpy and squidpy expect, so they can
+be analysed there as well.
+
+A mini Giotto object is used to keep the computational requirements low.
 
 ## 2 Start Giotto
 
 ``` r
 
-# Ensure Giotto Suite is installed
-if(!"Giotto" %in% installed.packages()) {
-  pak::pkg_install("giotto-suite/Giotto")
+# Ensure Giotto Suite, GiottoData and GiottoConnect are installed
+if (!"Giotto" %in% installed.packages()) {
+    pak::pkg_install("giotto-suite/Giotto")
+}
+if (!"GiottoData" %in% installed.packages()) {
+    pak::pkg_install("giotto-suite/GiottoData")
+}
+if (!"GiottoConnect" %in% installed.packages()) {
+    pak::pkg_install("giotto-suite/GiottoConnect")
 }
 
 library(Giotto)
-
-# Ensure Giotto Data is installed
-if(!"GiottoData" %in% installed.packages()) {
-  pak::pkg_install("giotto-suite/GiottoData")
-}
-
 library(GiottoData)
-
-# Ensure the Python environment for Giotto has been installed
-genv_exists <- checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment
-  installGiottoEnvironment()
-}
+library(GiottoConnect)
 ```
 
-## 3 Create a Giotto object
+## 3 Load a Giotto object
+
+The vizgen mini object has three spatial units (`z0`, `z1` and
+`aggregate`), each with the `rna` feature type.
 
 ``` r
 
-# Specify path to which results may be saved
 results_folder <- "/path/to/results/"
 
-# Optional: Specify a path to a Python executable within a conda or miniconda 
-# environment. If set to NULL (default), the Python executable within the previously
-# installed Giotto environment will be used.
-python_path <- NULL # alternatively, "/local/python/path/python" if desired.
-
-mini_gobject <- loadGiottoMini(dataset = "vizgen", 
-                               python_path = python_path)
-
-instructions <- showGiottoInstructions(mini_gobject)
-instructions$save_dir <- results_directory
-
-mini_gobject <- replaceGiottoInstructions(gobject = mini_gobject,
-                                          instructions = instructions)
+g <- loadGiottoMini("vizgen")
 ```
 
-## 4 Convert Giotto to AnnData
-
-Since Giotto is structured hierarchically, converting Giotto to AnnData
-will result in multiple `.h5ad` files. Each file will correspond to a
-Giotto `spat_unit` `feat_type` pair. Furthermore, each expression slot
-will be treated as a `layer` in the resulting AnnData slot.
-
-Squidpy anndata objects take different defaults for various operations
-compared to Giotto. For instance, the default nearest neighbor network
-is a kNN for squidpy, while the default for Giotto is a sNN. We”ll
-create a kNN in addition to the sNN within this object already to show
-how it they are handled.
+Squidpy uses a kNN network by default, while Giotto’s default is an sNN.
+We add two kNN networks next to the existing sNN to show that every
+network is converted under its own name.
 
 ``` r
 
-mini_gobject <- createNearestNetwork(gobject = mini_gobject,
-                                     spat_unit = "aggregate",
-                                     feat_type = "rna",
-                                     type = "kNN",
-                                     dim_reduction_to_use = "umap",
-                                     dim_reduction_name = "umap",
-                                     k = 15,
-                                     name = "kNN.umap")
+g <- createNearestNetwork(g,
+    spat_unit = "aggregate",
+    feat_type = "rna",
+    type = "kNN",
+    dim_reduction_to_use = "umap",
+    dim_reduction_name = "umap",
+    k = 15,
+    name = "kNN.umap"
+)
+
+g <- createNearestNetwork(g,
+    spat_unit = "aggregate",
+    feat_type = "rna",
+    type = "kNN",
+    dim_reduction_to_use = "umap",
+    dim_reduction_name = "umap",
+    k = 6,
+    name = "new_network"
+)
+
+list_nearest_networks(g, spat_unit = "aggregate")
 ```
 
-The above cell creates a nearest network with almost all default
-parameters. We”ll change some and make a new network to show how the
-converter handles this.
+``` r
+   spat_unit feat_type nn_type        name
+      <char>    <char>  <char>      <char>
+1: aggregate       rna     sNN     sNN.pca
+2: aggregate       rna     kNN    kNN.umap
+3: aggregate       rna     kNN new_network
+```
+
+## 4 Giotto to AnnData
+
+An AnnData object holds one table of cells by features, so each `.h5ad`
+file holds one spatial unit and feature type of the Giotto object. By
+default
+[`giottoToAnnData()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html)
+writes the active ones; `spat_unit` and `feat_type` choose others. Here
+we write one file per spatial unit.
 
 ``` r
 
-mini_gobject <- createNearestNetwork(gobject = mini_gobject,
-                                     spat_unit = "aggregate",
-                                     feat_type = "rna",
-                                     type = "kNN",
-                                     dim_reduction_to_use = "umap",
-                                     dim_reduction_name = "umap",
-                                     k = 6,
-                                     name = "new_network")
+for (su in c("z0", "z1", "aggregate")) {
+    giottoToAnnData(g,
+        file = file.path(results_folder, paste0(su, "_rna.h5ad")),
+        spat_unit = su,
+        feat_type = "rna"
+    )
+}
 ```
 
-Since we have multiple `spat_unit` `feat_type` pairs, there will be
-multiple files created by this function. The names of the `.h5ad` files
-will be returned. In the case of a non-anndata-default nearest network
-or spatial network name, the key_added terms will be recorded and saved
-in `.txt` files named accordingly. Please see the documentation for
-further details.
+The parts of the Giotto object go to their usual AnnData places:
+
+- normalized values in `X`, raw counts in `layers/counts`, and every
+  other expression value (here `scaled` and `pearson`) as a layer of the
+  same name;
+- cell and feature metadata in `obs` and `var`;
+- spatial locations in `obsm/spatial`, dimension reductions in
+  `obsm/X_<name>` and the PCA loadings in `varm/PCs`;
+- every nearest neighbour and spatial network in `obsp`
+  (`<name>_distances` and `<name>_connectivities`) with a record of the
+  same name in `uns`;
+- the tissue image in `uns/spatial`.
 
 ``` r
 
-anndata_conversions <- giottoToAnnData(gobject = mini_gobject,
-                                       save_directory = results_directory,
-                                       python_path = my_python_path)
+anndataR::read_h5ad(file.path(results_folder, "aggregate_rna.h5ad"))
+```
+
+``` r
+InMemoryAnnData object with n_obs × n_vars = 462 × 337
+    obs: 'nr_feats', 'perc_feats', 'total_expr', 'leiden_clus', 'louvain_clus'
+    var: 'nr_cells', 'perc_cells', 'total_expr', 'mean_expr', 'mean_expr_det', 'hvg_orig', 'var', 'hvf'
+    uns: 'giottoConnect', 'kNN.umap', 'new_network', 'pca', 'sNN.pca', 'spatial', 'spatial_Delaunay_network', 'spatial_kNN_network'
+    obsm: 'X_pca', 'X_tsne', 'X_umap', 'spatial'
+    varm: 'PCs'
+    layers: 'counts', 'pearson', 'scaled'
+    obsp: 'kNN.umap_connectivities', 'kNN.umap_distances', 'new_network_connectivities', 'new_network_distances', 'sNN.pca_connectivities', 'sNN.pca_distances', 'spatial_Delaunay_network_connectivities', 'spatial_Delaunay_network_distances', 'spatial_kNN_network_connectivities', 'spatial_kNN_network_distances'
+```
+
+In scanpy, a network is used by its name, for example:
+
+``` python
+import scanpy as sc
+
+adata = sc.read_h5ad("aggregate_rna.h5ad")
+sc.tl.leiden(adata, neighbors_key = "kNN.umap")
+```
+
+[`readbackCheck()`](https://rdrr.io/pkg/GiottoConnect/man/readbackCheck.html)
+compares the written file with the Giotto object, part by part:
+
+``` r
+
+readbackCheck(g, file.path(results_folder, "aggregate_rna.h5ad"))
+```
+
+``` r
+<giottoReadback> PASS: 44 MATCH, 0 DECLARED, 0 UNDECLARED
 ```
 
 ## 5 AnnData to Giotto
 
-To convert an AnnData Object back into a Giotto object, it must first be
-saved as a `.h5ad` file. The name of said file may then be provided to
-`anndataToGiotto()` for conversion.
-
-If a nearest neighbor network or spatial network was created using the
-`key_added` argument, they may be provided to arguments n_key_added
-and/or spatial_n_key_added, respectively. If converting an anndata
-object that was originally a giotto object, the `.txt` files generated
-by
+[`anndataToGiotto()`](https://rdrr.io/pkg/GiottoConnect/man/anndataToGiotto.html)
+reads an `.h5ad` file into a Giotto object. Files written by
 [`giottoToAnnData()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html)
-may be provided to these arguments as well.
+come back with their networks, reductions and expression values under
+the same names; files from scanpy or squidpy are read the same way.
 
 ``` r
 
-z0_rna_gobject <- anndataToGiotto(anndata_path = "./giotto_anndata_conversion/z0_rna_converted_gobject.h5ad",
-                                  python_path = python_path)
+aggregate_rna <- anndataToGiotto(file.path(results_folder, "aggregate_rna.h5ad"))
 
-z1_rna_gobject <- anndataToGiotto(anndata_path = "./giotto_anndata_conversion/z1_rna_converted_gobject.h5ad",
-                                  python_path = python_path)
-
-aggregate_rna_gobject <- anndataToGiotto(anndata_path = "./giotto_anndata_conversion/aggregate_rna_converted_gobject.h5ad",
-                                         python_path = python_path,
-                                         n_key_added = list("sNN.pca","new_network"),
-                                         spatial_n_key_added = "aggregate_rna_spatial_network_keys_added.txt")
+list_nearest_networks(aggregate_rna)
+list_spatial_networks(aggregate_rna)
+list_expression(aggregate_rna)
 ```
+
+``` r
+   spat_unit feat_type nn_type        name
+      <char>    <char>  <char>      <char>
+1:      cell       rna     kNN    kNN.umap
+2:      cell       rna     kNN new_network
+3:      cell       rna     sNN     sNN.pca
+
+   spat_unit             name
+      <char>           <char>
+1:      cell Delaunay_network
+2:      cell      kNN_network
+
+   spat_unit feat_type       name
+      <char>    <char>     <char>
+1:      cell       rna        raw
+2:      cell       rna normalized
+3:      cell       rna    pearson
+4:      cell       rna     scaled
+```
+
+Each file becomes a Giotto object with the spatial unit `cell` and the
+feature type `rna`.
+
+[`mappingProvenance()`](https://rdrr.io/pkg/GiottoConnect/man/mappingProvenance.html)
+shows how the file was converted, including anything that could not be
+carried over or was estimated:
+
+``` r
+
+mappingProvenance(aggregate_rna)$losses
+```
+
+`anndataToGiotto(..., source = "my_project/")` builds a
+GiottoDisk-backed object instead, for files that do not fit in memory.
 
 ## 6 Session Info
 
@@ -148,36 +214,72 @@ sessionInfo()
 ```
 
 ``` r
-    R version 4.2.2 (2022-10-31 ucrt)
-    Platform: x86_64-w64-mingw32/x64 (64-bit)
-    Running under: Windows 10 x64 (build 22621)
+R version 4.5.3 (2026-03-11)
+Platform: aarch64-apple-darwin20
+Running under: macOS Tahoe 26.7.3
 
-    Matrix products: default
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
 
-    locale:
-    [1] LC_COLLATE=English_United States.utf8 
-    [2] LC_CTYPE=English_United States.utf8   
-    [3] LC_MONETARY=English_United States.utf8
-    [4] LC_NUMERIC=C                          
-    [5] LC_TIME=English_United States.utf8    
+locale:
+[1] C.UTF-8/C.UTF-8/C.UTF-8/C/C.UTF-8/C.UTF-8
 
-    attached base packages:
-    [1] stats     graphics  grDevices utils     datasets  methods   base     
+time zone: America/New_York
+tzcode source: internal
 
-    other attached packages:
-    [1] GiottoData_0.2.1 Giotto_3.2.1    
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
 
-    loaded via a namespace (and not attached):
-     [1] Rcpp_1.0.10       pillar_1.9.0      compiler_4.2.2    tools_4.2.2      
-     [5] digest_0.6.30     jsonlite_1.8.3    evaluate_0.20     lifecycle_1.0.3  
-     [9] tibble_3.2.1      gtable_0.3.3      lattice_0.20-45   png_0.1-7        
-    [13] pkgconfig_2.0.3   rlang_1.1.0       igraph_1.4.1      Matrix_1.5-1     
-    [17] cli_3.4.1         rstudioapi_0.14   parallel_4.2.2    yaml_2.3.7       
-    [21] xfun_0.38         fastmap_1.1.0     terra_1.7-18      dplyr_1.1.1      
-    [25] knitr_1.42        rappdirs_0.3.3    generics_0.1.3    vctrs_0.6.1      
-    [29] rprojroot_2.0.3   grid_4.2.2        tidyselect_1.2.0  here_1.0.1       
-    [33] reticulate_1.26   glue_1.6.2        data.table_1.14.6 R6_2.5.1         
-    [37] fansi_1.0.4       rmarkdown_2.21    ggplot2_3.4.1     magrittr_2.0.3   
-    [41] scales_1.2.1      codetools_0.2-18  htmltools_0.5.4   colorspace_2.1-0 
-    [45] utf8_1.2.3        munsell_0.5.0     dbscan_1.1-11    
+other attached packages:
+[1] GiottoConnect_0.1.0 GiottoData_0.3.8    Giotto_4.3.7        GiottoClass_0.8.0  
+
+loaded via a namespace (and not attached):
+  [1] RColorBrewer_1.1-3          jsonlite_2.0.0              magrittr_2.0.5             
+  [4] magick_2.9.1                farver_2.1.2                vctrs_0.7.3                
+  [7] memoise_2.0.1               GiottoUtils_0.2.10          terra_1.9-11               
+ [10] htmltools_0.5.9             S4Arrays_1.10.1             BiocNeighbors_2.4.0        
+ [13] Rhdf5lib_1.32.0             rhdf5_2.54.1                SparseArray_1.10.9         
+ [16] sctransform_0.4.3           parallelly_1.50.0           KernSmooth_2.23-26         
+ [19] htmlwidgets_1.6.4           ica_1.0-3                   plyr_1.8.9                 
+ [22] plotly_4.12.1               cachem_1.1.0                igraph_2.3.4               
+ [25] lifecycle_1.0.5             pkgconfig_2.0.3             anndataR_1.0.2             
+ [28] rsvd_1.0.5                  Matrix_1.7-5                R6_2.6.1                   
+ [31] fastmap_1.2.0               MatrixGenerics_1.22.0       future_1.82.0              
+ [34] digest_0.6.39               colorspace_2.1-4            patchwork_1.3.2            
+ [37] S4Vectors_0.48.1            Seurat_6.0.0                RSpectra_0.16-2            
+ [40] irlba_2.4.1                 GenomicRanges_1.62.1        beachmat_2.26.0            
+ [43] progressr_0.18.0            httr_1.4.9                  polyclip_1.10-7            
+ [46] abind_1.4-8                 compiler_4.5.3              proxy_0.4-29               
+ [49] bit64_4.6.0-1               withr_3.0.3                 S7_1.0.0                   
+ [52] backports_1.5.1             BiocParallel_1.44.0         DBI_1.3.0                  
+ [55] viridis_0.6.5               fastDummies_1.7.6           ggforce_0.5.0              
+ [58] MASS_7.3-65                 DelayedArray_0.36.0         classInt_0.4-11            
+ [61] rjson_0.2.23                bluster_1.20.0              gtools_3.9.5               
+ [64] units_1.0-1                 GiottoVisuals_0.2.16        tools_4.5.3                
+ [67] otel_0.3.0                  future.apply_1.21.0         glue_1.8.1                 
+ [70] dbscan_1.2.4                rhdf5filters_1.22.0         grid_4.5.3                 
+ [73] sf_1.1-1                    checkmate_2.3.4             Rtsne_0.17                 
+ [76] cluster_2.1.8.2             reshape2_1.4.5              generics_0.1.4             
+ [79] hdf5r_1.3.12                gtable_0.3.6                class_7.3-23               
+ [82] tidyr_1.3.2                 data.table_1.18.6.1         BiocSingular_1.26.1        
+ [85] tidygraph_1.3.1             ScaledMatrix_1.18.0         sp_2.2-1                   
+ [88] XVector_0.50.0              BiocGenerics_0.56.0         tilework_1.0.0             
+ [91] RcppAnnoy_0.0.23            ggrepel_0.9.8               RANN_2.6.2                 
+ [94] pillar_1.11.1               stringr_1.6.0               spam_2.11-3                
+ [97] RcppHNSW_0.6.0              dplyr_1.2.1                 tweenr_2.0.3               
+[100] lattice_0.22-9              bit_4.6.0                   tidyselect_1.2.1           
+[103] SingleCellExperiment_1.32.0 pbapply_1.7-5               gridExtra_2.3.1            
+[106] IRanges_2.44.0              Seqinfo_1.0.0               SummarizedExperiment_1.40.0
+[109] scattermore_1.2             stats4_4.5.3                pls_2.9-0                  
+[112] graphlayouts_1.2.3          Biobase_2.70.0              matrixStats_1.5.0          
+[115] stringi_1.8.9               yaml_2.3.12                 codetools_0.2-20           
+[118] ggraph_2.2.2                tibble_3.3.1                colorRamp2_0.1.0           
+[121] cli_3.6.6                   uwot_0.2.4                  reticulate_1.47.0          
+[124] dichromat_2.0-0.1           Rcpp_1.1.2                  globals_0.20.0             
+[127] png_0.1-9                   parallel_4.5.3              ggplot2_4.0.4              
+[130] dotCall64_1.2               listenv_1.1.0               SpatialExperiment_1.20.0   
+[133] viridisLite_0.4.3           e1071_1.7-17                scales_1.4.0               
+[136] ggridges_0.5.7              SeuratObject_5.4.0          purrr_1.2.2                
+[139] rlang_1.3.0                 cowplot_1.2.0
 ```

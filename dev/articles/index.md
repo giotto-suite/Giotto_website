@@ -305,6 +305,8 @@ Pull requests, code style, and writing tutorials for this site.
 - [Getters and
   Setters](https://giottosuite.com/dev/articles/getters_setters.md):
 - [Python code](https://giottosuite.com/dev/articles/python_code.md):
+- [Adding methods and
+  tools](https://giottosuite.com/dev/articles/extending_giotto.md):
 - [Contributing tutorials to the
   website](https://giottosuite.com/dev/articles/contributing_tutorials.md):
 
