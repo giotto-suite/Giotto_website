@@ -8,6 +8,9 @@ transform), and `param` (the transform operation).
 ## Usage
 
 ``` r
+# S4 method for class 'ANY,list'
+processData(x, param, ...)
+
 # S4 method for class 'giottoLargeImage,list'
 processData(x, param, name = NULL, ...)
 
@@ -45,6 +48,10 @@ processData(x, param, ...)
   affecting it. Can also be a list of several of these objects, acting
   as a pipeline.
 
+- ...:
+
+  additional params to pass
+
 - name:
 
   character (optional). [Object
@@ -61,10 +68,6 @@ processData(x, param, ...)
   - when `param` is `osmFISHNormParam`: `name = "custom"`
 
   - when `param` is `pearsonResidNormParam`: `name = "scaled"`
-
-- ...:
-
-  additional params to pass
 
 ## Value
 

@@ -10,7 +10,8 @@ normalizeGiotto(
   spat_unit = NULL,
   feat_type = NULL,
   expression_values = "raw",
-  norm_methods = c("standard", "pearson_resid", "osmFISH", "quantile"),
+  norm_methods = c("standard", "pearson_resid", "osmFISH", "quantile", "clr",
+    "gamma_pearson", "arcsinh"),
   library_size_norm = TRUE,
   scalefactor = 6000,
   log_norm = TRUE,
@@ -21,6 +22,8 @@ normalizeGiotto(
   scale_cells = TRUE,
   scale_order = c("first_feats", "first_cells"),
   theta = 100,
+  cofactor = 5,
+  clip_quantile = c(0.01, 0.99),
   name = "scaled",
   update_slot = deprecated(),
   verbose = TRUE
@@ -89,9 +92,23 @@ normalizeGiotto(
 
   theta parameter for the pearson residual normalization step
 
+- cofactor:
+
+  cofactor of the `"arcsinh"` method: one value, or a value per feature,
+  e.g. `c(5, CD45 = 150)`. See
+  [norm_arcsinh](https://giottosuite.com/dev/reference/norm_arcsinh.md).
+
+- clip_quantile:
+
+  per-feature quantiles at which intensities are clipped by the
+  `"gamma_pearson"` method. See
+  [norm_gamma_pearson](https://giottosuite.com/dev/reference/norm_gamma_pearson.md).
+
 - name:
 
-  character. name to use for normalization results
+  character. name to use for normalization results. The `"clr"`,
+  `"gamma_pearson"` and `"arcsinh"` methods write `"normalized"` unless
+  `name` is given.
 
 - update_slot:
 
@@ -151,10 +168,25 @@ By default the latter two results will be saved in the Giotto slot for
 scaled expression, this can be changed by changing the update_slot
 parameters
 
+E. Intensity data such as protein mean intensities (e.g.
+`feat_type = "protein"`) are normalized per cell with
+[`"clr"`](https://giottosuite.com/dev/reference/norm_clr.md), per
+feature with
+[`"gamma_pearson"`](https://giottosuite.com/dev/reference/norm_gamma_pearson.md),
+or with
+[`"arcsinh"`](https://giottosuite.com/dev/reference/norm_arcsinh.md).
+They expect raw (non-negative) intensities. A GiottoDisk-backed matrix
+is read into memory for these methods, so they suit panels of tens of
+features.
+
 ## Examples
 
 ``` r
 g <- GiottoData::loadGiottoMini("visium")
 
 normalizeGiotto(g) # default is method A
+
+x <- getExpression(g, values = "raw", output = "matrix")[1:10, ]
+g <- setExpression(g, createExprObj(x, name = "raw", feat_type = "protein"))
+g <- normalizeGiotto(g, feat_type = "protein", norm_methods = "clr")
 ```

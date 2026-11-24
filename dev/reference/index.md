@@ -194,6 +194,8 @@ Functions to help to import raw spatial data.
 - [`importStereoSeq()`](https://giottosuite.com/dev/reference/importStereoSeq.md)
   [`plot(`*`<StereoSeqReader>`*`,`*`<missing>`*`)`](https://giottosuite.com/dev/reference/importStereoSeq.md)
   : Import a Stereo-seq assay
+- [`importVisium()`](https://giottosuite.com/dev/reference/importVisium.md)
+  : Import a Visium assay
 - [`importVisiumHD()`](https://giottosuite.com/dev/reference/importVisiumHD.md)
   [`plot(`*`<VisiumHDReader>`*`,`*`<missing>`*`)`](https://giottosuite.com/dev/reference/importVisiumHD.md)
   : Import a Visium HD assay
@@ -382,6 +384,10 @@ Data Processing Functions
   Normalization
 - [`norm_arcsinh`](https://giottosuite.com/dev/reference/norm_arcsinh.md)
   : Arcsinh Normalization
+- [`norm_clr`](https://giottosuite.com/dev/reference/norm_clr.md) :
+  Centred Log-Ratio Normalization
+- [`norm_gamma_pearson`](https://giottosuite.com/dev/reference/norm_gamma_pearson.md)
+  : Gamma GLM Pearson Residual Normalization
 - [`norm_pearson`](https://giottosuite.com/dev/reference/norm_pearson.md)
   : Lause/Kobak Pearson Residuals Normalization
 - [`norm_osmfish`](https://giottosuite.com/dev/reference/norm_osmfish.md)
@@ -406,7 +412,8 @@ Data Processing Functions
   : Limma Batch Correction
 - [`processExpression()`](https://giottosuite.com/dev/reference/processExpression.md)
   : Expression Data Processing
-- [`processData(`*`<giottoLargeImage>`*`,`*`<list>`*`)`](https://giottosuite.com/dev/reference/processData.md)
+- [`processData(`*`<ANY>`*`,`*`<list>`*`)`](https://giottosuite.com/dev/reference/processData.md)
+  [`processData(`*`<giottoLargeImage>`*`,`*`<list>`*`)`](https://giottosuite.com/dev/reference/processData.md)
   [`processData(`*`<giottoLargeImage>`*`,`*`<processParam>`*`)`](https://giottosuite.com/dev/reference/processData.md)
   [`processData(`*`<exprObj>`*`,`*`<list>`*`)`](https://giottosuite.com/dev/reference/processData.md)
   [`processData(`*`<exprObj>`*`,`*`<normParam>`*`)`](https://giottosuite.com/dev/reference/processData.md)
@@ -497,6 +504,8 @@ Functions to reduce dimensions.
   omics integration with WNN
 - [`runIntegratedUMAP()`](https://giottosuite.com/dev/reference/runIntegratedUMAP.md)
   : Run integrated UMAP
+- [`runBlockPCA()`](https://giottosuite.com/dev/reference/runBlockPCA.md)
+  : Multi omics integration with block-weighted PCs
 - [`runPCAprojection()`](https://giottosuite.com/dev/reference/runPCAprojection.md)
   : runPCAprojection
 - [`runPCAprojectionBatch()`](https://giottosuite.com/dev/reference/runPCAprojectionBatch.md)
@@ -552,6 +561,8 @@ Functions to cluster cells.
   : Projection of cluster labels
 - [`doGiottoClustree()`](https://giottosuite.com/dev/reference/doGiottoClustree.md)
   : doGiottoClustree
+- [`runBanksy()`](https://giottosuite.com/dev/reference/runBanksy.md) :
+  Spatial domains with BANKSY
 - [`sweepClusterK()`](https://giottosuite.com/dev/reference/sweepClusterK.md)
   : Sweep a range of cluster numbers
 - [`LeidenIgraphClusParam-class`](https://giottosuite.com/dev/reference/LeidenIgraphClusParam-class.md)
@@ -937,6 +948,8 @@ enrichment or depletion.
   : cellProximityEnrichmentSpots
 - [`cellProximityMotifs()`](https://giottosuite.com/dev/reference/cellProximityMotifs.md)
   : cellProximityMotifs
+- [`runMisty()`](https://giottosuite.com/dev/reference/runMisty.md) :
+  Multiview spatial models of feature expression (MISTy)
 - [`motifParam()`](https://giottosuite.com/dev/reference/motif_param.md)
   [`analyzeData(`*`<igraph>`*`,`*`<autoMotifParam>`*`)`](https://giottosuite.com/dev/reference/motif_param.md)
   [`analyzeData(`*`<igraph>`*`,`*`<smotifParam>`*`)`](https://giottosuite.com/dev/reference/motif_param.md)
@@ -988,6 +1001,17 @@ type due to interaction with another neighboring cell type.
 - [`findInteractionChangedFeats()`](https://giottosuite.com/dev/reference/findInteractionChangedFeats.md)
   [`findICF()`](https://giottosuite.com/dev/reference/findInteractionChangedFeats.md)
   : findInteractionChangedFeats
+- [`icfParam()`](https://giottosuite.com/dev/reference/icf_param.md) :
+  Interaction-changed feature params
+- [`analyzeData(`*`<ANY>`*`,`*`<edgeIcfParam>`*`)`](https://giottosuite.com/dev/reference/icf_edgeicg.md)
+  [`analyzeData(`*`<giotto>`*`,`*`<icfParam>`*`)`](https://giottosuite.com/dev/reference/icf_edgeicg.md)
+  : edgeicg interaction-changed features
+- [`plotICFOverview()`](https://giottosuite.com/dev/reference/plotICF_edgeicg.md)
+  [`plotICFLeak()`](https://giottosuite.com/dev/reference/plotICF_edgeicg.md)
+  [`plotICFPair()`](https://giottosuite.com/dev/reference/plotICF_edgeicg.md)
+  [`plotICFExposure()`](https://giottosuite.com/dev/reference/plotICF_edgeicg.md)
+  [`plotICFAttribution()`](https://giottosuite.com/dev/reference/plotICF_edgeicg.md)
+  : Plots for edgeicg interaction-changed features
 - [`findICFSpot()`](https://giottosuite.com/dev/reference/findICFSpot.md)
   : findICFSpot
 - [`findICG()`](https://giottosuite.com/dev/reference/findICG.md) :
@@ -1170,10 +1194,6 @@ Function to detect doublets in raw expression data.
 
 Convert other type of objects into a Giotto object and vice versa.
 
-- [`seuratToGiotto()`](https://giotto-suite.github.io/GiottoClass/reference/seuratToGiotto.html)
-  : Deprecated (from GiottoClass)
-- [`giottoToSeurat()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToSeurat.html)
-  : Deprecated (from GiottoClass)
 - [`giottoToSpatialExperiment()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToSpatialExperiment.html)
   : Utility function to convert a Giotto object to a SpatialExperiment
   object. (from GiottoClass)
@@ -1181,8 +1201,6 @@ Convert other type of objects into a Giotto object and vice versa.
   : Convert Giotto to anndata (from GiottoClass)
 - [`giottoToAnndataZarr()`](https://giottosuite.com/dev/reference/giottoToAnndataZarr.md)
   : Create a local anndata zarr folder
-- [`anndataToGiotto()`](https://giotto-suite.github.io/GiottoClass/reference/anndataToGiotto.html)
-  : Convert anndata to Giotto (from GiottoClass)
 - [`giottoMasterToSuite()`](https://giotto-suite.github.io/GiottoClass/reference/giottoMasterToSuite.html)
   : Convert a master Giotto object to suite (from GiottoClass)
 - [`convertEnsemblToGeneSymbol()`](https://giottosuite.com/dev/reference/convertEnsemblToGeneSymbol.md)

@@ -80,19 +80,17 @@ or read the data manually.
 
 ``` r
 
-readerHD <- importVisiumHD()
-
-readerHD$visiumHD_dir <- file.path(data_path, "Human_Colorectal_Cancer_workshop/square_002um")
+readerHD <- importVisiumHD(
+    visiumhd_dir = file.path(data_path, "Human_Colorectal_Cancer_workshop/square_002um"),
+    bin = 2
+)
 
 ## directly from Visium folder
-visiumHD <- readerHD$create_gobject(
-    png_name = "tissue_lowres_image.png",
-    gene_column_index = 2
-)
+visiumHD <- readerHD$create_gobject(image_type = "lowres")
 
 ## check metadata
 pDataDT(visiumHD,
-    spat_unit = "hex40"
+    spat_unit = "bin002"
 )
 
 # check available image names

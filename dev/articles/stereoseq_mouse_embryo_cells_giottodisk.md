@@ -3,14 +3,14 @@
 ## 1 Overview
 
 This tutorial analyzes the 925,850 cells that STOmics’ SAW pipeline
-segmented on a whole mouse embryo section, the [Stereo-seq mouse embryo
-demo dataset](#dataset-explanation) on a 2 × 2 cm chip. It reads the
-cells into an on-disk GiottoDisk project, clusters them and names the
-clusters with a cluster tree. It then finds spatial domains by smoothing
-each cell’s expression with that of its neighbors, without loading the
-0.5 µm spots. The whole tutorial runs in about 26 minutes with 8
-parallel workers and peaks at about 57 GB of memory; [Run time and
-memory](#run-time-and-memory) shows each step.
+segmented on a whole mouse embryo section, the STOmics [Mouse Embryo
+Y40056J8K9](https://en.stomics.tech/col2028) demo dataset on a 2 × 2 cm
+chip. It reads the cells into an on-disk GiottoDisk project, clusters
+them and names the clusters with a cluster tree. It then finds spatial
+domains by smoothing each cell’s expression with that of its neighbors,
+without loading the 0.5 µm spots. The whole tutorial runs in about 26
+minutes with 8 parallel workers and peaks at about 57 GB of memory; [Run
+time and memory](#run-time-and-memory) shows each step.
 
 The [Stereo-seq human
 colon](https://giottosuite.com/dev/articles/stereoseq_human_colon_cells_giottodisk.md)
@@ -38,9 +38,10 @@ install.packages("GiottoKernels",
 A formalin-fixed paraffin-embedded (FFPE) sagittal section of a whole
 mouse embryo on a 2 × 2 cm Stereo-seq chip (Y40056J8K9), made with the
 Stereo-seq N FFPE V1.1 kit, stained for single-stranded DNA (ssDNA) and
-processed with SAW 8.3. It is one of the STOmics demo datasets.
-Stereo-seq captures transcripts on spots 0.5 µm apart; SAW sums them
-into square bins and, separately, into cells.
+processed with SAW 8.3. It is the STOmics [Mouse Embryo
+Y40056J8K9](https://en.stomics.tech/col2028) demo dataset. Stereo-seq
+captures transcripts on spots 0.5 µm apart; SAW sums them into square
+bins and, separately, into cells.
 
 SAW segments the nuclei in the ssDNA image and assigns the spots to
 cells. `Y40056J8K9.adjusted.cellbin.gef` holds the result of SAW’s cell
@@ -57,7 +58,9 @@ themselves, in `Y40056J8K9.tissue.gef` (17 GB), are not needed here.
 
 ### 3.1 Download links
 
-The two files are on the STOmics demo server. Put them in one folder:
+The [dataset page](https://en.stomics.tech/col2028) lists all the files
+of this chip. The two used here can also be fetched directly from the
+STOmics demo server; put them in one folder:
 
 ``` bash
 base=https://demo.stomicsdb.tech/Y40056J8K9_Mouse_Embryo_Stereo-seq_FFPE_LCD_V1.1_ssDNA/outs

@@ -3,8 +3,7 @@
 ## 1 Converting to and from AnnData (squidpy-flavor)
 
 This tutorial details how to use the conversion functions
-[`anndataToGiotto()`](https://giotto-suite.github.io/GiottoClass/reference/anndataToGiotto.html)
-and
+`anndataToGiotto()` and
 [`giottoToAnnData()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html).
 A mini Giotto object will be used for minimal computational
 requirements. Please note that these functions are inherently in active
@@ -117,8 +116,7 @@ anndata_conversions <- giottoToAnnData(gobject = mini_gobject,
 
 To convert an AnnData Object back into a Giotto object, it must first be
 saved as a `.h5ad` file. The name of said file may then be provided to
-[`anndataToGiotto()`](https://giotto-suite.github.io/GiottoClass/reference/anndataToGiotto.html)
-for conversion.
+`anndataToGiotto()` for conversion.
 
 If a nearest neighbor network or spatial network was created using the
 `key_added` argument, they may be provided to arguments n_key_added

@@ -34,7 +34,9 @@ None
 
 Other normalization parameters:
 [`norm_arcsinh`](https://giottosuite.com/dev/reference/norm_arcsinh.md),
+[`norm_clr`](https://giottosuite.com/dev/reference/norm_clr.md),
 [`norm_default`](https://giottosuite.com/dev/reference/norm_default.md),
+[`norm_gamma_pearson`](https://giottosuite.com/dev/reference/norm_gamma_pearson.md),
 [`norm_library`](https://giottosuite.com/dev/reference/norm_library.md),
 [`norm_log`](https://giottosuite.com/dev/reference/norm_log.md),
 [`norm_osmfish`](https://giottosuite.com/dev/reference/norm_osmfish.md),

@@ -8,8 +8,8 @@
 <!-- katex math --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script><script src="../katex-auto.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.10/font.css" rel="stylesheet">
-<link href="../deps/JetBrains_Mono-0.4.10/font.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.5.0/font.css" rel="stylesheet">
+<link href="../deps/JetBrains_Mono-0.5.0/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
@@ -80,7 +80,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Giotto</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.6</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">4.3.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -194,6 +194,9 @@
     <li><a class="dropdown-item" href="../articles/spatial_informed_clusters.html">Spatially informed clusters</a></li>
     <li><a class="dropdown-item" href="../articles/hmrf.html">Spatial domain analysis using HMRF</a></li>
     <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Cell-cell interactions</h6></li>
+    <li><a class="dropdown-item" href="../articles/interaction_changed_features.html">Interaction-changed features</a></li>
+    <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Visualization</h6></li>
     <li><a class="dropdown-item" href="../articles/visualizations.html">Visualizations</a></li>
     <li><a class="dropdown-item" href="../articles/metafeatures.html">Metafeatures</a></li>
@@ -262,14 +265,14 @@
 <span class="header-section-number">1</span> Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
 <p>This tutorial analyzes the 925,850 cells that STOmics’ SAW pipeline
-segmented on a whole mouse embryo section, the <a href="#dataset-explanation">Stereo-seq mouse embryo demo dataset</a> on
-a 2 × 2 cm chip. It reads the cells into an on-disk GiottoDisk project,
-clusters them and names the clusters with a cluster tree. It then finds
-spatial domains by smoothing each cell’s expression with that of its
-neighbors, without loading the 0.5 µm spots. The whole tutorial runs in
-about 26 minutes with 8 parallel workers and peaks at about 57 GB of
-memory; <a href="#run-time-and-memory">Run time and memory</a> shows
-each step.</p>
+segmented on a whole mouse embryo section, the STOmics <a href="https://en.stomics.tech/col2028" class="external-link">Mouse Embryo Y40056J8K9</a> demo
+dataset on a 2 × 2 cm chip. It reads the cells into an on-disk
+GiottoDisk project, clusters them and names the clusters with a cluster
+tree. It then finds spatial domains by smoothing each cell’s expression
+with that of its neighbors, without loading the 0.5 µm spots. The whole
+tutorial runs in about 26 minutes with 8 parallel workers and peaks at
+about 57 GB of memory; <a href="#run-time-and-memory">Run time and
+memory</a> shows each step.</p>
 <p>The <a href="stereoseq_human_colon_cells_giottodisk.html">Stereo-seq
 human colon</a> tutorial runs the same cell analysis on a smaller
 section, and builds its spatial domains from the spots instead.</p>
@@ -298,9 +301,9 @@ explanation<a class="anchor" aria-label="anchor" href="#dataset-explanation"></a
 <p>A formalin-fixed paraffin-embedded (FFPE) sagittal section of a whole
 mouse embryo on a 2 × 2 cm Stereo-seq chip (Y40056J8K9), made with the
 Stereo-seq N FFPE V1.1 kit, stained for single-stranded DNA (ssDNA) and
-processed with SAW 8.3. It is one of the STOmics demo datasets.
-Stereo-seq captures transcripts on spots 0.5 µm apart; SAW sums them
-into square bins and, separately, into cells.</p>
+processed with SAW 8.3. It is the STOmics <a href="https://en.stomics.tech/col2028" class="external-link">Mouse Embryo Y40056J8K9</a> demo
+dataset. Stereo-seq captures transcripts on spots 0.5 µm apart; SAW sums
+them into square bins and, separately, into cells.</p>
 <p>SAW segments the nuclei in the ssDNA image and assigns the spots to
 cells. <code>Y40056J8K9.adjusted.cellbin.gef</code> holds the result of
 SAW’s cell correction, which refines which spots belong to each cell.
@@ -337,8 +340,9 @@ counts per cell. The spots themselves, in
 <h3 id="download-links">
 <span class="header-section-number">3.1</span> Download links<a class="anchor" aria-label="anchor" href="#download-links"></a>
 </h3>
-<p>The two files are on the STOmics demo server. Put them in one
-folder:</p>
+<p>The <a href="https://en.stomics.tech/col2028" class="external-link">dataset page</a> lists
+all the files of this chip. The two used here can also be fetched
+directly from the STOmics demo server; put them in one folder:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="va">base</span><span class="op">=</span>https://demo.stomicsdb.tech/Y40056J8K9_Mouse_Embryo_Stereo-seq_FFPE_LCD_V1.1_ssDNA/outs</span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-C</span> <span class="at">-</span> <span class="at">-O</span> <span class="va">$base</span>/Y40056J8K9.adjusted.cellbin.gef</span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-C</span> <span class="at">-</span> <span class="at">-O</span> <span class="va">$base</span>/Y40056J8K9_ssDNA_regist.tif</span></code></pre></div>

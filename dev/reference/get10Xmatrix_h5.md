@@ -41,3 +41,7 @@ get10Xmatrix_h5(
 If the .h5 10x file has multiple classes of features (e.g. expression vs
 QC probes) or modalities (e.g. RNA and protein), and `split_by_type`
 param is `TRUE`, multiple matrices will be returned
+
+Feature names follow \[get10Xmatrix()\]: repeated names get a `--N`
+suffix on every copy, counted within each feature type when
+`split_by_type` is `TRUE`.

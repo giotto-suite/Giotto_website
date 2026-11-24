@@ -5,7 +5,7 @@ Create Polygons for Visium Data
 ## Usage
 
 ``` r
-.visium_spot_poly(spatlocs = NULL, json_scalefactors)
+.visium_spot_poly(spatlocs = NULL, micron_scale)
 ```
 
 ## Arguments
@@ -15,9 +15,9 @@ Create Polygons for Visium Data
   spatial locations data.table or `spatLocsObj` containing centroid
   locations of visium spots
 
-- json_scalefactors:
+- micron_scale:
 
-  list of scalefactors from .visium_read_scalefactors()
+  microns per spatial unit, from .visium_micron_scale()
 
 ## Value
 
@@ -25,4 +25,5 @@ giottoPolygon object
 
 ## Details
 
-Creates circular polygons for spatial representation of Visium spots.
+Creates circular polygons for spatial representation of Visium spots, 55
+um across.

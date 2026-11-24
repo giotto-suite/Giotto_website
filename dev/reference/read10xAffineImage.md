@@ -25,7 +25,9 @@ read10xAffineImage(
 - imagealignment_path:
 
   filepath to alignment file which contains an affine transformation
-  matrix. Usually a `.csv` file
+  matrix. Usually a `.csv` file. This is the 10x alignment matrix in
+  pixel coordinates (y pointing down), read as a standard pre-multiply
+  matrix.
 
 - name:
 

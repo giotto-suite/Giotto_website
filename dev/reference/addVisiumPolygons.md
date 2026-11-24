@@ -17,7 +17,8 @@ addVisiumPolygons(gobject, scalefactor_path = NULL)
 
 - scalefactor_path:
 
-  path to scalefactors_json.json Visium output
+  path to scalefactors_json.json Visium output. Only used when the
+  object has no \`micron_scale\` instruction.
 
 ## Value
 

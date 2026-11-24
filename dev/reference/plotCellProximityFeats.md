@@ -117,7 +117,9 @@ volcano, cell_barplot, cell-cell, cell_sankey, heatmap, or dotplot
 
 ``` r
 g <- GiottoData::loadGiottoMini("visium")
-icfObject <- findInteractionChangedFeats(g, cluster_column = "leiden_clus")
+icfObject <- findInteractionChangedFeats(g,
+    cluster_column = "leiden_clus", method = "classic"
+)
 
 plotCellProximityFeats(
     gobject = g, icfObject = icfObject,

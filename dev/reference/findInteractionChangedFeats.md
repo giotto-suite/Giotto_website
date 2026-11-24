@@ -30,7 +30,10 @@ findInteractionChangedFeats(
   exclude_selected_cells_from_test = TRUE,
   do_parallel = TRUE,
   set_seed = TRUE,
-  seed_number = 1234
+  seed_number = 1234,
+  method = c("edgeicg", "classic"),
+  param = NULL,
+  ...
 )
 
 findICF(
@@ -52,7 +55,10 @@ findICF(
   exclude_selected_cells_from_test = TRUE,
   do_parallel = TRUE,
   set_seed = TRUE,
-  seed_number = 1234
+  seed_number = 1234,
+  method = c("edgeicg", "classic"),
+  param = NULL,
+  ...
 )
 ```
 
@@ -76,7 +82,9 @@ findICF(
 
 - selected_feats:
 
-  subset of selected features (optional)
+  subset of selected features (optional). On a GiottoDisk-backed object
+  only these features are read into memory (all features when `NULL`),
+  so select them for large panels.
 
 - cluster_column:
 
@@ -130,6 +138,34 @@ findICF(
 
   seed number
 
+- method:
+
+  `"edgeicg"` (default): the spillover-aware, multi-scale model of the
+  edgeicg package (contact, paracrine and niche scale; leaked
+  transcripts from touching cells removed; niche calibrated and
+  attributed). It uses raw counts and the cell polygons, and works on
+  GiottoDisk-backed objects; see
+  [`icfParam()`](https://giottosuite.com/dev/reference/icf_param.md).
+  Arguments specific to the classic test (`expression_values`,
+  `spatial_network_name`, `diff_test`, ...) are then ignored.
+  `"classic"`: the original proximity test described in Details, kept as
+  a baseline. It compares cells with and without a neighbour of the
+  other type in a spatial network and does not model transcripts leaked
+  from touching cells; it also loads the full expression matrix into
+  memory.
+
+- param:
+
+  optional
+  [`icfParam()`](https://giottosuite.com/dev/reference/icf_param.md)
+  object; overrides `method`.
+
+- ...:
+
+  with `method = "edgeicg"`, settings passed to
+  [`icfParam()`](https://giottosuite.com/dev/reference/icf_param.md),
+  e.g. `workers` or `block_genes`.
+
 ## Value
 
 `icfObject` that contains the Interaction Changed differential feature
@@ -181,10 +217,25 @@ cell types. The results data.table in the `icfObject` contains
 ## Examples
 
 ``` r
+# edgeicg (default): spillover-aware, contact / paracrine / niche scale.
+# The mini object is too small for the niche calibration, hence
+# calibrate = FALSE; keep the default on real tissue sections.
+if (requireNamespace("edgeicg", quietly = TRUE)) {
+    gv <- GiottoData::loadGiottoMini("vizgen")
+    icf <- findInteractionChangedFeats(gv,
+        spat_unit = "aggregate",
+        cluster_column = "leiden_clus",
+        calibrate = FALSE
+    )
+    force(icf$ICFscores)
+}
+
+# the original proximity test, kept as a baseline
 g <- GiottoData::loadGiottoMini("visium")
 
 icf1 <- findInteractionChangedFeats(g,
     cluster_column = "leiden_clus",
+    method = "classic",
     selected_feats = c("Gna12", "Ccnd2", "Btbd17"),
     nr_permutations = 10
 )
@@ -194,6 +245,7 @@ force(icf1$ICFscores)
 # this is just an alias with a shorter name
 icf2 <- findICF(g,
     cluster_column = "leiden_clus",
+    method = "classic",
     selected_feats = c("Gna12", "Ccnd2", "Btbd17"),
     nr_permutations = 10
 )

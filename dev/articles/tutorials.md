@@ -14,7 +14,7 @@ Uses
 
 Tutorials built on a Giotto Suite extension package.
 
-GiottoDisk 2
+GiottoDisk 3
 
 GiottoLens 1
 
@@ -33,6 +33,8 @@ Cell type annotation 4
 Spatial expression patterns 5
 
 Spatial domains & niches 5
+
+Cell-cell interactions 1
 
 Multiple samples & integration 3
 
@@ -96,8 +98,10 @@ modules](https://giottosuite.com/dev/articles/spatial_coexpression_modules.md)
 Informed
 clusters](https://giottosuite.com/dev/articles/spatial_informed_clusters.md)
 [Spatial domains & niches Spatial domain analysis using
-HMRF](https://giottosuite.com/dev/articles/hmrf.md) [Visualization &
-interactive exploration
+HMRF](https://giottosuite.com/dev/articles/hmrf.md) [Cell-cell
+interactions Interaction-changed features
+GiottoDisk](https://giottosuite.com/dev/articles/interaction_changed_features.md)
+[Visualization & interactive exploration
 Visualizations](https://giottosuite.com/dev/articles/visualizations.md)
 [Spatial expression patterns · Visualization & interactive exploration
 Metafeatures](https://giottosuite.com/dev/articles/metafeatures.md)

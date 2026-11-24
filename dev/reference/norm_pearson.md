@@ -59,7 +59,9 @@ normalization of single-cell RNA-seq UMI data. Genome Biol 22, 258
 
 Other normalization parameters:
 [`norm_arcsinh`](https://giottosuite.com/dev/reference/norm_arcsinh.md),
+[`norm_clr`](https://giottosuite.com/dev/reference/norm_clr.md),
 [`norm_default`](https://giottosuite.com/dev/reference/norm_default.md),
+[`norm_gamma_pearson`](https://giottosuite.com/dev/reference/norm_gamma_pearson.md),
 [`norm_l2`](https://giottosuite.com/dev/reference/norm_l2.md),
 [`norm_library`](https://giottosuite.com/dev/reference/norm_library.md),
 [`norm_log`](https://giottosuite.com/dev/reference/norm_log.md),

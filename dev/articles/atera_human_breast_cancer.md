@@ -968,6 +968,44 @@ spatMotifPlot(g,
 
 ![](images/atera_human_breast_cancer/16_motif_spatial.png)
 
+### 14.1 Interaction-changed features
+
+Motifs show which cell types sit together.
+[`findInteractionChangedFeats()`](https://giottosuite.com/dev/reference/findInteractionChangedFeats.md)
+asks whether that changes their expression: for each pair of cell types,
+which genes in one type change with its exposure to the other. The
+`edgeicg` method removes the transcripts that leak between touching
+cells before testing, tests touching cells, short-range neighbours and
+the wider niche, and labels each hit by how likely it is to be an
+artefact. Here it tests the highly variable features plus the Hallmark
+interferon-γ response genes, in about 2 minutes:
+
+``` r
+
+ifng <- unique(subset(
+    msigdbr::msigdbr(species = "Homo sapiens", collection = "H"),
+    gs_name == "HALLMARK_INTERFERON_GAMMA_RESPONSE"
+)$gene_symbol)
+icf <- findInteractionChangedFeats(g,
+    cluster_column = "cell_type",
+    method = "edgeicg",
+    selected_feats = intersect(union(hvf, ifng), fDataDT(g)$feat_ID),
+    spatial_covariates = TRUE,
+    workers = 8
+)
+plotICFExposure(g, icf, receiver = "macrophages", sender = "T cells",
+    feats = c("CXCL9", "CXCL10", "IRF1", "IDO1"), scale = "niche")
+```
+
+![](images/interaction_changed_features/04_exposure.png)
+
+Macrophages surrounded by T cells switch on the interferon-γ response
+(CXCL9, IRF1, IDO1): the more T cells around a macrophage, the higher
+these genes. The [Interaction-changed
+features](https://giottosuite.com/dev/articles/interaction_changed_features.md)
+tutorial continues from here: the leak between touching cells, the hit
+classes, where the response happens, and which neighbour explains it.
+
 ``` r
 
 g <- saveGiotto(g, name = "analyzed")
@@ -982,6 +1020,10 @@ Suggested further topics:
   for a more systematic annotation than the cluster markers above
 - GiottoLens for [interactive visualization and
   annotation](https://giottosuite.com/dev/articles/giottolens.md)
+- [Interaction-changed
+  features](https://giottosuite.com/dev/articles/interaction_changed_features.md):
+  how the cell types change each other’s expression, continuing from
+  this object
 
 ## 16 Session info
 

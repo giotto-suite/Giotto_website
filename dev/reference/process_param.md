@@ -173,6 +173,12 @@ of `normParam`, `scaleParam`, and `adjustParam`.
 - [`"arcsinh"`](https://giottosuite.com/dev/reference/norm_arcsinh.md) -
   arcsinh transformation
 
+- [`"clr"`](https://giottosuite.com/dev/reference/norm_clr.md) - centred
+  log-ratio across the features of each cell
+
+- [`"gamma_pearson"`](https://giottosuite.com/dev/reference/norm_gamma_pearson.md) -
+  Pearson residuals of a per-feature Gamma GLM
+
 ## scaleParam methods
 
 - [`"default"`](https://giottosuite.com/dev/reference/scale_default.md) -

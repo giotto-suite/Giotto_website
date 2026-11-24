@@ -92,6 +92,13 @@ Spatial genes, co-expression modules and spatial domains.
 - [Spatial domain analysis using
   HMRF](https://giottosuite.com/dev/articles/hmrf.md):
 
+### Cell-cell interactions
+
+How cell types change each other’s expression.
+
+- [Interaction-changed
+  features](https://giottosuite.com/dev/articles/interaction_changed_features.md):
+
 ### Visualization
 
 Plotting spatial and expression data.

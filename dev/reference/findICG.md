@@ -35,7 +35,9 @@ findICG(...)
 
   `selected_feats`
 
-  :   subset of selected features (optional)
+  :   subset of selected features (optional). On a GiottoDisk-backed
+      object only these features are read into memory (all features when
+      `NULL`), so select them for large panels.
 
   `cluster_column`
 
@@ -88,6 +90,28 @@ findICG(...)
   `seed_number`
 
   :   seed number
+
+  `method`
+
+  :   `"edgeicg"` (default): the spillover-aware, multi-scale model of
+      the edgeicg package (contact, paracrine and niche scale; leaked
+      transcripts from touching cells removed; niche calibrated and
+      attributed). It uses raw counts and the cell polygons, and works
+      on GiottoDisk-backed objects; see
+      [`icfParam()`](https://giottosuite.com/dev/reference/icf_param.md).
+      Arguments specific to the classic test (`expression_values`,
+      `spatial_network_name`, `diff_test`, ...) are then ignored.
+      `"classic"`: the original proximity test described in Details,
+      kept as a baseline. It compares cells with and without a neighbour
+      of the other type in a spatial network and does not model
+      transcripts leaked from touching cells; it also loads the full
+      expression matrix into memory.
+
+  `param`
+
+  :   optional
+      [`icfParam()`](https://giottosuite.com/dev/reference/icf_param.md)
+      object; overrides `method`.
 
 ## Value
 

@@ -113,7 +113,9 @@ Mar;53(3):403-411. doi: 10.1038/s41588-021-00790-6.
 
 Other normalization parameters:
 [`norm_arcsinh`](https://giottosuite.com/dev/reference/norm_arcsinh.md),
+[`norm_clr`](https://giottosuite.com/dev/reference/norm_clr.md),
 [`norm_default`](https://giottosuite.com/dev/reference/norm_default.md),
+[`norm_gamma_pearson`](https://giottosuite.com/dev/reference/norm_gamma_pearson.md),
 [`norm_l2`](https://giottosuite.com/dev/reference/norm_l2.md),
 [`norm_library`](https://giottosuite.com/dev/reference/norm_library.md),
 [`norm_log`](https://giottosuite.com/dev/reference/norm_log.md),

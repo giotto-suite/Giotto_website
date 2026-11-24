@@ -25,7 +25,8 @@ createGiottoVisiumObject(
   expression_matrix_class = deprecated(),
   h5_file = NULL,
   cores = NA,
-  verbose = NULL
+  verbose = NULL,
+  backend = NULL
 )
 ```
 
@@ -109,6 +110,12 @@ createGiottoVisiumObject(
 
   be verbose
 
+- backend:
+
+  (optional) a \`gsource\`-inheriting project backend (typically
+  produced by \`GiottoDisk::sourceCreate()\`). When provided, creates
+  the \`giotto\` object as a managed on-disk project.
+
 ## Value
 
 giotto object
@@ -141,3 +148,7 @@ If starting from a Visium 10X .h5 file
 
 - h5_json_scalefactors_path: full path to .json file:
   /your/path/to/scalefactors_json.json
+
+## See also
+
+\[importVisium()\]

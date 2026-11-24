@@ -20,7 +20,11 @@ calculateAffineMatrixFromLandmarks(source, target)
 
 ## Value
 
-a 3x3 `matrix` that defines an affine transform
+a 3x3 `matrix` that defines an affine transform in the standard
+pre-multiply convention (`c(x', y', 1) = A %*% c(x, y, 1)`), which is
+what
+[`affine()`](https://giotto-suite.github.io/GiottoClass/reference/affine.html)
+reads by default
 
 ## See also
 
