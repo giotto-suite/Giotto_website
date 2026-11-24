@@ -20,7 +20,8 @@ analyzeData(
   cell_type,
   lib,
   spill_edges = NULL,
-  feats = NULL
+  feats = NULL,
+  region = NULL
 )
 
 # S4 method for class 'giotto,icfParam'
@@ -72,6 +73,10 @@ analyzeData(
 - feats:
 
   optional subset of features to test.
+
+- region:
+
+  optional region per cell, named by cell ID.
 
 - spat_unit, feat_type:
 

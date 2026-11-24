@@ -13,8 +13,8 @@ to another cell type, the *sender*.
 In imaging-based data this question has a trap. Transcripts leak across
 cell boundaries, and segmentation is never perfect, so a T cell that
 touches a tumour cell picks up some of the tumour cell’s transcripts. A
-naive test then reports tumour genes as “induced” in T cells.
-`method = "edgeicg"`, the default since Giotto 4.3.6 (from the
+naive test then reports tumour genes as “induced” in T cells. The
+default method since Giotto 4.3.6, `method = "edgeicg"` (from the
 [edgeicg](https://github.com/drieslab/edgeicg) package), is built around
 this:
 
@@ -28,7 +28,9 @@ this:
   tissue, and attributes each niche hit to the sender type that explains
   it best;
 - it labels every hit by how likely it is to be an artefact, for example
-  a gene that marks the sender.
+  a gene that marks the sender;
+- optionally, it estimates every effect within regions of the tissue
+  (spatial domains, niches) and tests whether it differs between them.
 
 The engine works on sums over cells, reads a GiottoDisk expression store
 in spatial windows without loading it, and runs in parallel.
@@ -44,11 +46,15 @@ nests.
 ``` r
 
 # edgeicg, and edgeicgrs for its compiled (Rust) kernels, which are optional but
-# about 20 times faster
-pak::pak(c("drieslab/edgeicg", "drieslab/edgeicgrs"))
+# about 20 times faster; binaries from r-universe, no Rust toolchain needed
+install.packages(c("edgeicg", "edgeicgrs"),
+    repos = c("https://drieslab.r-universe.dev", getOption("repos")))
 # a gene set used below
 install.packages("msigdbr")
 ```
+
+Region-specific effects (the last analysis below) need edgeicg 0.2.0 or
+later.
 
 ``` r
 
@@ -110,7 +116,6 @@ length(feats)
 
 icf <- findInteractionChangedFeats(g,
     cluster_column = "cell_type",
-    method = "edgeicg",
     selected_feats = feats,
     spatial_covariates = TRUE,
     workers = 8
@@ -142,6 +147,7 @@ windows; fewer `workers` use less memory. What the settings do:
   become significant; the floor keeps effects that are large enough to
   matter.
 - `workers`: parallel workers. Results do not depend on their number.
+- `method` is not given: `"edgeicg"` is the default.
 
 The full fit is kept in `icf$edgeicg`; the table of hits is
 `icf$ICFscores`.
@@ -394,7 +400,167 @@ sc[int_cell_type == "T cells" & feats %in% ifn & class == "clean" &
      9:       fibroblasts   GBP1 paracrine   0.35 9.4e-03
     10:       fibroblasts   IRF1 paracrine   0.57 1.5e-02
 
-## 7 Reading the results with care
+## 7 Region-specific effects
+
+So far every effect is one number for the whole section. An interaction
+can also hold in one part of the tissue only, or go in opposite
+directions in two parts, so that the effect for the whole section is
+weak or cancels out. With `region_column`, edgeicg also estimates every
+effect within each region and tests whether it differs between regions.
+The leak model and the rest of the model stay those of the whole
+section.
+
+### 7.1 Define the regions
+
+Any label per cell works: spatial domains, an HMRF result, a
+pathologist’s annotation. Here we group cells by the cell types around
+them, the same neighbourhood edgeicg uses for the niche scale (a
+Gaussian of 150 µm), into five niches:
+
+``` r
+
+cx <- merge(pDataDT(g)[, .(cell_ID, cell_type)],
+    getSpatialLocations(g, output = "data.table")[, .(cell_ID, sdimx, sdimy)],
+    by = "cell_ID", sort = FALSE)
+lv <- sort(unique(cx$cell_type))
+ex <- edgeicg::edgeicg_exposures(cbind(cx$sdimx, cx$sdimy),
+    match(cx$cell_type, lv), length(lv), sigma_n = 150)
+set.seed(1)
+km <- kmeans(ex$N, centers = 5, nstart = 10, iter.max = 50)
+# names from the main cell types of each cluster (round(km$centers, 2))
+region_names <- c("tumour (ANKRD30A+)", "stroma", "tumour with T cells",
+    "tumour (luminal)", "stroma and tumour (ANKRD30A+)")
+cx[, region := region_names[km$cluster]]
+g <- addCellMetadata(g, new_metadata = cx[, .(cell_ID, region)],
+    by_column = TRUE, column_cell_ID = "cell_ID")
+
+region_colors <- c("tumour (luminal)" = "#c51b7d",
+    "tumour (ANKRD30A+)" = "#f1b6da", "tumour with T cells" = "#17becf",
+    "stroma" = "#33a02c", "stroma and tumour (ANKRD30A+)" = "#b2df8a")
+spatPlot2D(g, cell_color = "region", color_as_factor = TRUE,
+    cell_color_code = region_colors, point_size = 0.05,
+    point_shape = "no_border")
+```
+
+![](images/interaction_changed_features/07_regions.png)
+
+The T-cell-rich niche (cyan) rims the tumour nests on the right of the
+section, where the motif analysis found T cells deep inside tumour.
+
+### 7.2 Run with regions
+
+The same run as above, with `region_column`:
+
+``` r
+
+icf <- findInteractionChangedFeats(g,
+    cluster_column = "cell_type",
+    selected_feats = feats,
+    spatial_covariates = TRUE,
+    workers = 8,
+    region_column = "region"
+)
+```
+
+This takes about 2.2 minutes instead of 2.0, with a peak of about 22 GB.
+The results for the whole section (`icf$ICFscores`) are exactly those of
+the run above; `icf$ICFregion` holds the region effects: for every entry
+that differs between regions or is significant in at least one, one row
+per region with
+
+- `effect`, `log2fc`, `z`, `q`: the effect within the region. `log2fc`
+  uses the same exposure contrast as the whole section (10th to 90th
+  percentile), so regions can be compared;
+- `n_cells`, `n_exposed`: receivers in the region, and those exposed to
+  the sender. A region is used for a receiver type with at least 50 of
+  its cells, and for an entry with at least 20 exposed receivers;
+- `Q`, `q_het`: the test of whether the effect differs between regions;
+- `pattern`: `shared` (no difference), `specific` (significant in one
+  region only), `opposite` (significant in one region, the other
+  direction in another) or `variable` (different strengths);
+- `class`: the hit class, as in `ICFscores`.
+
+``` r
+
+reg <- icf$ICFregion
+dcast(unique(reg[class == "clean" & pattern != "shared",
+    .(feats, cell_type, int_cell_type, scale, pattern)]),
+    scale ~ pattern, fun.aggregate = length, value.var = "feats")
+```
+
+           scale opposite specific variable
+          <char>    <int>    <int>    <int>
+    1:   contact      104      221      288
+    2:     niche       88      121       75
+    3: paracrine       98      242      154
+
+### 7.3 Is the interferon response local?
+
+[`plotICFRegion()`](https://giottosuite.com/dev/reference/plotICF_edgeicg.md)
+shows the effect in each region, with a 95% interval; filled points are
+significant in that region. For the macrophages and T cells:
+
+``` r
+
+region_order <- c("tumour with T cells", "tumour (luminal)",
+    "tumour (ANKRD30A+)", "stroma", "stroma and tumour (ANKRD30A+)")
+plotICFRegion(g, icf, receiver = "macrophages", sender = "T cells",
+    feats = c("CXCL9", "IRF1", "TAP1"), scale = "niche",
+    regions = region_order)
+```
+
+![](images/interaction_changed_features/08_region_macrophages.png)
+
+       feats              region n_exposed log2fc    z       q   q_het  pattern
+    1: CXCL9 tumour with T cells      2947   4.25  9.5 1.4e-17 8.7e-14 variable
+    2: CXCL9    tumour (luminal)       128   4.25 15.3 4.5e-48 8.7e-14 variable
+    3: CXCL9              stroma       298   2.41  5.5 2.0e-05 8.7e-14 variable
+    4:  IRF1 tumour with T cells      2947   2.97  6.3 3.2e-07 1.0e+00   shared
+    5:  IRF1    tumour (luminal)       128   2.41  5.5 2.4e-05 1.0e+00   shared
+    6:  IRF1              stroma       298   1.09  2.1 7.4e-01 1.0e+00   shared
+    7:  TAP1 tumour with T cells      2947   2.73  6.7 3.1e-08 8.2e-01   shared
+    8:  TAP1    tumour (luminal)       128   1.53  4.7 1.0e-03 8.2e-01   shared
+    9:  TAP1              stroma       298   0.88  2.2 6.4e-01 8.2e-01   shared
+
+The response is not confined to the T-cell-rich niche. Wherever
+macrophages have T cells around them, in the tumour or in the stroma,
+they raise IRF1 and TAP1 to a similar degree (`shared`). CXCL9 rises
+everywhere too, but more strongly in the tumour niches than in the
+stroma (`variable`). The other two niches have too few macrophages near
+T cells to test.
+
+### 7.4 A leak that varies
+
+The region view also helps with the artefacts. The T cells touching
+luminal tumour cells pick up MSMB, a tumour gene (`sender_marker`):
+
+``` r
+
+plotICFRegion(g, icf, receiver = "T cells", sender = "tumor, luminal",
+    feats = c("MSMB", "TSPAN8"), scale = "contact", regions = region_order)
+```
+
+![](images/interaction_changed_features/09_region_tcells.png)
+
+MSMB differs between regions and TSPAN8 does not. Leaked transcripts
+follow how much the sender itself expresses, and the luminal tumour
+cells’ own MSMB differs between the niches: about 0.85 per 1,000 counts
+in the luminal tumour niche, 0.37 in the T-cell-rich niche and 0.06 next
+to the ANKRD30A+ tumour, where the T cells show no MSMB at all. A
+`sender_marker` hit that differs between regions therefore says more
+about the sender than about the T cells.
+
+To list the candidate interactions that are confined to a region or go
+in opposite directions:
+
+``` r
+
+reg[class == "clean" & pattern %in% c("specific", "opposite") & q < 0.05][
+    order(q_het), .(feats, cell_type, int_cell_type, scale, region, log2fc,
+    q, q_het, pattern)]
+```
+
+## 8 Reading the results with care
 
 - **Use the clean hits, and look at the data.** The classes flag the
   likely artefacts, but no rule catches all of them.
@@ -408,6 +574,16 @@ sc[int_cell_type == "T cells" & feats %in% ifn & class == "clean" &
 - **Effects that are too uniform.** Exposure varies little for some
   receivers, such as myoepithelial cells, which line every duct and are
   always next to tumour cells. Their power is low.
+- **Regions.** A whole section gives a lot of power, so effects of
+  different strength in different regions are common (`variable`). A
+  small region has few exposed receivers and noisy estimates; look at
+  `n_exposed` and the interval in
+  [`plotICFRegion()`](https://giottosuite.com/dev/reference/plotICF_edgeicg.md).
+  `opposite` is called when one region is significant and another goes
+  the other way with \|z\| of at least 2, so a one-region effect is now
+  and then labelled `opposite` by chance. Regions defined from the cell
+  types themselves, as here, follow the exposure, so compare regions
+  with similar exposure where you can.
 - **Associations, not causes.** A hit says expression changes with
   exposure. It does not say the sender causes it; both may follow a
   third factor. The attribution helps choose between sender types, not
@@ -420,9 +596,12 @@ sc[int_cell_type == "T cells" & feats %in% ifn & class == "clean" &
   was 85% but genes without an effect were called in 6.1% of cases,
   mostly at niche scale. Splitting the T cells at random into two halves
   gave almost no hits between the halves (0.3% of tests with \|z\| \> 3
-  at every scale).
+  at every scale). In simulations, the test between regions called 4–5%
+  of entries without a region difference at p \< 0.05, recovered effects
+  confined to one region in 84% of cases and effects of opposite sign in
+  two regions in 92%.
 
-## 8 Settings
+## 9 Settings
 
 Settings are passed to
 [`findInteractionChangedFeats()`](https://giottosuite.com/dev/reference/findInteractionChangedFeats.md)
@@ -439,12 +618,14 @@ or collected with `icfParam("edgeicg", ...)`:
 | `workers` | 0 | parallel workers (mirai); 0 runs sequentially |
 | `backend` | `"auto"` | the Rust kernels of edgeicgrs when installed |
 | `block_genes`, `window_cells` | 500, auto | memory per task: genes per block and cells per spatial window |
+| `region_column` | none | cell metadata column with a region per cell; adds `ICFregion` |
+| `min_cells_region`, `min_exposed_region` | 50, 20 | receivers per region, and exposed receivers per entry and region |
 
 `method = "classic"` runs the original permutation test, the default
 before Giotto 4.3.6. It does not model the leak and loads the full
 expression matrix, and it is kept for comparison only.
 
-## 9 Session info
+## 10 Session info
 
 ``` r
 

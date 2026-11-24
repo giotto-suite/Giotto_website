@@ -106,6 +106,14 @@ edgeicg:
   spline degrees of freedom per axis of the spatial basis (default 6)
   and where it enters: `"niche"` (default) or `"all"` tests.
 
+- `region_column`:
+
+  optional cell metadata column with a region per cell (e.g. spatial
+  domains or niches). Every effect is then also estimated within each
+  region, with a test of whether it differs between regions; the table
+  is `$ICFregion` (see `edgeicg::edgeicg_region_results()`). The leak
+  model stays global.
+
 - other:
 
   passed to `edgeicg::edgeicg()` (e.g. `min_cells`, `min_det`,

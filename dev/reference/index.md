@@ -1011,6 +1011,7 @@ type due to interaction with another neighboring cell type.
   [`plotICFPair()`](https://giottosuite.com/dev/reference/plotICF_edgeicg.md)
   [`plotICFExposure()`](https://giottosuite.com/dev/reference/plotICF_edgeicg.md)
   [`plotICFAttribution()`](https://giottosuite.com/dev/reference/plotICF_edgeicg.md)
+  [`plotICFRegion()`](https://giottosuite.com/dev/reference/plotICF_edgeicg.md)
   : Plots for edgeicg interaction-changed features
 - [`findICFSpot()`](https://giottosuite.com/dev/reference/findICFSpot.md)
   : findICFSpot

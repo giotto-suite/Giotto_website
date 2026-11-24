@@ -260,8 +260,6 @@
 
     
     
-<!-- DRAFT (branch tutorials/cell-interactions). edgeicg and edgeicgrs are still
-     private repositories: the install chunk works once they are public. -->
 <div class="section level2" number="1">
 <h2 id="overview">
 <span class="header-section-number">1</span> Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
@@ -276,9 +274,9 @@ exposure to another cell type, the <em>sender</em>.</p>
 across cell boundaries, and segmentation is never perfect, so a T cell
 that touches a tumour cell picks up some of the tumour cell’s
 transcripts. A naive test then reports tumour genes as “induced” in T
-cells. <code>method = "edgeicg"</code>, the default since Giotto 4.3.6
-(from the <a href="https://github.com/drieslab/edgeicg" class="external-link">edgeicg</a>
-package), is built around this:</p>
+cells. The default method since Giotto 4.3.6,
+<code>method = "edgeicg"</code> (from the <a href="https://github.com/drieslab/edgeicg" class="external-link">edgeicg</a> package), is
+built around this:</p>
 <ul>
 <li>it estimates, for every pair of cell types, how much of a touching
 neighbour’s expression leaks into a cell, and removes that leak cell by
@@ -291,7 +289,10 @@ cell before testing;</li>
 the tissue, and attributes each niche hit to the sender type that
 explains it best;</li>
 <li>it labels every hit by how likely it is to be an artefact, for
-example a gene that marks the sender.</li>
+example a gene that marks the sender;</li>
+<li>optionally, it estimates every effect within regions of the tissue
+(spatial domains, niches) and tests whether it differs between
+them.</li>
 </ul>
 <p>The engine works on sums over cells, reads a GiottoDisk expression
 store in spatial windows without loading it, and runs in parallel.</p>
@@ -306,10 +307,13 @@ nests.</p>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># edgeicg, and edgeicgrs for its compiled (Rust) kernels, which are optional but</span></span>
-<span><span class="co"># about 20 times faster</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"drieslab/edgeicg"</span>, <span class="st">"drieslab/edgeicgrs"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># about 20 times faster; binaries from r-universe, no Rust toolchain needed</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"edgeicg"</span>, <span class="st">"edgeicgrs"</span><span class="op">)</span>,</span>
+<span>    repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://drieslab.r-universe.dev"</span>, <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"repos"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># a gene set used below</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"msigdbr"</span><span class="op">)</span></span></code></pre></div>
+<p>Region-specific effects (the last analysis below) need edgeicg 0.2.0
+or later.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/apache/arrow/" class="external-link">arrow</a></span><span class="op">)</span> <span class="co"># load before terra or GiottoClass</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giottosuite.com">Giotto</a></span><span class="op">)</span></span>
@@ -364,7 +368,6 @@ variable features, which favour genes that separate cell types.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">icf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/findInteractionChangedFeats.html">findInteractionChangedFeats</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    cluster_column <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
-<span>    method <span class="op">=</span> <span class="st">"edgeicg"</span>,</span>
 <span>    selected_feats <span class="op">=</span> <span class="va">feats</span>,</span>
 <span>    spatial_covariates <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>    workers <span class="op">=</span> <span class="fl">8</span></span>
@@ -400,6 +403,9 @@ enough to matter.</li>
 <li>
 <code>workers</code>: parallel workers. Results do not depend on
 their number.</li>
+<li>
+<code>method</code> is not given: <code>"edgeicg"</code> is the
+default.</li>
 </ul>
 <p>The full fit is kept in <code>icf$edgeicg</code>; the table of hits
 is <code>icf$ICFscores</code>.</p>
@@ -669,8 +675,167 @@ cells:</p>
 </div>
 </div>
 <div class="section level2" number="7">
+<h2 id="region-specific-effects">
+<span class="header-section-number">7</span> Region-specific
+effects<a class="anchor" aria-label="anchor" href="#region-specific-effects"></a>
+</h2>
+<p>So far every effect is one number for the whole section. An
+interaction can also hold in one part of the tissue only, or go in
+opposite directions in two parts, so that the effect for the whole
+section is weak or cancels out. With <code>region_column</code>, edgeicg
+also estimates every effect within each region and tests whether it
+differs between regions. The leak model and the rest of the model stay
+those of the whole section.</p>
+<div class="section level3" number="7.1">
+<h3 id="define-the-regions">
+<span class="header-section-number">7.1</span> Define the
+regions<a class="anchor" aria-label="anchor" href="#define-the-regions"></a>
+</h3>
+<p>Any label per cell works: spatial domains, an HMRF result, a
+pathologist’s annotation. Here we group cells by the cell types around
+them, the same neighbourhood edgeicg uses for the niche scale (a
+Gaussian of 150 µm), into five niches:</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">cell_ID</span>, <span class="va">cell_type</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>    <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/getSpatialLocations.html" class="external-link">getSpatialLocations</a></span><span class="op">(</span><span class="va">g</span>, output <span class="op">=</span> <span class="st">"data.table"</span><span class="op">)</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">cell_ID</span>, <span class="va">sdimx</span>, <span class="va">sdimy</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>    by <span class="op">=</span> <span class="st">"cell_ID"</span>, sort <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">lv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">cx</span><span class="op">$</span><span class="va">cell_type</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="fu">edgeicg</span><span class="fu">::</span><span class="fu">edgeicg_exposures</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">cx</span><span class="op">$</span><span class="va">sdimx</span>, <span class="va">cx</span><span class="op">$</span><span class="va">sdimy</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">cx</span><span class="op">$</span><span class="va">cell_type</span>, <span class="va">lv</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">lv</span><span class="op">)</span>, sigma_n <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">km</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/kmeans.html" class="external-link">kmeans</a></span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">N</span>, centers <span class="op">=</span> <span class="fl">5</span>, nstart <span class="op">=</span> <span class="fl">10</span>, iter.max <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
+<span><span class="co"># names from the main cell types of each cluster (round(km$centers, 2))</span></span>
+<span><span class="va">region_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tumour (ANKRD30A+)"</span>, <span class="st">"stroma"</span>, <span class="st">"tumour with T cells"</span>,</span>
+<span>    <span class="st">"tumour (luminal)"</span>, <span class="st">"stroma and tumour (ANKRD30A+)"</span><span class="op">)</span></span>
+<span><span class="va">cx</span><span class="op">[</span>, <span class="va">region</span> <span class="op">:=</span> <span class="va">region_names</span><span class="op">[</span><span class="va">km</span><span class="op">$</span><span class="va">cluster</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/addCellMetadata.html" class="external-link">addCellMetadata</a></span><span class="op">(</span><span class="va">g</span>, new_metadata <span class="op">=</span> <span class="va">cx</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">cell_ID</span>, <span class="va">region</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>    by_column <span class="op">=</span> <span class="cn">TRUE</span>, column_cell_ID <span class="op">=</span> <span class="st">"cell_ID"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">region_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tumour (luminal)"</span> <span class="op">=</span> <span class="st">"#c51b7d"</span>,</span>
+<span>    <span class="st">"tumour (ANKRD30A+)"</span> <span class="op">=</span> <span class="st">"#f1b6da"</span>, <span class="st">"tumour with T cells"</span> <span class="op">=</span> <span class="st">"#17becf"</span>,</span>
+<span>    <span class="st">"stroma"</span> <span class="op">=</span> <span class="st">"#33a02c"</span>, <span class="st">"stroma and tumour (ANKRD30A+)"</span> <span class="op">=</span> <span class="st">"#b2df8a"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g</span>, cell_color <span class="op">=</span> <span class="st">"region"</span>, color_as_factor <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    cell_color_code <span class="op">=</span> <span class="va">region_colors</span>, point_size <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>    point_shape <span class="op">=</span> <span class="st">"no_border"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/interaction_changed_features/07_regions.png" alt="" width="90%"></p>
+<p>The T-cell-rich niche (cyan) rims the tumour nests on the right of
+the section, where the motif analysis found T cells deep inside
+tumour.</p>
+</div>
+<div class="section level3" number="7.2">
+<h3 id="run-with-regions">
+<span class="header-section-number">7.2</span> Run with regions<a class="anchor" aria-label="anchor" href="#run-with-regions"></a>
+</h3>
+<p>The same run as above, with <code>region_column</code>:</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">icf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/findInteractionChangedFeats.html">findInteractionChangedFeats</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    cluster_column <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
+<span>    selected_feats <span class="op">=</span> <span class="va">feats</span>,</span>
+<span>    spatial_covariates <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    workers <span class="op">=</span> <span class="fl">8</span>,</span>
+<span>    region_column <span class="op">=</span> <span class="st">"region"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>This takes about 2.2 minutes instead of 2.0, with a peak of about 22
+GB. The results for the whole section (<code>icf$ICFscores</code>) are
+exactly those of the run above; <code>icf$ICFregion</code> holds the
+region effects: for every entry that differs between regions or is
+significant in at least one, one row per region with</p>
+<ul>
+<li>
+<code>effect</code>, <code>log2fc</code>, <code>z</code>,
+<code>q</code>: the effect within the region. <code>log2fc</code> uses
+the same exposure contrast as the whole section (10th to 90th
+percentile), so regions can be compared;</li>
+<li>
+<code>n_cells</code>, <code>n_exposed</code>: receivers in the
+region, and those exposed to the sender. A region is used for a receiver
+type with at least 50 of its cells, and for an entry with at least 20
+exposed receivers;</li>
+<li>
+<code>Q</code>, <code>q_het</code>: the test of whether the effect
+differs between regions;</li>
+<li>
+<code>pattern</code>: <code>shared</code> (no difference),
+<code>specific</code> (significant in one region only),
+<code>opposite</code> (significant in one region, the other direction in
+another) or <code>variable</code> (different strengths);</li>
+<li>
+<code>class</code>: the hit class, as in
+<code>ICFscores</code>.</li>
+</ul>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">reg</span> <span class="op">&lt;-</span> <span class="va">icf</span><span class="op">$</span><span class="va">ICFregion</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/dcast.data.table.html" class="external-link">dcast</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">reg</span><span class="op">[</span><span class="va">class</span> <span class="op">==</span> <span class="st">"clean"</span> <span class="op">&amp;</span> <span class="va">pattern</span> <span class="op">!=</span> <span class="st">"shared"</span>,</span>
+<span>    <span class="fu">.</span><span class="op">(</span><span class="va">feats</span>, <span class="va">cell_type</span>, <span class="va">int_cell_type</span>, <span class="va">scale</span>, <span class="va">pattern</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>    <span class="va">scale</span> <span class="op">~</span> <span class="va">pattern</span>, fun.aggregate <span class="op">=</span> <span class="va">length</span>, value.var <span class="op">=</span> <span class="st">"feats"</span><span class="op">)</span></span></code></pre></div>
+<pre><code>       scale opposite specific variable
+      &lt;char&gt;    &lt;int&gt;    &lt;int&gt;    &lt;int&gt;
+1:   contact      104      221      288
+2:     niche       88      121       75
+3: paracrine       98      242      154</code></pre>
+</div>
+<div class="section level3" number="7.3">
+<h3 id="is-the-interferon-response-local">
+<span class="header-section-number">7.3</span> Is the interferon
+response local?<a class="anchor" aria-label="anchor" href="#is-the-interferon-response-local"></a>
+</h3>
+<p><code><a href="../reference/plotICF_edgeicg.html">plotICFRegion()</a></code> shows the effect in each region, with a
+95% interval; filled points are significant in that region. For the
+macrophages and T cells:</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">region_order</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tumour with T cells"</span>, <span class="st">"tumour (luminal)"</span>,</span>
+<span>    <span class="st">"tumour (ANKRD30A+)"</span>, <span class="st">"stroma"</span>, <span class="st">"stroma and tumour (ANKRD30A+)"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plotICF_edgeicg.html">plotICFRegion</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">icf</span>, receiver <span class="op">=</span> <span class="st">"macrophages"</span>, sender <span class="op">=</span> <span class="st">"T cells"</span>,</span>
+<span>    feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CXCL9"</span>, <span class="st">"IRF1"</span>, <span class="st">"TAP1"</span><span class="op">)</span>, scale <span class="op">=</span> <span class="st">"niche"</span>,</span>
+<span>    regions <span class="op">=</span> <span class="va">region_order</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/interaction_changed_features/08_region_macrophages.png" alt="" width="100%"></p>
+<pre><code>   feats              region n_exposed log2fc    z       q   q_het  pattern
+1: CXCL9 tumour with T cells      2947   4.25  9.5 1.4e-17 8.7e-14 variable
+2: CXCL9    tumour (luminal)       128   4.25 15.3 4.5e-48 8.7e-14 variable
+3: CXCL9              stroma       298   2.41  5.5 2.0e-05 8.7e-14 variable
+4:  IRF1 tumour with T cells      2947   2.97  6.3 3.2e-07 1.0e+00   shared
+5:  IRF1    tumour (luminal)       128   2.41  5.5 2.4e-05 1.0e+00   shared
+6:  IRF1              stroma       298   1.09  2.1 7.4e-01 1.0e+00   shared
+7:  TAP1 tumour with T cells      2947   2.73  6.7 3.1e-08 8.2e-01   shared
+8:  TAP1    tumour (luminal)       128   1.53  4.7 1.0e-03 8.2e-01   shared
+9:  TAP1              stroma       298   0.88  2.2 6.4e-01 8.2e-01   shared</code></pre>
+<p>The response is not confined to the T-cell-rich niche. Wherever
+macrophages have T cells around them, in the tumour or in the stroma,
+they raise IRF1 and TAP1 to a similar degree (<code>shared</code>).
+CXCL9 rises everywhere too, but more strongly in the tumour niches than
+in the stroma (<code>variable</code>). The other two niches have too few
+macrophages near T cells to test.</p>
+</div>
+<div class="section level3" number="7.4">
+<h3 id="a-leak-that-varies">
+<span class="header-section-number">7.4</span> A leak that
+varies<a class="anchor" aria-label="anchor" href="#a-leak-that-varies"></a>
+</h3>
+<p>The region view also helps with the artefacts. The T cells touching
+luminal tumour cells pick up MSMB, a tumour gene
+(<code>sender_marker</code>):</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotICF_edgeicg.html">plotICFRegion</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">icf</span>, receiver <span class="op">=</span> <span class="st">"T cells"</span>, sender <span class="op">=</span> <span class="st">"tumor, luminal"</span>,</span>
+<span>    feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MSMB"</span>, <span class="st">"TSPAN8"</span><span class="op">)</span>, scale <span class="op">=</span> <span class="st">"contact"</span>, regions <span class="op">=</span> <span class="va">region_order</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/interaction_changed_features/09_region_tcells.png" alt="" width="80%"></p>
+<p>MSMB differs between regions and TSPAN8 does not. Leaked transcripts
+follow how much the sender itself expresses, and the luminal tumour
+cells’ own MSMB differs between the niches: about 0.85 per 1,000 counts
+in the luminal tumour niche, 0.37 in the T-cell-rich niche and 0.06 next
+to the ANKRD30A+ tumour, where the T cells show no MSMB at all. A
+<code>sender_marker</code> hit that differs between regions therefore
+says more about the sender than about the T cells.</p>
+<p>To list the candidate interactions that are confined to a region or
+go in opposite directions:</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">reg</span><span class="op">[</span><span class="va">class</span> <span class="op">==</span> <span class="st">"clean"</span> <span class="op">&amp;</span> <span class="va">pattern</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"specific"</span>, <span class="st">"opposite"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">q</span> <span class="op">&lt;</span> <span class="fl">0.05</span><span class="op">]</span><span class="op">[</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">q_het</span><span class="op">)</span>, <span class="fu">.</span><span class="op">(</span><span class="va">feats</span>, <span class="va">cell_type</span>, <span class="va">int_cell_type</span>, <span class="va">scale</span>, <span class="va">region</span>, <span class="va">log2fc</span>,</span>
+<span>    <span class="va">q</span>, <span class="va">q_het</span>, <span class="va">pattern</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2" number="8">
 <h2 id="reading-the-results-with-care">
-<span class="header-section-number">7</span> Reading the results
+<span class="header-section-number">8</span> Reading the results
 with care<a class="anchor" aria-label="anchor" href="#reading-the-results-with-care"></a>
 </h2>
 <ul>
@@ -690,6 +855,17 @@ interaction. The same holds for fibroblasts and CAFs.</li>
 little for some receivers, such as myoepithelial cells, which line every
 duct and are always next to tumour cells. Their power is low.</li>
 <li>
+<strong>Regions.</strong> A whole section gives a lot of power, so
+effects of different strength in different regions are common
+(<code>variable</code>). A small region has few exposed receivers and
+noisy estimates; look at <code>n_exposed</code> and the interval in
+<code><a href="../reference/plotICF_edgeicg.html">plotICFRegion()</a></code>. <code>opposite</code> is called when one
+region is significant and another goes the other way with |z| of at
+least 2, so a one-region effect is now and then labelled
+<code>opposite</code> by chance. Regions defined from the cell types
+themselves, as here, follow the exposure, so compare regions with
+similar exposure where you can.</li>
+<li>
 <strong>Associations, not causes.</strong> A hit says expression
 changes with exposure. It does not say the sender causes it; both may
 follow a third factor. The attribution helps choose between sender
@@ -703,12 +879,15 @@ effect were called in 2.8% of cases. Without the spatial covariates,
 niche recall was 85% but genes without an effect were called in 6.1% of
 cases, mostly at niche scale. Splitting the T cells at random into two
 halves gave almost no hits between the halves (0.3% of tests with |z|
-&gt; 3 at every scale).</li>
+&gt; 3 at every scale). In simulations, the test between regions called
+4–5% of entries without a region difference at p &lt; 0.05, recovered
+effects confined to one region in 84% of cases and effects of opposite
+sign in two regions in 92%.</li>
 </ul>
 </div>
-<div class="section level2" number="8">
+<div class="section level2" number="9">
 <h2 id="settings">
-<span class="header-section-number">8</span> Settings<a class="anchor" aria-label="anchor" href="#settings"></a>
+<span class="header-section-number">9</span> Settings<a class="anchor" aria-label="anchor" href="#settings"></a>
 </h2>
 <p>Settings are passed to <code><a href="../reference/findInteractionChangedFeats.html">findInteractionChangedFeats()</a></code> or
 collected with <code>icfParam("edgeicg", ...)</code>:</p>
@@ -776,17 +955,32 @@ neighbours</td>
 <td>500, auto</td>
 <td>memory per task: genes per block and cells per spatial window</td>
 </tr>
+<tr class="even">
+<td><code>region_column</code></td>
+<td>none</td>
+<td>cell metadata column with a region per cell; adds
+<code>ICFregion</code>
+</td>
+</tr>
+<tr class="odd">
+<td>
+<code>min_cells_region</code>, <code>min_exposed_region</code>
+</td>
+<td>50, 20</td>
+<td>receivers per region, and exposed receivers per entry and
+region</td>
+</tr>
 </tbody>
 </table>
 <p><code>method = "classic"</code> runs the original permutation test,
 the default before Giotto 4.3.6. It does not model the leak and loads
 the full expression matrix, and it is kept for comparison only.</p>
 </div>
-<div class="section level2" number="9">
+<div class="section level2" number="10">
 <h2 id="session-info">
-<span class="header-section-number">9</span> Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+<span class="header-section-number">10</span> Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

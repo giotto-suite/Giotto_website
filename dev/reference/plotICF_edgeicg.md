@@ -21,6 +21,10 @@ with `method = "edgeicg"`:
 - `plotICFAttribution()`: for niche hits, how much of the evidence each
   sender type explains (Wakefield attribution with a 95% credible set).
 
+- `plotICFRegion()`: for a fit with `region_column`, the effect of each
+  feature within each region (log2 FC with a 95% interval; filled =
+  significant in that region), titled with the between-region pattern.
+
 ## Usage
 
 ``` r
@@ -94,6 +98,23 @@ plotICFAttribution(
   save_plot = NULL,
   save_param = list(),
   default_save_name = "plotICFAttribution"
+)
+
+plotICFRegion(
+  gobject,
+  icfObject,
+  receiver,
+  sender,
+  feats,
+  scale = c("contact", "paracrine", "niche"),
+  regions = NULL,
+  q_thr = 0.05,
+  min_lfc = 0.25,
+  show_plot = NULL,
+  return_plot = NULL,
+  save_plot = NULL,
+  save_param = list(),
+  default_save_name = "plotICFRegion"
 )
 ```
 
@@ -174,6 +195,10 @@ plotICFAttribution(
 - feat_type:
 
   feature type (e.g. "rna", "dna", "protein")
+
+- regions:
+
+  optional regions to show, in this order
 
 ## Value
 
