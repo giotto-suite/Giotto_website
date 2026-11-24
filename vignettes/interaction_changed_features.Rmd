@@ -33,8 +33,9 @@ changes with its exposure to another cell type, the *sender*.
 In imaging-based data this question has a trap. Transcripts leak across cell
 boundaries, and segmentation is never perfect, so a T cell that touches a
 tumour cell picks up some of the tumour cell's transcripts. A naive test then
-reports tumour genes as "induced" in T cells. `method = "edgeicg"` (from the
-[edgeicg](https://github.com/drieslab/edgeicg) package) is built around this:
+reports tumour genes as "induced" in T cells. `method = "edgeicg"`, the default since
+Giotto 4.3.6 (from the [edgeicg](https://github.com/drieslab/edgeicg)
+package), is built around this:
 
 - it estimates, for every pair of cell types, how much of a touching
   neighbour's expression leaks into a cell, and removes that leak cell by cell
@@ -452,8 +453,8 @@ Settings are passed to `findInteractionChangedFeats()` or collected with
 | `backend` | `"auto"` | the Rust kernels of edgeicgrs when installed |
 | `block_genes`, `window_cells` | 500, auto | memory per task: genes per block and cells per spatial window |
 
-`method = "classic"` runs the original permutation test of earlier Giotto
-versions. It does not model the leak and loads the full expression matrix, and
+`method = "classic"` runs the original permutation test, the default before
+Giotto 4.3.6. It does not model the leak and loads the full expression matrix, and
 it is kept for comparison only.
 
 # Session info
