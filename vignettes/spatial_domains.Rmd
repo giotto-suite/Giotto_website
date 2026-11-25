@@ -74,8 +74,7 @@ g <- addCellMetadata(g, new_metadata = layers[, c("cell_ID", "layer")],
 
 g <- filterGiotto(g, expression_threshold = 1, feat_det_in_min_cells = 10,
     min_det_feats_per_cell = 100)
-g <- normalizeGiotto(g)
-g <- calculateHVF(g, method = "var", n_top_feats = 2000)
+g <- normalizeGiotto(g)  # log-normalized values, used by HMRF
 g <- createSpatialNetwork(g, method = "Delaunay")
 
 spatPlot2D(g, cell_color = "layer", point_size = 1.5)
@@ -85,24 +84,30 @@ spatPlot2D(g, cell_color = "layer", point_size = 1.5)
 knitr::include_graphics("images/spatial_domains/01_layers.png")
 ```
 
-The highly variable features are the 2,000 with the highest variance
-(`method = "var"`). They favour highly expressed genes, which carry the
-layer structure here; see [choosing the features](#choosing-the-features).
+The two methods work best on differently normalized values, so the object
+holds both: the log-normalized values from `normalizeGiotto()` for HMRF, and
+values normalized to the median library size without log for BANKSY (next
+section); see [normalization and features](#choosing-the-features).
 
 # BANKSY
 
-BANKSY adds to each spot the mean expression of its 6 nearest spots and the
-gradient over its 18 nearest (`compute_agf = TRUE`), weighted by `lambda`,
-runs PCA, and clusters the spots with Leiden.
+BANKSY adds to each spot the weighted mean expression of its neighbours,
+weighted by `lambda`, runs PCA, and clusters the spots with Leiden. This
+follows the BANKSY paper's settings for DLPFC: values normalized to the
+median library size without log, the 2,000 most variable genes, `lambda`
+0.2 and the 18 nearest spots (the first two rings of the Visium grid).
 
 ```{r}
-g <- createSpatialNetwork(g, method = "kNN", k = 6, name = "kNN6")
+g <- processExpression(g, normParam("library", scalefactor = "median"),
+    name = "medlib")
+g <- calculateHVF(g, expression_values = "medlib", method = "var",
+    n_top_feats = 2000, HVFname = "hvf_medlib")
 g <- createSpatialNetwork(g, method = "kNN", k = 18, name = "kNN18")
 
 g <- findSpatialDomains(g, method = "neighborhood",
-    feats_to_use = "hvf", lambda = 0.8, compute_agf = TRUE,
-    spatial_network_name = c("kNN6", "kNN18"),
-    resolution = 0.3, name = "banksy")
+    expression_values = "medlib", feats_to_use = "hvf_medlib",
+    lambda = 0.2, npcs = 20, k_neighbors = 50,
+    spatial_network_name = "kNN18", resolution = 0.5, name = "banksy")
 
 spatPlot2D(g, cell_color = "banksy", point_size = 1.5)
 ```
@@ -110,6 +115,9 @@ spatPlot2D(g, cell_color = "banksy", point_size = 1.5)
 ```{r, echo=FALSE, eval=TRUE, out.width="60%"}
 knitr::include_graphics("images/spatial_domains/02_banksy.png")
 ```
+
+`resolution = 0.5` is the smallest resolution that gives 7 domains on this
+slice; with other data, choose it for the number of domains you expect.
 
 # HMRF
 
@@ -149,13 +157,14 @@ c(banksy = mclust::adjustedRandIndex(meta$banksy, meta$layer),
 
 ```
 banksy   hmrf
-  0.42   0.53
+  0.53   0.53
 ```
 
-Both methods recover the layer structure (adjusted Rand index, ARI, with
-the manual annotation) and separate the white matter clearly; HMRF follows
-the layer bands more closely on this slice. BANKSY took about 2 s, and the
-HMRF steps (spatially variable genes, NMF and fit) about 6 s.
+Both methods recover the layers as stacked bands, to the same degree
+(adjusted Rand index, ARI, with the manual annotation), and agree with each
+other (ARI 0.56). On three DLPFC slices (151507, 151673, 151674) the mean
+ARI was 0.53 for BANKSY and 0.52 for HMRF. BANKSY took about 2 s, and the
+HMRF steps (spatially variable genes, NMF and fit) about 7 s.
 
 <details>
 <summary>Choosing the HMRF settings</summary>
@@ -194,7 +203,9 @@ The input matters more than `beta`. On three DLPFC slices (151507, 151673,
 How the spatial genes are picked (binSpect, Moran's I or Geary's C; 500 to
 2,000 genes) changed the mean ARI by about 0.03. NMF factors are used as
 given (`zscore = "none"`, the default for a dimension reduction); PCs work
-better scaled, so that the first PCs do not dominate.
+better scaled, so that the first PCs do not dominate. More domains than
+layers (`k = 8` or `9`) split layers into patches rather than sharpen their
+borders (mean ARI 0.49 and 0.47).
 
 </details>
 
@@ -203,19 +214,34 @@ better scaled, so that the first PCs do not dominate.
 
 `lambda` weights the neighbourhood: near 0 the domains follow cell types,
 near 1 they follow the neighbourhood. `resolution` sets the number of
-domains. `findSpatialDomains()` passes other arguments to
-`runNeighborhoodPCA()`, for example `npcs`. The embedding is also available
-on its own with `runNeighborhoodPCA()`, to cluster it differently.
+domains; the BANKSY paper tried resolutions from 0.1 to 1.5 and kept those
+giving the annotated number of layers. `findSpatialDomains()` passes other
+arguments to `runNeighborhoodPCA()`, for example `npcs` or
+`compute_agf = TRUE` for BANKSY's gradient features (off by default, as in
+the paper). The embedding is also available on its own with
+`runNeighborhoodPCA()`, to cluster it differently.
 
 </details>
 
 <details>
-<summary id="choosing-the-features">Choosing the features</summary>
+<summary id="choosing-the-features">Normalization and features</summary>
 
-The features matter more than the method's settings. On this slice the
-default of `calculateHVF()` (`method = "cov_groups"`) selects genes with
-little layer signal, and BANKSY reaches an ARI of about 0.2 with them,
-against about 0.4 with the 2,000 highest-variance genes.
+The normalization and features matter more than the methods' settings. On
+the three slices:
+
+| | mean ARI |
+|---|---|
+| BANKSY, median library size, highest-variance genes (above) | 0.53 |
+| BANKSY, median library size, Seurat's `vst` genes (as in the paper) | 0.56 |
+| BANKSY, log-normalized values, Seurat's `vst` genes | 0.52 |
+| BANKSY, median library size, `calculateHVF(method = "cov_loess")` genes | 0.14 |
+| BANKSY, log values, `lambda` 0.8 with gradient features | 0.46 |
+| HMRF, log-normalized values (above) | 0.52 |
+| HMRF, median library size without log | 0.38 |
+
+`normParam()` steps can be chained in `processExpression()` for other
+normalizations, for example `list(normParam("library", scalefactor =
+"median"), normParam("log"))`.
 
 </details>
 
