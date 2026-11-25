@@ -10,10 +10,16 @@ finds them with two native methods:
 - `"hmrf"`: the hidden Markov random field (Zhu et al. 2018), a Gaussian
   mixture with a prior that neighbouring spots share a domain.
 
-This tutorial runs both on the human dorsolateral prefrontal cortex
+This tutorial runs them on the human dorsolateral prefrontal cortex
 (DLPFC) slice 151673 (Visium, Maynard et al. 2021) and compares them
 with its manual annotation of the six cortical layers and the white
-matter.
+matter. It builds up in four steps, to show what each spatial ingredient
+adds:
+
+1.  the standard clustering workflow, which does not use space;
+2.  the same workflow on spatially variable genes;
+3.  HMRF, which adds a spatial prior;
+4.  BANKSY, which adds each spot’s neighbourhood to its expression.
 
 ## 1 Download the data
 
@@ -60,7 +66,7 @@ g <- addCellMetadata(g, new_metadata = layers[, c("cell_ID", "layer")],
 
 g <- filterGiotto(g, expression_threshold = 1, feat_det_in_min_cells = 10,
     min_det_feats_per_cell = 100)
-g <- normalizeGiotto(g)  # log-normalized values, used by HMRF
+g <- normalizeGiotto(g)  # log-normalized values
 g <- createSpatialNetwork(g, method = "Delaunay")
 
 spatPlot2D(g, cell_color = "layer", point_size = 1.5)
@@ -68,20 +74,89 @@ spatPlot2D(g, cell_color = "layer", point_size = 1.5)
 
 ![](images/spatial_domains/01_layers.png)
 
-The two methods work best on differently normalized values, so the
-object holds both: the log-normalized values from
-[`normalizeGiotto()`](https://giottosuite.com/dev/reference/normalizeGiotto.md)
-for HMRF, and values normalized to the median library size without log
-for BANKSY (next section); see [normalization and
-features](#choosing-the-features).
+## 3 Clustering without space
 
-## 3 BANKSY
+The standard workflow clusters the spots on their expression alone: the
+most variable genes, PCA, a shared nearest neighbour network and Leiden.
+
+``` r
+
+g <- calculateHVF(g, method = "var", n_top_feats = 2000)
+g <- runPCA(g, feats_to_use = "hvf", ncp = 30)
+g <- createNearestNetwork(g, dimensions_to_use = 1:30, k = 30)
+g <- doLeidenCluster(g, resolution = 0.7, name = "leiden_hvf")
+
+spatPlot2D(g, cell_color = "leiden_hvf", point_size = 1.5)
+```
+
+![](images/spatial_domains/02_leiden_hvf.png)
+
+The white matter and the outer layer are found, but the inner layers
+mix. `method = "var"` ranks genes by variance; the default
+[`calculateHVF()`](https://giottosuite.com/dev/reference/calculateHVF.md)
+method picks genes that separate these layers poorly (ARI 0.15 on three
+slices, against 0.32).
+
+## 4 Clustering on spatially variable genes
+
+The same workflow on the 1,000 most spatially variable genes. The
+clustering still ignores where the spots are, but the genes now carry
+the layer structure. HMRF below starts from the same genes.
+
+``` r
+
+# any spatialAutoCor() method works, for example Moran's I or Geary's C
+sv <- spatialAutoCor(g, method = "binspect", return_gobject = FALSE)
+spatial_genes <- head(sv$feats, 1000)
+
+g <- runPCA(g, feats_to_use = spatial_genes, ncp = 30, name = "pca_spatial")
+g <- createNearestNetwork(g, dim_reduction_name = "pca_spatial",
+    dimensions_to_use = 1:30, k = 30, name = "sNN_spatial")
+g <- doLeidenCluster(g, network_name = "sNN_spatial", resolution = 0.65,
+    name = "leiden_spatial")
+
+spatPlot2D(g, cell_color = "leiden_spatial", point_size = 1.5)
+```
+
+![](images/spatial_domains/03_leiden_spatial.png)
+
+The layers appear as bands, but with ragged borders and spots of one
+layer scattered in the next.
+
+## 5 HMRF
+
+HMRF clusters the spots with a Gaussian mixture and a prior that
+neighbouring spots share a domain, set by `beta`. It runs on a few
+values per spot: here NMF factors of the same spatially variable genes.
+Few inputs make its k-means start fast and stable, and each step is a
+separate function, so any dimension reduction can be used.
+
+``` r
+
+# NMF factors of the spatially variable genes, stored as the dimension
+# reduction "spatial_nmf"; NMF starts from random values, so set its seed
+g <- runNMF(g, feats_to_use = spatial_genes, k = 10, seed_number = 1234,
+    name = "spatial_nmf")
+
+# HMRF on the factors
+g <- findSpatialDomains(g, method = "hmrf", dim_reduction_to_use = "nmf",
+    dim_reduction_name = "spatial_nmf", k = 7, beta = 5, name = "hmrf")
+
+spatPlot2D(g, cell_color = "hmrf", point_size = 1.5)
+```
+
+![](images/spatial_domains/04_hmrf.png)
+
+## 6 BANKSY
 
 BANKSY adds to each spot the weighted mean expression of its neighbours,
 weighted by `lambda`, runs PCA, and clusters the spots with Leiden. This
 follows the BANKSY paper’s settings for DLPFC: values normalized to the
-median library size without log, the 2,000 most variable genes, `lambda`
-0.2 and the 18 nearest spots (the first two rings of the Visium grid).
+median library size without log (BANKSY works best on other values than
+the steps above; see [normalization and
+features](#choosing-the-features)), the 2,000 most variable genes,
+`lambda` 0.2 and the 18 nearest spots (the first two rings of the Visium
+grid).
 
 ``` r
 
@@ -99,56 +174,41 @@ g <- findSpatialDomains(g, method = "neighborhood",
 spatPlot2D(g, cell_color = "banksy", point_size = 1.5)
 ```
 
-![](images/spatial_domains/02_banksy.png)
+![](images/spatial_domains/05_banksy.png)
 
 `resolution = 0.5` is the smallest resolution that gives 7 domains on
-this slice; with other data, choose it for the number of domains you
-expect.
+this slice, as are 0.7 and 0.65 for the two Leiden steps above; with
+other data, choose it for the number of domains you expect.
 
-## 4 HMRF
-
-HMRF runs on a few spatially informed values per spot: NMF factors of
-the spatially variable genes. Few inputs make its k-means start fast and
-stable, and each step is a separate function, so any spatially variable
-gene test or dimension reduction can be used.
-
-``` r
-
-# 1. spatially variable genes (any spatialAutoCor() method)
-sv <- spatialAutoCor(g, method = "binspect", return_gobject = FALSE)
-spatial_genes <- head(sv$feats, 1000)
-
-# 2. NMF factors of these genes, stored as the dimension reduction
-#    "spatial_nmf"; NMF starts from random values, so set its seed
-g <- runNMF(g, feats_to_use = spatial_genes, k = 10, seed_number = 1234,
-    name = "spatial_nmf")
-
-# 3. HMRF on the factors
-g <- findSpatialDomains(g, method = "hmrf", dim_reduction_to_use = "nmf",
-    dim_reduction_name = "spatial_nmf", k = 7, beta = 5, name = "hmrf")
-
-spatPlot2D(g, cell_color = "hmrf", point_size = 1.5)
-```
-
-![](images/spatial_domains/04_hmrf.png)
-
-## 5 Compare with the layers
+## 7 Compare with the layers
 
 ``` r
 
 meta <- pDataDT(g)
-c(banksy = mclust::adjustedRandIndex(meta$banksy, meta$layer),
-  hmrf = mclust::adjustedRandIndex(meta$hmrf, meta$layer))
+domains <- c("leiden_hvf", "leiden_spatial", "hmrf", "banksy")
+sapply(domains, function(d) mclust::adjustedRandIndex(meta[[d]], meta$layer))
 ```
 
-    banksy   hmrf
-      0.53   0.53
+        leiden_hvf leiden_spatial           hmrf         banksy
+              0.30           0.41           0.53           0.53
 
-Both methods recover the layers as stacked bands, to the same degree
-(adjusted Rand index, ARI, with the manual annotation), and agree with
-each other (ARI 0.56). On three DLPFC slices (151507, 151673, 151674)
-the mean ARI was 0.53 for BANKSY and 0.52 for HMRF. BANKSY took about 2
-s, and the HMRF steps (spatially variable genes, NMF and fit) about 7 s.
+![](images/spatial_domains/06_compare.png)
+
+The adjusted Rand index (ARI) measures agreement with the manual
+annotation. Spatially variable genes improve clustering without space,
+and the spatial models then recover the layers as stacked bands. HMRF
+and BANKSY do so to the same degree and agree with each other (ARI
+0.56). On three DLPFC slices (151507, 151673, 151674) the mean ARI was:
+
+|                                    | mean ARI |
+|------------------------------------|----------|
+| Leiden on highly variable genes    | 0.32     |
+| Leiden on spatially variable genes | 0.39     |
+| HMRF                               | 0.52     |
+| BANKSY                             | 0.53     |
+
+Each step took a few seconds on this slice: about 5 s for the spatially
+variable genes, 2 s for NMF and HMRF, 1 s for BANKSY.
 
 Choosing the HMRF settings
 
@@ -181,9 +241,11 @@ The input matters more than `beta`. On three DLPFC slices (151507,
 |--------------------------------------------------------------|-----------|
 | 10 NMF factors of 1,000 spatial genes                        | 0.52      |
 | 20 PCs of 1,000 spatial genes, scaled (`zscore = "feature"`) | 0.51      |
-| 30 spatial co-expression module scores (`spat_enr_name`)     | 0.40      |
 | expression of 100-300 spatial genes                          | 0.28-0.36 |
 
+HMRF also runs on any spatial enrichment (`spat_enr_name`), for example
+the scores of [spatial co-expression
+modules](https://giottosuite.com/dev/articles/spatial_coexpression_modules.md).
 How the spatial genes are picked (binSpect, Moran’s I or Geary’s C; 500
 to 2,000 genes) changed the mean ARI by about 0.03. NMF factors are used
 as given (`zscore = "none"`, the default for a dimension reduction); PCs
@@ -227,7 +289,7 @@ steps can be chained in
 for other normalizations, for example
 `list(normParam("library", scalefactor = "median"), normParam("log"))`.
 
-## 6 Citation
+## 8 Citation
 
 If you use these methods, please cite the original papers:
 

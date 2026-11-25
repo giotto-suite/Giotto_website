@@ -24,6 +24,10 @@ Requires GiottoClass 0.8.0.
   and
   [`spatialExperimentToGiotto()`](https://giotto-suite.github.io/GiottoConnect/reference/spatialExperimentToGiotto.html)
   are no longer re-exported; use the GiottoConnect versions.
+- `gefToGiotto()` is no longer re-exported (it is removed from
+  GiottoClass).
+  [`importStereoSeq()`](https://giottosuite.com/dev/reference/importStereoSeq.md)
+  reads Stereo-seq GEF files.
 
 ### new
 
@@ -2313,9 +2317,7 @@ too, and will ship from there under that version.
   [`doLouvainCluster()`](https://giottosuite.com/dev/reference/doLouvainCluster.md)
   (sub)functions and made them compatible with new Giotto Suite
   framework.
-- Fix bug in
-  [`gefToGiotto()`](https://giotto-suite.github.io/GiottoClass/reference/gefToGiotto.html)
-  bin_size arguments.
+- Fix bug in `gefToGiotto()` bin_size arguments.
 - Update
   [`loadGiotto()`](https://giotto-suite.github.io/GiottoClass/reference/loadGiotto.html)
   and
@@ -2353,10 +2355,8 @@ too, and will ship from there under that version.
 
 ### Added
 
-- New
-  [`gefToGiotto()`](https://giotto-suite.github.io/GiottoClass/reference/gefToGiotto.html)
-  interoperability function to convert gef object from Stereo\*seq to
-  giotto
+- New `gefToGiotto()` interoperability function to convert gef object
+  from Stereo\*seq to giotto
 - New
   [`giottoToAnnData()`](https://giotto-suite.github.io/GiottoConnect/reference/giottoToAnnData.html)
   interoperability function to convert giotto object to squidpy flavor

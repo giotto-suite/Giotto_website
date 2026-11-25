@@ -274,10 +274,17 @@ gradient, clustered with Leiden;</li>
 al. 2018), a Gaussian mixture with a prior that neighbouring spots share
 a domain.</li>
 </ul>
-<p>This tutorial runs both on the human dorsolateral prefrontal cortex
+<p>This tutorial runs them on the human dorsolateral prefrontal cortex
 (DLPFC) slice 151673 (Visium, Maynard et al. 2021) and compares them
 with its manual annotation of the six cortical layers and the white
-matter.</p>
+matter. It builds up in four steps, to show what each spatial ingredient
+adds:</p>
+<ol style="list-style-type: decimal">
+<li>the standard clustering workflow, which does not use space;</li>
+<li>the same workflow on spatially variable genes;</li>
+<li>HMRF, which adds a spatial prior;</li>
+<li>BANKSY, which adds each spot’s neighbourhood to its expression.</li>
+</ol>
 <div class="section level2" number="1">
 <h2 id="download-the-data">
 <span class="header-section-number">1</span> Download the data<a class="anchor" aria-label="anchor" href="#download-the-data"></a>
@@ -324,27 +331,91 @@ object<a class="anchor" aria-label="anchor" href="#create-and-process-the-object
 <span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/filterGiotto.html">filterGiotto</a></span><span class="op">(</span><span class="va">g</span>, expression_threshold <span class="op">=</span> <span class="fl">1</span>, feat_det_in_min_cells <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>    min_det_feats_per_cell <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/normalizeGiotto.html">normalizeGiotto</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span>  <span class="co"># log-normalized values, used by HMRF</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/normalizeGiotto.html">normalizeGiotto</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span>  <span class="co"># log-normalized values</span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span><span class="va">g</span>, method <span class="op">=</span> <span class="st">"Delaunay"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g</span>, cell_color <span class="op">=</span> <span class="st">"layer"</span>, point_size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/spatial_domains/01_layers.png" alt="" width="60%" style="display: block; margin: auto;"></p>
-<p>The two methods work best on differently normalized values, so the
-object holds both: the log-normalized values from
-<code><a href="../reference/normalizeGiotto.html">normalizeGiotto()</a></code> for HMRF, and values normalized to the
-median library size without log for BANKSY (next section); see <a href="#choosing-the-features">normalization and features</a>.</p>
 </div>
 <div class="section level2" number="3">
+<h2 id="clustering-without-space">
+<span class="header-section-number">3</span> Clustering without
+space<a class="anchor" aria-label="anchor" href="#clustering-without-space"></a>
+</h2>
+<p>The standard workflow clusters the spots on their expression alone:
+the most variable genes, PCA, a shared nearest neighbour network and
+Leiden.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculateHVF.html">calculateHVF</a></span><span class="op">(</span><span class="va">g</span>, method <span class="op">=</span> <span class="st">"var"</span>, n_top_feats <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPCA.html">runPCA</a></span><span class="op">(</span><span class="va">g</span>, feats_to_use <span class="op">=</span> <span class="st">"hvf"</span>, ncp <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">g</span>, dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>, k <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/doLeidenCluster.html">doLeidenCluster</a></span><span class="op">(</span><span class="va">g</span>, resolution <span class="op">=</span> <span class="fl">0.7</span>, name <span class="op">=</span> <span class="st">"leiden_hvf"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g</span>, cell_color <span class="op">=</span> <span class="st">"leiden_hvf"</span>, point_size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/spatial_domains/02_leiden_hvf.png" alt="" width="60%" style="display: block; margin: auto;"></p>
+<p>The white matter and the outer layer are found, but the inner layers
+mix. <code>method = "var"</code> ranks genes by variance; the default
+<code><a href="../reference/calculateHVF.html">calculateHVF()</a></code> method picks genes that separate these
+layers poorly (ARI 0.15 on three slices, against 0.32).</p>
+</div>
+<div class="section level2" number="4">
+<h2 id="clustering-on-spatially-variable-genes">
+<span class="header-section-number">4</span> Clustering on spatially
+variable genes<a class="anchor" aria-label="anchor" href="#clustering-on-spatially-variable-genes"></a>
+</h2>
+<p>The same workflow on the 1,000 most spatially variable genes. The
+clustering still ignores where the spots are, but the genes now carry
+the layer structure. HMRF below starts from the same genes.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># any spatialAutoCor() method works, for example Moran's I or Geary's C</span></span>
+<span><span class="va">sv</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialAutoCor.html">spatialAutoCor</a></span><span class="op">(</span><span class="va">g</span>, method <span class="op">=</span> <span class="st">"binspect"</span>, return_gobject <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">spatial_genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sv</span><span class="op">$</span><span class="va">feats</span>, <span class="fl">1000</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPCA.html">runPCA</a></span><span class="op">(</span><span class="va">g</span>, feats_to_use <span class="op">=</span> <span class="va">spatial_genes</span>, ncp <span class="op">=</span> <span class="fl">30</span>, name <span class="op">=</span> <span class="st">"pca_spatial"</span><span class="op">)</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">g</span>, dim_reduction_name <span class="op">=</span> <span class="st">"pca_spatial"</span>,</span>
+<span>    dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>, k <span class="op">=</span> <span class="fl">30</span>, name <span class="op">=</span> <span class="st">"sNN_spatial"</span><span class="op">)</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/doLeidenCluster.html">doLeidenCluster</a></span><span class="op">(</span><span class="va">g</span>, network_name <span class="op">=</span> <span class="st">"sNN_spatial"</span>, resolution <span class="op">=</span> <span class="fl">0.65</span>,</span>
+<span>    name <span class="op">=</span> <span class="st">"leiden_spatial"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g</span>, cell_color <span class="op">=</span> <span class="st">"leiden_spatial"</span>, point_size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/spatial_domains/03_leiden_spatial.png" alt="" width="60%" style="display: block; margin: auto;"></p>
+<p>The layers appear as bands, but with ragged borders and spots of one
+layer scattered in the next.</p>
+</div>
+<div class="section level2" number="5">
+<h2 id="hmrf">
+<span class="header-section-number">5</span> HMRF<a class="anchor" aria-label="anchor" href="#hmrf"></a>
+</h2>
+<p>HMRF clusters the spots with a Gaussian mixture and a prior that
+neighbouring spots share a domain, set by <code>beta</code>. It runs on
+a few values per spot: here NMF factors of the same spatially variable
+genes. Few inputs make its k-means start fast and stable, and each step
+is a separate function, so any dimension reduction can be used.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># NMF factors of the spatially variable genes, stored as the dimension</span></span>
+<span><span class="co"># reduction "spatial_nmf"; NMF starts from random values, so set its seed</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runNMF.html">runNMF</a></span><span class="op">(</span><span class="va">g</span>, feats_to_use <span class="op">=</span> <span class="va">spatial_genes</span>, k <span class="op">=</span> <span class="fl">10</span>, seed_number <span class="op">=</span> <span class="fl">1234</span>,</span>
+<span>    name <span class="op">=</span> <span class="st">"spatial_nmf"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># HMRF on the factors</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/findSpatialDomains.html">findSpatialDomains</a></span><span class="op">(</span><span class="va">g</span>, method <span class="op">=</span> <span class="st">"hmrf"</span>, dim_reduction_to_use <span class="op">=</span> <span class="st">"nmf"</span>,</span>
+<span>    dim_reduction_name <span class="op">=</span> <span class="st">"spatial_nmf"</span>, k <span class="op">=</span> <span class="fl">7</span>, beta <span class="op">=</span> <span class="fl">5</span>, name <span class="op">=</span> <span class="st">"hmrf"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g</span>, cell_color <span class="op">=</span> <span class="st">"hmrf"</span>, point_size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/spatial_domains/04_hmrf.png" alt="" width="60%" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level2" number="6">
 <h2 id="banksy">
-<span class="header-section-number">3</span> BANKSY<a class="anchor" aria-label="anchor" href="#banksy"></a>
+<span class="header-section-number">6</span> BANKSY<a class="anchor" aria-label="anchor" href="#banksy"></a>
 </h2>
 <p>BANKSY adds to each spot the weighted mean expression of its
 neighbours, weighted by <code>lambda</code>, runs PCA, and clusters the
 spots with Leiden. This follows the BANKSY paper’s settings for DLPFC:
-values normalized to the median library size without log, the 2,000 most
-variable genes, <code>lambda</code> 0.2 and the 18 nearest spots (the
-first two rings of the Visium grid).</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+values normalized to the median library size without log (BANKSY works
+best on other values than the steps above; see <a href="#choosing-the-features">normalization and features</a>), the 2,000
+most variable genes, <code>lambda</code> 0.2 and the 18 nearest spots
+(the first two rings of the Visium grid).</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/processExpression.html">processExpression</a></span><span class="op">(</span><span class="va">g</span>, <span class="fu"><a href="../reference/process_param.html">normParam</a></span><span class="op">(</span><span class="st">"library"</span>, scalefactor <span class="op">=</span> <span class="st">"median"</span><span class="op">)</span>,</span>
 <span>    name <span class="op">=</span> <span class="st">"medlib"</span><span class="op">)</span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculateHVF.html">calculateHVF</a></span><span class="op">(</span><span class="va">g</span>, expression_values <span class="op">=</span> <span class="st">"medlib"</span>, method <span class="op">=</span> <span class="st">"var"</span>,</span>
@@ -357,53 +428,56 @@ first two rings of the Visium grid).</p>
 <span>    spatial_network_name <span class="op">=</span> <span class="st">"kNN18"</span>, resolution <span class="op">=</span> <span class="fl">0.5</span>, name <span class="op">=</span> <span class="st">"banksy"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g</span>, cell_color <span class="op">=</span> <span class="st">"banksy"</span>, point_size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/spatial_domains/02_banksy.png" alt="" width="60%" style="display: block; margin: auto;"></p>
+<p><img src="images/spatial_domains/05_banksy.png" alt="" width="60%" style="display: block; margin: auto;"></p>
 <p><code>resolution = 0.5</code> is the smallest resolution that gives 7
-domains on this slice; with other data, choose it for the number of
-domains you expect.</p>
+domains on this slice, as are 0.7 and 0.65 for the two Leiden steps
+above; with other data, choose it for the number of domains you
+expect.</p>
 </div>
-<div class="section level2" number="4">
-<h2 id="hmrf">
-<span class="header-section-number">4</span> HMRF<a class="anchor" aria-label="anchor" href="#hmrf"></a>
-</h2>
-<p>HMRF runs on a few spatially informed values per spot: NMF factors of
-the spatially variable genes. Few inputs make its k-means start fast and
-stable, and each step is a separate function, so any spatially variable
-gene test or dimension reduction can be used.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># 1. spatially variable genes (any spatialAutoCor() method)</span></span>
-<span><span class="va">sv</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialAutoCor.html">spatialAutoCor</a></span><span class="op">(</span><span class="va">g</span>, method <span class="op">=</span> <span class="st">"binspect"</span>, return_gobject <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="va">spatial_genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sv</span><span class="op">$</span><span class="va">feats</span>, <span class="fl">1000</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># 2. NMF factors of these genes, stored as the dimension reduction</span></span>
-<span><span class="co">#    "spatial_nmf"; NMF starts from random values, so set its seed</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runNMF.html">runNMF</a></span><span class="op">(</span><span class="va">g</span>, feats_to_use <span class="op">=</span> <span class="va">spatial_genes</span>, k <span class="op">=</span> <span class="fl">10</span>, seed_number <span class="op">=</span> <span class="fl">1234</span>,</span>
-<span>    name <span class="op">=</span> <span class="st">"spatial_nmf"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># 3. HMRF on the factors</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/findSpatialDomains.html">findSpatialDomains</a></span><span class="op">(</span><span class="va">g</span>, method <span class="op">=</span> <span class="st">"hmrf"</span>, dim_reduction_to_use <span class="op">=</span> <span class="st">"nmf"</span>,</span>
-<span>    dim_reduction_name <span class="op">=</span> <span class="st">"spatial_nmf"</span>, k <span class="op">=</span> <span class="fl">7</span>, beta <span class="op">=</span> <span class="fl">5</span>, name <span class="op">=</span> <span class="st">"hmrf"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g</span>, cell_color <span class="op">=</span> <span class="st">"hmrf"</span>, point_size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/spatial_domains/04_hmrf.png" alt="" width="60%" style="display: block; margin: auto;"></p>
-</div>
-<div class="section level2" number="5">
+<div class="section level2" number="7">
 <h2 id="compare-with-the-layers">
-<span class="header-section-number">5</span> Compare with the
+<span class="header-section-number">7</span> Compare with the
 layers<a class="anchor" aria-label="anchor" href="#compare-with-the-layers"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>banksy <span class="op">=</span> <span class="fu">mclust</span><span class="fu">::</span><span class="fu">adjustedRandIndex</span><span class="op">(</span><span class="va">meta</span><span class="op">$</span><span class="va">banksy</span>, <span class="va">meta</span><span class="op">$</span><span class="va">layer</span><span class="op">)</span>,</span>
-<span>  hmrf <span class="op">=</span> <span class="fu">mclust</span><span class="fu">::</span><span class="fu">adjustedRandIndex</span><span class="op">(</span><span class="va">meta</span><span class="op">$</span><span class="va">hmrf</span>, <span class="va">meta</span><span class="op">$</span><span class="va">layer</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code>banksy   hmrf
-  0.53   0.53</code></pre>
-<p>Both methods recover the layers as stacked bands, to the same degree
-(adjusted Rand index, ARI, with the manual annotation), and agree with
-each other (ARI 0.56). On three DLPFC slices (151507, 151673, 151674)
-the mean ARI was 0.53 for BANKSY and 0.52 for HMRF. BANKSY took about 2
-s, and the HMRF steps (spatially variable genes, NMF and fit) about 7
-s.</p>
+<span><span class="va">domains</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"leiden_hvf"</span>, <span class="st">"leiden_spatial"</span>, <span class="st">"hmrf"</span>, <span class="st">"banksy"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">domains</span>, <span class="kw">function</span><span class="op">(</span><span class="va">d</span><span class="op">)</span> <span class="fu">mclust</span><span class="fu">::</span><span class="fu">adjustedRandIndex</span><span class="op">(</span><span class="va">meta</span><span class="op">[[</span><span class="va">d</span><span class="op">]</span><span class="op">]</span>, <span class="va">meta</span><span class="op">$</span><span class="va">layer</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code>    leiden_hvf leiden_spatial           hmrf         banksy
+          0.30           0.41           0.53           0.53</code></pre>
+<p><img src="images/spatial_domains/06_compare.png" alt="" width="100%" style="display: block; margin: auto;"></p>
+<p>The adjusted Rand index (ARI) measures agreement with the manual
+annotation. Spatially variable genes improve clustering without space,
+and the spatial models then recover the layers as stacked bands. HMRF
+and BANKSY do so to the same degree and agree with each other (ARI
+0.56). On three DLPFC slices (151507, 151673, 151674) the mean ARI
+was:</p>
+<table class="table">
+<thead><tr class="header">
+<th></th>
+<th>mean ARI</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Leiden on highly variable genes</td>
+<td>0.32</td>
+</tr>
+<tr class="even">
+<td>Leiden on spatially variable genes</td>
+<td>0.39</td>
+</tr>
+<tr class="odd">
+<td>HMRF</td>
+<td>0.52</td>
+</tr>
+<tr class="even">
+<td>BANKSY</td>
+<td>0.53</td>
+</tr>
+</tbody>
+</table>
+<p>Each step took a few seconds on this slice: about 5 s for the
+spatially variable genes, 2 s for NMF and HMRF, 1 s for BANKSY.</p>
 <details><summary>
 Choosing the HMRF settings
 </summary><p><code><a href="../reference/runHMRF.html">runHMRF()</a></code> fits several <code>k</code> and
@@ -411,7 +485,7 @@ Choosing the HMRF settings
 them: <code>coherence</code> is the share of neighbouring spots in the
 same domain, and <code>smallest_domain</code> near 0 means
 <code>k</code> is too large.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runHMRF.html">runHMRF</a></span><span class="op">(</span><span class="va">g</span>, dim_reduction_to_use <span class="op">=</span> <span class="st">"nmf"</span>,</span>
 <span>    dim_reduction_name <span class="op">=</span> <span class="st">"spatial_nmf"</span>, k <span class="op">=</span> <span class="fl">7</span>, betas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/hmrfSummary.html">hmrfSummary</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span></code></pre></div>
@@ -441,21 +515,18 @@ enrichment of the same name.</p>
 <td>0.51</td>
 </tr>
 <tr class="odd">
-<td>30 spatial co-expression module scores
-(<code>spat_enr_name</code>)</td>
-<td>0.40</td>
-</tr>
-<tr class="even">
 <td>expression of 100-300 spatial genes</td>
 <td>0.28-0.36</td>
 </tr>
 </tbody>
 </table>
-<p>How the spatial genes are picked (binSpect, Moran’s I or Geary’s C;
-500 to 2,000 genes) changed the mean ARI by about 0.03. NMF factors are
-used as given (<code>zscore = "none"</code>, the default for a dimension
-reduction); PCs work better scaled, so that the first PCs do not
-dominate. More domains than layers (<code>k = 8</code> or
+<p>HMRF also runs on any spatial enrichment
+(<code>spat_enr_name</code>), for example the scores of <a href="spatial_coexpression_modules.html">spatial co-expression
+modules</a>. How the spatial genes are picked (binSpect, Moran’s I or
+Geary’s C; 500 to 2,000 genes) changed the mean ARI by about 0.03. NMF
+factors are used as given (<code>zscore = "none"</code>, the default for
+a dimension reduction); PCs work better scaled, so that the first PCs do
+not dominate. More domains than layers (<code>k = 8</code> or
 <code>9</code>) split layers into patches rather than sharpen their
 borders (mean ARI 0.49 and 0.47).</p>
 </details><details><summary>
@@ -522,9 +593,9 @@ features</td>
 <code>list(normParam("library", scalefactor = "median"), normParam("log"))</code>.</p>
 </details>
 </div>
-<div class="section level2" number="6">
+<div class="section level2" number="8">
 <h2 id="citation">
-<span class="header-section-number">6</span> Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+<span class="header-section-number">8</span> Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
 <p>If you use these methods, please cite the original papers:</p>
 <ul>

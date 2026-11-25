@@ -93,7 +93,6 @@ to see their documentation.
   [`featType<-()`](https://giotto-suite.github.io/GiottoClass/reference/giotto_schema.html),
   [`featureNetwork()`](https://giotto-suite.github.io/GiottoClass/reference/featureNetwork-class.html),
   [`flip`](https://rspatial.github.io/terra/reference/flip.html),
-  [`gefToGiotto()`](https://giotto-suite.github.io/GiottoClass/reference/gefToGiotto.html),
   [`getCellMetadata()`](https://giotto-suite.github.io/GiottoClass/reference/getCellMetadata.html),
   [`getDimReduction()`](https://giotto-suite.github.io/GiottoClass/reference/getDimReduction.html),
   [`getExpression()`](https://giotto-suite.github.io/GiottoClass/reference/getExpression.html),
