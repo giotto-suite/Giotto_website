@@ -113,33 +113,24 @@ knitr::include_graphics("images/spatial_domains/02_banksy.png")
 
 # HMRF
 
-HMRF starts from spatial co-expression modules: genes that vary together
-across the tissue, summarised as one score per module per spot. The scores
-are spatially informed and few, so the k-means start of HMRF is fast and
-stable. Each step is a separate function, so any spatially variable gene
-test or module method can be used.
+HMRF runs on a few spatially informed values per spot: NMF factors of the
+spatially variable genes. Few inputs make its k-means start fast and stable,
+and each step is a separate function, so any spatially variable gene test or
+dimension reduction can be used.
 
 ```{r}
 # 1. spatially variable genes (any spatialAutoCor() method)
 sv <- spatialAutoCor(g, method = "binspect", return_gobject = FALSE)
-spatial_genes <- head(sv[adj.p.value < 0.05]$feats, 1000)
+spatial_genes <- head(sv$feats, 1000)
 
-# 2. co-expression modules, stored as the spatial enrichment "spatial_module"
-g <- spatialCoexpression(g, feats = spatial_genes, n_modules = 30)
+# 2. NMF factors of these genes, stored as the dimension reduction
+#    "spatial_nmf"; NMF starts from random values, so set its seed
+g <- runNMF(g, feats_to_use = spatial_genes, k = 10, seed_number = 1234,
+    name = "spatial_nmf")
 
-spatCellPlot2D(g, spat_enr_names = "spatial_module",
-    cell_annotation_values = as.character(1:6), point_size = 0.8,
-    cow_n_col = 3)
-```
-
-```{r, echo=FALSE, eval=TRUE, out.width="80%"}
-knitr::include_graphics("images/spatial_domains/03_modules.png")
-```
-
-```{r}
-# 3. HMRF on the module scores
-g <- findSpatialDomains(g, method = "hmrf", spat_enr_name = "spatial_module",
-    k = 7, beta = 5, name = "hmrf")
+# 3. HMRF on the factors
+g <- findSpatialDomains(g, method = "hmrf", dim_reduction_to_use = "nmf",
+    dim_reduction_name = "spatial_nmf", k = 7, beta = 5, name = "hmrf")
 
 spatPlot2D(g, cell_color = "hmrf", point_size = 1.5)
 ```
@@ -158,13 +149,13 @@ c(banksy = mclust::adjustedRandIndex(meta$banksy, meta$layer),
 
 ```
 banksy   hmrf
-  0.42   0.43
+  0.42   0.53
 ```
 
-Both methods recover the layers to a similar degree (adjusted Rand index,
-ARI, with the manual annotation), and both separate the white matter
-clearly. On this slice BANKSY took about 2 s, and the HMRF steps (spatially
-variable genes, modules and fit) under 10 s.
+Both methods recover the layer structure (adjusted Rand index, ARI, with
+the manual annotation) and separate the white matter clearly; HMRF follows
+the layer bands more closely on this slice. BANKSY took about 2 s, and the
+HMRF steps (spatially variable genes, NMF and fit) about 6 s.
 
 <details>
 <summary>Choosing the HMRF settings</summary>
@@ -174,25 +165,36 @@ compares them: `coherence` is the share of neighbouring spots in the same
 domain, and `smallest_domain` near 0 means `k` is too large.
 
 ```{r}
-g <- runHMRF(g, spat_enr_name = "spatial_module", k = 7,
-    betas = c(0, 2, 5, 10))
+g <- runHMRF(g, dim_reduction_to_use = "nmf",
+    dim_reduction_name = "spatial_nmf", k = 7, betas = c(0, 2, 5, 10))
 hmrfSummary(g)
 ```
 
 ```
        setting     k  beta     loglik confidence coherence smallest_domain
-1:  hmrf_k7_b0     7     0 -114112.47      0.874     0.586           0.016
-2:  hmrf_k7_b2     7     2  -83698.65      0.981     0.887           0.039
-3:  hmrf_k7_b5     7     5  -39269.60      0.987     0.906           0.018
-4: hmrf_k7_b10     7    10   36987.02      0.987     0.916           0.009
+1:  hmrf_k7_b0     7     0 -183715.27      0.919     0.710           0.092
+2:  hmrf_k7_b2     7     2 -154455.80      0.984     0.901           0.101
+3:  hmrf_k7_b5     7     5 -108236.28      0.990     0.922           0.094
+4: hmrf_k7_b10     7    10  -30957.56      0.991     0.925           0.096
 ```
 
 Each setting is stored as a cell metadata column (`hmrf_k7_b5`, ...) and its
 domain probabilities as a spatial enrichment of the same name.
 
-On module scores, HMRF scales each module (`zscore = "feature"`, the default
-for a spatial enrichment). The number of modules matters more than `beta`:
-on this slice 30 modules gave a higher ARI than 10 or 20.
+The input matters more than `beta`. On three DLPFC slices (151507, 151673,
+151674) the mean ARI was:
+
+| HMRF input | mean ARI |
+|---|---|
+| 10 NMF factors of 1,000 spatial genes | 0.52 |
+| 20 PCs of 1,000 spatial genes, scaled (`zscore = "feature"`) | 0.51 |
+| 30 spatial co-expression module scores (`spat_enr_name`) | 0.40 |
+| expression of 100-300 spatial genes | 0.28-0.36 |
+
+How the spatial genes are picked (binSpect, Moran's I or Geary's C; 500 to
+2,000 genes) changed the mean ARI by about 0.03. NMF factors are used as
+given (`zscore = "none"`, the default for a dimension reduction); PCs work
+better scaled, so that the first PCs do not dominate.
 
 </details>
 
