@@ -58,7 +58,8 @@ normalizeGiotto(
 
 - scalefactor:
 
-  scale factor to use after library size normalization
+  scale factor to use after library size normalization: a number, or
+  `"median"` for the median library size of the cells
 
 - log_norm:
 

@@ -9,17 +9,17 @@ call. For each setting the domains are added to the cell metadata
 stored as a spatial enrichment of the same name. All `beta` share one
 k-means start.
 
-The input is either expression of the features in `feats_to_use`, or a
-stored spatial enrichment (`spat_enr_name`) such as the module scores of
-[`spatialCoexpression()`](https://giottosuite.com/dev/reference/spatialCoexpression.md):
-a few spatially informed values per cell that make a fast and stable
-start. Selecting spatial genes and building the modules are separate
-steps (e.g.
-[`spatialAutoCor()`](https://giottosuite.com/dev/reference/spatialAutoCor.md)
-with any of its methods, then
-[`spatialCoexpression()`](https://giottosuite.com/dev/reference/spatialCoexpression.md)),
-so any method that stores a spatial enrichment can feed HMRF. **If you
-use it, please cite the original paper** (see References).
+The input is expression of the features in `feats_to_use`, a stored
+dimension reduction (`dim_reduction_to_use`), or a stored spatial
+enrichment (`spat_enr_name`). A few spatially informed values per cell
+make a fast and stable start, for example NMF factors of spatial genes
+([`spatialAutoCor()`](https://giottosuite.com/dev/reference/spatialAutoCor.md),
+then [`runNMF()`](https://giottosuite.com/dev/reference/runNMF.md) on
+its top genes) or the module scores of
+[`spatialCoexpression()`](https://giottosuite.com/dev/reference/spatialCoexpression.md).
+These are separate steps, so any gene test, reduction or module method
+can feed HMRF. **If you use it, please cite the original paper** (see
+References).
 
 ## Usage
 
@@ -30,6 +30,9 @@ runHMRF(
   feat_type = NULL,
   expression_values = "scaled",
   feats_to_use = NULL,
+  dim_reduction_to_use = NULL,
+  dim_reduction_name = NULL,
+  dimensions_to_use = NULL,
   spat_enr_name = NULL,
   spatial_network_name = "Delaunay_network",
   k = 10L,
@@ -66,7 +69,20 @@ runHMRF(
   features: a character vector (e.g. spatial genes from
   [`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md)) or
   the name of a logical feature metadata column such as `"hvf"`; ignored
-  with `spat_enr_name`
+  with `dim_reduction_to_use` or `spat_enr_name`
+
+- dim_reduction_to_use:
+
+  reduction method of a stored dimension reduction to use instead of
+  expression (e.g. `"nmf"` or `"pca"`)
+
+- dim_reduction_name:
+
+  its name; `NULL` uses `dim_reduction_to_use`
+
+- dimensions_to_use:
+
+  its dimensions; `NULL` uses all
 
 - spat_enr_name:
 
@@ -90,8 +106,9 @@ runHMRF(
 
   see
   [`hmrfParam()`](https://giottosuite.com/dev/reference/hmrfParam.md);
-  `NULL` (default) uses `"feature"` with `spat_enr_name` and `"cell"`
-  with expression
+  `NULL` (default) uses `"none"` with a dimension reduction, `"feature"`
+  with `spat_enr_name` and `"cell"` with expression. PCs usually work
+  better scaled (`"feature"`), as the first PCs otherwise dominate.
 
 - nstart, seed, subsample, maxit, err, label_tol, n_icm:
 
@@ -140,6 +157,14 @@ fluorescence in situ hybridization data. *Nature Biotechnology* 36,
 g <- GiottoData::loadGiottoMini("visium")
 g <- runHMRF(g, feats_to_use = "hvf", k = 5, betas = c(0, 2),
     nstart = 20)
+
+# on NMF factors of spatially variable genes
+sv <- spatialAutoCor(g, method = "binspect", return_gobject = FALSE)
+g <- runNMF(g, feats_to_use = head(sv$feats, 200), k = 5,
+    name = "spatial_nmf", verbose = FALSE)
+g <- runHMRF(g, dim_reduction_to_use = "nmf",
+    dim_reduction_name = "spatial_nmf", k = 5, nstart = 20,
+    name = "hmrf_nmf")
 
 # on spatial co-expression module scores
 sv <- spatialAutoCor(g, method = "moran", return_gobject = FALSE)

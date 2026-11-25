@@ -267,7 +267,7 @@
 AnnData<a class="anchor" aria-label="anchor" href="#converting-to-and-from-anndata"></a>
 </h2>
 <p>This tutorial shows how to write a Giotto object as AnnData
-<code>.h5ad</code> files with <code><a href="https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code> and read
+<code>.h5ad</code> files with <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code> and read
 them back with <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code>. Both functions are part
 of <a href="https://github.com/giotto-suite/GiottoConnect" class="external-link">GiottoConnect</a>
 and read and write <code>.h5ad</code> files directly from R: no python
@@ -345,12 +345,12 @@ network is converted under its own name.</p>
 </h2>
 <p>An AnnData object holds one table of cells by features, so each
 <code>.h5ad</code> file holds one spatial unit and feature type of the
-Giotto object. By default <code><a href="https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code> writes the
+Giotto object. By default <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code> writes the
 active ones; <code>spat_unit</code> and <code>feat_type</code> choose
 others. Here we write one file per spatial unit.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">for</span> <span class="op">(</span><span class="va">su</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"z0"</span>, <span class="st">"z1"</span>, <span class="st">"aggregate"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html" class="external-link">giottoToAnnData</a></span><span class="op">(</span><span class="va">g</span>,</span>
+<span>    <span class="fu"><a href="https://giotto-suite.github.io/GiottoConnect/reference/giottoToAnnData.html" class="external-link">giottoToAnnData</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>        file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">results_folder</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">su</span>, <span class="st">"_rna.h5ad"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>        spat_unit <span class="op">=</span> <span class="va">su</span>,</span>
 <span>        feat_type <span class="op">=</span> <span class="st">"rna"</span></span>
@@ -399,7 +399,7 @@ Giotto object, part by part:</p>
 <span class="header-section-number">5</span> AnnData to Giotto<a class="anchor" aria-label="anchor" href="#anndata-to-giotto"></a>
 </h2>
 <p><code><a href="https://giotto-suite.github.io/GiottoConnect/reference/anndataToGiotto.html" class="external-link">anndataToGiotto()</a></code> reads an <code>.h5ad</code> file into
-a Giotto object. Files written by <code><a href="https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code> come
+a Giotto object. Files written by <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code> come
 back with their networks, reductions and expression values under the
 same names; files from scanpy or squidpy are read the same way.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">

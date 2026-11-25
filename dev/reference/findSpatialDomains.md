@@ -26,6 +26,8 @@ findSpatialDomains(
   spat_unit = NULL,
   feat_type = NULL,
   feats_to_use = "hvf",
+  dim_reduction_to_use = NULL,
+  dim_reduction_name = NULL,
   spat_enr_name = NULL,
   k = 10L,
   beta = 2,
@@ -57,14 +59,22 @@ findSpatialDomains(
   features (character vector or a logical feature metadata column such
   as `"hvf"`)
 
+- dim_reduction_to_use, dim_reduction_name:
+
+  `"hmrf"` only: a stored dimension reduction to fit instead of
+  expression, such as NMF factors of spatial genes
+  ([`runNMF()`](https://giottosuite.com/dev/reference/runNMF.md) on the
+  top genes of any
+  [`spatialAutoCor()`](https://giottosuite.com/dev/reference/spatialAutoCor.md)
+  method); more arguments of
+  [`runHMRF()`](https://giottosuite.com/dev/reference/runHMRF.md), e.g.
+  `dimensions_to_use`, go through `...`
+
 - spat_enr_name:
 
   `"hmrf"` only: a spatial enrichment to fit instead of expression, such
   as the module scores of
   [`spatialCoexpression()`](https://giottosuite.com/dev/reference/spatialCoexpression.md)
-  (built beforehand, from spatial genes of any
-  [`spatialAutoCor()`](https://giottosuite.com/dev/reference/spatialAutoCor.md)
-  method)
 
 - k:
 

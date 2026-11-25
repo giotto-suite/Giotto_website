@@ -20,7 +20,7 @@ normalized object
 |  |  |
 |----|----|
 | `library_size_norm` | logical (default = `TRUE`). whether to perform library size normalization |
-| `scalefactor` | numeric (default = 6000). Scalefactor to use after library size normalization. (skipped if `library_size_norm = FALSE`) |
+| `scalefactor` | numeric (default = 6000), or `"median"` for the median library size of the cells. Scalefactor to use after library size normalization. (skipped if `library_size_norm = FALSE`) |
 | `log_norm` | logical (default = `TRUE`). Whether to transform values to log-scale. |
 | `log_offset` | numeric (default = 1). If `log_norm = TRUE`, offset value to add to expression values to avoid `log(0)`. Note: for sparse-like matrices (e.g. `dgCMatrix`, 'dbSparseMatrix'), only `log_offset = 1` is supported (log1p) |
 | `logbase` | numeric (default = 2). If `log_norm = TRUE`, log base to use to log normalize expression values |

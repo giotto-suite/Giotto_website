@@ -19,9 +19,26 @@ Requires GiottoClass 0.8.0.
   `chooseAvailableSpatialGenes()`, `checkAndFixSpatialGenes()`. Use
   [`runHMRF()`](https://giottosuite.com/dev/reference/runHMRF.md), which
   needs neither Python nor smfishHmrf, graphcoloring or tidygraph.
+- [`giottoToAnnData()`](https://giotto-suite.github.io/GiottoConnect/reference/giottoToAnnData.html),
+  [`giottoToSpatialExperiment()`](https://giotto-suite.github.io/GiottoConnect/reference/giottoToSpatialExperiment.html)
+  and
+  [`spatialExperimentToGiotto()`](https://giotto-suite.github.io/GiottoConnect/reference/spatialExperimentToGiotto.html)
+  are no longer re-exported; use the GiottoConnect versions.
 
 ### new
 
+- Library normalization accepts `scalefactor = "median"` (in
+  `normParam("library")`, `normParam("default")` and
+  [`normalizeGiotto()`](https://giottosuite.com/dev/reference/normalizeGiotto.md)):
+  values are scaled to the median library size of the cells, so they
+  stay on the scale of the counts.
+- [`runHMRF()`](https://giottosuite.com/dev/reference/runHMRF.md) and
+  `findSpatialDomains(method = "hmrf")` gain `dim_reduction_to_use` /
+  `dim_reduction_name`: fit HMRF on a stored dimension reduction, such
+  as [`runNMF()`](https://giottosuite.com/dev/reference/runNMF.md)
+  factors of spatially variable genes (`zscore` then defaults to
+  `"none"`). RcppML is now listed in Suggests (used by
+  [`runNMF()`](https://giottosuite.com/dev/reference/runNMF.md)).
 - [`runHMRF()`](https://giottosuite.com/dev/reference/runHMRF.md) and
   `findSpatialDomains(method = "hmrf")` gain `spat_enr_name`: fit HMRF
   on a stored spatial enrichment, such as the module scores of
@@ -2220,7 +2237,7 @@ too, and will ship from there under that version.
 - New implementations of
   [`anndataToGiotto()`](https://giotto-suite.github.io/GiottoConnect/reference/anndataToGiotto.html)
   and
-  [`giottoToAnnData()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html)
+  [`giottoToAnnData()`](https://giotto-suite.github.io/GiottoConnect/reference/giottoToAnnData.html)
   for Nearest Neighbor and Spatial Networks
 - New `check_py_for_scanpy()` function, shifting code around in
   [`anndataToGiotto()`](https://giotto-suite.github.io/GiottoConnect/reference/anndataToGiotto.html)
@@ -2341,13 +2358,13 @@ too, and will ship from there under that version.
   interoperability function to convert gef object from Stereo\*seq to
   giotto
 - New
-  [`giottoToAnnData()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html)
+  [`giottoToAnnData()`](https://giotto-suite.github.io/GiottoConnect/reference/giottoToAnnData.html)
   interoperability function to convert giotto object to squidpy flavor
   anndata .h5ad file(s)
 - New
-  [`giottoToSpatialExperiment()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToSpatialExperiment.html)
+  [`giottoToSpatialExperiment()`](https://giotto-suite.github.io/GiottoConnect/reference/giottoToSpatialExperiment.html)
   and
-  [`spatialExperimentToGiotto()`](https://giotto-suite.github.io/GiottoClass/reference/spatialExperimentToGiotto.html)
+  [`spatialExperimentToGiotto()`](https://giotto-suite.github.io/GiottoConnect/reference/spatialExperimentToGiotto.html)
   to convert between Giotto and SpatialExperiment
 - New
   [`spatialAutoCorLocal()`](https://giottosuite.com/dev/reference/spatialAutoCorGlobalLocal.md)

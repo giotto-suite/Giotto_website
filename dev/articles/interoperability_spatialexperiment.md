@@ -4,9 +4,9 @@
 
 [GiottoConnect](https://github.com/giotto-suite/GiottoConnect) converts
 between Giotto and Bioconductor’s SpatialExperiment with
-[`giottoToSpatialExperiment()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToSpatialExperiment.html)
+[`giottoToSpatialExperiment()`](https://giotto-suite.github.io/GiottoConnect/reference/giottoToSpatialExperiment.html)
 and
-[`spatialExperimentToGiotto()`](https://giotto-suite.github.io/GiottoClass/reference/spatialExperimentToGiotto.html).
+[`spatialExperimentToGiotto()`](https://giotto-suite.github.io/GiottoConnect/reference/spatialExperimentToGiotto.html).
 SpatialFeatureExperiment objects, which add geometries such as cell
 polygons, are converted the same way.
 

@@ -4,7 +4,7 @@
 
 This tutorial shows how to write a Giotto object as AnnData `.h5ad`
 files with
-[`giottoToAnnData()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html)
+[`giottoToAnnData()`](https://giotto-suite.github.io/GiottoConnect/reference/giottoToAnnData.html)
 and read them back with
 [`anndataToGiotto()`](https://giotto-suite.github.io/GiottoConnect/reference/anndataToGiotto.html).
 Both functions are part of
@@ -89,7 +89,7 @@ list_nearest_networks(g, spat_unit = "aggregate")
 An AnnData object holds one table of cells by features, so each `.h5ad`
 file holds one spatial unit and feature type of the Giotto object. By
 default
-[`giottoToAnnData()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html)
+[`giottoToAnnData()`](https://giotto-suite.github.io/GiottoConnect/reference/giottoToAnnData.html)
 writes the active ones; `spat_unit` and `feat_type` choose others. Here
 we write one file per spatial unit.
 
@@ -158,7 +158,7 @@ readbackCheck(g, file.path(results_folder, "aggregate_rna.h5ad"))
 
 [`anndataToGiotto()`](https://giotto-suite.github.io/GiottoConnect/reference/anndataToGiotto.html)
 reads an `.h5ad` file into a Giotto object. Files written by
-[`giottoToAnnData()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToAnnData.html)
+[`giottoToAnnData()`](https://giotto-suite.github.io/GiottoConnect/reference/giottoToAnnData.html)
 come back with their networks, reductions and expression values under
 the same names; files from scanpy or squidpy are read the same way.
 

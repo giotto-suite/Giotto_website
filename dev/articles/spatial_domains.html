@@ -324,61 +324,65 @@ object<a class="anchor" aria-label="anchor" href="#create-and-process-the-object
 <span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/filterGiotto.html">filterGiotto</a></span><span class="op">(</span><span class="va">g</span>, expression_threshold <span class="op">=</span> <span class="fl">1</span>, feat_det_in_min_cells <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>    min_det_feats_per_cell <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/normalizeGiotto.html">normalizeGiotto</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculateHVF.html">calculateHVF</a></span><span class="op">(</span><span class="va">g</span>, method <span class="op">=</span> <span class="st">"var"</span>, n_top_feats <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/normalizeGiotto.html">normalizeGiotto</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span>  <span class="co"># log-normalized values, used by HMRF</span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span><span class="va">g</span>, method <span class="op">=</span> <span class="st">"Delaunay"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g</span>, cell_color <span class="op">=</span> <span class="st">"layer"</span>, point_size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/spatial_domains/01_layers.png" alt="" width="60%" style="display: block; margin: auto;"></p>
-<p>The highly variable features are the 2,000 with the highest variance
-(<code>method = "var"</code>). They favour highly expressed genes, which
-carry the layer structure here; see <a href="#choosing-the-features">choosing the features</a>.</p>
+<p>The two methods work best on differently normalized values, so the
+object holds both: the log-normalized values from
+<code><a href="../reference/normalizeGiotto.html">normalizeGiotto()</a></code> for HMRF, and values normalized to the
+median library size without log for BANKSY (next section); see <a href="#choosing-the-features">normalization and features</a>.</p>
 </div>
 <div class="section level2" number="3">
 <h2 id="banksy">
 <span class="header-section-number">3</span> BANKSY<a class="anchor" aria-label="anchor" href="#banksy"></a>
 </h2>
-<p>BANKSY adds to each spot the mean expression of its 6 nearest spots
-and the gradient over its 18 nearest (<code>compute_agf = TRUE</code>),
-weighted by <code>lambda</code>, runs PCA, and clusters the spots with
-Leiden.</p>
+<p>BANKSY adds to each spot the weighted mean expression of its
+neighbours, weighted by <code>lambda</code>, runs PCA, and clusters the
+spots with Leiden. This follows the BANKSY paper’s settings for DLPFC:
+values normalized to the median library size without log, the 2,000 most
+variable genes, <code>lambda</code> 0.2 and the 18 nearest spots (the
+first two rings of the Visium grid).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span><span class="va">g</span>, method <span class="op">=</span> <span class="st">"kNN"</span>, k <span class="op">=</span> <span class="fl">6</span>, name <span class="op">=</span> <span class="st">"kNN6"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/processExpression.html">processExpression</a></span><span class="op">(</span><span class="va">g</span>, <span class="fu"><a href="../reference/process_param.html">normParam</a></span><span class="op">(</span><span class="st">"library"</span>, scalefactor <span class="op">=</span> <span class="st">"median"</span><span class="op">)</span>,</span>
+<span>    name <span class="op">=</span> <span class="st">"medlib"</span><span class="op">)</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculateHVF.html">calculateHVF</a></span><span class="op">(</span><span class="va">g</span>, expression_values <span class="op">=</span> <span class="st">"medlib"</span>, method <span class="op">=</span> <span class="st">"var"</span>,</span>
+<span>    n_top_feats <span class="op">=</span> <span class="fl">2000</span>, HVFname <span class="op">=</span> <span class="st">"hvf_medlib"</span><span class="op">)</span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span><span class="va">g</span>, method <span class="op">=</span> <span class="st">"kNN"</span>, k <span class="op">=</span> <span class="fl">18</span>, name <span class="op">=</span> <span class="st">"kNN18"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/findSpatialDomains.html">findSpatialDomains</a></span><span class="op">(</span><span class="va">g</span>, method <span class="op">=</span> <span class="st">"neighborhood"</span>,</span>
-<span>    feats_to_use <span class="op">=</span> <span class="st">"hvf"</span>, lambda <span class="op">=</span> <span class="fl">0.8</span>, compute_agf <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>    spatial_network_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kNN6"</span>, <span class="st">"kNN18"</span><span class="op">)</span>,</span>
-<span>    resolution <span class="op">=</span> <span class="fl">0.3</span>, name <span class="op">=</span> <span class="st">"banksy"</span><span class="op">)</span></span>
+<span>    expression_values <span class="op">=</span> <span class="st">"medlib"</span>, feats_to_use <span class="op">=</span> <span class="st">"hvf_medlib"</span>,</span>
+<span>    lambda <span class="op">=</span> <span class="fl">0.2</span>, npcs <span class="op">=</span> <span class="fl">20</span>, k_neighbors <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>    spatial_network_name <span class="op">=</span> <span class="st">"kNN18"</span>, resolution <span class="op">=</span> <span class="fl">0.5</span>, name <span class="op">=</span> <span class="st">"banksy"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g</span>, cell_color <span class="op">=</span> <span class="st">"banksy"</span>, point_size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/spatial_domains/02_banksy.png" alt="" width="60%" style="display: block; margin: auto;"></p>
+<p><code>resolution = 0.5</code> is the smallest resolution that gives 7
+domains on this slice; with other data, choose it for the number of
+domains you expect.</p>
 </div>
 <div class="section level2" number="4">
 <h2 id="hmrf">
 <span class="header-section-number">4</span> HMRF<a class="anchor" aria-label="anchor" href="#hmrf"></a>
 </h2>
-<p>HMRF starts from spatial co-expression modules: genes that vary
-together across the tissue, summarised as one score per module per spot.
-The scores are spatially informed and few, so the k-means start of HMRF
-is fast and stable. Each step is a separate function, so any spatially
-variable gene test or module method can be used.</p>
+<p>HMRF runs on a few spatially informed values per spot: NMF factors of
+the spatially variable genes. Few inputs make its k-means start fast and
+stable, and each step is a separate function, so any spatially variable
+gene test or dimension reduction can be used.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 1. spatially variable genes (any spatialAutoCor() method)</span></span>
 <span><span class="va">sv</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialAutoCor.html">spatialAutoCor</a></span><span class="op">(</span><span class="va">g</span>, method <span class="op">=</span> <span class="st">"binspect"</span>, return_gobject <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="va">spatial_genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sv</span><span class="op">[</span><span class="va">adj.p.value</span> <span class="op">&lt;</span> <span class="fl">0.05</span><span class="op">]</span><span class="op">$</span><span class="va">feats</span>, <span class="fl">1000</span><span class="op">)</span></span>
+<span><span class="va">spatial_genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sv</span><span class="op">$</span><span class="va">feats</span>, <span class="fl">1000</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># 2. co-expression modules, stored as the spatial enrichment "spatial_module"</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialCoexpression.html">spatialCoexpression</a></span><span class="op">(</span><span class="va">g</span>, feats <span class="op">=</span> <span class="va">spatial_genes</span>, n_modules <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
+<span><span class="co"># 2. NMF factors of these genes, stored as the dimension reduction</span></span>
+<span><span class="co">#    "spatial_nmf"; NMF starts from random values, so set its seed</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runNMF.html">runNMF</a></span><span class="op">(</span><span class="va">g</span>, feats_to_use <span class="op">=</span> <span class="va">spatial_genes</span>, k <span class="op">=</span> <span class="fl">10</span>, seed_number <span class="op">=</span> <span class="fl">1234</span>,</span>
+<span>    name <span class="op">=</span> <span class="st">"spatial_nmf"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatCellPlot.html" class="external-link">spatCellPlot2D</a></span><span class="op">(</span><span class="va">g</span>, spat_enr_names <span class="op">=</span> <span class="st">"spatial_module"</span>,</span>
-<span>    cell_annotation_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>, point_size <span class="op">=</span> <span class="fl">0.8</span>,</span>
-<span>    cow_n_col <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/spatial_domains/03_modules.png" alt="" width="80%" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># 3. HMRF on the module scores</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/findSpatialDomains.html">findSpatialDomains</a></span><span class="op">(</span><span class="va">g</span>, method <span class="op">=</span> <span class="st">"hmrf"</span>, spat_enr_name <span class="op">=</span> <span class="st">"spatial_module"</span>,</span>
-<span>    k <span class="op">=</span> <span class="fl">7</span>, beta <span class="op">=</span> <span class="fl">5</span>, name <span class="op">=</span> <span class="st">"hmrf"</span><span class="op">)</span></span>
+<span><span class="co"># 3. HMRF on the factors</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/findSpatialDomains.html">findSpatialDomains</a></span><span class="op">(</span><span class="va">g</span>, method <span class="op">=</span> <span class="st">"hmrf"</span>, dim_reduction_to_use <span class="op">=</span> <span class="st">"nmf"</span>,</span>
+<span>    dim_reduction_name <span class="op">=</span> <span class="st">"spatial_nmf"</span>, k <span class="op">=</span> <span class="fl">7</span>, beta <span class="op">=</span> <span class="fl">5</span>, name <span class="op">=</span> <span class="st">"hmrf"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g</span>, cell_color <span class="op">=</span> <span class="st">"hmrf"</span>, point_size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/spatial_domains/04_hmrf.png" alt="" width="60%" style="display: block; margin: auto;"></p>
@@ -388,16 +392,18 @@ variable gene test or module method can be used.</p>
 <span class="header-section-number">5</span> Compare with the
 layers<a class="anchor" aria-label="anchor" href="#compare-with-the-layers"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>banksy <span class="op">=</span> <span class="fu">mclust</span><span class="fu">::</span><span class="fu">adjustedRandIndex</span><span class="op">(</span><span class="va">meta</span><span class="op">$</span><span class="va">banksy</span>, <span class="va">meta</span><span class="op">$</span><span class="va">layer</span><span class="op">)</span>,</span>
 <span>  hmrf <span class="op">=</span> <span class="fu">mclust</span><span class="fu">::</span><span class="fu">adjustedRandIndex</span><span class="op">(</span><span class="va">meta</span><span class="op">$</span><span class="va">hmrf</span>, <span class="va">meta</span><span class="op">$</span><span class="va">layer</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code>banksy   hmrf
-  0.42   0.43</code></pre>
-<p>Both methods recover the layers to a similar degree (adjusted Rand
-index, ARI, with the manual annotation), and both separate the white
-matter clearly. On this slice BANKSY took about 2 s, and the HMRF steps
-(spatially variable genes, modules and fit) under 10 s.</p>
+  0.53   0.53</code></pre>
+<p>Both methods recover the layers as stacked bands, to the same degree
+(adjusted Rand index, ARI, with the manual annotation), and agree with
+each other (ARI 0.56). On three DLPFC slices (151507, 151673, 151674)
+the mean ARI was 0.53 for BANKSY and 0.52 for HMRF. BANKSY took about 2
+s, and the HMRF steps (spatially variable genes, NMF and fit) about 7
+s.</p>
 <details><summary>
 Choosing the HMRF settings
 </summary><p><code><a href="../reference/runHMRF.html">runHMRF()</a></code> fits several <code>k</code> and
@@ -405,38 +411,115 @@ Choosing the HMRF settings
 them: <code>coherence</code> is the share of neighbouring spots in the
 same domain, and <code>smallest_domain</code> near 0 means
 <code>k</code> is too large.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runHMRF.html">runHMRF</a></span><span class="op">(</span><span class="va">g</span>, spat_enr_name <span class="op">=</span> <span class="st">"spatial_module"</span>, k <span class="op">=</span> <span class="fl">7</span>,</span>
-<span>    betas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runHMRF.html">runHMRF</a></span><span class="op">(</span><span class="va">g</span>, dim_reduction_to_use <span class="op">=</span> <span class="st">"nmf"</span>,</span>
+<span>    dim_reduction_name <span class="op">=</span> <span class="st">"spatial_nmf"</span>, k <span class="op">=</span> <span class="fl">7</span>, betas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/hmrfSummary.html">hmrfSummary</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span></code></pre></div>
 <pre><code>       setting     k  beta     loglik confidence coherence smallest_domain
-1:  hmrf_k7_b0     7     0 -114112.47      0.874     0.586           0.016
-2:  hmrf_k7_b2     7     2  -83698.65      0.981     0.887           0.039
-3:  hmrf_k7_b5     7     5  -39269.60      0.987     0.906           0.018
-4: hmrf_k7_b10     7    10   36987.02      0.987     0.916           0.009</code></pre>
+1:  hmrf_k7_b0     7     0 -183715.27      0.919     0.710           0.092
+2:  hmrf_k7_b2     7     2 -154455.80      0.984     0.901           0.101
+3:  hmrf_k7_b5     7     5 -108236.28      0.990     0.922           0.094
+4: hmrf_k7_b10     7    10  -30957.56      0.991     0.925           0.096</code></pre>
 <p>Each setting is stored as a cell metadata column
 (<code>hmrf_k7_b5</code>, …) and its domain probabilities as a spatial
 enrichment of the same name.</p>
-<p>On module scores, HMRF scales each module
-(<code>zscore = "feature"</code>, the default for a spatial enrichment).
-The number of modules matters more than <code>beta</code>: on this slice
-30 modules gave a higher ARI than 10 or 20.</p>
+<p>The input matters more than <code>beta</code>. On three DLPFC slices
+(151507, 151673, 151674) the mean ARI was:</p>
+<table class="table">
+<thead><tr class="header">
+<th>HMRF input</th>
+<th>mean ARI</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>10 NMF factors of 1,000 spatial genes</td>
+<td>0.52</td>
+</tr>
+<tr class="even">
+<td>20 PCs of 1,000 spatial genes, scaled
+(<code>zscore = "feature"</code>)</td>
+<td>0.51</td>
+</tr>
+<tr class="odd">
+<td>30 spatial co-expression module scores
+(<code>spat_enr_name</code>)</td>
+<td>0.40</td>
+</tr>
+<tr class="even">
+<td>expression of 100-300 spatial genes</td>
+<td>0.28-0.36</td>
+</tr>
+</tbody>
+</table>
+<p>How the spatial genes are picked (binSpect, Moran’s I or Geary’s C;
+500 to 2,000 genes) changed the mean ARI by about 0.03. NMF factors are
+used as given (<code>zscore = "none"</code>, the default for a dimension
+reduction); PCs work better scaled, so that the first PCs do not
+dominate. More domains than layers (<code>k = 8</code> or
+<code>9</code>) split layers into patches rather than sharpen their
+borders (mean ARI 0.49 and 0.47).</p>
 </details><details><summary>
 Choosing the BANKSY settings
 </summary><p><code>lambda</code> weights the neighbourhood: near 0 the domains
 follow cell types, near 1 they follow the neighbourhood.
-<code>resolution</code> sets the number of domains.
-<code><a href="../reference/findSpatialDomains.html">findSpatialDomains()</a></code> passes other arguments to
-<code><a href="../reference/runNeighborhoodPCA.html">runNeighborhoodPCA()</a></code>, for example <code>npcs</code>. The
-embedding is also available on its own with
-<code><a href="../reference/runNeighborhoodPCA.html">runNeighborhoodPCA()</a></code>, to cluster it differently.</p>
+<code>resolution</code> sets the number of domains; the BANKSY paper
+tried resolutions from 0.1 to 1.5 and kept those giving the annotated
+number of layers. <code><a href="../reference/findSpatialDomains.html">findSpatialDomains()</a></code> passes other
+arguments to <code><a href="../reference/runNeighborhoodPCA.html">runNeighborhoodPCA()</a></code>, for example
+<code>npcs</code> or <code>compute_agf = TRUE</code> for BANKSY’s
+gradient features (off by default, as in the paper). The embedding is
+also available on its own with <code><a href="../reference/runNeighborhoodPCA.html">runNeighborhoodPCA()</a></code>, to
+cluster it differently.</p>
 </details><details><summary id="choosing-the-features">
-Choosing the features
-</summary><p>The features matter more than the method’s settings. On this slice
-the default of <code><a href="../reference/calculateHVF.html">calculateHVF()</a></code>
-(<code>method = "cov_groups"</code>) selects genes with little layer
-signal, and BANKSY reaches an ARI of about 0.2 with them, against about
-0.4 with the 2,000 highest-variance genes.</p>
+Normalization and features
+</summary><p>The normalization and features matter more than the methods’
+settings. On the three slices:</p>
+<table class="table">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead><tr class="header">
+<th></th>
+<th>mean ARI</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>BANKSY, median library size, highest-variance genes (above)</td>
+<td>0.53</td>
+</tr>
+<tr class="even">
+<td>BANKSY, median library size, Seurat’s <code>vst</code> genes (as in
+the paper)</td>
+<td>0.56</td>
+</tr>
+<tr class="odd">
+<td>BANKSY, log-normalized values, Seurat’s <code>vst</code> genes</td>
+<td>0.52</td>
+</tr>
+<tr class="even">
+<td>BANKSY, median library size,
+<code>calculateHVF(method = "cov_loess")</code> genes</td>
+<td>0.14</td>
+</tr>
+<tr class="odd">
+<td>BANKSY, log values, <code>lambda</code> 0.8 with gradient
+features</td>
+<td>0.46</td>
+</tr>
+<tr class="even">
+<td>HMRF, log-normalized values (above)</td>
+<td>0.52</td>
+</tr>
+<tr class="odd">
+<td>HMRF, median library size without log</td>
+<td>0.38</td>
+</tr>
+</tbody>
+</table>
+<p><code><a href="../reference/process_param.html">normParam()</a></code> steps can be chained in
+<code><a href="../reference/processExpression.html">processExpression()</a></code> for other normalizations, for example
+<code>list(normParam("library", scalefactor = "median"), normParam("log"))</code>.</p>
 </details>
 </div>
 <div class="section level2" number="6">

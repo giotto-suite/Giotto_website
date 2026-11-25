@@ -1189,15 +1189,16 @@ Convert other type of objects into a Giotto object and vice versa.
   : Convert a Seurat object to a Giotto object (from GiottoConnect)
 - [`giottoToSeurat()`](https://giotto-suite.github.io/GiottoConnect/reference/giottoToSeurat.html)
   : Convert a Giotto object to a Seurat object (from GiottoConnect)
-- [`spatialExperimentToGiotto()`](https://giottosuite.com/dev/reference/NA)
+- [`spatialExperimentToGiotto()`](https://giotto-suite.github.io/GiottoConnect/reference/spatialExperimentToGiotto.html)
   : Convert a SpatialExperiment to a Giotto object (from GiottoConnect)
-- [`giottoToSpatialExperiment()`](https://giottosuite.com/dev/reference/NA)
+- [`giottoToSpatialExperiment()`](https://giotto-suite.github.io/GiottoConnect/reference/giottoToSpatialExperiment.html)
   : Convert a Giotto object to a SpatialExperiment (from GiottoConnect)
 - [`anndataToGiotto()`](https://giotto-suite.github.io/GiottoConnect/reference/anndataToGiotto.html)
   : Convert an AnnData .h5ad file to a Giotto object (from
   GiottoConnect)
-- [`giottoToAnnData()`](https://giottosuite.com/dev/reference/NA) :
-  Convert a Giotto object to an AnnData .h5ad file (from GiottoConnect)
+- [`giottoToAnnData()`](https://giotto-suite.github.io/GiottoConnect/reference/giottoToAnnData.html)
+  : Convert a Giotto object to an AnnData .h5ad file (from
+  GiottoConnect)
 - [`giottoToAnndataZarr()`](https://giottosuite.com/dev/reference/giottoToAnndataZarr.md)
   : Create a local anndata zarr folder
 - [`giottoMasterToSuite()`](https://giotto-suite.github.io/GiottoClass/reference/giottoMasterToSuite.html)

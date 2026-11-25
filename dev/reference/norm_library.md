@@ -24,7 +24,7 @@ normalized object
 
 |  |  |
 |----|----|
-| `scalefactor` | numeric (default = 6000). Scalefactor to use after library size normalization. Expressed as ***k*** in the above equation |
+| `scalefactor` | numeric (default = 6000). Scalefactor to use after library size normalization. Expressed as ***k*** in the above equation. `"median"` uses the median library size of the cells (cells with a library size of 0 left out), so values stay on the scale of the counts. |
 
 ## See also
 
