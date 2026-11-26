@@ -226,7 +226,6 @@ packages link to their own documentation site.
 | [`runIterativeLSI`](https://giottosuite.com/dev/reference/runIterativeLSI.md) | Run Iterative Latent Semantic Indexing (LSI) |
 | [`runNMF`](https://giottosuite.com/dev/reference/runNMF.md) | Run Non-Negative Matrix Factorization |
 | [`runONTraCV1`](https://giottosuite.com/dev/reference/runONTraCV1.md) | runONTraCV1 |
-| [`runPatternSimulation`](https://giottosuite.com/dev/reference/runPatternSimulation.md) | runPatternSimulation |
 | [`runPCA`](https://giottosuite.com/dev/reference/runPCA.md) | runPCA |
 | [`runPCAprojection`](https://giottosuite.com/dev/reference/runPCAprojection.md) | runPCAprojection |
 | [`runPCAprojectionBatch`](https://giottosuite.com/dev/reference/runPCAprojectionBatch.md) | runPCAprojectionBatch |
@@ -253,7 +252,6 @@ packages link to their own documentation site.
 | [`signPCA`](https://giottosuite.com/dev/reference/signPCA.md) | signPCA |
 | [`silhouetteRank`](https://giottosuite.com/dev/reference/silhouetteRank.md) | silhouetteRank |
 | [`silhouetteRankTest`](https://giottosuite.com/dev/reference/silhouetteRankTest.md) | silhouetteRankTest |
-| [`simulateOneGenePatternGiottoObject`](https://giottosuite.com/dev/reference/simulateOneGenePatternGiottoObject.md) | simulateOneGenePatternGiottoObject |
 | [`spark`](https://giottosuite.com/dev/reference/spark.md) | spark |
 | [`spatCellCellcom`](https://giottosuite.com/dev/reference/spatCellCellcom.md) | Spatial cell cell communication scoring |
 | [`spatCellCellcomSpots`](https://giottosuite.com/dev/reference/spatCellCellcomSpots.md) | spatCellCellcomSpots |

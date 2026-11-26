@@ -20,7 +20,7 @@ clusterCells(
   pyth_louv_resolution = 1,
   pyth_louv_weight_col = NULL,
   python_louv_random = deprecated(),
-  python_path = NULL,
+  python_path = deprecated(),
   louvain_gamma = 1,
   louvain_omega = 1,
   walk_steps = 4,
@@ -80,11 +80,12 @@ clusterCells(
 
 - pyth_leid_weight_col:
 
-  column to use for weights
+  edge attribute with the weights; `NA` gives every edge weight 1
 
 - pyth_leid_part_type:
 
-  partition type to use
+  kept for compatibility: both partition types run igraph's modularity
+  objective with `pyth_leid_resolution`
 
 - pyth_leid_init_memb:
 
@@ -100,7 +101,7 @@ clusterCells(
 
 - pyth_louv_weight_col:
 
-  louvain (igraph) edge attribute with the weights; \`NULL\` gives every
+  louvain (igraph) edge attribute with the weights; `NULL` gives every
   edge weight 1
 
 - python_louv_random:
@@ -109,7 +110,7 @@ clusterCells(
 
 - python_path:
 
-  specify specific path to python if required
+  deprecated.
 
 - louvain_gamma:
 

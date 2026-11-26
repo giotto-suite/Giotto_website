@@ -33,7 +33,7 @@ subClusterCells(
   n_iterations = 20,
   gamma = 1,
   omega = 1,
-  python_path = NULL,
+  python_path = deprecated(),
   nn_network_to_use = "sNN",
   network_name = "sNN.pca",
   return_gobject = TRUE,
@@ -62,7 +62,7 @@ doLeidenSubCluster(
   k_neighbors = 10,
   resolution = 0.5,
   n_iterations = 20,
-  python_path = NULL,
+  python_path = deprecated(),
   nn_network_to_use = "sNN",
   network_name = "sNN.pca",
   return_gobject = TRUE,
@@ -93,7 +93,7 @@ doLouvainSubCluster(
   resolution = 0.5,
   gamma = 1,
   omega = 1,
-  python_path = NULL,
+  python_path = deprecated(),
   nn_network_to_use = "sNN",
   network_name = "sNN.pca",
   return_gobject = TRUE,
@@ -198,7 +198,7 @@ doLouvainSubCluster(
 
 - python_path:
 
-  specify specific path to python if required
+  deprecated.
 
 - nn_network_to_use:
 

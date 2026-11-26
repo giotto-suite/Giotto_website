@@ -16,15 +16,16 @@ Requires GiottoClass 0.8.0.
   [`GiottoConnect::runMAST()`](https://giotto-suite.github.io/GiottoConnect/reference/runMAST.html)
   gives the same results. MAST is no longer in Suggests.
 - `spatialDE()` and `spatialAEH()` are removed, together with the
-  `"spatialDE"` method of
-  [`runPatternSimulation()`](https://giottosuite.com/dev/reference/runPatternSimulation.md).
-  Use [`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md)
-  for spatially variable features.
+  `"spatialDE"` method of `runPatternSimulation()`. Use
+  [`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md) for
+  spatially variable features.
 - `spark()` is removed, with the `"spark"` method of
-  [`runPatternSimulation()`](https://giottosuite.com/dev/reference/runPatternSimulation.md),
-  and SPARK is no longer in Suggests.
+  `runPatternSimulation()`, and SPARK is no longer in Suggests.
   [`GiottoConnect::runSparkX()`](https://giotto-suite.github.io/GiottoConnect/reference/runSparkX.html)
   runs SPARK-X, the scalable successor of SPARK.
+- `runPatternSimulation()` and `simulateOneGenePatternGiottoObject()`
+  are retired. Planted spatial patterns with ground truth are planned
+  for CellMix.
 - `trendSceek()` is removed, and trendsceek is no longer in Suggests.
   Use [`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md)
   for spatially variable features.
@@ -36,9 +37,8 @@ Requires GiottoClass 0.8.0.
   [`runHMRF()`](https://giottosuite.com/dev/reference/runHMRF.md), which
   needs neither Python nor smfishHmrf, graphcoloring or tidygraph.
 - `silhouetteRank()` and `silhouetteRankTest()` are retired, with the
-  `"silhouetteRank"` method of
-  [`runPatternSimulation()`](https://giottosuite.com/dev/reference/runPatternSimulation.md)
-  and their Python scripts. Use
+  `"silhouetteRank"` method of `runPatternSimulation()` and their Python
+  scripts. Use
   [`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md) for
   spatially variable features.
 - [`giottoToAnnData()`](https://giotto-suite.github.io/GiottoConnect/reference/giottoToAnnData.html),
@@ -160,6 +160,19 @@ Requires GiottoClass 0.8.0.
 
 ### bug fixes
 
+- `clusterCells(cluster_method = "leiden")`,
+  `subClusterCells(cluster_method = "leiden")` and
+  [`doLeidenSubCluster()`](https://giottosuite.com/dev/reference/subClusterCells.md)
+  run again: they passed arguments of the retired Python Leiden to
+  igraph’s. `pyth_leid_weight_col` names an edge attribute; both
+  `pyth_leid_part_type` values use igraph’s modularity objective.
+  `doLeidenCluster(return_gobject = FALSE)` returns the clusters as a
+  table. `python_path` is deprecated in
+  [`clusterCells()`](https://giottosuite.com/dev/reference/clusterCells.md),
+  [`subClusterCells()`](https://giottosuite.com/dev/reference/subClusterCells.md),
+  [`doLeidenSubCluster()`](https://giottosuite.com/dev/reference/subClusterCells.md)
+  and
+  [`doLouvainSubCluster()`](https://giottosuite.com/dev/reference/subClusterCells.md).
 - Clustering runs on a `giottoMulti`:
   [`doLeidenCluster()`](https://giottosuite.com/dev/reference/doLeidenCluster.md)
   and
