@@ -21,7 +21,7 @@
 # absolutely to their own pkgdown sites, resolved from each package's published
 # pkgdown.yml where reachable, falling back to its DESCRIPTION URL offline.
 
-PKGS <- c("Giotto", "GiottoClass", "GiottoVisuals", "GiottoUtils", "GiottoData", "GiottoDisk")
+PKGS <- c("Giotto", "GiottoClass", "GiottoVisuals", "GiottoUtils", "GiottoData", "GiottoDisk", "GiottoConnect")
 SELF <- "Giotto"
 OUT  <- "vignettes/function_index.Rmd"
 
