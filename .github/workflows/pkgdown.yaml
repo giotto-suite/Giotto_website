@@ -5,9 +5,13 @@
 # publishes the gsource line to /dev/.
 #
 # WHICH PACKAGE DOES THIS DOCUMENT?
-# package-ref below. This repository owns the website content -- vignettes,
-# _pkgdown.yml, theme, landing page -- while the package source is checked out
-# at build time, so there is no package mirror here to keep in sync.
+# package-ref plus the `pins` below: the same development lines as the dev
+# site (Giotto, GiottoClass, GiottoVisuals @gsource, GiottoUtils @main,
+# GiottoConnect @dev_connect), so the release site documents what the dev site
+# previewed. pkgdown-dev.yaml explains why the siblings are pinned. Keep the
+# refs, pins and floors of the two files the same. This repository owns the
+# website content -- vignettes, _pkgdown.yml, theme, landing page -- while the
+# package source is checked out at build time.
 #
 # Rd examples stay ON for the release build, unlike dev. They add roughly an
 # hour, but turning them off changes what the released site publishes.
@@ -25,7 +29,7 @@ on:
     inputs:
       package-ref:
         description: "Branch/tag of giotto-suite/Giotto to document"
-        default: suite
+        default: gsource
         required: false
 
 jobs:
@@ -51,7 +55,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: giotto-suite/Giotto
-          ref: ${{ inputs.package-ref || 'suite' }}
+          ref: ${{ inputs.package-ref || 'gsource' }}
           path: pkgsrc
           sparse-checkout: |
             DESCRIPTION
@@ -68,13 +72,19 @@ jobs:
     with:
       mode: release
       package-repo: giotto-suite/Giotto
-      package-ref: ${{ inputs.package-ref || 'suite' }}
+      package-ref: ${{ inputs.package-ref || 'gsource' }}
       overlay-files: "_pkgdown.yml index.md"
       dependencies: '"hard"'
-      # local::. deliberately absent: the shared workflow installs the
-      # documented package itself, after any pinning. Listing it here would
-      # install Giotto twice.
+      # local::. deliberately absent: Giotto@gsource cannot install against the
+      # GiottoClass pak resolves here, so the shared workflow installs it after
+      # the pins.
       extra-packages: >
         github::giotto-suite/GiottoData, any::pkgdown,
         any::kableExtra, any::ggspavis, any::pheatmap, any::scater,
         any::STexampleData, any::scran, any::ComplexHeatmap
+      pins: |
+        giotto-suite/GiottoUtils@main
+        giotto-suite/GiottoClass@gsource
+        giotto-suite/GiottoVisuals@gsource
+        giotto-suite/GiottoConnect@dev_connect
+      expect-versions: "GiottoClass>=0.6.0,GiottoVisuals>=0.2.16,Giotto>=4.2.4"
