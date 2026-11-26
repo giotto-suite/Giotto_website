@@ -198,7 +198,7 @@ force(star_locs)
 ```
 
 ```{r, eval=FALSE}
-requireNamespace("rgl", quietly = TRUE) {
+if (!requireNamespace("rgl", quietly = TRUE)) {
     install.packages("rgl")
 }
 rgl::plot3d(star_locs$x, star_locs$y, star_locs$z)
