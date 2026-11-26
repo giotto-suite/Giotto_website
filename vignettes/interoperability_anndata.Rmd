@@ -83,7 +83,7 @@ g <- createNearestNetwork(g,
 list_nearest_networks(g, spat_unit = "aggregate")
 ```
 
-```{r, eval=FALSE}
+```
    spat_unit feat_type nn_type        name
       <char>    <char>  <char>      <char>
 1: aggregate       rna     sNN     sNN.pca
@@ -124,7 +124,7 @@ The parts of the Giotto object go to their usual AnnData places:
 anndataR::read_h5ad(file.path(results_folder, "aggregate_rna.h5ad"))
 ```
 
-```{r, eval=FALSE}
+```
 InMemoryAnnData object with n_obs × n_vars = 462 × 337
     obs: 'nr_feats', 'perc_feats', 'total_expr', 'leiden_clus', 'louvain_clus'
     var: 'nr_cells', 'perc_cells', 'total_expr', 'mean_expr', 'mean_expr_det', 'hvg_orig', 'var', 'hvf'
@@ -151,7 +151,7 @@ part:
 readbackCheck(g, file.path(results_folder, "aggregate_rna.h5ad"))
 ```
 
-```{r, eval=FALSE}
+```
 <giottoReadback> PASS: 44 MATCH, 0 DECLARED, 0 UNDECLARED
 ```
 
@@ -170,7 +170,7 @@ list_spatial_networks(aggregate_rna)
 list_expression(aggregate_rna)
 ```
 
-```{r, eval=FALSE}
+```
    spat_unit feat_type nn_type        name
       <char>    <char>  <char>      <char>
 1:      cell       rna     kNN    kNN.umap
