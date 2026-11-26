@@ -31,13 +31,6 @@ if(!"GiottoData" %in% installed.packages()) {
   pak::pkg_install("giotto-suite/GiottoData")
 }
 
-# Ensure the Python environment for Giotto has been installed.
-genv_exists <- Giotto::checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment.
-  Giotto::installGiottoEnvironment()
-}
-
 # If your conda giotto environment doesn't have installed the modules 'spatialdata' and 'scanpy', you can install them by running the following command:
 reticulate::conda_install(envname = "giotto_env", packages = c("spatialdata", "scanpy"), pip = TRUE)
 ```

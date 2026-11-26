@@ -40,14 +40,6 @@ To run the current vignette you need to install the Giotto Suite branch.
   if(!"Giotto" %in% installed.packages()) {
   pak::pkg_install("giotto-suite/Giotto")
   }
-  
-  # Ensure the Python environment for Giotto has been installed
-  genv_exists <- Giotto::checkGiottoEnvironment()
-  
-  if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment.
-  Giotto::installGiottoEnvironment()
-  }
 ```
   
 # Create a Giotto object
@@ -66,13 +58,11 @@ data_path <- "/path/to/data/"
 # to automatically save figures in save_dir set save_plot to TRUE
 results_folder <- "/path/to/results/"
   
-python_path <- NULL
   
 instructions <- createGiottoInstructions(save_dir = results_folder, 
                                          save_plot = TRUE, 
                                          show_plot = FALSE, 
-                                         return_plot = FALSE, 
-                                         python_path = python_path)
+                                         return_plot = FALSE)
   
 # Create Giotto object
 visium_lungcancer <- createGiottoVisiumObject(visium_dir = data_path,
