@@ -733,7 +733,8 @@ Methods to detect spatially coherent expression patterns.
   : binSpect
 - [`binSpectMultiMatrix()`](https://giottosuite.com/dev/reference/binSpectMultiMatrix.md)
   : binSpectMultiMatrix
-- [`spark()`](https://giottosuite.com/dev/reference/spark.md) : spark
+- [`runSparkX()`](https://giotto-suite.github.io/GiottoConnect/reference/runSparkX.html)
+  : Run SPARK-X spatially variable genes (from GiottoConnect)
 
 ## Simulate Spatial Expression Patterns
 

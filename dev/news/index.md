@@ -19,8 +19,12 @@ Requires GiottoClass 0.8.0.
   `"spatialDE"` method of
   [`runPatternSimulation()`](https://giottosuite.com/dev/reference/runPatternSimulation.md).
   Use [`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md)
-  or [`spark()`](https://giottosuite.com/dev/reference/spark.md) for
-  spatially variable features.
+  for spatially variable features.
+- `spark()` is removed, with the `"spark"` method of
+  [`runPatternSimulation()`](https://giottosuite.com/dev/reference/runPatternSimulation.md),
+  and SPARK is no longer in Suggests.
+  [`GiottoConnect::runSparkX()`](https://giotto-suite.github.io/GiottoConnect/reference/runSparkX.html)
+  runs SPARK-X, the scalable successor of SPARK.
 - `trendSceek()` is removed, and trendsceek is no longer in Suggests.
   Use [`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md)
   for spatially variable features.
