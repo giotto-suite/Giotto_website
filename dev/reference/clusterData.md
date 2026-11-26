@@ -72,7 +72,7 @@ clusterData(
   ...
 )
 
-# S4 method for class 'igraph,LouvainCommunityClusParam'
+# S4 method for class 'igraph,LouvainIgraphClusParam'
 clusterData(
   x,
   param,

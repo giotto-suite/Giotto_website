@@ -227,7 +227,7 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">clusterCells</span><span class="op">(</span></span>
 <span>  <span class="va">gobject</span>,</span>
-<span>  cluster_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"leiden"</span>, <span class="st">"louvain_community"</span>, <span class="st">"louvain_multinet"</span>, <span class="st">"randomwalk"</span>,</span>
+<span>  cluster_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"leiden"</span>, <span class="st">"louvain_igraph"</span>, <span class="st">"louvain_multinet"</span>, <span class="st">"randomwalk"</span>,</span>
 <span>    <span class="st">"sNNclust"</span>, <span class="st">"kmeans"</span>, <span class="st">"hierarchical"</span><span class="op">)</span>,</span>
 <span>  name <span class="op">=</span> <span class="st">"cluster_name"</span>,</span>
 <span>  nn_network_to_use <span class="op">=</span> <span class="st">"sNN"</span>,</span>
@@ -239,7 +239,7 @@
 <span>  pyth_leid_iterations <span class="op">=</span> <span class="fl">1000</span>,</span>
 <span>  pyth_louv_resolution <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  pyth_louv_weight_col <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  python_louv_random <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  python_louv_random <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  python_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  louvain_gamma <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  louvain_omega <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -317,15 +317,16 @@
 
 
 <dt id="arg-pyth-louv-resolution">pyth_louv_resolution<a class="anchor" aria-label="anchor" href="#arg-pyth-louv-resolution"></a></dt>
-<dd><p>resolution for louvain</p></dd>
+<dd><p>resolution for louvain (igraph)</p></dd>
 
 
 <dt id="arg-pyth-louv-weight-col">pyth_louv_weight_col<a class="anchor" aria-label="anchor" href="#arg-pyth-louv-weight-col"></a></dt>
-<dd><p>python louvain param: weight column</p></dd>
+<dd><p>louvain (igraph) edge attribute with the
+weights; `NULL` gives every edge weight 1</p></dd>
 
 
 <dt id="arg-python-louv-random">python_louv_random<a class="anchor" aria-label="anchor" href="#arg-python-louv-random"></a></dt>
-<dd><p>python louvain param: random</p></dd>
+<dd><p>deprecated</p></dd>
 
 
 <dt id="arg-python-path">python_path<a class="anchor" aria-label="anchor" href="#arg-python-path"></a></dt>
@@ -447,7 +448,6 @@
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="doLeidenCluster.html">doLeidenCluster</a></code>,
-<code><a href="dot-doLouvainCluster_community.html">.doLouvainCluster_community</a></code>,
 <code><a href="dot-doLouvainCluster_multinet.html">.doLouvainCluster_multinet</a></code>,
 <code><a href="doLouvainCluster.html">doLouvainCluster</a></code>, <code><a href="doRandomWalkCluster.html">doRandomWalkCluster</a></code>,
 <code><a href="doSNNCluster.html">doSNNCluster</a></code>,

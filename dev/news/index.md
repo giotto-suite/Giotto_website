@@ -15,18 +15,15 @@ Requires GiottoClass 0.8.0.
   and the `adjust_columns` argument.
   [`GiottoConnect::runMAST()`](https://giotto-suite.github.io/GiottoConnect/reference/runMAST.html)
   gives the same results. MAST is no longer in Suggests.
-
 - `spatialDE()` and `spatialAEH()` are removed, together with the
   `"spatialDE"` method of
   [`runPatternSimulation()`](https://giottosuite.com/dev/reference/runPatternSimulation.md).
   Use [`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md)
   or [`spark()`](https://giottosuite.com/dev/reference/spark.md) for
   spatially variable features.
-
 - `trendSceek()` is removed, and trendsceek is no longer in Suggests.
   Use [`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md)
   for spatially variable features.
-
 - The legacy HMRF workflow is removed: `doHMRF()`, `initHMRF_V2()`,
   `doHMRF_V2()`, `addHMRF()`, `addHMRF_V2()`, `loadHMRF()`,
   `writeHMRFresults()`, `viewHMRFresults()` (and its `_V2`, `2D`, `3D`
@@ -34,42 +31,50 @@ Requires GiottoClass 0.8.0.
   `chooseAvailableSpatialGenes()`, `checkAndFixSpatialGenes()`. Use
   [`runHMRF()`](https://giottosuite.com/dev/reference/runHMRF.md), which
   needs neither Python nor smfishHmrf, graphcoloring or tidygraph.
-
 - `silhouetteRank()` and `silhouetteRankTest()` are retired, with the
   `"silhouetteRank"` method of
   [`runPatternSimulation()`](https://giottosuite.com/dev/reference/runPatternSimulation.md)
   and their Python scripts. Use
   [`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md) for
   spatially variable features.
-
 - [`giottoToAnnData()`](https://giotto-suite.github.io/GiottoConnect/reference/giottoToAnnData.html),
   [`giottoToSpatialExperiment()`](https://giotto-suite.github.io/GiottoConnect/reference/giottoToSpatialExperiment.html)
   and
   [`spatialExperimentToGiotto()`](https://giotto-suite.github.io/GiottoConnect/reference/spatialExperimentToGiotto.html)
   are no longer re-exported; use the GiottoConnect versions.
-
 - `doLeidenClusterPython()`, `LeidenPythonClusParam` and
   `clusterParam("leiden_python")` are removed. Use
   [`doLeidenCluster()`](https://giottosuite.com/dev/reference/doLeidenCluster.md)
   or `clusterParam("leiden_igraph")`; its default `"modularity"`
   objective with `resolution` is leidenalg’s
   `RBConfigurationVertexPartition`.
-
 - `gefToGiotto()` is no longer re-exported (it is removed from
   GiottoClass).
   [`importStereoSeq()`](https://giottosuite.com/dev/reference/importStereoSeq.md)
   reads Stereo-seq GEF files.
-
 - `getGEFtxCoords()` is removed.
   [`importStereoSeq()`](https://giottosuite.com/dev/reference/importStereoSeq.md)
   reads Stereo-seq GEF files.
-
 - `doScrubletDetect()` moves to GiottoConnect as
   [`runScrublet()`](https://giotto-suite.github.io/GiottoConnect/reference/runScrublet.html),
   which gives the same scores (columns `scrublet_score` /
   `scrublet_doublet`) and installs Python’s scrublet with
   [`reticulate::py_require()`](https://rstudio.github.io/reticulate/reference/py_require.html)
   instead of the Giotto conda environment.
+- Louvain clustering runs through igraph
+  ([`igraph::cluster_louvain()`](https://r.igraph.org/reference/cluster_louvain.html))
+  instead of Python’s community module:
+  `doLouvainCluster(version = "igraph")` (the new default),
+  `clusterParam("louvain_igraph")` (`LouvainIgraphClusParam`),
+  `clusterCells(cluster_method = "louvain_igraph")`,
+  `subClusterCells(cluster_method = "louvain_igraph")` and
+  `doLouvainSubCluster(version = "igraph")`. `"community"` /
+  `"louvain_community"`, `LouvainCommunityClusParam` and
+  `inst/python/python_louvain.py` are removed, and `louv_random` is
+  deprecated. Clusters differ from the Python ones;
+  [`doLouvainCluster()`](https://giottosuite.com/dev/reference/doLouvainCluster.md)
+  now sets a seed by default (`set_seed = TRUE`) for reproducible
+  clusters.
 
 ### new
 

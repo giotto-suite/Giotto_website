@@ -12,7 +12,7 @@ specific implementations.
 subClusterCells(
   gobject,
   name = "sub_clus",
-  cluster_method = c("leiden", "louvain_community", "louvain_multinet"),
+  cluster_method = c("leiden", "louvain_igraph", "louvain_multinet"),
   cluster_column = NULL,
   selected_clusters = NULL,
   hvg_param = deprecated(),
@@ -73,7 +73,7 @@ doLeidenSubCluster(
 doLouvainSubCluster(
   gobject,
   name = "sub_louvain_clus",
-  version = c("community", "multinet"),
+  version = c("igraph", "multinet"),
   cluster_column = NULL,
   selected_clusters = NULL,
   hvg_param = deprecated(),
@@ -114,7 +114,7 @@ doLouvainSubCluster(
 - cluster_method:
 
   clustering method to use. Currently one of "leiden" (default),
-  "louvain_community", "louvain_multinet"
+  "louvain_igraph", "louvain_multinet"
 
 - cluster_column:
 
@@ -226,8 +226,8 @@ doLouvainSubCluster(
 
 - version:
 
-  version of Louvain algorithm to use. One of "community" or "multinet",
-  with the default being "community"
+  version of Louvain algorithm to use. One of "igraph" or "multinet",
+  with the default being "igraph"
 
 ## Value
 
@@ -270,7 +270,7 @@ subClusterCells(g, cluster_column = "leiden_clus")
 # use louvain instead
 subClusterCells(g,
     cluster_column = "leiden_clus",
-    cluster_method = "louvain_community"
+    cluster_method = "louvain_igraph"
 )
 
 # directly call the more specific functions

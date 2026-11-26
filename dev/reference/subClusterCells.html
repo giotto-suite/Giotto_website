@@ -240,7 +240,7 @@ specific implementations.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">subClusterCells</span><span class="op">(</span></span>
 <span>  <span class="va">gobject</span>,</span>
 <span>  name <span class="op">=</span> <span class="st">"sub_clus"</span>,</span>
-<span>  cluster_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"leiden"</span>, <span class="st">"louvain_community"</span>, <span class="st">"louvain_multinet"</span><span class="op">)</span>,</span>
+<span>  cluster_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"leiden"</span>, <span class="st">"louvain_igraph"</span>, <span class="st">"louvain_multinet"</span><span class="op">)</span>,</span>
 <span>  cluster_column <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  selected_clusters <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  hvg_param <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
@@ -301,7 +301,7 @@ specific implementations.</p>
 <span><span class="fu">doLouvainSubCluster</span><span class="op">(</span></span>
 <span>  <span class="va">gobject</span>,</span>
 <span>  name <span class="op">=</span> <span class="st">"sub_louvain_clus"</span>,</span>
-<span>  version <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"community"</span>, <span class="st">"multinet"</span><span class="op">)</span>,</span>
+<span>  version <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"igraph"</span>, <span class="st">"multinet"</span><span class="op">)</span>,</span>
 <span>  cluster_column <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  selected_clusters <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  hvg_param <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
@@ -343,7 +343,7 @@ specific implementations.</p>
 
 <dt id="arg-cluster-method">cluster_method<a class="anchor" aria-label="anchor" href="#arg-cluster-method"></a></dt>
 <dd><p>clustering method to use. Currently one of "leiden"
-(default), "louvain_community", "louvain_multinet"</p></dd>
+(default), "louvain_igraph", "louvain_multinet"</p></dd>
 
 
 <dt id="arg-cluster-column">cluster_column<a class="anchor" aria-label="anchor" href="#arg-cluster-column"></a></dt>
@@ -454,8 +454,8 @@ input for PCA</p></dd>
 
 
 <dt id="arg-version">version<a class="anchor" aria-label="anchor" href="#arg-version"></a></dt>
-<dd><p>version of Louvain algorithm to use. One of "community" or
-"multinet", with the default being "community"</p></dd>
+<dd><p>version of Louvain algorithm to use. One of "igraph" or
+"multinet", with the default being "igraph"</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -493,7 +493,7 @@ Louvain algorithm</p></li>
 <span><span class="co"># use louvain instead</span></span>
 <span><span class="fu">subClusterCells</span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    cluster_column <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
-<span>    cluster_method <span class="op">=</span> <span class="st">"louvain_community"</span></span>
+<span>    cluster_method <span class="op">=</span> <span class="st">"louvain_igraph"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># directly call the more specific functions</span></span>

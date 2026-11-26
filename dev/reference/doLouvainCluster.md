@@ -9,7 +9,7 @@ doLouvainCluster(
   gobject,
   spat_unit = NULL,
   feat_type = NULL,
-  version = c("community", "multinet"),
+  version = c("igraph", "multinet"),
   name = "louvain_clus",
   nn_network_to_use = "sNN",
   network_name = "sNN.pca",
@@ -18,9 +18,9 @@ doLouvainCluster(
   weight_col = NULL,
   gamma = 1,
   omega = 1,
-  louv_random = FALSE,
+  louv_random = deprecated(),
   return_gobject = TRUE,
-  set_seed = FALSE,
+  set_seed = TRUE,
   seed_number = 1234,
   ...
 )
@@ -42,7 +42,9 @@ doLouvainCluster(
 
 - version:
 
-  implemented version of Louvain clustering to use
+  implemented version of Louvain clustering to use: \`"igraph"\`
+  (\[igraph::cluster_louvain()\]) or \`"multinet"\` (generalized Louvain
+  of multinet)
 
 - name:
 
@@ -62,27 +64,28 @@ doLouvainCluster(
 
 - resolution:
 
-  \[community\] resolution, default = 1
+  \`\[igraph\]\` resolution, default = 1. Higher values give more,
+  smaller clusters.
 
 - weight_col:
 
-  weight column name
+  \`\[igraph\]\` edge attribute with the weights; \`NULL\` (default)
+  gives every edge weight 1
 
 - gamma:
 
-  \[multinet\] Resolution parameter for modularity in the generalized
-  louvain method, default = 1
+  \`\[multinet\]\` Resolution parameter for modularity in the
+  generalized louvain method, default = 1
 
 - omega:
 
-  \[multinet\] Inter-layer weight parameter in the generalized louvain
-  method, default = 1
+  \`\[multinet\]\` Inter-layer weight parameter in the generalized
+  louvain method, default = 1
 
 - louv_random:
 
-  \[community\] Will randomize the node evaluation order and the
-  community evaluation order to get different partitions at each call
-  (default = FALSE)
+  deprecated: igraph's Louvain visits the vertices in a random order;
+  use \`set_seed\` and \`seed_number\`.
 
 - return_gobject:
 
@@ -90,7 +93,7 @@ doLouvainCluster(
 
 - set_seed:
 
-  set seed (default = FALSE)
+  set seed (default = TRUE)
 
 - seed_number:
 
@@ -98,8 +101,7 @@ doLouvainCluster(
 
 - ...:
 
-  arguments passed to
-  [`.doLouvainCluster_community`](https://giottosuite.com/dev/reference/dot-doLouvainCluster_community.md)
+  not used
 
 ## Value
 
@@ -107,14 +109,10 @@ giotto object with new clusters appended to cell metadata
 
 ## Details
 
-Louvain clustering using the community or multinet implementation of the
-louvain clustering algorithm.
-
-## See also
-
-[`.doLouvainCluster_community`](https://giottosuite.com/dev/reference/dot-doLouvainCluster_community.md)
-and
-[`.doLouvainCluster_multinet`](https://giottosuite.com/dev/reference/dot-doLouvainCluster_multinet.md)
+Louvain clustering using the igraph or multinet implementation of the
+louvain clustering algorithm. See \[LouvainIgraphClusParam-class\] and
+\[LouvainMultinetClusParam-class\] for the \[clusterData()\] params they
+use.
 
 ## Examples
 

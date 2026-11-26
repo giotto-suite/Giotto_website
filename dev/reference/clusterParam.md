@@ -66,8 +66,8 @@ clusterParam(method, ...)
 - [`"leiden_igraph"`](https://giottosuite.com/dev/reference/LeidenIgraphClusParam-class.md) -
   Leiden clustering via igraph
 
-- [`"louvain_community"`](https://giottosuite.com/dev/reference/LouvainCommunityClusParam-class.md) -
-  Louvain clustering with python community
+- [`"louvain_igraph"`](https://giottosuite.com/dev/reference/LouvainIgraphClusParam-class.md) -
+  Louvain clustering via igraph
 
 - [`"louvain_multinet"`](https://giottosuite.com/dev/reference/LouvainMultinetClusParam-class.md) -
   generalized Louvain clustering with multinet

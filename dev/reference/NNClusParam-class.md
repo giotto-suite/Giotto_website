@@ -8,5 +8,5 @@ directly via bluster.
 
 concrete class examples:
 [LeidenIgraphClusParam](https://giottosuite.com/dev/reference/LeidenIgraphClusParam-class.md),
-[LouvainCommunityClusParam](https://giottosuite.com/dev/reference/LouvainCommunityClusParam-class.md),
+[LouvainIgraphClusParam](https://giottosuite.com/dev/reference/LouvainIgraphClusParam-class.md),
 [LouvainMultinetClusParam](https://giottosuite.com/dev/reference/LouvainMultinetClusParam-class.md)
