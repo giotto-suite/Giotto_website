@@ -154,9 +154,7 @@ against 0.0001 in the rest scores exactly as specific as one averaging
 near-noise features as perfectly selective. These two gates supply that
 term. The equivalent for the other methods is `logFC`, which
 [`findScranMarkers_one_vs_all()`](https://giottosuite.com/dev/reference/findScranMarkers_one_vs_all.md)
-and
-[`findMastMarkers_one_vs_all()`](https://giottosuite.com/dev/reference/findMastMarkers_one_vs_all.md)
-filter on directly.
+filters on directly.
 
 `min_expression_gini` and `min_detection_gini` gate the gini
 coefficients themselves, and are off by default. They are best used on a

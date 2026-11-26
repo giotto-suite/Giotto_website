@@ -46,7 +46,7 @@ comparePolygonExpression(
 - method:
 
   method to use to detect differentially expressed feats ("scran",
-  "gini", "mast")
+  "gini")
 
 - ...:
 

@@ -66,9 +66,6 @@ clusterParam(method, ...)
 - [`"leiden_igraph"`](https://giottosuite.com/dev/reference/LeidenIgraphClusParam-class.md) -
   Leiden clustering via igraph
 
-- [`"leiden_python"`](https://giottosuite.com/dev/reference/LeidenPythonClusParam-class.md) -
-  Leiden clustering with python leidenalg
-
 - [`"louvain_community"`](https://giottosuite.com/dev/reference/LouvainCommunityClusParam-class.md) -
   Louvain clustering with python community
 

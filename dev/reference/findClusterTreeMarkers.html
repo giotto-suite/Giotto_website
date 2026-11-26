@@ -239,7 +239,7 @@ clusters on the right.</p>
 <span>  expression_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"normalized"</span>, <span class="st">"scaled"</span>, <span class="st">"custom"</span><span class="op">)</span>,</span>
 <span>  cluster_column <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  view <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"scran"</span>, <span class="st">"gini"</span>, <span class="st">"mast"</span><span class="op">)</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"scran"</span>, <span class="st">"gini"</span><span class="op">)</span>,</span>
 <span>  lfc_cut <span class="op">=</span> <span class="fl">0.25</span>,</span>
 <span>  fdr_cut <span class="op">=</span> <span class="fl">0.01</span>,</span>
 <span>  min_expression <span class="op">=</span> <span class="fl">0.5</span>,</span>
@@ -279,7 +279,7 @@ warning when they differ. `cluster_column` is required for a plain `hclust`.
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
 <dd><p>method used for the comparison at each node. `"scran"` and
-`"gini"` take the pooled route described below; `"mast"` is delegated.</p></dd>
+`"gini"` take the pooled route described below.</p></dd>
 
 
 <dt id="arg-lfc-cut-fdr-cut">lfc_cut, fdr_cut<a class="anchor" aria-label="anchor" href="#arg-lfc-cut-fdr-cut"></a></dt>
@@ -362,12 +362,9 @@ additive across groups:</p>
 <p>| method | accumulators | pooled |
 | — | — | — |
 | `"scran"` (Welch t) | `sum`, `sumsq`, `n` | yes |
-| `"gini"` | `sum`, `nnz`, `n` | yes |
-| `"mast"` | a per-cell model fit | no — one call per node |</p>
+| `"gini"` | `sum`, `nnz`, `n` | yes |</p>
 <p>A statistic needing a global ordering along the feature axis — a rank,
-a median, Wilcoxon — cannot pool either, and would be delegated the same
-way. The choice is made from the method, so nothing is silently
-approximated: a delegated method returns the same numbers, more slowly.</p>
+a median, Wilcoxon — cannot be pooled this way.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

@@ -231,7 +231,7 @@
 <span>  feat_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  expression_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"normalized"</span>, <span class="st">"scaled"</span>, <span class="st">"custom"</span><span class="op">)</span>,</span>
 <span>  cluster_column <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"scran"</span>, <span class="st">"gini"</span>, <span class="st">"mast"</span><span class="op">)</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"scran"</span>, <span class="st">"gini"</span><span class="op">)</span>,</span>
 <span>  subset_clusters <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  group_1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  group_2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -246,7 +246,6 @@
 <span>  min_genes <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  group_1_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  group_2_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  adjust_columns <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  min_expr_gini_score <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  min_det_gini_score <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -340,16 +339,11 @@ rank for both `expression` and `detection` (rank 1 = highest). `Inf`
 
 
 <dt id="arg-group-name">group_1_name<a class="anchor" aria-label="anchor" href="#arg-group-name"></a></dt>
-<dd><p>mast: custom name for group_1 clusters</p></dd>
+<dd><p>custom name for group_1 clusters</p></dd>
 
 
 <dt id="arg-group-name">group_2_name<a class="anchor" aria-label="anchor" href="#arg-group-name"></a></dt>
-<dd><p>mast: custom name for group_2 clusters</p></dd>
-
-
-<dt id="arg-adjust-columns">adjust_columns<a class="anchor" aria-label="anchor" href="#arg-adjust-columns"></a></dt>
-<dd><p>mast: column in pDataDT to adjust for
-(e.g. detection rate)</p></dd>
+<dd><p>custom name for group_2 clusters</p></dd>
 
 
 <dt id="arg-min-expr-gini-score">min_expr_gini_score<a class="anchor" aria-label="anchor" href="#arg-min-expr-gini-score"></a></dt>
@@ -363,8 +357,7 @@ rank for both `expression` and `detection` (rank 1 = highest). `Inf`
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>additional parameters for the findMarkers function in scran or
-zlm function in MAST</p></dd>
+<dd><p>additional parameters for the findMarkers function in scran</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -374,12 +367,11 @@ zlm function in MAST</p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Wrapper for all individual functions to detect marker feats for
-clusters.</p>
+clusters. MAST is in GiottoConnect (`GiottoConnect::runMAST()`).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="findScranMarkers.html">findScranMarkers</a></code>, <code><a href="findGiniMarkers.html">findGiniMarkers</a></code> and
-<code><a href="findMastMarkers.html">findMastMarkers</a></code></p></div>
+    <div class="dont-index"><p><code><a href="findScranMarkers.html">findScranMarkers</a></code> and <code><a href="findGiniMarkers.html">findGiniMarkers</a></code></p></div>
     </div>
 
     <div class="section level2">

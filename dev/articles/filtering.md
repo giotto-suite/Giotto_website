@@ -311,7 +311,7 @@ fDataDT(out) # display feature metadata
 Depending on the type of data you have, there are many other quality
 metrics that can be used to filter. For single cell RNA-seq data, for
 example, you could find the doublet score (e.g. via
-[`doScrubletDetect()`](https://giottosuite.com/dev/reference/doScrubletDetect.md))
+[`GiottoConnect::runScrublet()`](https://giotto-suite.github.io/GiottoConnect/reference/runScrublet.html))
 and perform a filter based on the score value. You could calculate a
 mitochondrial gene percentage calculation and remove cells with
 percentages that are deemed too high.

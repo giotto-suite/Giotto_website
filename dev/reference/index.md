@@ -70,8 +70,6 @@ Functions to help to import raw spatial data.
   : readPolygonFilesVizgenHDF5
 - [`readPolygonVizgenParquet()`](https://giottosuite.com/dev/reference/readPolygonVizgenParquet.md)
   : Read MERSCOPE polygons from parquet
-- [`getGEFtxCoords()`](https://giottosuite.com/dev/reference/getGEFtxCoords.md)
-  : getGEFtxCoords
 
 ## Images
 
@@ -536,8 +534,6 @@ Functions to cluster cells.
 - [`doLeidenClusterIgraph()`](https://giottosuite.com/dev/reference/doLeidenCluster.md)
   [`doLeidenCluster()`](https://giottosuite.com/dev/reference/doLeidenCluster.md)
   : doLeidenCluster
-- [`doLeidenClusterPython()`](https://giottosuite.com/dev/reference/doLeidenClusterPython.md)
-  : doLeidenClusterPython
 - [`doLouvainCluster()`](https://giottosuite.com/dev/reference/doLouvainCluster.md)
   : doLouvainCluster
 - [`doKmeans()`](https://giottosuite.com/dev/reference/doKmeans.md) :
@@ -576,9 +572,6 @@ Functions to cluster cells.
 - [`LeidenIgraphClusParam-class`](https://giottosuite.com/dev/reference/LeidenIgraphClusParam-class.md)
   [`LeidenIgraphClusParam`](https://giottosuite.com/dev/reference/LeidenIgraphClusParam-class.md)
   : Leiden Clustering
-- [`LeidenPythonClusParam-class`](https://giottosuite.com/dev/reference/LeidenPythonClusParam-class.md)
-  [`LeidenPythonClusParam`](https://giottosuite.com/dev/reference/LeidenPythonClusParam-class.md)
-  : Leiden Clustering
 - [`LouvainCommunityClusParam-class`](https://giottosuite.com/dev/reference/LouvainCommunityClusParam-class.md)
   [`LouvainCommunityClusParam`](https://giottosuite.com/dev/reference/LouvainCommunityClusParam-class.md)
   : Louvain Clustering
@@ -596,7 +589,6 @@ Functions to cluster cells.
   [`clusterData(`*`<nnNetObj>`*`,`*`<NNClusParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
   [`clusterData(`*`<igraph>`*`,`*`<LouvainCommunityClusParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
   [`clusterData(`*`<igraph>`*`,`*`<LouvainMultinetClusParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
-  [`clusterData(`*`<igraph>`*`,`*`<LeidenPythonClusParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
   [`clusterData(`*`<igraph>`*`,`*`<LeidenIgraphClusParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
   [`clusterData(`*`<gAny>`*`,`*`<BlusterParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
   [`clusterData(`*`<gAny>`*`,`*`<NNClusParam>`*`)`](https://giottosuite.com/dev/reference/clusterData.md)
@@ -620,10 +612,8 @@ Functions to detect cell type / cluster specific marker genes.
   : findScranMarkers
 - [`findScranMarkers_one_vs_all()`](https://giottosuite.com/dev/reference/findScranMarkers_one_vs_all.md)
   : findScranMarkers_one_vs_all
-- [`findMastMarkers()`](https://giottosuite.com/dev/reference/findMastMarkers.md)
-  : findMastMarkers
-- [`findMastMarkers_one_vs_all()`](https://giottosuite.com/dev/reference/findMastMarkers_one_vs_all.md)
-  : findMastMarkers_one_vs_all
+- [`runMAST()`](https://giotto-suite.github.io/GiottoConnect/reference/runMAST.html)
+  : Run MAST differential expression (from GiottoConnect)
 - [`analyzeData(`*`<ANY>`*`,`*`<giniMarkersParam>`*`)`](https://giottosuite.com/dev/reference/markers_gini.md)
   : Specificity Marker Detection (gini)
 - [`analyzeData(`*`<matrix>`*`,`*`<scranMarkersParam>`*`)`](https://giottosuite.com/dev/reference/markers_scran.md)
@@ -665,10 +655,6 @@ matrix.
   : Gene Set Enrichment Analysis via the external GSEA tool
 - [`selectPatternGenes()`](https://giottosuite.com/dev/reference/selectPatternGenes.md)
   : selectPatternGenes
-- [`silhouetteRank()`](https://giottosuite.com/dev/reference/silhouetteRank.md)
-  : silhouetteRank
-- [`silhouetteRankTest()`](https://giottosuite.com/dev/reference/silhouetteRankTest.md)
-  : silhouetteRankTest
 
 ## Spatial Deconvolution
 
@@ -747,8 +733,6 @@ Methods to detect spatially coherent expression patterns.
   : binSpect
 - [`binSpectMultiMatrix()`](https://giottosuite.com/dev/reference/binSpectMultiMatrix.md)
   : binSpectMultiMatrix
-- [`trendSceek()`](https://giottosuite.com/dev/reference/trendSceek.md)
-  : trendSceek
 - [`spark()`](https://giottosuite.com/dev/reference/spark.md) : spark
 
 ## Simulate Spatial Expression Patterns
@@ -1153,8 +1137,8 @@ Function to segment cells in-tissue.
 
 Function to detect doublets in raw expression data.
 
-- [`doScrubletDetect()`](https://giottosuite.com/dev/reference/doScrubletDetect.md)
-  : doScrubletDetect
+- [`runScrublet()`](https://giotto-suite.github.io/GiottoConnect/reference/runScrublet.html)
+  : Run Scrublet doublet detection (from GiottoConnect)
 
 ## Interactive Visualizations
 

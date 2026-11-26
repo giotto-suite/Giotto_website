@@ -15,7 +15,7 @@ findClusterTreeMarkers(
   expression_values = c("normalized", "scaled", "custom"),
   cluster_column = NULL,
   view = NULL,
-  method = c("scran", "gini", "mast"),
+  method = c("scran", "gini"),
   lfc_cut = 0.25,
   fdr_cut = 0.01,
   min_expression = 0.5,
@@ -54,8 +54,7 @@ findClusterTreeMarkers(
 - method:
 
   method used for the comparison at each node. \`"scran"\` and
-  \`"gini"\` take the pooled route described below; \`"mast"\` is
-  delegated.
+  \`"gini"\` take the pooled route described below.
 
 - lfc_cut, fdr_cut:
 
@@ -138,13 +137,10 @@ accumulators that are additive across groups:
 
 \| method \| accumulators \| pooled \| \| — \| — \| — \| \| \`"scran"\`
 (Welch t) \| \`sum\`, \`sumsq\`, \`n\` \| yes \| \| \`"gini"\` \|
-\`sum\`, \`nnz\`, \`n\` \| yes \| \| \`"mast"\` \| a per-cell model fit
-\| no — one call per node \|
+\`sum\`, \`nnz\`, \`n\` \| yes \|
 
 A statistic needing a global ordering along the feature axis — a rank, a
-median, Wilcoxon — cannot pool either, and would be delegated the same
-way. The choice is made from the method, so nothing is silently
-approximated: a delegated method returns the same numbers, more slowly.
+median, Wilcoxon — cannot be pooled this way.
 
 ## See also
 

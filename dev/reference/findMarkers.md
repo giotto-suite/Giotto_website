@@ -11,7 +11,7 @@ findMarkers(
   feat_type = NULL,
   expression_values = c("normalized", "scaled", "custom"),
   cluster_column = NULL,
-  method = c("scran", "gini", "mast"),
+  method = c("scran", "gini"),
   subset_clusters = NULL,
   group_1 = NULL,
   group_2 = NULL,
@@ -26,7 +26,6 @@ findMarkers(
   min_genes = NULL,
   group_1_name = NULL,
   group_2_name = NULL,
-  adjust_columns = NULL,
   min_expr_gini_score = deprecated(),
   min_det_gini_score = deprecated(),
   ...
@@ -117,15 +116,11 @@ findMarkers(
 
 - group_1_name:
 
-  mast: custom name for group_1 clusters
+  custom name for group_1 clusters
 
 - group_2_name:
 
-  mast: custom name for group_2 clusters
-
-- adjust_columns:
-
-  mast: column in pDataDT to adjust for (e.g. detection rate)
+  custom name for group_2 clusters
 
 - min_expr_gini_score:
 
@@ -139,8 +134,7 @@ findMarkers(
 
 - ...:
 
-  additional parameters for the findMarkers function in scran or zlm
-  function in MAST
+  additional parameters for the findMarkers function in scran
 
 ## Value
 
@@ -149,14 +143,13 @@ data.table with marker feats
 ## Details
 
 Wrapper for all individual functions to detect marker feats for
-clusters.
+clusters. MAST is in GiottoConnect (\`GiottoConnect::runMAST()\`).
 
 ## See also
 
-[`findScranMarkers`](https://giottosuite.com/dev/reference/findScranMarkers.md),
-[`findGiniMarkers`](https://giottosuite.com/dev/reference/findGiniMarkers.md)
+[`findScranMarkers`](https://giottosuite.com/dev/reference/findScranMarkers.md)
 and
-[`findMastMarkers`](https://giottosuite.com/dev/reference/findMastMarkers.md)
+[`findGiniMarkers`](https://giottosuite.com/dev/reference/findGiniMarkers.md)
 
 ## Examples
 

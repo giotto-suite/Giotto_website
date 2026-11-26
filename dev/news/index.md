@@ -6,12 +6,27 @@ Requires GiottoClass 0.8.0.
 
 ### breaking changes
 
+- MAST moves to GiottoConnect: `findMastMarkers()` and
+  `findMastMarkers_one_vs_all()` are removed, with `method = "mast"` of
+  [`findMarkers()`](https://giottosuite.com/dev/reference/findMarkers.md),
+  [`findMarkers_one_vs_all()`](https://giottosuite.com/dev/reference/findMarkers_one_vs_all.md)
+  and
+  [`findClusterTreeMarkers()`](https://giottosuite.com/dev/reference/findClusterTreeMarkers.md)
+  and the `adjust_columns` argument.
+  [`GiottoConnect::runMAST()`](https://giotto-suite.github.io/GiottoConnect/reference/runMAST.html)
+  gives the same results. MAST is no longer in Suggests.
+
 - `spatialDE()` and `spatialAEH()` are removed, together with the
   `"spatialDE"` method of
   [`runPatternSimulation()`](https://giottosuite.com/dev/reference/runPatternSimulation.md).
   Use [`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md)
   or [`spark()`](https://giottosuite.com/dev/reference/spark.md) for
   spatially variable features.
+
+- `trendSceek()` is removed, and trendsceek is no longer in Suggests.
+  Use [`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md)
+  for spatially variable features.
+
 - The legacy HMRF workflow is removed: `doHMRF()`, `initHMRF_V2()`,
   `doHMRF_V2()`, `addHMRF()`, `addHMRF_V2()`, `loadHMRF()`,
   `writeHMRFresults()`, `viewHMRFresults()` (and its `_V2`, `2D`, `3D`
@@ -19,15 +34,42 @@ Requires GiottoClass 0.8.0.
   `chooseAvailableSpatialGenes()`, `checkAndFixSpatialGenes()`. Use
   [`runHMRF()`](https://giottosuite.com/dev/reference/runHMRF.md), which
   needs neither Python nor smfishHmrf, graphcoloring or tidygraph.
+
+- `silhouetteRank()` and `silhouetteRankTest()` are retired, with the
+  `"silhouetteRank"` method of
+  [`runPatternSimulation()`](https://giottosuite.com/dev/reference/runPatternSimulation.md)
+  and their Python scripts. Use
+  [`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md) for
+  spatially variable features.
+
 - [`giottoToAnnData()`](https://giotto-suite.github.io/GiottoConnect/reference/giottoToAnnData.html),
   [`giottoToSpatialExperiment()`](https://giotto-suite.github.io/GiottoConnect/reference/giottoToSpatialExperiment.html)
   and
   [`spatialExperimentToGiotto()`](https://giotto-suite.github.io/GiottoConnect/reference/spatialExperimentToGiotto.html)
   are no longer re-exported; use the GiottoConnect versions.
+
+- `doLeidenClusterPython()`, `LeidenPythonClusParam` and
+  `clusterParam("leiden_python")` are removed. Use
+  [`doLeidenCluster()`](https://giottosuite.com/dev/reference/doLeidenCluster.md)
+  or `clusterParam("leiden_igraph")`; its default `"modularity"`
+  objective with `resolution` is leidenalg’s
+  `RBConfigurationVertexPartition`.
+
 - `gefToGiotto()` is no longer re-exported (it is removed from
   GiottoClass).
   [`importStereoSeq()`](https://giottosuite.com/dev/reference/importStereoSeq.md)
   reads Stereo-seq GEF files.
+
+- `getGEFtxCoords()` is removed.
+  [`importStereoSeq()`](https://giottosuite.com/dev/reference/importStereoSeq.md)
+  reads Stereo-seq GEF files.
+
+- `doScrubletDetect()` moves to GiottoConnect as
+  [`runScrublet()`](https://giotto-suite.github.io/GiottoConnect/reference/runScrublet.html),
+  which gives the same scores (columns `scrublet_score` /
+  `scrublet_doublet`) and installs Python’s scrublet with
+  [`reticulate::py_require()`](https://rstudio.github.io/reticulate/reference/py_require.html)
+  instead of the Giotto conda environment.
 
 ### new
 
@@ -1232,7 +1274,7 @@ too, and will ship from there under that version.
 - All Leiden entry points now default to `n_iterations = 20`:
   [`doLeidenCluster()`](https://giottosuite.com/dev/reference/doLeidenCluster.md),
   [`doLeidenClusterIgraph()`](https://giottosuite.com/dev/reference/doLeidenCluster.md),
-  [`doLeidenClusterPython()`](https://giottosuite.com/dev/reference/doLeidenClusterPython.md),
+  `doLeidenClusterPython()`,
   [`subClusterCells()`](https://giottosuite.com/dev/reference/subClusterCells.md)
   (was `1000`) and
   [`doLeidenSubCluster()`](https://giottosuite.com/dev/reference/subClusterCells.md)
@@ -1520,8 +1562,7 @@ too, and will ship from there under that version.
   [`importVisiumHD()`](https://giottosuite.com/dev/reference/importVisiumHD.md)
 - [`doLeidenCluster()`](https://giottosuite.com/dev/reference/doLeidenCluster.md)
   now uses the {igraph} method by default. Original python
-  implementation still accessible as
-  [`doLeidenClusterPython()`](https://giottosuite.com/dev/reference/doLeidenClusterPython.md)
+  implementation still accessible as `doLeidenClusterPython()`
 - Log normalization restricted to `log1p` for sparse-like matrices
   (`dgCMatrix`, `dbSparseMatrix`, `IterableMatrix`) to prevent OOM
   sparse-\>dense conversion
@@ -1681,8 +1722,7 @@ too, and will ship from there under that version.
 
 ### Bug fixes
 
-- [`doScrubletDetect()`](https://giottosuite.com/dev/reference/doScrubletDetect.md)
-  seed setting
+- `doScrubletDetect()` seed setting
 
 ### Enhancements
 
@@ -1977,7 +2017,7 @@ too, and will ship from there under that version.
 - Fix metadata appending/sorting issues introduced by *GiottoClass
   v0.1.3* (2024/01/12). Affected functions: `addHMRF()`,
   [`addFeatsPerc()`](https://giottosuite.com/dev/reference/addFeatsPerc.md),
-  [`doScrubletDetect()`](https://giottosuite.com/dev/reference/doScrubletDetect.md)
+  `doScrubletDetect()`
 - [`findNetworkNeighbors()`](https://giottosuite.com/dev/reference/findNetworkNeighbors.md)
   now has default `spatial_network_name` value of `NULL`
 - [`get10Xmatrix()`](https://giottosuite.com/dev/reference/get10Xmatrix.md)
@@ -1996,7 +2036,7 @@ too, and will ship from there under that version.
 
 - Use `mixedsort()` for unique clusters metadata info
 - Remove unnecessary matrix densification and expose `seed` param in
-  [`doScrubletDetect()`](https://giottosuite.com/dev/reference/doScrubletDetect.md)
+  `doScrubletDetect()`
 - Remove unnecessary matrix densification in
   [`makeSignMatrixRank()`](https://giottosuite.com/dev/reference/makeSignMatrixRank.md)
 

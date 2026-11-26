@@ -90,15 +90,6 @@ clusterData(
   output = c("data.table", "factor")
 )
 
-# S4 method for class 'igraph,LeidenPythonClusParam'
-clusterData(
-  x,
-  param,
-  set_seed = TRUE,
-  seed_number = 1234,
-  output = c("data.table", "factor")
-)
-
 # S4 method for class 'igraph,LeidenIgraphClusParam'
 clusterData(
   x,

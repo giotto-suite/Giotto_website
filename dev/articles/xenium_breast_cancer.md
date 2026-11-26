@@ -991,15 +991,16 @@ ggplot(spatValues(sc, feats = "mito"), aes(x = "cells", y = mito)) + geom_violin
 ``` r
 
 # doublets removal
-sc <- doScrubletDetect(sc, return_gobject = TRUE, seed = 0)
-ggplot(spatValues(sc, feats = "doublet_scores"), aes(x = "cells", y = doublet_scores)) + geom_violin()
+sc <- GiottoConnect::runScrublet(sc,
+    param = GiottoConnect::scrubletParam(seed = 0))
+ggplot(spatValues(sc, feats = "scrublet_score"), aes(x = "cells", y = scrublet_score)) + geom_violin()
 ```
 
 ![](images/janesick_sc/3_doublet.png)
 
 ``` r
 
-sc <- subset(sc, subset = doublet == FALSE) # remove 130 cells
+sc <- subset(sc, subset = scrublet_doublet == FALSE) # remove 130 cells
 ```
 
 **Process Data**

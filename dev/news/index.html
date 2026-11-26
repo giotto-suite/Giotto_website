@@ -223,13 +223,16 @@
 <p>Requires GiottoClass 0.8.0.</p>
 <div class="section level3">
 <h3 id="breaking-changes-4-3-7">breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-4-3-7"></a></h3>
-<ul><li>
-<code>spatialDE()</code> and <code>spatialAEH()</code> are removed, together with the <code>"spatialDE"</code> method of <code><a href="../reference/runPatternSimulation.html">runPatternSimulation()</a></code>. Use <code><a href="../reference/binSpect.html">binSpect()</a></code> or <code><a href="../reference/spark.html">spark()</a></code> for spatially variable features.</li>
-<li>The legacy HMRF workflow is removed: <code>doHMRF()</code>, <code>initHMRF_V2()</code>, <code>doHMRF_V2()</code>, <code>addHMRF()</code>, <code>addHMRF_V2()</code>, <code>loadHMRF()</code>, <code>writeHMRFresults()</code>, <code>viewHMRFresults()</code> (and its <code>_V2</code>, <code>2D</code>, <code>3D</code> variants) and the spatial gene selectors <code>filterSpatialGenes()</code>, <code>chooseAvailableSpatialGenes()</code>, <code>checkAndFixSpatialGenes()</code>. Use <code><a href="../reference/runHMRF.html">runHMRF()</a></code>, which needs neither Python nor smfishHmrf, graphcoloring or tidygraph.</li>
-<li>
-<code><a href="https://giotto-suite.github.io/GiottoConnect/reference/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code>, <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/giottoToSpatialExperiment.html" class="external-link">giottoToSpatialExperiment()</a></code> and <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/spatialExperimentToGiotto.html" class="external-link">spatialExperimentToGiotto()</a></code> are no longer re-exported; use the GiottoConnect versions.</li>
-<li>
-<code>gefToGiotto()</code> is no longer re-exported (it is removed from GiottoClass). <code><a href="../reference/importStereoSeq.html">importStereoSeq()</a></code> reads Stereo-seq GEF files.</li>
+<ul><li><p>MAST moves to GiottoConnect: <code>findMastMarkers()</code> and <code>findMastMarkers_one_vs_all()</code> are removed, with <code>method = "mast"</code> of <code><a href="../reference/findMarkers.html">findMarkers()</a></code>, <code><a href="../reference/findMarkers_one_vs_all.html">findMarkers_one_vs_all()</a></code> and <code><a href="../reference/findClusterTreeMarkers.html">findClusterTreeMarkers()</a></code> and the <code>adjust_columns</code> argument. <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/runMAST.html" class="external-link">GiottoConnect::runMAST()</a></code> gives the same results. MAST is no longer in Suggests.</p></li>
+<li><p><code>spatialDE()</code> and <code>spatialAEH()</code> are removed, together with the <code>"spatialDE"</code> method of <code><a href="../reference/runPatternSimulation.html">runPatternSimulation()</a></code>. Use <code><a href="../reference/binSpect.html">binSpect()</a></code> or <code><a href="../reference/spark.html">spark()</a></code> for spatially variable features.</p></li>
+<li><p><code>trendSceek()</code> is removed, and trendsceek is no longer in Suggests. Use <code><a href="../reference/binSpect.html">binSpect()</a></code> for spatially variable features.</p></li>
+<li><p>The legacy HMRF workflow is removed: <code>doHMRF()</code>, <code>initHMRF_V2()</code>, <code>doHMRF_V2()</code>, <code>addHMRF()</code>, <code>addHMRF_V2()</code>, <code>loadHMRF()</code>, <code>writeHMRFresults()</code>, <code>viewHMRFresults()</code> (and its <code>_V2</code>, <code>2D</code>, <code>3D</code> variants) and the spatial gene selectors <code>filterSpatialGenes()</code>, <code>chooseAvailableSpatialGenes()</code>, <code>checkAndFixSpatialGenes()</code>. Use <code><a href="../reference/runHMRF.html">runHMRF()</a></code>, which needs neither Python nor smfishHmrf, graphcoloring or tidygraph.</p></li>
+<li><p><code>silhouetteRank()</code> and <code>silhouetteRankTest()</code> are retired, with the <code>"silhouetteRank"</code> method of <code><a href="../reference/runPatternSimulation.html">runPatternSimulation()</a></code> and their Python scripts. Use <code><a href="../reference/binSpect.html">binSpect()</a></code> for spatially variable features.</p></li>
+<li><p><code><a href="https://giotto-suite.github.io/GiottoConnect/reference/giottoToAnnData.html" class="external-link">giottoToAnnData()</a></code>, <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/giottoToSpatialExperiment.html" class="external-link">giottoToSpatialExperiment()</a></code> and <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/spatialExperimentToGiotto.html" class="external-link">spatialExperimentToGiotto()</a></code> are no longer re-exported; use the GiottoConnect versions.</p></li>
+<li><p><code>doLeidenClusterPython()</code>, <code>LeidenPythonClusParam</code> and <code>clusterParam("leiden_python")</code> are removed. Use <code><a href="../reference/doLeidenCluster.html">doLeidenCluster()</a></code> or <code>clusterParam("leiden_igraph")</code>; its default <code>"modularity"</code> objective with <code>resolution</code> is leidenalg’s <code>RBConfigurationVertexPartition</code>.</p></li>
+<li><p><code>gefToGiotto()</code> is no longer re-exported (it is removed from GiottoClass). <code><a href="../reference/importStereoSeq.html">importStereoSeq()</a></code> reads Stereo-seq GEF files.</p></li>
+<li><p><code>getGEFtxCoords()</code> is removed. <code><a href="../reference/importStereoSeq.html">importStereoSeq()</a></code> reads Stereo-seq GEF files.</p></li>
+<li><p><code>doScrubletDetect()</code> moves to GiottoConnect as <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/runScrublet.html" class="external-link">runScrublet()</a></code>, which gives the same scores (columns <code>scrublet_score</code> / <code>scrublet_doublet</code>) and installs Python’s scrublet with <code><a href="https://rstudio.github.io/reticulate/reference/py_require.html" class="external-link">reticulate::py_require()</a></code> instead of the Giotto conda environment.</p></li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-4-3-7">new<a class="anchor" aria-label="anchor" href="#new-4-3-7"></a></h3>
@@ -601,7 +604,7 @@
 <code>calculateHVF(method = "var_p_resid")</code> selection defaults change to <code>n_top_feats = 2000</code> (was no count) and <code>var_threshold = 1</code> (was <code>1.5</code>), and the two are now applied <strong>together</strong> rather than the count overriding the threshold. The more restrictive constraint decides; passing <code>NULL</code> to either falls back to the other. The old defaults selected on variance alone at a cut that sits essentially at the median of the corrected distribution — measured 1.496 on a Stereo-seq cellbin sample, where <code>1.5</code> took 9,696 of 19,558 features. <code>var_threshold = 1</code> is now a noise floor (under Pearson residuals variance 1 is the no-signal expectation) rather than a selector, and <code>var_number</code> sets the size. On a targeted panel, where <code>var_number</code> cannot bind — Xenium’s 528 features — the floor is what applies, keeping the 433 above noise.</li>
 <li>
 <code><a href="../reference/findScranMarkers_one_vs_all.html">findScranMarkers_one_vs_all()</a></code>’s <code>logFC</code> threshold now takes effect. The filter read <code>logFC &gt;= logFC</code>, where both sides resolved to the result column rather than the argument, so the comparison was always <code>TRUE</code> and the threshold was silently ignored — features were kept on <code>pval</code> and <code>min_feats</code> alone. <strong>Fewer features will be returned than in previous releases</strong>; pass <code>logFC = -Inf</code> to restore the old behaviour exactly (<code>logFC = 0</code> is <em>not</em> equivalent — it still drops down-regulated features, which the broken comparison kept).</li>
-<li>All Leiden entry points now default to <code>n_iterations = 20</code>: <code><a href="../reference/doLeidenCluster.html">doLeidenCluster()</a></code>, <code><a href="../reference/doLeidenCluster.html">doLeidenClusterIgraph()</a></code>, <code><a href="../reference/doLeidenClusterPython.html">doLeidenClusterPython()</a></code>, <code><a href="../reference/subClusterCells.html">subClusterCells()</a></code> (was <code>1000</code>) and <code><a href="../reference/subClusterCells.html">doLeidenSubCluster()</a></code> (was <code>500</code>). Measured ARI 0.97 against the 1000-iteration partition on a 159k-cell Xenium dataset, at ~50x the speed. <strong>Cluster IDs will differ from previous releases</strong>; pass <code>n_iterations = 1000</code> to restore the old behaviour.</li>
+<li>All Leiden entry points now default to <code>n_iterations = 20</code>: <code><a href="../reference/doLeidenCluster.html">doLeidenCluster()</a></code>, <code><a href="../reference/doLeidenCluster.html">doLeidenClusterIgraph()</a></code>, <code>doLeidenClusterPython()</code>, <code><a href="../reference/subClusterCells.html">subClusterCells()</a></code> (was <code>1000</code>) and <code><a href="../reference/subClusterCells.html">doLeidenSubCluster()</a></code> (was <code>500</code>). Measured ARI 0.97 against the 1000-iteration partition on a 159k-cell Xenium dataset, at ~50x the speed. <strong>Cluster IDs will differ from previous releases</strong>; pass <code>n_iterations = 1000</code> to restore the old behaviour.</li>
 <li>
 <code><a href="../reference/runUMAP.html">runUMAP()</a></code> gained size-adaptive <code>n_epochs</code> and <code>init</code>, both now defaulting to <code>NULL</code>. Above 50,000 observations they resolve to <code>200</code> and <code>"pca"</code>; below it to uwot’s own <code>n_epochs</code> default and <code>"spectral"</code>. A PCA init benchmarked both tighter and faster than a random or spectral init at that scale. Passing either explicitly overrides the adaptation. <code>n_epochs</code> was previously a fixed <code>400</code>. <strong>Embeddings above 50,000 observations will differ from previous releases.</strong> <code><a href="../reference/runUMAPprojection.html">runUMAPprojection()</a></code> and <code><a href="../reference/runIntegratedUMAP.html">runIntegratedUMAP()</a></code> are unchanged and still use <code>spread = 5, min_dist = 0.01</code>.</li>
 <li>
@@ -672,7 +675,7 @@
 <li>breaking changes to <code><a href="../reference/importVisiumHD.html">importVisiumHD()</a></code>
 </li>
 <li>
-<code><a href="../reference/doLeidenCluster.html">doLeidenCluster()</a></code> now uses the {igraph} method by default. Original python implementation still accessible as <code><a href="../reference/doLeidenClusterPython.html">doLeidenClusterPython()</a></code>
+<code><a href="../reference/doLeidenCluster.html">doLeidenCluster()</a></code> now uses the {igraph} method by default. Original python implementation still accessible as <code>doLeidenClusterPython()</code>
 </li>
 <li>Log normalization restricted to <code>log1p</code> for sparse-like matrices (<code>dgCMatrix</code>, <code>dbSparseMatrix</code>, <code>IterableMatrix</code>) to prevent OOM sparse-&gt;dense conversion</li>
 </ul></div>
@@ -801,7 +804,7 @@
 <div class="section level3">
 <h3 id="bug-fixes-4-1-6">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-4-1-6"></a></h3>
 <ul><li>
-<code><a href="../reference/doScrubletDetect.html">doScrubletDetect()</a></code> seed setting</li>
+<code>doScrubletDetect()</code> seed setting</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-4-1-6">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-4-1-6"></a></h3>
@@ -1037,7 +1040,7 @@
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-4-0-4">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-4-0-4"></a></h3>
-<ul><li>Fix metadata appending/sorting issues introduced by <em>GiottoClass v0.1.3</em> (2024/01/12). Affected functions: <code>addHMRF()</code>, <code><a href="../reference/addFeatsPerc.html">addFeatsPerc()</a></code>, <code><a href="../reference/doScrubletDetect.html">doScrubletDetect()</a></code>
+<ul><li>Fix metadata appending/sorting issues introduced by <em>GiottoClass v0.1.3</em> (2024/01/12). Affected functions: <code>addHMRF()</code>, <code><a href="../reference/addFeatsPerc.html">addFeatsPerc()</a></code>, <code>doScrubletDetect()</code>
 </li>
 <li>
 <code><a href="../reference/findNetworkNeighbors.html">findNetworkNeighbors()</a></code> now has default <code>spatial_network_name</code> value of <code>NULL</code>
@@ -1058,7 +1061,7 @@
 <div class="section level3">
 <h3 id="enhancements-4-0-4">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-4-0-4"></a></h3>
 <ul><li>Use <code>mixedsort()</code> for unique clusters metadata info</li>
-<li>Remove unnecessary matrix densification and expose <code>seed</code> param in <code><a href="../reference/doScrubletDetect.html">doScrubletDetect()</a></code>
+<li>Remove unnecessary matrix densification and expose <code>seed</code> param in <code>doScrubletDetect()</code>
 </li>
 <li>Remove unnecessary matrix densification in <code><a href="../reference/makeSignMatrixRank.html">makeSignMatrixRank()</a></code>
 </li>
