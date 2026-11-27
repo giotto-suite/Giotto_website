@@ -3,7 +3,7 @@
 ## 1 Dataset explanation
 
 The CODEX data to run this tutorial can be found
-[here](https://github.com/giotto-suite/spatial-datasets/tree/master/data/2018_codex_spleen).
+[here](https://github.com/drieslab/spatial-datasets/tree/master/data/2018_codex_spleen).
 Alternatively you can use **GiottoData::getSpatialDataset** to
 automatically download this dataset like we do in this example.
 
@@ -27,13 +27,6 @@ if(!"Giotto" %in% installed.packages()) {
 if(!"GiottoData" %in% installed.packages()) {
   pak::pkg_install("giotto-suite/GiottoData")
 }
-
-# Ensure the Python environment for Giotto has been installed.
-genv_exists <- Giotto::checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment.
-  Giotto::installGiottoEnvironment()
-}
 ```
 
 ## 3 Giotto global instructions and preparations
@@ -49,7 +42,6 @@ results_folder <- "/path/to/results/"
 # Optional: Specify a path to a Python executable within a conda or miniconda 
 # environment. If set to NULL (default), the Python executable within the previously
 # installed Giotto environment will be used.
-python_path <- NULL # alternatively, "/local/python/path/python" if desired.
 ```
 
 ``` r
@@ -63,12 +55,12 @@ getSpatialDataset(dataset = "codex_spleen",
 ```
 
 ``` r
+
 # 1. (optional) set Giotto instructions
 instructions <- createGiottoInstructions(save_plot = TRUE,
                                          show_plot = FALSE,
-                                         return_plot = FALSE
-                                         save_dir = results_folder,
-                                         python_path = python_path)
+                                         return_plot = FALSE,
+                                         save_dir = results_folder)
 
 # 2. create giotto object from provided paths ####
 expr_path <- paste0(results_folder, "codex_BALBc_3_expression.txt.gz")

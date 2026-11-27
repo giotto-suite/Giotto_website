@@ -13,13 +13,6 @@ if (!"Giotto" %in% installed.packages()) {
 if (!"GiottoData" %in% installed.packages()) {
     pak::pkg_install("giotto-suite/GiottoData")
 }
-
-# Ensure the Python environment for Giotto has been installed.
-genv_exists <- Giotto::checkGiottoEnvironment()
-if (!genv_exists) {
-    # The following command need only be run once to install the Giotto environment.
-    Giotto::installGiottoEnvironment()
-}
 ```
 
 ## 2 Dataset Explanation
@@ -59,8 +52,7 @@ instructions <- createGiottoInstructions(
     save_plot = TRUE,
     show_plot = FALSE,
     return_plot = FALSE,
-    save_dir = results_folder,
-    python_path = NULL
+    save_dir = results_folder
 )
 
 # create giotto object from provided paths ####
@@ -834,6 +826,7 @@ spatPlot(SS_seqfish,
 ## 16 Cell Neighborhood: Interaction Changed Features
 
 ``` r
+
 library(future)
 
 ## select top 25th highest expressing genes
@@ -854,7 +847,7 @@ ICFsForesHighGenes <- findInteractionChangedFeats(
     gobject = SS_seqfish,
     selected_feats = high_expressed_genes,
     spatial_network_name = "Delaunay_network",
-    cluster_column = "cell_types"
+    cluster_column = "cell_types",
     diff_test = "permutation",
     adjust_method = "fdr",
     nr_permutations = 2000,

@@ -22,14 +22,6 @@ if(!"GiottoData" %in% installed.packages()) {
 }
 
 library(Giotto)
-
-# Ensure the Python environment for Giotto has been installed
-genv_exists <- checkGiottoEnvironment()
-
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment
-  installGiottoEnvironment()
-}
 ```
 
 ## 2 Get giotto points
@@ -65,13 +57,11 @@ data](images/tesselation/1-hex.png)
 
 results_folder <- "/path/to/results/"
 
-python_path <- NULL
 
 instructions <- createGiottoInstructions(save_dir = results_folder,
                                          save_plot = TRUE, 
                                          show_plot = FALSE, 
-                                         return_plot = FALSE, 
-                                         python_path = python_path)
+                                         return_plot = FALSE)
 
 # gpoints provides spatial gene expression information
 # gpolygons provides spatial unit information (here = hexagon tiles)

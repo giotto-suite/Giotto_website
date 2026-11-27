@@ -35,23 +35,21 @@ brainG <- seuratToGiotto(brain)
 brainG
 ```
 
-``` r
-An object of class giotto 
->Active spat_unit:  cell 
->Active feat_type:  rna 
-dimensions    : 31053, 2696 (features, cells)
-[SUBCELLULAR INFO]
-[AGGREGATE INFO]
-expression -----------------------
-  [cell][rna] raw
-spatial locations ----------------
-  [cell] raw
-attached images ------------------
-images      : anterior1 
+    An object of class giotto 
+    >Active spat_unit:  cell 
+    >Active feat_type:  rna 
+    dimensions    : 31053, 2696 (features, cells)
+    [SUBCELLULAR INFO]
+    [AGGREGATE INFO]
+    expression -----------------------
+      [cell][rna] raw
+    spatial locations ----------------
+      [cell] raw
+    attached images ------------------
+    images      : anterior1 
 
 
-Use objHistory() to see steps and params used
-```
+    Use objHistory() to see steps and params used
 
 The counts of the `Spatial` assay become the `raw` expression values of
 the feature type `rna`. The Visium spot positions are converted from
@@ -66,12 +64,10 @@ micron-per-pixel scale:
 mappingProvenance(brainG)$losses
 ```
 
-``` r
-  part_id                      kind field
-1    locs recovered_from_parameters units
-                                                                note   source
-1 0.72993 um per px (100 um spot pitch / measured spacing 137.00 px) recorded
-```
+      part_id                      kind field
+    1    locs recovered_from_parameters units
+                                                                    note   source
+    1 0.72993 um per px (100 um spot pitch / measured spacing 137.00 px) recorded
 
 The result is a regular Giotto object, so the usual workflow runs on it:
 
@@ -101,14 +97,12 @@ brain2 <- giottoToSeurat(brainG)
 brain2
 ```
 
-``` r
-An object of class Seurat 
-31053 features across 2696 samples within 1 assay 
-Active assay: rna (31053 features, 0 variable features)
- 2 layers present: counts, data
- 1 dimensional reduction calculated: pca
- 1 spatial field of view present: fov
-```
+    An object of class Seurat 
+    31053 features across 2696 samples within 1 assay 
+    Active assay: rna (31053 features, 0 variable features)
+     2 layers present: counts, data
+     1 dimensional reduction calculated: pca
+     1 spatial field of view present: fov
 
 One spatial unit and feature type is converted at a time (the active
 ones by default; see the `spat_unit` and `feat_type` arguments). The
@@ -134,9 +128,7 @@ compares the Seurat object with the Giotto object, part by part:
 readbackCheck(brainG, brain2)
 ```
 
-``` r
-<giottoReadback> PASS: 28 MATCH, 0 DECLARED, 0 UNDECLARED
-```
+    <giottoReadback> PASS: 28 MATCH, 0 DECLARED, 0 UNDECLARED
 
 ## 4 Session Info
 

@@ -30,22 +30,11 @@ R version 4.3.2 (2023-10-31)
 packageVersion("Giotto")
 ```
 
-``` r
-4.0.2
-```
+    4.0.2
 
-- Are you using the Giotto environment or your own python path?
-
-``` r
-
-# Check Giotto environment
-Giotto::checkGiottoEnvironment()
-```
-
-``` r
-giotto environment found at 
-/Users/yuanlab/Library/r-miniconda/envs/giotto_env/bin/pythonw
-```
+- For an error in a Python tool (e.g. segmentation): are you using your
+  own Python (`getOption("giotto.py_python")`)? If not, say so; the
+  tool’s environment is then made by Giotto.
 
 - Show sequential processing steps/commands in the Giotto object
 
@@ -54,54 +43,52 @@ giotto environment found at
 Giotto::showProcessingSteps(my_giotto_object)
 ```
 
-``` r
-Processing steps: 
-0_normalize 
+    Processing steps: 
+    0_normalize 
 
- 1_subset 
+     1_subset 
 
- 2_filter 
-     name info:  tag tag 
+     2_filter 
+         name info:  tag tag 
 
- 3_feat_stats 
+     3_feat_stats 
 
- 4_cell_stats 
+     4_cell_stats 
 
- 5_hvf 
-     name info:  hvf HVFplot 
+     5_hvf 
+         name info:  hvf HVFplot 
 
- 6_pca 
+     6_pca 
 
- 7_umap 
+     7_umap 
 
- 8_tsne 
+     8_tsne 
 
- 9_nn_network 
+     9_nn_network 
 
- 10_cluster 
-     name info:  leiden_clus sNN.pca 
+     10_cluster 
+         name info:  leiden_clus sNN.pca 
 
- 11_delaunay_spatial_network 
-     name info:  Delaunay_network 
+     11_delaunay_spatial_network 
+         name info:  Delaunay_network 
 
- 12_spatial_network 
-     name info:  spatial_network 
+     12_spatial_network 
+         name info:  spatial_network 
 
- 13_create_metafeat 
-     name info:  cluster_metagene 
+     13_create_metafeat 
+         name info:  cluster_metagene 
 
- 14_pca 
-     name info:  custom_pca 
+     14_pca 
+         name info:  custom_pca 
 
- 15_umap 
-     name info:  custom_pca custom_umap 
+     15_umap 
+         name info:  custom_pca custom_umap 
 
- 16_nn_network 
-     name info:  custom_pca custom_NN 
+     16_nn_network 
+         name info:  custom_pca custom_NN 
 
- 17_cluster 
-     name info:  custom_leiden custom_NN
-```
+     17_cluster 
+         name info:  custom_leiden custom_NN
 
 - Show the structure of the Giotto object
 
@@ -110,92 +97,90 @@ Processing steps:
 str(my_giotto_object, max.level = 3)
 ```
 
-``` r
-Formal class "giotto" [package "Giotto"] with 23 slots
-  ..@ expression         :List of 1
-  .. ..$ cell:List of 1
-  ..@ expression_feat    : chr "rna"
-  ..@ spatial_locs       :List of 1
-  .. ..$ cell:List of 1
-  ..@ spatial_info       : NULL
-  ..@ cell_metadata      :List of 1
-  .. ..$ cell:List of 1
-  ..@ feat_metadata      :List of 1
-  .. ..$ cell:List of 1
-  ..@ feat_info          : NULL
-  ..@ cell_ID            :List of 1
-  .. ..$ cell: chr [1:624] "AAAGGGATGTAGCAAG-1" "AAATGGCATGTCTTGT-1" "AAATGGTCAATGTGCC-1" "AAATTAACGGGTAGCT-1" ...
-  ..@ feat_ID            :List of 1
-  .. ..$ rna: chr [1:634] "Gna12" "Ccnd2" "Btbd17" "Sox9" ...
-  ..@ spatial_network    :List of 1
-  .. ..$ cell:List of 2
-  ..@ spatial_grid       : NULL
-  ..@ spatial_enrichment :List of 1
-  .. ..$ cell:List of 1
-  ..@ dimension_reduction:List of 1
-  .. ..$ cells:List of 1
-  ..@ nn_network         :List of 1
-  .. ..$ cell:List of 1
-  ..@ images             : NULL
-  ..@ largeImages        :List of 1
-  .. ..$ image:Formal class "giottoLargeImage" [package "Giotto"] with 13 slots
-  ..@ parameters         :List of 18
-  .. ..$ 0_normalize                : Named chr [1:14] "mini_visium" "raw" "standard" "TRUE" ...
-  .. .. ..- attr(*, "names")= chr [1:14] "gobject" "expression_values" "norm_methods" "library_size_norm" ...
-  .. ..$ 1_subset                   : Named chr [1:12] "gobject" "spat_unit" "feat_type" "selected_cell_ids" ...
-  .. .. ..- attr(*, "names")= chr [1:12] "gobject" "spat_unit" "feat_type" "cell_ids" ...
-  .. ..$ 2_filter                   : Named chr [1:13] "mini_visium" "raw" "1" "5" ...
-  .. .. ..- attr(*, "names")= chr [1:13] "gobject" "expression_values" "expression_threshold" "feat_det_in_min_cells" ...
-  .. ..$ 3_feat_stats               : Named chr [1:4] "mini_visium" "normalized" "0" "TRUE"
-  .. .. ..- attr(*, "names")= chr [1:4] "gobject" "expression_values" "detection_threshold" "return_gobject"
-  .. ..$ 4_cell_stats               : Named chr [1:4] "mini_visium" "normalized" "0" "TRUE"
-  .. .. ..- attr(*, "names")= chr [1:4] "gobject" "expression_values" "detection_threshold" "return_gobject"
-  .. ..$ 5_hvf                      : Named chr [1:17] "mini_visium" "normalized" "cov_groups" "FALSE" ...
-  .. .. ..- attr(*, "names")= chr [1:17] "gobject" "expression_values" "method" "reverse_log_scale" ...
-  .. ..$ 6_pca                      : Named chr [1:15] "mini_visium" "normalized" "cells" "hvf" ...
-  .. .. ..- attr(*, "names")= chr [1:15] "gobject" "expression_values" "reduction" "feats_to_use" ...
-  .. ..$ 7_umap                     : Named chr [1:17] "mini_visium" "normalized" "cells" "pca" ...
-  .. .. ..- attr(*, "names")= chr [1:17] "gobject" "expression_values" "reduction" "dim_reduction_to_use" ...
-  .. ..$ 8_tsne                     : Named chr [1:14] "mini_visium" "normalized" "cells" "pca" ...
-  .. .. ..- attr(*, "names")= chr [1:14] "gobject" "expression_values" "reduction" "dim_reduction_to_use" ...
-  .. ..$ 9_nn_network               : Named chr [1:11] "mini_visium" "sNN" "pca" "1:5" ...
-  .. .. ..- attr(*, "names")= chr [1:11] "gobject" "type" "dim_reduction_to_use" "dimensions_to_use" ...
-  .. ..$ 10_cluster                 : Named chr [1:11] "mini_visium" "leiden_clus" "sNN" "sNN.pca" ...
-  .. .. ..- attr(*, "names")= chr [1:11] "gobject" "name" "nn_network_to_use" "network_name" ...
-  .. ..$ 11_delaunay_spatial_network: Named chr [1:4] "dimensions: sdimx and sdimy" "deldir" "auto" "Delaunay_network"
-  .. .. ..- attr(*, "names")= chr [1:4] "dimensions used" "method" "maximum distance threshold" "name of spatial network"
-  .. ..$ 12_spatial_network         : Named chr [1:4] "10" "all" "400" "spatial_network"
-  .. .. ..- attr(*, "names")= chr [1:4] "k neighbours" "dimensions used" "maximum distance threshold" "name of spatial network"
-  .. ..$ 13_create_metafeat         : Named chr [1:5] "mini_visium" "normalized" "cluster_genes" "cluster_metagene" ...
-  .. .. ..- attr(*, "names")= chr [1:5] "gobject" "expression_values" "feat_clusters" "name" ...
-  .. ..$ 14_pca                     : Named chr [1:16] "mini_visium" "normalized" "cells" "custom_pca" ...
-  .. .. ..- attr(*, "names")= chr [1:16] "gobject" "expression_values" "reduction" "name" ...
-  .. ..$ 15_umap                    : Named chr [1:19] "mini_visium" "normalized" "cells" "pca" ...
-  .. .. ..- attr(*, "names")= chr [1:19] "gobject" "expression_values" "reduction" "dim_reduction_to_use" ...
-  .. ..$ 16_nn_network              : Named chr [1:13] "mini_visium" "sNN" "pca" "custom_pca" ...
-  .. .. ..- attr(*, "names")= chr [1:13] "gobject" "type" "dim_reduction_to_use" "dim_reduction_name" ...
-  .. ..$ 17_cluster                 : Named chr [1:11] "mini_visium" "custom_leiden" "sNN" "custom_NN" ...
-  .. .. ..- attr(*, "names")= chr [1:11] "gobject" "name" "nn_network_to_use" "network_name" ...
-  ..@ instructions       :List of 13
-  .. ..$ python_path     : chr "/Users/yuanlab/Library/r-miniconda/envs/giotto_env/bin/pythonw"
-  .. ..$ show_plot       : logi TRUE
-  .. ..$ return_plot     : logi FALSE
-  .. ..$ save_plot       : logi FALSE
-  .. ..$ save_dir        : logi NA
-  .. ..$ plot_format     : chr "png"
-  .. ..$ dpi             : num 300
-  .. ..$ units           : chr "in"
-  .. ..$ height          : num 9
-  .. ..$ width           : num 9
-  .. ..$ is_docker       : logi FALSE
-  .. ..$ active_spat_unit: chr "cell"
-  .. ..$ active_feat_type: chr "rna"
-  ..@ offset_file        : NULL
-  ..@ OS_platform        : chr "unix"
-  ..@ join_info          : NULL
-  ..@ multiomics         : NULL
-  ..@ h5_file            : NULL
-```
+    Formal class "giotto" [package "Giotto"] with 23 slots
+      ..@ expression         :List of 1
+      .. ..$ cell:List of 1
+      ..@ expression_feat    : chr "rna"
+      ..@ spatial_locs       :List of 1
+      .. ..$ cell:List of 1
+      ..@ spatial_info       : NULL
+      ..@ cell_metadata      :List of 1
+      .. ..$ cell:List of 1
+      ..@ feat_metadata      :List of 1
+      .. ..$ cell:List of 1
+      ..@ feat_info          : NULL
+      ..@ cell_ID            :List of 1
+      .. ..$ cell: chr [1:624] "AAAGGGATGTAGCAAG-1" "AAATGGCATGTCTTGT-1" "AAATGGTCAATGTGCC-1" "AAATTAACGGGTAGCT-1" ...
+      ..@ feat_ID            :List of 1
+      .. ..$ rna: chr [1:634] "Gna12" "Ccnd2" "Btbd17" "Sox9" ...
+      ..@ spatial_network    :List of 1
+      .. ..$ cell:List of 2
+      ..@ spatial_grid       : NULL
+      ..@ spatial_enrichment :List of 1
+      .. ..$ cell:List of 1
+      ..@ dimension_reduction:List of 1
+      .. ..$ cells:List of 1
+      ..@ nn_network         :List of 1
+      .. ..$ cell:List of 1
+      ..@ images             : NULL
+      ..@ largeImages        :List of 1
+      .. ..$ image:Formal class "giottoLargeImage" [package "Giotto"] with 13 slots
+      ..@ parameters         :List of 18
+      .. ..$ 0_normalize                : Named chr [1:14] "mini_visium" "raw" "standard" "TRUE" ...
+      .. .. ..- attr(*, "names")= chr [1:14] "gobject" "expression_values" "norm_methods" "library_size_norm" ...
+      .. ..$ 1_subset                   : Named chr [1:12] "gobject" "spat_unit" "feat_type" "selected_cell_ids" ...
+      .. .. ..- attr(*, "names")= chr [1:12] "gobject" "spat_unit" "feat_type" "cell_ids" ...
+      .. ..$ 2_filter                   : Named chr [1:13] "mini_visium" "raw" "1" "5" ...
+      .. .. ..- attr(*, "names")= chr [1:13] "gobject" "expression_values" "expression_threshold" "feat_det_in_min_cells" ...
+      .. ..$ 3_feat_stats               : Named chr [1:4] "mini_visium" "normalized" "0" "TRUE"
+      .. .. ..- attr(*, "names")= chr [1:4] "gobject" "expression_values" "detection_threshold" "return_gobject"
+      .. ..$ 4_cell_stats               : Named chr [1:4] "mini_visium" "normalized" "0" "TRUE"
+      .. .. ..- attr(*, "names")= chr [1:4] "gobject" "expression_values" "detection_threshold" "return_gobject"
+      .. ..$ 5_hvf                      : Named chr [1:17] "mini_visium" "normalized" "cov_groups" "FALSE" ...
+      .. .. ..- attr(*, "names")= chr [1:17] "gobject" "expression_values" "method" "reverse_log_scale" ...
+      .. ..$ 6_pca                      : Named chr [1:15] "mini_visium" "normalized" "cells" "hvf" ...
+      .. .. ..- attr(*, "names")= chr [1:15] "gobject" "expression_values" "reduction" "feats_to_use" ...
+      .. ..$ 7_umap                     : Named chr [1:17] "mini_visium" "normalized" "cells" "pca" ...
+      .. .. ..- attr(*, "names")= chr [1:17] "gobject" "expression_values" "reduction" "dim_reduction_to_use" ...
+      .. ..$ 8_tsne                     : Named chr [1:14] "mini_visium" "normalized" "cells" "pca" ...
+      .. .. ..- attr(*, "names")= chr [1:14] "gobject" "expression_values" "reduction" "dim_reduction_to_use" ...
+      .. ..$ 9_nn_network               : Named chr [1:11] "mini_visium" "sNN" "pca" "1:5" ...
+      .. .. ..- attr(*, "names")= chr [1:11] "gobject" "type" "dim_reduction_to_use" "dimensions_to_use" ...
+      .. ..$ 10_cluster                 : Named chr [1:11] "mini_visium" "leiden_clus" "sNN" "sNN.pca" ...
+      .. .. ..- attr(*, "names")= chr [1:11] "gobject" "name" "nn_network_to_use" "network_name" ...
+      .. ..$ 11_delaunay_spatial_network: Named chr [1:4] "dimensions: sdimx and sdimy" "deldir" "auto" "Delaunay_network"
+      .. .. ..- attr(*, "names")= chr [1:4] "dimensions used" "method" "maximum distance threshold" "name of spatial network"
+      .. ..$ 12_spatial_network         : Named chr [1:4] "10" "all" "400" "spatial_network"
+      .. .. ..- attr(*, "names")= chr [1:4] "k neighbours" "dimensions used" "maximum distance threshold" "name of spatial network"
+      .. ..$ 13_create_metafeat         : Named chr [1:5] "mini_visium" "normalized" "cluster_genes" "cluster_metagene" ...
+      .. .. ..- attr(*, "names")= chr [1:5] "gobject" "expression_values" "feat_clusters" "name" ...
+      .. ..$ 14_pca                     : Named chr [1:16] "mini_visium" "normalized" "cells" "custom_pca" ...
+      .. .. ..- attr(*, "names")= chr [1:16] "gobject" "expression_values" "reduction" "name" ...
+      .. ..$ 15_umap                    : Named chr [1:19] "mini_visium" "normalized" "cells" "pca" ...
+      .. .. ..- attr(*, "names")= chr [1:19] "gobject" "expression_values" "reduction" "dim_reduction_to_use" ...
+      .. ..$ 16_nn_network              : Named chr [1:13] "mini_visium" "sNN" "pca" "custom_pca" ...
+      .. .. ..- attr(*, "names")= chr [1:13] "gobject" "type" "dim_reduction_to_use" "dim_reduction_name" ...
+      .. ..$ 17_cluster                 : Named chr [1:11] "mini_visium" "custom_leiden" "sNN" "custom_NN" ...
+      .. .. ..- attr(*, "names")= chr [1:11] "gobject" "name" "nn_network_to_use" "network_name" ...
+      ..@ instructions       :List of 13
+      .. ..$ python_path     : chr "/Users/yuanlab/Library/r-miniconda/envs/giotto_env/bin/pythonw"
+      .. ..$ show_plot       : logi TRUE
+      .. ..$ return_plot     : logi FALSE
+      .. ..$ save_plot       : logi FALSE
+      .. ..$ save_dir        : logi NA
+      .. ..$ plot_format     : chr "png"
+      .. ..$ dpi             : num 300
+      .. ..$ units           : chr "in"
+      .. ..$ height          : num 9
+      .. ..$ width           : num 9
+      .. ..$ is_docker       : logi FALSE
+      .. ..$ active_spat_unit: chr "cell"
+      .. ..$ active_feat_type: chr "rna"
+      ..@ offset_file        : NULL
+      ..@ OS_platform        : chr "unix"
+      ..@ join_info          : NULL
+      ..@ multiomics         : NULL
+      ..@ h5_file            : NULL
 
 ### 1.2 Warning Messages
 
@@ -207,11 +192,9 @@ my_giotto_object <- createGiottoObject(raw_exprs = "path/to/expression/data",
                                        spatial_locs = "path/to/spatial/data")
 ```
 
-``` r
-Warning message:
-In createGiottoObject(raw_exprs = "/Users/username/path/to/data",  :
-    raw_exprs argument is deprecated, use expression argument in the future 
-```
+    Warning message:
+    In createGiottoObject(raw_exprs = "/Users/username/path/to/data",  :
+        raw_exprs argument is deprecated, use expression argument in the future 
 
 **Solution** The code has still run and your object has been created,
 but in the future use the following command:
@@ -226,19 +209,19 @@ my_giotto_object <- createGiottoObject(expression = "path/to/expression/data",
 
 - Is this an error from Giotto?
 
-``` r
-Error in adjustGiottoMatrix(gobject = my_giotto_object, expression_values = c("normalized"): covariate column name(s) were not found in the cell metadata 
-```
+&nbsp;
+
+    Error in adjustGiottoMatrix(gobject = my_giotto_object, expression_values = c("normalized"): covariate column name(s) were not found in the cell metadata 
 
 **Solution** In this case, you would need to check your cell metadata
 (`my_giotto_object@cell_metadata`) and make appropriate adjustments.
 
 - Is this an error from an external package?
 
-``` r
-Error in methods::as(as.matrix(x[, -1]), "Matrix") : 
-no method or default for coercing "matrix" to "Matrix"
-```
+&nbsp;
+
+    Error in methods::as(as.matrix(x[, -1]), "Matrix") : 
+    no method or default for coercing "matrix" to "Matrix"
 
 **Solution** Ensure that the Matrix library is loaded:
 
@@ -305,9 +288,7 @@ my_giotto_object <- adjustGiottoMatrix(gobject = my_giotto_object,
 I expected that my matrix would be appropriately adjusted, but I got the
 following error:
 
-``` r
-Error in adjustGiottoMatrix(gobject = my_giotto_object, expression_values = c("normalized"): covariate column name(s) were not found in the cell metadata 
-```
+    Error in adjustGiottoMatrix(gobject = my_giotto_object, expression_values = c("normalized"): covariate column name(s) were not found in the cell metadata 
 
 For more context, I am running R version 4.3.2 and Giotto version 4.0.2.
 I can send you the data I used if necessary.

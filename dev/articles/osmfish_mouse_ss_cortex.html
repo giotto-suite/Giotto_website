@@ -93,6 +93,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-get-started" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Get started</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-get-started">
 <li><a class="dropdown-item" href="../articles/installation.html">Giotto Installation</a></li>
+    <li><a class="dropdown-item" href="../articles/python.html">Python in Giotto Suite</a></li>
     <li><a class="dropdown-item" href="../articles/ecosystem.html">Giotto Ecosystem</a></li>
     <li><a class="dropdown-item" href="../articles/structure.html">Giotto Class Structure</a></li>
     <li><a class="dropdown-item" href="../articles/general_workflow.html">General Giotto Workflow</a></li>
@@ -169,7 +170,6 @@
     <li><a class="dropdown-item" href="../articles/create_simulated_object.html">Create a simulated dataset object</a></li>
     <li><a class="dropdown-item" href="../articles/instructions.html">Giotto instructions</a></li>
     <li><a class="dropdown-item" href="../articles/import_utilities.html">Technology-specific importers</a></li>
-    <li><a class="dropdown-item" href="../articles/configuration.html">Giotto configuration</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pre-processing</h6></li>
     <li><a class="dropdown-item" href="../articles/feature_aggregation.html">Feature aggregation</a></li>
@@ -286,13 +286,6 @@ environment<a class="anchor" aria-label="anchor" href="#set-up-giotto-environmen
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">need_install</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0L</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"pak"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span></span>
 <span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"giotto-suite/%s"</span>, <span class="va">need_install</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># Ensure the Python environment for Giotto has been installed.</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="co"># The following command need only be run once to install the Giotto environment.</span></span>
-<span>  <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giottosuite.com">Giotto</a></span><span class="op">)</span></span>
@@ -303,14 +296,13 @@ environment<a class="anchor" aria-label="anchor" href="#set-up-giotto-environmen
 <span></span>
 <span><span class="co"># Optional: Specify a path to a Python executable within a conda or miniconda </span></span>
 <span><span class="co"># environment. If set to NULL (default), the Python executable within the previously</span></span>
-<span><span class="co"># installed Giotto environment will be used.</span></span>
-<span><span class="va">python_path</span> <span class="op">&lt;-</span> <span class="cn">NULL</span> <span class="co"># alternatively, "/local/python/path/python" if desired.</span></span></code></pre></div>
+<span><span class="co"># installed Giotto environment will be used.</span></span></code></pre></div>
 </div>
 <div class="section level2" number="3">
 <h2 id="dataset-download">
 <span class="header-section-number">3</span> Dataset download<a class="anchor" aria-label="anchor" href="#dataset-download"></a>
 </h2>
-<p>The osmFISH data to run this tutorial can be found <a href="https://github.com/giotto-suite/spatial-datasets/tree/master/data/2018_osmFISH_SScortex" class="external-link">here</a>.
+<p>The osmFISH data to run this tutorial can be found <a href="https://github.com/drieslab/spatial-datasets/tree/master/data/2018_osmFISH_SScortex" class="external-link">here</a>.
 Alternatively you can use the <strong>getSpatialDataset</strong> to
 automatically download this dataset like we do in this example; to
 download the data used to create the Giotto Object below, please ensure
@@ -334,8 +326,7 @@ instructions and preparations<a class="anchor" aria-label="anchor" href="#giotto
 <span><span class="va">instructions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span>save_plot <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>                                         show_plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                                         return_plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                                         save_dir <span class="op">=</span> <span class="va">results_folder</span>,</span>
-<span>                                         python_path <span class="op">=</span> <span class="va">python_path</span><span class="op">)</span></span>
+<span>                                         save_dir <span class="op">=</span> <span class="va">results_folder</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">expr_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">results_folder</span>, <span class="st">"osmFISH_prep_expression.txt"</span><span class="op">)</span></span>
 <span><span class="va">loc_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">results_folder</span>, <span class="st">"osmFISH_prep_cell_coordinates.txt"</span><span class="op">)</span></span>
@@ -389,11 +380,6 @@ instructions and preparations<a class="anchor" aria-label="anchor" href="#giotto
 <span><span class="va">osm_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/setGiotto.html" class="external-link">setGiotto</a></span><span class="op">(</span><span class="va">osm_test</span>, </span>
 <span>                      x <span class="op">=</span> <span class="va">norm_genes_cells</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">## add a python path</span></span>
-<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">osm_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/changeGiottoInstructions.html" class="external-link">changeGiottoInstructions</a></span><span class="op">(</span><span class="va">osm_test</span>,</span>
-<span>                                     params <span class="op">=</span> <span class="st">"python_path"</span>,</span>
-<span>                                     new_values <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">python_path</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## add gene &amp; cell statistics</span></span>
 <span><span class="va">osm_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addStatistics.html">addStatistics</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">osm_test</span><span class="op">)</span></span>

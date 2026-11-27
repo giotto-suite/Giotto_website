@@ -93,6 +93,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-get-started" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Get started</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-get-started">
 <li><a class="dropdown-item" href="../articles/installation.html">Giotto Installation</a></li>
+    <li><a class="dropdown-item" href="../articles/python.html">Python in Giotto Suite</a></li>
     <li><a class="dropdown-item" href="../articles/ecosystem.html">Giotto Ecosystem</a></li>
     <li><a class="dropdown-item" href="../articles/structure.html">Giotto Class Structure</a></li>
     <li><a class="dropdown-item" href="../articles/general_workflow.html">General Giotto Workflow</a></li>
@@ -169,7 +170,6 @@
     <li><a class="dropdown-item" href="../articles/create_simulated_object.html">Create a simulated dataset object</a></li>
     <li><a class="dropdown-item" href="../articles/instructions.html">Giotto instructions</a></li>
     <li><a class="dropdown-item" href="../articles/import_utilities.html">Technology-specific importers</a></li>
-    <li><a class="dropdown-item" href="../articles/configuration.html">Giotto configuration</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pre-processing</h6></li>
     <li><a class="dropdown-item" href="../articles/feature_aggregation.html">Feature aggregation</a></li>
@@ -287,312 +287,23 @@ variable:</p>
 <span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/Giotto"</span><span class="op">)</span></span></code></pre></div>
 </details><details><summary>
-MacOS Specific
-</summary><details><summary>
-Packages not found
-</summary><p>In the event that packages are inaccessible in the default
-installation of the Giotto miniconda environment, one troubleshooting
-method is provided here.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Restart the R session, while maintaining workspace variables.</span></span>
-<span><span class="co"># If using RStudio, the following command will do exactly that:</span></span>
-<span><span class="fu">.rs.restartR</span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Creating Giotto Instructions without specifying a Python path will make </span></span>
-<span><span class="co"># reticulate activate the default Giotto environment. </span></span>
-<span><span class="va">default_instrs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Extract python path information</span></span>
-<span><span class="va">default_python_path</span> <span class="op">&lt;-</span> <span class="va">default_instrs</span><span class="op">$</span><span class="va">python_path</span></span>
-<span></span>
-<span><span class="co"># Direct reticulate to use Python within the Giotto Environment</span></span>
-<span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">use_python</a></span><span class="op">(</span><span class="va">default_python_path</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Make reticulate iteratively check for the packages</span></span>
-<span><span class="va">pkg_check</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="va">py_pkgs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'pandas'</span>,<span class="st">'networkx'</span>, <span class="st">'igraph'</span>, <span class="st">'leidenalg'</span>,<span class="st">'community'</span>,<span class="st">'sklearn'</span>,<span class="st">'python.app'</span><span class="op">)</span></span>
-<span>  <span class="va">py_pkg_error</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span></span>
-<span>  <span class="va">test_availability</span> <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span>  </span>
-<span>  <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="va">py_pkgs</span><span class="op">)</span><span class="op">{</span></span>
-<span>    <span class="kw">if</span><span class="op">(</span><span class="va">i</span> <span class="op">==</span> <span class="st">'python.app'</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.info.html" class="external-link">Sys.info</a></span><span class="op">(</span><span class="op">)</span><span class="op">[[</span><span class="st">'sysname'</span><span class="op">]</span><span class="op">]</span> <span class="op">!=</span> <span class="st">"Darwin"</span><span class="op">)</span><span class="op">{</span></span>
-<span>      <span class="co"># If the machine OS is not OSX (Mac), break out of the loop</span></span>
-<span>      <span class="co"># Otherwise, also check for python.app</span></span>
-<span>      <span class="kw">break</span></span>
-<span>    <span class="op">}</span></span>
-<span>    <span class="va">test_availability</span> <span class="op">&lt;-</span> <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/py_module_available.html" class="external-link">py_module_available</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span>
-<span>    <span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">test_availability</span><span class="op">)</span> <span class="op">{</span><span class="va">py_pkg_error</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">py_pkg_error</span>,<span class="va">i</span><span class="op">)</span><span class="op">}</span></span>
-<span>  <span class="op">}</span></span>
-<span>  </span>
-<span>  <span class="kw">if</span><span class="op">(</span><span class="va">test_availability</span><span class="op">)</span><span class="op">{</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">'All Python packages for Giotto are accessible at environment:\n'</span>, <span class="va">default_python_path</span><span class="op">)</span></span>
-<span>  <span class="op">}</span><span class="kw">else</span><span class="op">{</span></span>
-<span>    <span class="kw">for</span> <span class="op">(</span><span class="va">x</span> <span class="kw">in</span> <span class="va">py_pkg_error</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="va">x</span>,<span class="st">'was not found within environment:\n'</span>,<span class="va">default_python_path</span>,<span class="st">'\n\n'</span><span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
-<span>  </span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">py_pkg_error</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># Check if packages exist again. Ensure function from above code block is defined.</span></span>
-<span><span class="va">missing_packages</span> <span class="op">&lt;-</span> <span class="fu">pkg_check</span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">retry_install</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">missing_packages</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span></span>
-<span></span>
-<span><span class="kw">if</span><span class="op">(</span><span class="va">retry_install</span><span class="op">)</span><span class="op">{</span></span>
-<span></span>
-<span>  <span class="co"># Attempt to reinstall all packages.</span></span>
-<span>  <span class="va">pkgs_w_versions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'pandas==1.5.1'</span>,</span>
-<span>                       <span class="st">'networkx==2.8.8'</span>,</span>
-<span>                       <span class="st">'python-igraph==0.10.2'</span>,</span>
-<span>                       <span class="st">'leidenalg==0.9.0'</span>,</span>
-<span>                       <span class="st">'python-louvain==0.16'</span>,</span>
-<span>                       <span class="st">'python.app==1.4'</span>,</span>
-<span>                       <span class="st">'scikit-learn==1.1.3'</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="va">python_version</span> <span class="op">=</span> <span class="st">"3.10.2"</span></span>
-<span></span>
-<span>  <span class="va">py_pkgs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'pandas'</span>,<span class="st">'networkx'</span>,</span>
-<span>              <span class="st">'igraph'</span>, <span class="st">'leidenalg'</span>,</span>
-<span>              <span class="st">'python-louvain'</span>,<span class="st">'scikit-learn'</span>,<span class="st">'python.app'</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.info.html" class="external-link">Sys.info</a></span><span class="op">(</span><span class="op">)</span><span class="op">[[</span><span class="st">'sysname'</span><span class="op">]</span><span class="op">]</span> <span class="op">!=</span> <span class="st">"Darwin"</span><span class="op">)</span><span class="op">{</span></span>
-<span>    <span class="va">pkgs_w_versions</span> <span class="op">=</span> <span class="va">pkgs_w_versions</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">'python.app'</span>, x <span class="op">=</span> <span class="va">pkgs_w_versions</span><span class="op">)</span><span class="op">]</span></span>
-<span>    <span class="va">py_pkgs</span> <span class="op">=</span> <span class="va">py_pkgs</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">'python.app'</span>, x <span class="op">=</span> <span class="va">py_pkgs</span><span class="op">)</span><span class="op">]</span></span>
-<span>  <span class="op">}</span></span>
-<span></span>
-<span>  <span class="va">env_location</span> <span class="op">&lt;-</span> <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/py_discover_config.html" class="external-link">py_discover_config</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">pythonhome</span></span>
-<span>  <span class="va">partial_path_to_conda</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/miniconda_path.html" class="external-link">miniconda_path</a></span><span class="op">(</span><span class="op">)</span>,<span class="st">'/envs/giotto_env'</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="va">py_lou</span> <span class="op">=</span> <span class="va">pkgs_w_versions</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">'python-louvain'</span>,x <span class="op">=</span> <span class="va">pkgs_w_versions</span><span class="op">)</span><span class="op">]</span></span>
-<span>  <span class="va">pip_packages</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"smfishhmrf"</span>, <span class="va">py_lou</span><span class="op">)</span></span>
-<span>  <span class="va">pkgs_w_versions</span> <span class="op">=</span> <span class="va">pkgs_w_versions</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">'python-louvain'</span>,x <span class="op">=</span> <span class="va">pkgs_w_versions</span><span class="op">)</span><span class="op">]</span></span>
-<span></span>
-<span>  <span class="kw">if</span><span class="op">(</span><span class="va">.Platform</span><span class="op">[[</span><span class="st">'OS.type'</span><span class="op">]</span><span class="op">]</span> <span class="op">==</span> <span class="st">'unix'</span><span class="op">)</span> <span class="op">{</span></span>
-<span></span>
-<span>    <span class="va">conda_full_path</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">partial_conda_path</span>,<span class="st">'/'</span>,<span class="st">'bin/conda'</span><span class="op">)</span></span>
-<span></span>
-<span>    <span class="co"># Remove all previous installations</span></span>
-<span>    <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/conda-tools.html" class="external-link">conda_remove</a></span><span class="op">(</span>envname <span class="op">=</span> <span class="va">env_location</span>,</span>
-<span>                             packages <span class="op">=</span> <span class="va">py_pkgs</span>,</span>
-<span>                             conda <span class="op">=</span> <span class="va">conda_full_path</span><span class="op">)</span></span>
-<span></span>
-<span>    <span class="co"># Reinstall</span></span>
-<span>    <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/conda-tools.html" class="external-link">conda_install</a></span><span class="op">(</span>packages <span class="op">=</span> <span class="va">pkgs_w_versions</span>,</span>
-<span>                              envname <span class="op">=</span> <span class="va">env_location</span>,</span>
-<span>                              method <span class="op">=</span> <span class="st">'conda'</span>,</span>
-<span>                              conda <span class="op">=</span> <span class="va">conda_full_path</span>,</span>
-<span>                              python_version <span class="op">=</span> <span class="va">python_version</span><span class="op">)</span></span>
-<span></span>
-<span>    <span class="co"># Reinstall with pip</span></span>
-<span>    <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/conda-tools.html" class="external-link">conda_install</a></span><span class="op">(</span>packages <span class="op">=</span> <span class="va">pip_packages</span>,</span>
-<span>                              envname <span class="op">=</span> <span class="va">env_location</span>,</span>
-<span>                              method <span class="op">=</span> <span class="st">'conda'</span>,</span>
-<span>                              conda <span class="op">=</span> <span class="va">conda_full_path</span>,</span>
-<span>                              pip <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                              python_version <span class="op">=</span> <span class="va">python_version</span><span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
-<span>  <span class="kw">else</span> <span class="kw">if</span><span class="op">(</span><span class="va">.Platform</span><span class="op">[[</span><span class="st">'OS.type'</span><span class="op">]</span><span class="op">]</span> <span class="op">==</span> <span class="st">'windows'</span><span class="op">)</span><span class="op">{</span></span>
-<span>    <span class="va">conda_full_path</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">partial_conda_path</span>,<span class="st">'/'</span>,<span class="st">'condabin/conda.bat'</span><span class="op">)</span></span>
-<span></span>
-<span>    <span class="co"># Remove all previous installations</span></span>
-<span>    <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/conda-tools.html" class="external-link">conda_remove</a></span><span class="op">(</span>envname <span class="op">=</span> <span class="va">env_location</span>,</span>
-<span>                             packages <span class="op">=</span> <span class="va">py_pkgs</span>,</span>
-<span>                             conda <span class="op">=</span> <span class="va">conda_full_path</span><span class="op">)</span></span>
-<span></span>
-<span>    <span class="co"># Reinstall</span></span>
-<span>    <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/conda-tools.html" class="external-link">conda_install</a></span><span class="op">(</span>packages <span class="op">=</span> <span class="va">pkgs_w_versions</span>,</span>
-<span>                              envname <span class="op">=</span> <span class="va">env_location</span>,</span>
-<span>                              method <span class="op">=</span> <span class="st">'conda'</span>,</span>
-<span>                              conda <span class="op">=</span> <span class="va">conda_full_path</span>,</span>
-<span>                              python_version <span class="op">=</span> <span class="va">python_version</span>,</span>
-<span>                              channel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'conda-forge'</span>, <span class="st">'vtraag'</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span>    <span class="co"># Reinstall with pip</span></span>
-<span>    <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/conda-tools.html" class="external-link">conda_install</a></span><span class="op">(</span>packages <span class="op">=</span> <span class="va">pip_packages</span>,</span>
-<span>                              envname <span class="op">=</span> <span class="va">env_location</span>,</span>
-<span>                              method <span class="op">=</span> <span class="st">'conda'</span>,</span>
-<span>                              conda <span class="op">=</span> <span class="va">conda_full_path</span>,</span>
-<span>                              pip <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                              python_version <span class="op">=</span> <span class="va">python_version</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="op">}</span></span>
-<span><span class="op">}</span></span></code></pre></div>
-</details></details><details><summary>
-Windows Specific
-</summary><details><summary>
-Windows 11 OpenSSL Error
-</summary><p><em>Please note that this troubleshooting workflow is for a Windows
-11 64-bit machine.</em></p>
-<p>Unfortunately, it is known that installing miniconda on Windows 11
-can sometimes result in an <a href="https://github.com/giotto-suite/Giotto/issues/425#issuecomment-1320499840" class="external-link">OpenSSL
-error</a>.</p>
-<p>It should be noted that Conda developers are aware of this, and that
-this particular issue does not have to do with the configuration of the
-Giotto package. One workaround for this error is described below and on
-the conda repository, <a href="https://github.com/conda/conda/issues/8273#issue-409800067" class="external-link">here</a>.</p>
-<p>First, open a terminal and navigate to the folder in which miniconda
-lives on the machine. To find this, press the Windows Key and search for
-“Anaconda Prompt”. If anaconda3 is installed on the machine, there may
-be multiple options for this terminal; choose the Anaconda Prompt with
-“R-MINI~1” in parenthesis.</p>
-<p>Output from the following commands will be provided as a comparative
-guide. Once the terminal is open, identify the Conda environments on the
-machine by running the following:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>(base) PS <span class="sc">&gt;</span> conda info <span class="sc">--</span>envs</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co"># conda environments:</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#</span></span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co"># base                  *  C:\Users\matto\AppData\Local\R-MINI~1</span></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co"># giotto_env               C:\Users\matto\AppData\Local\R-MINI~1\envs\giotto_env</span></span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#                          C:\Users\matto\AppData\Local\r-miniconda\envs\giotto_env</span></span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#                          C:\Users\matto\anaconda3</span></span></code></pre></div>
-<p>Change your current directory to the R-MINI~1 subdirectory. Then,
-navigate to the Library/bin/ subdirectory within. Use the dir command to
-search bin for two groups of files. These files will be moved to a
-different directory, and should fix the issue. There may be more than
-two files per group here, and that is okay. All of the files with these
-names will be moved, regardless of the extension.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>(base) PS <span class="sc">&gt;</span> cd C<span class="sc">:</span>\Users\matto\AppData\Local\R<span class="sc">-</span>MINI<span class="sc">~</span><span class="dv">1</span></span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>(base) PS <span class="sc">&gt;</span> cd .\Library\bin</span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>(base) PS <span class="sc">&gt;</span> dir libssl<span class="dv">-1</span>_1<span class="sc">-</span>x64.<span class="sc">*</span></span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#    Directory: C:\Users\matto\AppData\Local\r-miniconda\Library\bin</span></span>
-<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a></span>
-<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#  Mode                 LastWriteTime         Length Name</span></span>
-<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#  ----                 -------------         ------ ----</span></span>
-<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#  -a----         11/4/2022  11:06 AM         686080 libssl-1_1-x64.dll</span></span>
-<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#  -a----         11/4/2022  11:06 AM        2338816 libssl-1_1-x64.pdbo</span></span>
-<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a></span>
-<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>(base) PS <span class="sc">&gt;</span> dir libcrypto<span class="dv">-1</span>_1<span class="sc">-</span>x64.<span class="sc">*</span></span>
-<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#    Directory: C:\Users\matto\AppData\Local\r-miniconda\Library\bin</span></span>
-<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a></span>
-<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a></span>
-<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">#  Mode                 LastWriteTime         Length Name</span></span>
-<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="co">#  ----                 -------------         ------ ----</span></span>
-<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co">#  -a----         11/4/2022  11:06 AM        3416064 libcrypto-1_1-x64.dll</span></span>
-<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a><span class="co">#  -a----         11/4/2022  11:06 AM       10219520 libcrypto-1_1-x64.pdb</span></span></code></pre></div>
-<p>Once these files are located, they may be moved to R-MINI~1/DLLs/,
-the proper directory for the search path.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>(base) PS <span class="sc">&gt;</span> pwd</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co"># Path</span></span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co"># ----</span></span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co"># C:\Users\matth\AppData\Local\r-miniconda\Library\bin</span></span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>(base) PS <span class="sc">&gt;</span> mv libssl<span class="dv">-1</span>_1<span class="sc">-</span>x64.<span class="sc">*</span> ..\..\DLLs\</span>
-<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>(base) PS <span class="sc">&gt;</span> mv libcrypto<span class="dv">-1</span>_1<span class="sc">-</span>x64.<span class="sc">*</span> ..\..\DLLs\</span></code></pre></div>
-<p>Finally, change to the DLLs directory within R-MINI~1 and verify that
-the files now exist there.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>(base) PS <span class="sc">&gt;</span> cd C<span class="sc">:</span>\Users\matth\AppData\Local\r<span class="sc">-</span>miniconda\DLLs\</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>(base) PS <span class="sc">&gt;</span> dir libssl<span class="dv">-1</span>_1<span class="sc">-</span>x64.<span class="sc">*</span></span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#     Directory: C:\Users\matth\AppData\Local\r-miniconda\DLLs</span></span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a></span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#  Mode                 LastWriteTime         Length Name</span></span>
-<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#  ----                 -------------         ------ ----</span></span>
-<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#  -a----         11/4/2022  11:07 AM         686080 libssl-1_1-x64.dll</span></span>
-<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#  -a----         11/4/2022  11:07 AM        2338816 libssl-1_1-x64.pdb</span></span>
-<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a></span>
-<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>(base) PS <span class="sc">&gt;</span> dir libcrypto<span class="dv">-1</span>_1<span class="sc">-</span>x64.<span class="sc">*</span></span>
-<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a></span>
-<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co">#    Directory: C:\Users\matto\AppData\Local\r-miniconda\DLLs</span></span>
-<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a></span>
-<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a></span>
-<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co">#  Mode                 LastWriteTime         Length Name</span></span>
-<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a><span class="co">#  ----                 -------------         ------ ----</span></span>
-<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a><span class="co">#  -a----         11/4/2022  11:07 AM        3416064 libcrypto-1_1-x64.dll</span></span>
-<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a><span class="co">#  -a----         11/4/2022  11:07 AM       10219520 libcrypto-1_1-x64.pdb</span></span></code></pre></div>
-<p>Now that these files have moved, this error should disappear.
-Activate the Giotto environment, and run python within it to test a
-package import. The OpenSSL error should no longer occur.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>(base) PS <span class="sc">&gt;</span> conda info <span class="sc">--</span>envs</span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co"># conda environments:</span></span>
-<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#</span></span>
-<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co"># base                  *  C:\Users\matto\AppData\Local\R-MINI~1</span></span>
-<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co"># giotto_env               C:\Users\matto\AppData\Local\R-MINI~1\envs\giotto_env</span></span>
-<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co">#                          C:\Users\matto\AppData\Local\r-miniconda\envs\giotto_env</span></span>
-<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co">#                          C:\Users\matto\anaconda3</span></span>
-<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a></span>
-<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>(base) PS <span class="sc">&gt;</span> conda activate giotto_env</span>
-<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>(giotto_env) PS <span class="sc">&gt;</span> cd C<span class="sc">:</span>\Users\matto\AppData\Local\R<span class="sc">-</span>MINI<span class="sc">~</span><span class="dv">1</span>\envs\giotto_env</span>
-<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>(giotto_env) PS <span class="sc">&gt;</span> python</span>
-<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>Python <span class="dv">3</span>.<span class="fl">10.2</span> <span class="sc">|</span> packaged by conda<span class="sc">-</span>forge <span class="sc">|</span> (main, Mar  <span class="dv">8</span> <span class="dv">2022</span>, <span class="dv">15</span><span class="sc">:</span><span class="dv">47</span><span class="sc">:</span><span class="dv">33</span>) [MSC v<span class="fl">.1929</span> <span class="dv">64</span> <span class="fu">bit</span> (AMD64)] on win32</span>
-<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a>Type <span class="st">"help"</span>, <span class="st">"copyright"</span>, <span class="st">"credits"</span> or <span class="st">"license"</span> <span class="cf">for</span> more information.</span>
-<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="sc">&gt;</span><span class="er">&gt;&gt;</span> import pandas, networkx, igraph, leidenalg, community, sklearn</span>
-<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="sc">&gt;</span><span class="er">&gt;&gt;</span></span></code></pre></div>
-</details><details><summary>
-UnsatisfiableError
-</summary><p>This error results from conflicts within the anaconda and miniconda
-environment. This error presents itself when conflicting versions of
-conda live on the same machine; conda environments can only be so
-isolated from each other. To begin the troubleshooting workflow, open a
-terminal (macOS, Linux) or an Anaconda Prompt (Windows), and identify
-the environments on the machine. If anaconda3 is installed on the
-Windows machine, there may be multiple options for this terminal; choose
-the Anaconda Prompt with “anaconda3” in parenthesis.</p>
-<p><strong>NOTE:</strong> The following commands will be shown as if
-within an Anaconda Prompt to emphasize the difference for Windows users;
-for these purposes, the only difference between terminals is the
-appearance of the message (i.e., (active_env) PS &gt;) preceding the
-textual entry. No output will be shown here as differences in OS,
-environments, and versions will vary.</p>
-<p>First, identify the environments on the machine:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>(base) PS <span class="sc">&gt;</span> conda info <span class="sc">--</span>envs</span></code></pre></div>
-<p>To proceed, any r-miniconda associated environments will be deleted,
-and the base environment will be updated. If <strong>any</strong>
-environment is frequently used for other analyses and a python version
-update is undesirable, it may be preserved by cloning the environment.
-The original environment, however, will be removed or updated, so ensure
-that files and workflows associated with this environment are redirected
-to the new, cloned environment. Ensure the path of the cloned
-environment is not associated with r-miniconda.</p>
-<p><strong>It is recommended that conda is updated within any cloned
-environment (see below).</strong></p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>(base) PS <span class="sc">&gt;</span> conda create <span class="sc">--</span>name my_base_clone <span class="sc">--</span>clone base</span></code></pre></div>
-<p>Verify that the clone exists to the proper specifications before
-proceeding by comparing packages and python versions:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>(base) PS <span class="sc">&gt;</span> conda info <span class="sc">--</span>envs</span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>(base) PS <span class="sc">&gt;</span> conda activate my_base_clone</span>
-<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>(my_base_clone) PS <span class="sc">&gt;</span> conda update conda</span>
-<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>(my_base_clone) PS <span class="sc">&gt;</span> python <span class="sc">-</span>V</span>
-<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>(my_base_clone) PS <span class="sc">&gt;</span> conda list</span>
-<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>(my_base_clone) PS <span class="sc">&gt;</span> conda activate base</span>
-<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>(base) PS <span class="sc">&gt;</span> python <span class="sc">-</span>V</span>
-<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>(base) PS <span class="sc">&gt;</span> conda list </span></code></pre></div>
-<p>Ensure the base environment is activated. If the r-miniconda
-environments are still on the machine, remove them. Specify the
-r-miniconda environments other than giotto_env, as these will be unique
-to the machine. This may be done at the command line:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>(base) PS <span class="sc">&gt;</span> conda env remove <span class="sc">--</span>name giotto_env</span>
-<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>(base) PS <span class="sc">&gt;</span> conda env remove <span class="sc">/</span>path<span class="sc">/</span>to<span class="sc">/</span>r<span class="sc">-</span>miniconda<span class="sc">/</span></span></code></pre></div>
-<p>Alternatively, in R, reticulate can uninstall miniconda and remove
-the associated environments:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/miniconda_uninstall.html" class="external-link">miniconda_uninstall</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>It is advisable to remove any and all environments which are outdated
-and/or no longer used.</p>
-<p>Recall that by default, Giotto installs a miniconda environment with
-python v3.10.2 for interfacing with R. Older versions of conda in the
-base environment cannot handle a python version that high in a different
-environment. Therefore, the recommended troubleshooting method is to
-update conda and python within the base environment at a minimum.
-Updating to python v3.8.5 at a minimum is recommended. It is advisable
-to update conda and python within <em>each</em> environment on the
-machine if feasible.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>(base) PS <span class="sc">&gt;</span> conda update conda</span>
-<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>(base) PS <span class="sc">&gt;</span> conda update python<span class="sc">==</span><span class="dv">3</span>.<span class="fl">8.5</span></span></code></pre></div>
-<p>Finally, close the terminal and open the RStudio, VSCode, or an
-alternative IDE. Running the following should ensure successful
-installation:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giottosuite.com">Giotto</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span>force_environment <span class="op">=</span> <span class="cn">TRUE</span>, force_miniconda <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-If the issue persists, please post an issue on the <a href="https://github.com/giotto-suite/Giotto/issues" class="external-link">GitHub</a>.
-</details></details><hr>
+A Python tool fails to install or run
+</summary><p>Python tools (cellpose, StarDist, Mesmer, scikit-image, tifffile,
+ONTraC, Scrublet) install their own environment on first use and run in
+a worker R session; no Giotto environment or conda is needed. See <a href="python.html">Python in Giotto Suite</a>. If one fails:</p>
+<ul>
+<li>The first run of a tool needs internet. Behind a proxy or on an
+offline node, fill the uv cache on a machine with internet first.</li>
+<li>reticulate 1.41 or later is needed:
+<code>install.packages("reticulate")</code>.</li>
+<li>With your own Python (<code>options(giotto.py_python =)</code> or
+<code>python_env</code>), the tool’s packages must be installed there;
+the error names the missing one.</li>
+<li>To debug a tool, run it in your own R session instead of a worker:
+<code>options(giotto.py_isolate = FALSE)</code>.</li>
+</ul>
+If the issue persists, please post an issue on <a href="https://github.com/giotto-suite/Giotto/issues" class="external-link">GitHub</a>.
+</details><hr>
 </div>
 <div class="section level2">
 <h2 id="errors-during-package-usage">Errors during package usage<a class="anchor" aria-label="anchor" href="#errors-during-package-usage"></a>
@@ -602,7 +313,7 @@ function <code>as_cholmod_sparse</code> not provided by package ‘Matrix’
 </summary><p>Matrix underwent a breaking change after versoin 1.6-2. Reinstalling
 <em>irlba</em> from source will fix this. See this GitHub <a href="https://github.com/bwlewis/irlba/issues/70" class="external-link">issue</a> for more
 info.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"irlba"</span>, type <span class="op">=</span> <span class="st">"source"</span><span class="op">)</span></span></code></pre></div>
 </details><details><summary>
 Xenium/VisiumHD: arrow and ZSTD support
@@ -611,7 +322,7 @@ Xenium/VisiumHD: arrow and ZSTD support
 compression which the default <em>arrow</em> installation may not
 provide. The following code will check for whether arrow is installed
 with ZSTD support, and reinstall if it is not present.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">has_arrow</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"arrow"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">zstd</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="va">has_arrow</span><span class="op">)</span> <span class="op">{</span></span>

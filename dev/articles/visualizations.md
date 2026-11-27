@@ -36,14 +36,6 @@ if(!"Giotto" %in% installed.packages()) {
 if(!"GiottoData" %in% installed.packages()) {
   pak::pkg_install("giotto-suite/GiottoData")
 }
-
-# Ensure the Python environment for Giotto has been installed
-genv_exists <- Giotto::checkGiottoEnvironment()
-
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment
-  Giotto::installGiottoEnvironment()
-}
 ```
 
 ## 3 Create a Giotto object
@@ -61,7 +53,6 @@ results_folder <- "/path/to/results/"
 # Optional: Specify a path to a Python executable within a conda or miniconda 
 # environment. If set to NULL (default), the Python executable within the previously
 # installed Giotto environment will be used.
-python_path <- NULL # alternatively, "/local/python/path/python" if desired.
 
 # Get the dataset
 GiottoData::getSpatialDataset(dataset = "merfish_preoptic", 
@@ -75,8 +66,7 @@ GiottoData::getSpatialDataset(dataset = "merfish_preoptic",
 instructions <- createGiottoInstructions(save_dir = results_folder, 
                                          save_plot = TRUE, 
                                          show_plot = FALSE, 
-                                         return_plot = FALSE, 
-                                         python_path = python_path)
+                                         return_plot = FALSE)
 ```
 
 ``` r

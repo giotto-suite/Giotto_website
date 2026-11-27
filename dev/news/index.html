@@ -72,6 +72,7 @@
       <ul class="navbar-nav me-auto"><li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-get-started" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Get started</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-get-started"><li><a class="dropdown-item" href="../articles/installation.html">Giotto Installation</a></li>
+    <li><a class="dropdown-item" href="../articles/python.html">Python in Giotto Suite</a></li>
     <li><a class="dropdown-item" href="../articles/ecosystem.html">Giotto Ecosystem</a></li>
     <li><a class="dropdown-item" href="../articles/structure.html">Giotto Class Structure</a></li>
     <li><a class="dropdown-item" href="../articles/general_workflow.html">General Giotto Workflow</a></li>
@@ -142,7 +143,6 @@
     <li><a class="dropdown-item" href="../articles/create_simulated_object.html">Create a simulated dataset object</a></li>
     <li><a class="dropdown-item" href="../articles/instructions.html">Giotto instructions</a></li>
     <li><a class="dropdown-item" href="../articles/import_utilities.html">Technology-specific importers</a></li>
-    <li><a class="dropdown-item" href="../articles/configuration.html">Giotto configuration</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pre-processing</h6></li>
     <li><a class="dropdown-item" href="../articles/feature_aggregation.html">Feature aggregation</a></li>
@@ -243,6 +243,8 @@
 <code>gefToGiotto()</code> is no longer re-exported (it is removed from GiottoClass). <code><a href="../reference/importStereoSeq.html">importStereoSeq()</a></code> reads Stereo-seq GEF files.</li>
 <li>
 <code>getGEFtxCoords()</code> is removed. <code><a href="../reference/importStereoSeq.html">importStereoSeq()</a></code> reads Stereo-seq GEF files.</li>
+<li>
+<code>giottoToAnndataZarr()</code> is retired, and basilisk is no longer imported. <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/giottoToAnnData.html" class="external-link">GiottoConnect::giottoToAnnData()</a></code> writes AnnData (.h5ad) without Python.</li>
 <li>
 <code>doScrubletDetect()</code> moves to GiottoConnect as <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/runScrublet.html" class="external-link">runScrublet()</a></code>, which gives the same scores (columns <code>scrublet_score</code> / <code>scrublet_doublet</code>) and installs Python’s scrublet with <code><a href="https://rstudio.github.io/reticulate/reference/py_require.html" class="external-link">reticulate::py_require()</a></code> instead of the Giotto conda environment.</li>
 <li>Louvain clustering runs through igraph (<code><a href="https://r.igraph.org/reference/cluster_louvain.html" class="external-link">igraph::cluster_louvain()</a></code>) instead of Python’s community module: <code>doLouvainCluster(version = "igraph")</code> (the new default), <code>clusterParam("louvain_igraph")</code> (<code>LouvainIgraphClusParam</code>), <code>clusterCells(cluster_method = "louvain_igraph")</code>, <code>subClusterCells(cluster_method = "louvain_igraph")</code> and <code>doLouvainSubCluster(version = "igraph")</code>. <code>"community"</code> / <code>"louvain_community"</code>, <code>LouvainCommunityClusParam</code> and <code>inst/python/python_louvain.py</code> are removed, and <code>louv_random</code> is deprecated. Clusters differ from the Python ones; <code><a href="../reference/doLouvainCluster.html">doLouvainCluster()</a></code> now sets a seed by default (<code>set_seed = TRUE</code>) for reproducible clusters.</li>
@@ -889,7 +891,7 @@
 <h2 class="pkg-version" data-toc-text="4.1.3" id="giotto-413-20241027">Giotto 4.1.3 (2024/10/27)<a class="anchor" aria-label="anchor" href="#giotto-413-20241027"></a></h2>
 <div class="section level3">
 <h3 id="new-4-1-3">New<a class="anchor" aria-label="anchor" href="#new-4-1-3"></a></h3>
-<ul><li>Add <code><a href="../reference/giottoToAnndataZarr.html">giottoToAnndataZarr()</a></code> to create a local anndata zarr folder and interact with the vitessceR package.</li>
+<ul><li>Add <code>giottoToAnndataZarr()</code> to create a local anndata zarr folder and interact with the vitessceR package.</li>
 <li>
 <code><a href="../reference/reduceDims.html">reduceDims()</a></code> API function for dimension reductions</li>
 <li>

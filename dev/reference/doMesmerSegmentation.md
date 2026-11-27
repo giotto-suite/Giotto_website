@@ -10,7 +10,7 @@ parameters needed
 doMesmerSegmentation(
   input,
   mask_output,
-  python_env = "giotto_segmentation",
+  python_env = NULL,
   nucleus_channel = 1,
   membrane_channel = 2,
   micron_scale = 0.25,
@@ -31,8 +31,10 @@ doMesmerSegmentation(
 
 - python_env:
 
-  python environment with deepcell installed. default =
-  "giotto_segmentation". See deepcell official website for more details.
+  \`NULL\` (default): deepcell is installed on first use in an
+  environment of its own and run in a worker R session
+  (\`GiottoUtils::py_run()\`). Or the path to a Python executable that
+  has deepcell installed.
 
 - nucleus_channel:
 

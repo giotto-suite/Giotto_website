@@ -9,18 +9,7 @@ if (!requireNamespace("ggridges", quietly = TRUE)) {
     install.packages("ggridges")
 }
 
-# Ensure Giotto can access a python env
-genv_exists <- checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to
-  # install a default Giotto environment
-  installGiottoEnvironment()
-}
-
 # set specific python path to use or python environment name
-# leaving NULL will use default (see ?set_giotto_python_path())
-python_path <- NULL
-set_giotto_python_path(python_path = python_path)
 ```
 
 ## 1 Dataset Setup
@@ -189,7 +178,8 @@ force(star_locs)
     33598:  1648  1181    94
 
 ``` r
-requireNamespace("rgl", quietly = TRUE) {
+
+if (!requireNamespace("rgl", quietly = TRUE)) {
     install.packages("rgl")
 }
 rgl::plot3d(star_locs$x, star_locs$y, star_locs$z)

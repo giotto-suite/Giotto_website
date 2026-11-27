@@ -510,7 +510,8 @@ plot(tx$NegControlCodeword)
 ![](images/import_utilities/xenium_ncc.png)
 
 ``` r
-polys <- xenium$load_polys()}
+
+polys <- xenium$load_polys()
 plot(polys[sample(nrow(polys), 50000)]) # plot a subset
 ```
 

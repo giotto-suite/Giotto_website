@@ -19,13 +19,6 @@ if(!"GiottoData" %in% installed.packages()) {
 }
 
 library(Giotto)
-
-# Ensure the Python environment for Giotto has been installed.
-genv_exists <- checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment.
-  installGiottoEnvironment()
-}
 ```
 
 ## 2 Install the vitessceR package
@@ -57,8 +50,9 @@ In addition, you need to specify the path or name for creating a new
 folder that will store the Anndata-Zarr information.
 
 ``` r
+
 giottoToAnndataZarr(visium_object,
-                    expression = "raw"
+                    expression = "raw",
                     output_path = "visium_anndata_zarr")
 
 giottoToAnndataZarr(vizgen_object,

@@ -24,6 +24,7 @@ counts_mouse4_sagittal.h5ad from
 ## 3 Set up Giotto
 
 ``` r
+
 # Ensure Giotto Suite is installed.
 if(!"Giotto" %in% installed.packages()) {
   pak::pkg_install("giotto-suite/Giotto")
@@ -31,14 +32,7 @@ if(!"Giotto" %in% installed.packages()) {
 
 # Ensure GiottoData, a small, helper module for tutorials, is installed.
 if(!"GiottoData" %in% installed.packages()) {
-  pak::pkg_install(("giotto-suite/GiottoData")
-}
-
-# Ensure the Python environment for Giotto has been installed.
-genv_exists <- Giotto::checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment.
-  Giotto::installGiottoEnvironment()
+  pak::pkg_install("giotto-suite/GiottoData")
 }
 ```
 
@@ -52,7 +46,6 @@ results_folder <- "/path/to/results/"
 # Optional: Specify a path to a Python executable within a conda or miniconda 
 # environment. If set to NULL (default), the Python executable within the previously
 # installed Giotto environment will be used.
-python_path <- NULL # alternatively, "/local/python/path/python" if desired.
 ```
 
 ## 4 Read the Anndata file
@@ -692,8 +685,7 @@ sc_metadata <-  "brain_sc_metadata.csv"
 
 instructions <- createGiottoInstructions(save_plot = TRUE,
                                          show_plot = FALSE,
-                                         return_plot = FALSE,
-                                         python_path = NULL)
+                                         return_plot = FALSE)
 
 giotto_SC <- createGiottoObject(expression = sc_expression,
                                 instructions = instructions)

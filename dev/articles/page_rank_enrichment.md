@@ -31,14 +31,6 @@ if(!"GiottoData" %in% installed.packages()) {
 }
 
 library(Giotto)
-
-# Ensure the Python environment for Giotto has been installed
-genv_exists <- checkGiottoEnvironment()
-
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment
-  installGiottoEnvironment()
-}
 ```
 
 ``` r
@@ -62,13 +54,11 @@ GiottoData::getSpatialDataset(dataset = "scRNA_mouse_brain",
 
 results_folder <- "path/to/results"
 
-python_path <- NULL
 
 instructions <- createGiottoInstructions(
     save_dir = results_folder,
     save_plot = TRUE,
-    show_plot = FALSE,
-    python_path = python_path
+    show_plot = FALSE
 )
 
 sc_expression <- "data/scRNA_mouse_brain/brain_sc_expression_matrix.txt.gz"
@@ -175,10 +165,8 @@ cell_types_kept <- setdiff(names(pvalues), "cell_ID")
 colSums(as.matrix(pvalues[, -"cell_ID"]) < 0.05)
 ```
 
-``` r
-     Ependymal         Oligos PeripheralGlia       Vascular 
-            44            178             55             69 
-```
+         Ependymal         Oligos PeripheralGlia       Vascular 
+                44            178             55             69 
 
 Cell types with too few marker genes in the spatial data are left out
 (see `min_overlap_genes`), which is why only four of the seven appear

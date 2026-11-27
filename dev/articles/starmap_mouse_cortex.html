@@ -93,6 +93,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-get-started" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Get started</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-get-started">
 <li><a class="dropdown-item" href="../articles/installation.html">Giotto Installation</a></li>
+    <li><a class="dropdown-item" href="../articles/python.html">Python in Giotto Suite</a></li>
     <li><a class="dropdown-item" href="../articles/ecosystem.html">Giotto Ecosystem</a></li>
     <li><a class="dropdown-item" href="../articles/structure.html">Giotto Class Structure</a></li>
     <li><a class="dropdown-item" href="../articles/general_workflow.html">General Giotto Workflow</a></li>
@@ -169,7 +170,6 @@
     <li><a class="dropdown-item" href="../articles/create_simulated_object.html">Create a simulated dataset object</a></li>
     <li><a class="dropdown-item" href="../articles/instructions.html">Giotto instructions</a></li>
     <li><a class="dropdown-item" href="../articles/import_utilities.html">Technology-specific importers</a></li>
-    <li><a class="dropdown-item" href="../articles/configuration.html">Giotto configuration</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pre-processing</h6></li>
     <li><a class="dropdown-item" href="../articles/feature_aggregation.html">Feature aggregation</a></li>
@@ -269,18 +269,7 @@
 <span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"ggridges"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="co"># Ensure Giotto can access a python env</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="co"># The following command need only be run once to</span></span>
-<span>  <span class="co"># install a default Giotto environment</span></span>
-<span>  <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># set specific python path to use or python environment name</span></span>
-<span><span class="co"># leaving NULL will use default (see ?set_giotto_python_path())</span></span>
-<span><span class="va">python_path</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
-<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">set_giotto_python_path</a></span><span class="op">(</span>python_path <span class="op">=</span> <span class="va">python_path</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># set specific python path to use or python environment name</span></span></code></pre></div>
 <div class="section level2" number="1">
 <h2 id="dataset-setup">
 <span class="header-section-number">1</span> Dataset Setup<a class="anchor" aria-label="anchor" href="#dataset-setup"></a>
@@ -441,10 +430,11 @@ Rorb     0  0  0  0  0  0  0 3526   0   0</code></pre>
 33596:  1563  1508    94
 33597:  1568  1390    94
 33598:  1648  1181    94</code></pre>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">requireNamespace</span>(<span class="st">"rgl"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>) {</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>    <span class="fu">install.packages</span>(<span class="st">"rgl"</span>)</span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>}</span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>rgl<span class="sc">::</span><span class="fu">plot3d</span>(star_locs<span class="sc">$</span>x, star_locs<span class="sc">$</span>y, star_locs<span class="sc">$</span>z)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"rgl"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"rgl"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="fu">rgl</span><span class="fu">::</span><span class="fu">plot3d</span><span class="op">(</span><span class="va">star_locs</span><span class="op">$</span><span class="va">x</span>, <span class="va">star_locs</span><span class="op">$</span><span class="va">y</span>, <span class="va">star_locs</span><span class="op">$</span><span class="va">z</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <img src="images/starmap_mouse_brain/0_rgl.png" alt="Preview of STARmap 3D Coordinates" width="60%"><p class="caption">
 Preview of STARmap 3D Coordinates

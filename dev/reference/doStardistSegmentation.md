@@ -10,7 +10,7 @@ main parameters needed
 doStardistSegmentation(
   input,
   mask_output,
-  python_env = "giotto_segmentation",
+  python_env = NULL,
   model_name = "2D_versatile_fluo",
   nuclei_channel = NULL,
   prob_thresh = NULL,
@@ -32,8 +32,10 @@ doStardistSegmentation(
 
 - python_env:
 
-  python environment with Stardist installed. default =
-  "giotto_segmentation". See Stardist official website for more details.
+  \`NULL\` (default): stardist is installed on first use in an
+  environment of its own and run in a worker R session
+  (\`GiottoUtils::py_run()\`). Or the path to a Python executable that
+  has stardist installed.
 
 - model_name:
 

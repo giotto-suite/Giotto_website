@@ -1174,8 +1174,6 @@ Convert other type of objects into a Giotto object and vice versa.
 - [`giottoToAnnData()`](https://giotto-suite.github.io/GiottoConnect/reference/giottoToAnnData.html)
   : Convert a Giotto object to an AnnData .h5ad file (from
   GiottoConnect)
-- [`giottoToAnndataZarr()`](https://giottosuite.com/dev/reference/giottoToAnndataZarr.md)
-  : Create a local anndata zarr folder
 - [`giottoMasterToSuite()`](https://giotto-suite.github.io/GiottoClass/reference/giottoMasterToSuite.html)
   : Convert a master Giotto object to suite (from GiottoClass)
 - [`convertEnsemblToGeneSymbol()`](https://giottosuite.com/dev/reference/convertEnsemblToGeneSymbol.md)

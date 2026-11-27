@@ -38,13 +38,6 @@ if(!"Giotto" %in% installed.packages()) {
   pak::pkg_install("giotto-suite/Giotto")
 }
 
-# Ensure the Python environment for Giotto has been installed.
-genv_exists <- Giotto::checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment.
-  Giotto::installGiottoEnvironment()
-}
-
 library(Giotto)
 ```
 
@@ -63,14 +56,12 @@ results_folder <- "path/to/results"
 
 # Optional: Specify the path to a Python executable within a conda or miniconda 
 # environment. If set to NULL (default), the Python executable within the previously installed Giotto environment will be used.
-python_path <- NULL # alternatively, "/local/python/path/python" if desired.
 
 # Create Giotto Instructions
 instructions <- createGiottoInstructions(save_dir = results_folder,
                                          save_plot = TRUE,
                                          show_plot = FALSE,
-                                         return_plot = FALSE,
-                                         python_path = python_path)
+                                         return_plot = FALSE)
 ```
 
 The stereo-seq readers will look for the standardized files organization

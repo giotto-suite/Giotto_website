@@ -57,21 +57,21 @@ The most commonly used settings are:
   plot
 - `return_plot` - logical. Whether a plot object (for example a
   {ggplot2} `gg` object) should be returned from the plotting function.
-- `python_path` - filepath to a python binary to use with {Giotto}.
+- `python_path` - kept for older scripts; Python tools no longer use it
+  (see [Python in Giotto
+  Suite](https://giottosuite.com/dev/articles/python.md)).
 
 A commonly used set of instructions:
 
 ``` r
 
 results_folder <- "path/to/results"
-python_path <- NULL # NULL will let {Giotto} autodetect
 
 intrs <- createGiottoInstructions(
     save_dir = results_folder,
     save_plot = TRUE,
     show_plot = FALSE,
-    return_plot = FALSE,
-    python_path = python_path
+    return_plot = FALSE
 )
 ```
 
@@ -88,42 +88,13 @@ can be slow.
 It additionally prevents double plotting form occurring when the
 plotting function output is not assigned into a variable.
 
-A python path to a specified python binary is also specified here,
-although it is usually preferable to set the following global option in
-the `~/.Rprofile` when the same particular path is needed every time,
-and then allow autodetection to find it. (see next section)
+### Python
 
-``` r
-
-options("giotto.py_path" = "???")
-```
-
-### Python Environment Considerations
-
-The python environment to use via {reticulate} can be set with the
-`python_path` param. Providing `NULL` will have {Giotto} autodetect for
-a python environment to use (usually the `giotto_env`).
-
-- See [Giotto python
-  configuration](https://giottosuite.com/dev/articles/configuration.md)
-  and/or
-  [`?GiottoClass::giotto_python`](https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html)
-  for more info on how to set up a {Giotto} miniconda python environment
-  and how autodetection of an environment to use works.
-
-Creating a set of instructions will call
-[`GiottoClass::set_giotto_python_path()`](https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html)
-under the hood and activate a python environment.
-
-**Critically, only one {reticulate} python environment can be activated
-per session.** If you would like to avoid activating a python
-environment, you can set the following global option before running a
-`giotto` or `giottoInstructions` object creation function:
-
-``` r
-
-options("giotto.use_conda" = FALSE)
-```
+Instructions do not set up or start Python. Functions that wrap a Python
+tool install its environment on first use and run it in a separate R
+session; to use your own Python, set `options(giotto.py_python =)`. See
+[Python in Giotto
+Suite](https://giottosuite.com/dev/articles/python.md).
 
 ## Manipulating Giotto Instructions
 

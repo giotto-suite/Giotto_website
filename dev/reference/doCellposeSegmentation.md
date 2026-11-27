@@ -10,7 +10,7 @@ parameters needed
 doCellposeSegmentation(
   input,
   mask_output,
-  python_env = "giotto_segmentation",
+  python_env = NULL,
   channel_1 = 0,
   channel_2 = 0,
   model_name = "cyto3",
@@ -52,6 +52,13 @@ doCellposeSegmentation(
 - mask_output:
 
   required. Provide a path to the output mask file.
+
+- python_env:
+
+  \`NULL\` (default): cellpose is installed on first use in an
+  environment of its own and run in a worker R session
+  (\`GiottoUtils::py_run()\`). Or the path to a Python executable that
+  has cellpose installed.
 
 - channel_1:
 
@@ -175,11 +182,6 @@ doCellposeSegmentation(
 - progress:
 
   progress bar. Defaults to NULL
-
-- python_path:
-
-  python environment with cellpose installed. default =
-  "giotto_segmentation".
 
 ## Value
 

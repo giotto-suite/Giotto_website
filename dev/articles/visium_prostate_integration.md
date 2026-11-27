@@ -29,14 +29,6 @@ High resolution png from original tissue:
 if(!"Giotto" %in% installed.packages()) {
   pak::pkg_install("giotto-suite/Giotto")
 }
-
-# Ensure the Python environment for Giotto has been installed
-genv_exists <- Giotto::checkGiottoEnvironment()
-
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment
-  Giotto::installGiottoEnvironment()
-}
 ```
 
 ``` r
@@ -49,7 +41,6 @@ results_folder <- "/path/to/results/"
 # 2. set giotto python path
 # set python path to your preferred python version path
 # set python path to NULL if you want to automatically install (only the 1st time) and use the giotto miniconda environment
-python_path <- NULL
 ```
 
 ``` r
@@ -58,8 +49,7 @@ python_path <- NULL
 instructions <- createGiottoInstructions(save_dir = results_folder, 
                                          save_plot = TRUE, 
                                          show_plot = FALSE, 
-                                         return_plot = FALSE, 
-                                         python_path = python_path)
+                                         return_plot = FALSE)
 ```
 
 ## 3 Create Giotto objects and join
@@ -421,7 +411,7 @@ al.](https://pubmed.ncbi.nlm.nih.gov/33032611/) from two prostate cancer
 patients. The raw dataset can be found
 [here](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE157703)
 Giotto_SC is processed variable in the [single cell RNAseq
-tutorial](https://giottosuite.com/articles/singlecell_prostate_standard_Sep29_21.html).
+tutorial](https://giottosuite.com/dev/articles/singlecell_prostate_standard.md).
 You can also get access to the processed files of this dataset using
 getSpatialDataset
 

@@ -93,6 +93,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-get-started" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Get started</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-get-started">
 <li><a class="dropdown-item" href="../articles/installation.html">Giotto Installation</a></li>
+    <li><a class="dropdown-item" href="../articles/python.html">Python in Giotto Suite</a></li>
     <li><a class="dropdown-item" href="../articles/ecosystem.html">Giotto Ecosystem</a></li>
     <li><a class="dropdown-item" href="../articles/structure.html">Giotto Class Structure</a></li>
     <li><a class="dropdown-item" href="../articles/general_workflow.html">General Giotto Workflow</a></li>
@@ -169,7 +170,6 @@
     <li><a class="dropdown-item" href="../articles/create_simulated_object.html">Create a simulated dataset object</a></li>
     <li><a class="dropdown-item" href="../articles/instructions.html">Giotto instructions</a></li>
     <li><a class="dropdown-item" href="../articles/import_utilities.html">Technology-specific importers</a></li>
-    <li><a class="dropdown-item" href="../articles/configuration.html">Giotto configuration</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pre-processing</h6></li>
     <li><a class="dropdown-item" href="../articles/feature_aggregation.html">Feature aggregation</a></li>
@@ -274,13 +274,6 @@
 <span><span class="co"># Ensure GiottoData, a small, helper module for tutorials, is installed.</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="st">"GiottoData"</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/GiottoData"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># Ensure the Python environment for Giotto has been installed.</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="co"># The following command need only be run once to install the Giotto environment.</span></span>
-<span>    <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2" number="2">
@@ -323,8 +316,7 @@ Preparation<a class="anchor" aria-label="anchor" href="#giotto-instructions-and-
 <span>    save_plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>    show_plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>    return_plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>    save_dir <span class="op">=</span> <span class="va">results_folder</span>,</span>
-<span>    python_path <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>    save_dir <span class="op">=</span> <span class="va">results_folder</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># create giotto object from provided paths ####</span></span>
@@ -1006,37 +998,38 @@ Cell-Type/Cell-Type Interactions<a class="anchor" aria-label="anchor" href="#cel
 <span class="header-section-number">16</span> Cell Neighborhood:
 Interaction Changed Features<a class="anchor" aria-label="anchor" href="#cell-neighborhood-interaction-changed-features"></a>
 </h2>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="fu">library</span>(future)</span>
-<span id="cb39-2"><a href="#cb39-2" tabindex="-1"></a></span>
-<span id="cb39-3"><a href="#cb39-3" tabindex="-1"></a><span class="do">## select top 25th highest expressing genes</span></span>
-<span id="cb39-4"><a href="#cb39-4" tabindex="-1"></a>gene_metadata <span class="ot">&lt;-</span> <span class="fu">fDataDT</span>(SS_seqfish)</span>
-<span id="cb39-5"><a href="#cb39-5" tabindex="-1"></a></span>
-<span id="cb39-6"><a href="#cb39-6" tabindex="-1"></a><span class="fu">plot</span>(gene_metadata<span class="sc">$</span>nr_cells, gene_metadata<span class="sc">$</span>mean_expr)</span>
-<span id="cb39-7"><a href="#cb39-7" tabindex="-1"></a></span>
-<span id="cb39-8"><a href="#cb39-8" tabindex="-1"></a><span class="fu">plot</span>(gene_metadata<span class="sc">$</span>nr_cells, gene_metadata<span class="sc">$</span>mean_expr_det)</span>
-<span id="cb39-9"><a href="#cb39-9" tabindex="-1"></a></span>
-<span id="cb39-10"><a href="#cb39-10" tabindex="-1"></a><span class="fu">quantile</span>(gene_metadata<span class="sc">$</span>mean_expr_det)</span>
-<span id="cb39-11"><a href="#cb39-11" tabindex="-1"></a></span>
-<span id="cb39-12"><a href="#cb39-12" tabindex="-1"></a>high_expressed_genes <span class="ot">&lt;-</span> gene_metadata[mean_expr_det <span class="sc">&gt;</span> <span class="fl">3.5</span>]<span class="sc">$</span>feat_ID</span>
-<span id="cb39-13"><a href="#cb39-13" tabindex="-1"></a></span>
-<span id="cb39-14"><a href="#cb39-14" tabindex="-1"></a><span class="do">## identify genes that are associated with proximity to other cell types</span></span>
-<span id="cb39-15"><a href="#cb39-15" tabindex="-1"></a><span class="fu">plan</span>(<span class="st">"multisession"</span>, <span class="at">workers =</span> <span class="dv">6</span>)</span>
-<span id="cb39-16"><a href="#cb39-16" tabindex="-1"></a></span>
-<span id="cb39-17"><a href="#cb39-17" tabindex="-1"></a>ICFsForesHighGenes <span class="ot">&lt;-</span> <span class="fu">findInteractionChangedFeats</span>(</span>
-<span id="cb39-18"><a href="#cb39-18" tabindex="-1"></a>    <span class="at">gobject =</span> SS_seqfish,</span>
-<span id="cb39-19"><a href="#cb39-19" tabindex="-1"></a>    <span class="at">selected_feats =</span> high_expressed_genes,</span>
-<span id="cb39-20"><a href="#cb39-20" tabindex="-1"></a>    <span class="at">spatial_network_name =</span> <span class="st">"Delaunay_network"</span>,</span>
-<span id="cb39-21"><a href="#cb39-21" tabindex="-1"></a>    <span class="at">cluster_column =</span> <span class="st">"cell_types"</span></span>
-<span id="cb39-22"><a href="#cb39-22" tabindex="-1"></a>    <span class="at">diff_test =</span> <span class="st">"permutation"</span>,</span>
-<span id="cb39-23"><a href="#cb39-23" tabindex="-1"></a>    <span class="at">adjust_method =</span> <span class="st">"fdr"</span>,</span>
-<span id="cb39-24"><a href="#cb39-24" tabindex="-1"></a>    <span class="at">nr_permutations =</span> <span class="dv">2000</span>,</span>
-<span id="cb39-25"><a href="#cb39-25" tabindex="-1"></a>    <span class="at">do_parallel =</span> <span class="cn">TRUE</span></span>
-<span id="cb39-26"><a href="#cb39-26" tabindex="-1"></a>)</span>
-<span id="cb39-27"><a href="#cb39-27" tabindex="-1"></a></span>
-<span id="cb39-28"><a href="#cb39-28" tabindex="-1"></a><span class="do">## visualize all genes</span></span>
-<span id="cb39-29"><a href="#cb39-29" tabindex="-1"></a><span class="fu">plotCellProximityFeats</span>(SS_seqfish,</span>
-<span id="cb39-30"><a href="#cb39-30" tabindex="-1"></a>                       <span class="at">icfObject =</span> ICFsForesHighGenes,</span>
-<span id="cb39-31"><a href="#cb39-31" tabindex="-1"></a>                       <span class="at">method =</span> <span class="st">"dotplot"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://future.futureverse.org" class="external-link">future</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## select top 25th highest expressing genes</span></span>
+<span><span class="va">gene_metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">SS_seqfish</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gene_metadata</span><span class="op">$</span><span class="va">nr_cells</span>, <span class="va">gene_metadata</span><span class="op">$</span><span class="va">mean_expr</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gene_metadata</span><span class="op">$</span><span class="va">nr_cells</span>, <span class="va">gene_metadata</span><span class="op">$</span><span class="va">mean_expr_det</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">gene_metadata</span><span class="op">$</span><span class="va">mean_expr_det</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">high_expressed_genes</span> <span class="op">&lt;-</span> <span class="va">gene_metadata</span><span class="op">[</span><span class="va">mean_expr_det</span> <span class="op">&gt;</span> <span class="fl">3.5</span><span class="op">]</span><span class="op">$</span><span class="va">feat_ID</span></span>
+<span></span>
+<span><span class="co">## identify genes that are associated with proximity to other cell types</span></span>
+<span><span class="fu">plan</span><span class="op">(</span><span class="st">"multisession"</span>, workers <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ICFsForesHighGenes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/findInteractionChangedFeats.html">findInteractionChangedFeats</a></span><span class="op">(</span></span>
+<span>    gobject <span class="op">=</span> <span class="va">SS_seqfish</span>,</span>
+<span>    selected_feats <span class="op">=</span> <span class="va">high_expressed_genes</span>,</span>
+<span>    spatial_network_name <span class="op">=</span> <span class="st">"Delaunay_network"</span>,</span>
+<span>    cluster_column <span class="op">=</span> <span class="st">"cell_types"</span>,</span>
+<span>    diff_test <span class="op">=</span> <span class="st">"permutation"</span>,</span>
+<span>    adjust_method <span class="op">=</span> <span class="st">"fdr"</span>,</span>
+<span>    nr_permutations <span class="op">=</span> <span class="fl">2000</span>,</span>
+<span>    do_parallel <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## visualize all genes</span></span>
+<span><span class="fu"><a href="../reference/plotCellProximityFeats.html">plotCellProximityFeats</a></span><span class="op">(</span><span class="va">SS_seqfish</span>,</span>
+<span>                       icfObject <span class="op">=</span> <span class="va">ICFsForesHighGenes</span>,</span>
+<span>                       method <span class="op">=</span> <span class="st">"dotplot"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## filter genes</span></span>
 <span><span class="va">ICFscoresFilt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/filterInteractionChangedFeats.html">filterICF</a></span><span class="op">(</span><span class="va">ICFsForesHighGenes</span><span class="op">)</span></span>

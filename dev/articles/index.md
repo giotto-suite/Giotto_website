@@ -9,6 +9,8 @@ Install Giotto, understand the object, and run your first workflow.
 - [Browse datasets](https://giottosuite.com/dev/articles/datasets.md):
 - [Browse tutorials](https://giottosuite.com/dev/articles/tutorials.md):
 - [Installation](https://giottosuite.com/dev/articles/installation.md):
+- [Python in Giotto
+  Suite](https://giottosuite.com/dev/articles/python.md):
 - [](https://giottosuite.com/dev/articles/ecosystem.md):
 - [An introduction to the Giotto Suite
   classes](https://giottosuite.com/dev/articles/structure.md):
@@ -44,8 +46,6 @@ Creating, configuring and inspecting the core Giotto object.
   instructions](https://giottosuite.com/dev/articles/instructions.md):
 - [Technology-Specific Import
   Utilities](https://giottosuite.com/dev/articles/import_utilities.md):
-- [Giotto
-  Configuration](https://giottosuite.com/dev/articles/configuration.md):
 
 ### Pre-processing
 

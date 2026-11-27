@@ -14,13 +14,6 @@ example works with Lung12.
 if(!"Giotto" %in% installed.packages()) {
   pak::pkg_install("giotto-suite/Giotto")
 }
-
-# Ensure the Python environment for Giotto has been installed.
-genv_exists <- Giotto::checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment.
-  Giotto::installGiottoEnvironment()
-}
 ```
 
 ## 2 Setup
@@ -35,7 +28,6 @@ results_folder <- "/path/to/results/"
 # Optional: Specify a path to a Python executable within a conda or miniconda
 # environment. If set to NULL (default), the Python executable within the previously
 # installed Giotto environment will be used.
-python_path <- NULL # alternatively, "/local/python/path/python" if desired.
 
 ## Set object behavior
 # by directly saving plots, but not rendering them you will save a lot of time
@@ -43,8 +35,7 @@ instrs <- createGiottoInstructions(
     save_dir = results_folder,
     save_plot = TRUE,
     show_plot = FALSE,
-    return_plot = FALSE,
-    python_path = python_path
+    return_plot = FALSE
 )
 ```
 

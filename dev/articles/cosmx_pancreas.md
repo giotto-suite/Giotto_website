@@ -28,13 +28,6 @@ Install the Giotto package and the Giotto environment.
 if(!"Giotto" %in% installed.packages()) {
   pak::pkg_install("giotto-suite/Giotto")
 }
-
-# Ensure the Python environment for Giotto has been installed.
-genv_exists <- Giotto::checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment.
-  Giotto::installGiottoEnvironment()
-}
 ```
 
 Set the instructions to build the Giotto object and run the analysis.
@@ -49,7 +42,6 @@ results_folder <- "/path/to/results/"
 # Optional: Specify a path to a Python executable within a conda or miniconda
 # environment. If set to NULL (default), the Python executable within the previously
 # installed Giotto environment will be used.
-python_path <- NULL # alternatively, "/local/python/path/python" if desired.
 
 ## Set object behavior
 # by directly saving plots, but not rendering them you will save a lot of time
@@ -57,8 +49,7 @@ instructions <- createGiottoInstructions(
     save_dir = results_folder,
     save_plot = TRUE,
     show_plot = FALSE,
-    return_plot = FALSE,
-    python_path = python_path
+    return_plot = FALSE
 )
 
 ## provide the path to "Pancreas-CosMx-WTx-FlatFiles" folder.

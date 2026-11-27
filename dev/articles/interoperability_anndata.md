@@ -76,13 +76,11 @@ g <- createNearestNetwork(g,
 list_nearest_networks(g, spat_unit = "aggregate")
 ```
 
-``` r
-   spat_unit feat_type nn_type        name
-      <char>    <char>  <char>      <char>
-1: aggregate       rna     sNN     sNN.pca
-2: aggregate       rna     kNN    kNN.umap
-3: aggregate       rna     kNN new_network
-```
+       spat_unit feat_type nn_type        name
+          <char>    <char>  <char>      <char>
+    1: aggregate       rna     sNN     sNN.pca
+    2: aggregate       rna     kNN    kNN.umap
+    3: aggregate       rna     kNN new_network
 
 ## 4 Giotto to AnnData
 
@@ -122,16 +120,14 @@ The parts of the Giotto object go to their usual AnnData places:
 anndataR::read_h5ad(file.path(results_folder, "aggregate_rna.h5ad"))
 ```
 
-``` r
-InMemoryAnnData object with n_obs × n_vars = 462 × 337
-    obs: 'nr_feats', 'perc_feats', 'total_expr', 'leiden_clus', 'louvain_clus'
-    var: 'nr_cells', 'perc_cells', 'total_expr', 'mean_expr', 'mean_expr_det', 'hvg_orig', 'var', 'hvf'
-    uns: 'giottoConnect', 'kNN.umap', 'new_network', 'pca', 'sNN.pca', 'spatial', 'spatial_Delaunay_network', 'spatial_kNN_network'
-    obsm: 'X_pca', 'X_tsne', 'X_umap', 'spatial'
-    varm: 'PCs'
-    layers: 'counts', 'pearson', 'scaled'
-    obsp: 'kNN.umap_connectivities', 'kNN.umap_distances', 'new_network_connectivities', 'new_network_distances', 'sNN.pca_connectivities', 'sNN.pca_distances', 'spatial_Delaunay_network_connectivities', 'spatial_Delaunay_network_distances', 'spatial_kNN_network_connectivities', 'spatial_kNN_network_distances'
-```
+    InMemoryAnnData object with n_obs × n_vars = 462 × 337
+        obs: 'nr_feats', 'perc_feats', 'total_expr', 'leiden_clus', 'louvain_clus'
+        var: 'nr_cells', 'perc_cells', 'total_expr', 'mean_expr', 'mean_expr_det', 'hvg_orig', 'var', 'hvf'
+        uns: 'giottoConnect', 'kNN.umap', 'new_network', 'pca', 'sNN.pca', 'spatial', 'spatial_Delaunay_network', 'spatial_kNN_network'
+        obsm: 'X_pca', 'X_tsne', 'X_umap', 'spatial'
+        varm: 'PCs'
+        layers: 'counts', 'pearson', 'scaled'
+        obsp: 'kNN.umap_connectivities', 'kNN.umap_distances', 'new_network_connectivities', 'new_network_distances', 'sNN.pca_connectivities', 'sNN.pca_distances', 'spatial_Delaunay_network_connectivities', 'spatial_Delaunay_network_distances', 'spatial_kNN_network_connectivities', 'spatial_kNN_network_distances'
 
 In scanpy, a network is used by its name, for example:
 
@@ -150,9 +146,7 @@ compares the written file with the Giotto object, part by part:
 readbackCheck(g, file.path(results_folder, "aggregate_rna.h5ad"))
 ```
 
-``` r
-<giottoReadback> PASS: 44 MATCH, 0 DECLARED, 0 UNDECLARED
-```
+    <giottoReadback> PASS: 44 MATCH, 0 DECLARED, 0 UNDECLARED
 
 ## 5 AnnData to Giotto
 
@@ -171,25 +165,23 @@ list_spatial_networks(aggregate_rna)
 list_expression(aggregate_rna)
 ```
 
-``` r
-   spat_unit feat_type nn_type        name
-      <char>    <char>  <char>      <char>
-1:      cell       rna     kNN    kNN.umap
-2:      cell       rna     kNN new_network
-3:      cell       rna     sNN     sNN.pca
+       spat_unit feat_type nn_type        name
+          <char>    <char>  <char>      <char>
+    1:      cell       rna     kNN    kNN.umap
+    2:      cell       rna     kNN new_network
+    3:      cell       rna     sNN     sNN.pca
 
-   spat_unit             name
-      <char>           <char>
-1:      cell Delaunay_network
-2:      cell      kNN_network
+       spat_unit             name
+          <char>           <char>
+    1:      cell Delaunay_network
+    2:      cell      kNN_network
 
-   spat_unit feat_type       name
-      <char>    <char>     <char>
-1:      cell       rna        raw
-2:      cell       rna normalized
-3:      cell       rna    pearson
-4:      cell       rna     scaled
-```
+       spat_unit feat_type       name
+          <char>    <char>     <char>
+    1:      cell       rna        raw
+    2:      cell       rna normalized
+    3:      cell       rna    pearson
+    4:      cell       rna     scaled
 
 Each file becomes a Giotto object with the spatial unit `cell` and the
 feature type `rna`.

@@ -12,7 +12,7 @@ adopts fast and memory efficient methods to create an interactive
 analysis. Click the logo below to learn more about the Giotto Suite
 branch.
 
-[![](images/branches/GiottoLogo.png)](https://giotto-suite.github.io/Giotto/articles/ecosystem.html)
+[![](images/branches/GiottoLogo.png)](https://giottosuite.com/dev/articles/ecosystem.md)
 
 ## 2 Giotto Master
 

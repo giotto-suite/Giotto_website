@@ -1,7 +1,7 @@
 # Getters and Setters
 
 *Giotto* stores information in different
-[slots](https://giotto-suite.github.io/Giotto_website/articles/articles/structure.html#giotto-object-structure),
+[slots](https://giottosuite.com/dev/articles/structure.html#giotto-object-structure),
 which can be accessed through these getters and setters functions. They
 can be found in the
 [`accessors.R`](https://github.com/giotto-suite/Giotto/blob/suite/R/accessors.R)

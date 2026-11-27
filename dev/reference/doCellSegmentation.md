@@ -36,7 +36,9 @@ doCellSegmentation(
 
 - python_path:
 
-  specify specific path to python if required
+  \`NULL\` (default): deepcell is installed on first use and run in a
+  worker R session (\`GiottoUtils::py_run()\`); or the path to a Python
+  executable that has deepcell installed
 
 ## Value
 

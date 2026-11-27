@@ -77,21 +77,9 @@ for all options.
   {Matrix} 1.6-5 first:
   `remotes::install_version("Matrix", version = "1.6-5")`.
 
-**Python features**
-
-Most of Giotto runs without Python. A few functions use Python packages,
-for example Leiden clustering through Python, cell segmentation and
-image registration. To use them, create Giotto’s Python environment
-once:
-
-``` r
-
-Giotto::installGiottoEnvironment()
-```
-
-You can also point Giotto at an existing environment; see the
-[configuration
-page](https://giottosuite.com/dev/articles/configuration.md).
+Python is not needed to install Giotto. A few functions use Python
+tools, which install themselves on first use; see [Python in Giotto
+Suite](https://giottosuite.com/dev/articles/python.md).
 
 ## Help
 

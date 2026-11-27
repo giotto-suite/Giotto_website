@@ -7,8 +7,8 @@ For troubleshooting help, see this
 
 - [How do I install an R package for the first
   time?](https://giottosuite.com/dev/articles/installation.md)
-- [Can I install Python components
-  manually?](https://giottosuite.com/dev/articles/configuration.md)
+- [How does Giotto use
+  Python?](https://giottosuite.com/dev/articles/python.md)
 
 ## Usage
 

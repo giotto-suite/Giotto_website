@@ -22,13 +22,6 @@ Download the following files and unzip the spatial folder:
 if(!"Giotto" %in% installed.packages()) {
   pak::pkg_install("giotto-suite/Giotto")
 }
-
-# Ensure the Python environment for Giotto has been installed
-genv_exists <- Giotto::checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment
-  Giotto::installGiottoEnvironment()
-}
 ```
 
 ## 3 Read RNA matrix

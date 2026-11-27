@@ -93,6 +93,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-get-started" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Get started</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-get-started">
 <li><a class="dropdown-item" href="../articles/installation.html">Giotto Installation</a></li>
+    <li><a class="dropdown-item" href="../articles/python.html">Python in Giotto Suite</a></li>
     <li><a class="dropdown-item" href="../articles/ecosystem.html">Giotto Ecosystem</a></li>
     <li><a class="dropdown-item" href="../articles/structure.html">Giotto Class Structure</a></li>
     <li><a class="dropdown-item" href="../articles/general_workflow.html">General Giotto Workflow</a></li>
@@ -169,7 +170,6 @@
     <li><a class="dropdown-item" href="../articles/create_simulated_object.html">Create a simulated dataset object</a></li>
     <li><a class="dropdown-item" href="../articles/instructions.html">Giotto instructions</a></li>
     <li><a class="dropdown-item" href="../articles/import_utilities.html">Technology-specific importers</a></li>
-    <li><a class="dropdown-item" href="../articles/configuration.html">Giotto configuration</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pre-processing</h6></li>
     <li><a class="dropdown-item" href="../articles/feature_aggregation.html">Feature aggregation</a></li>
@@ -284,14 +284,6 @@ branch.</p>
 <code class="sourceCode R"><span>  <span class="co"># Ensure Giotto Suite and GiottoData packages are installed</span></span>
 <span>  <span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/Giotto"</span><span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
-<span>  </span>
-<span>  <span class="co"># Ensure the Python environment for Giotto has been installed</span></span>
-<span>  <span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="co"># The following command need only be run once to install the Giotto environment.</span></span>
-<span>  <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2" number="3">
@@ -313,13 +305,11 @@ object<a class="anchor" aria-label="anchor" href="#create-a-giotto-object"></a>
 <span><span class="co"># to automatically save figures in save_dir set save_plot to TRUE</span></span>
 <span><span class="va">results_folder</span> <span class="op">&lt;-</span> <span class="st">"/path/to/results/"</span></span>
 <span>  </span>
-<span><span class="va">python_path</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
 <span>  </span>
 <span><span class="va">instructions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">createGiottoInstructions</a></span><span class="op">(</span>save_dir <span class="op">=</span> <span class="va">results_folder</span>, </span>
 <span>                                         save_plot <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>                                         show_plot <span class="op">=</span> <span class="cn">FALSE</span>, </span>
-<span>                                         return_plot <span class="op">=</span> <span class="cn">FALSE</span>, </span>
-<span>                                         python_path <span class="op">=</span> <span class="va">python_path</span><span class="op">)</span></span>
+<span>                                         return_plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span>  </span>
 <span><span class="co"># Create Giotto object</span></span>
 <span><span class="va">visium_lungcancer</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createGiottoVisiumObject.html">createGiottoVisiumObject</a></span><span class="op">(</span>visium_dir <span class="op">=</span> <span class="va">data_path</span>,</span>
@@ -586,9 +576,9 @@ signature gene lists:</p>
 <li>Rank</li>
 <li>DWLS</li>
 </ul>
-<p>Corresponded Single cell dataset can be generated from <a href="https://giotto-suite.github.io/Giotto/articles/singlecell_lung_adenocarcinoma.html" class="external-link">Single
-Cell Human Lung Adenocarcinoma</a> vignette. You can also download the
-Giotto object, or count matrix and metadata from <a href="https://drive.google.com/drive/folders/1lv3KYkJoTy4vzJxyRT0zhm6RALVO89M8" class="external-link">here</a></p>
+<p>Corresponded Single cell dataset can be generated from <a href="singlecell_lung_adenocarcinoma.html">Single Cell Human Lung
+Adenocarcinoma</a> vignette. You can also download the Giotto object, or
+count matrix and metadata from <a href="https://drive.google.com/drive/folders/1lv3KYkJoTy4vzJxyRT0zhm6RALVO89M8" class="external-link">here</a></p>
 <p>Load the single-cell object</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">giotto_SC</span> <span class="op">&lt;-</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/loadGiotto.html" class="external-link">loadGiotto</a></span><span class="op">(</span><span class="st">"sc_lung_carcinoma"</span><span class="op">)</span></span></code></pre></div>

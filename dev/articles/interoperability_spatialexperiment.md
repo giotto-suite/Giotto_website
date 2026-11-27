@@ -36,22 +36,20 @@ spe <- giottoToSpatialExperiment(g, sfe = "no")
 spe
 ```
 
-``` r
-class: SpatialExperiment 
-dim: 634 624 
-metadata(1): giottoConnect
-assays(3): counts logcounts scaled
-rownames(634): Gna12 Ccnd2 ... 9630013A20Rik 2900040C04Rik
-rowData names(6): nr_cells perc_cells ... mean_expr_det hvf
-colnames(624): AAAGGGATGTAGCAAG-1 AAATGGCATGTCTTGT-1 ... TTGTGGCCCTGACAGT-1
-  TTGTTCAGTGTGCTAC-1
-colData names(7): in_tissue nr_feats ... custom_leiden sample_id
-reducedDimNames(5): PCA custom_pca UMAP custom_umap TSNE
-mainExpName: NULL
-altExpNames(0):
-spatialCoords names(2) : x y
-imgData names(4): sample_id image_id data scaleFactor
-```
+    class: SpatialExperiment 
+    dim: 634 624 
+    metadata(1): giottoConnect
+    assays(3): counts logcounts scaled
+    rownames(634): Gna12 Ccnd2 ... 9630013A20Rik 2900040C04Rik
+    rowData names(6): nr_cells perc_cells ... mean_expr_det hvf
+    colnames(624): AAAGGGATGTAGCAAG-1 AAATGGCATGTCTTGT-1 ... TTGTGGCCCTGACAGT-1
+      TTGTTCAGTGTGCTAC-1
+    colData names(7): in_tissue nr_feats ... custom_leiden sample_id
+    reducedDimNames(5): PCA custom_pca UMAP custom_umap TSNE
+    mainExpName: NULL
+    altExpNames(0):
+    spatialCoords names(2) : x y
+    imgData names(4): sample_id image_id data scaleFactor
 
 One spatial unit and feature type is converted at a time (the active
 ones by default; see the `spat_unit` and `feat_type` arguments). The raw
@@ -82,9 +80,7 @@ compares the SpatialExperiment with the Giotto object, part by part:
 readbackCheck(g, spe)
 ```
 
-``` r
-<giottoReadback> PASS: 42 MATCH, 0 DECLARED, 0 UNDECLARED
-```
+    <giottoReadback> PASS: 42 MATCH, 0 DECLARED, 0 UNDECLARED
 
 ## 3 SpatialExperiment to Giotto
 
@@ -99,23 +95,21 @@ g2 <- spatialExperimentToGiotto(spe)
 g2
 ```
 
-``` r
-An object of class giotto 
->Active spat_unit:  cell 
->Active feat_type:  rna 
-dimensions    : 33538, 4992 (features, cells)
-[SUBCELLULAR INFO]
-[AGGREGATE INFO]
-expression -----------------------
-  [cell][rna] raw
-spatial locations ----------------
-  [cell] raw
-attached images ------------------
-images      : hires 
+    An object of class giotto 
+    >Active spat_unit:  cell 
+    >Active feat_type:  rna 
+    dimensions    : 33538, 4992 (features, cells)
+    [SUBCELLULAR INFO]
+    [AGGREGATE INFO]
+    expression -----------------------
+      [cell][rna] raw
+    spatial locations ----------------
+      [cell] raw
+    attached images ------------------
+    images      : hires 
 
 
-Use objHistory() to see steps and params used
-```
+    Use objHistory() to see steps and params used
 
 The counts become the `raw` expression values of the feature type `rna`,
 the `colData` becomes the cell metadata, the Visium spot positions are
@@ -129,12 +123,10 @@ lists what could not be carried over or was estimated:
 mappingProvenance(g2)$losses
 ```
 
-``` r
-  part_id                      kind field
-1    locs recovered_from_parameters units
-                                                                note   source
-1 0.72991 um per px (100 um spot pitch / measured spacing 137.00 px) recorded
-```
+      part_id                      kind field
+    1    locs recovered_from_parameters units
+                                                                    note   source
+    1 0.72991 um per px (100 um spot pitch / measured spacing 137.00 px) recorded
 
 The annotated layers can be shown on the tissue with Giotto:
 

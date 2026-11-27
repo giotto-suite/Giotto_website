@@ -93,6 +93,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-get-started" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Get started</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-get-started">
 <li><a class="dropdown-item" href="../articles/installation.html">Giotto Installation</a></li>
+    <li><a class="dropdown-item" href="../articles/python.html">Python in Giotto Suite</a></li>
     <li><a class="dropdown-item" href="../articles/ecosystem.html">Giotto Ecosystem</a></li>
     <li><a class="dropdown-item" href="../articles/structure.html">Giotto Class Structure</a></li>
     <li><a class="dropdown-item" href="../articles/general_workflow.html">General Giotto Workflow</a></li>
@@ -169,7 +170,6 @@
     <li><a class="dropdown-item" href="../articles/create_simulated_object.html">Create a simulated dataset object</a></li>
     <li><a class="dropdown-item" href="../articles/instructions.html">Giotto instructions</a></li>
     <li><a class="dropdown-item" href="../articles/import_utilities.html">Technology-specific importers</a></li>
-    <li><a class="dropdown-item" href="../articles/configuration.html">Giotto configuration</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pre-processing</h6></li>
     <li><a class="dropdown-item" href="../articles/feature_aggregation.html">Feature aggregation</a></li>
@@ -280,14 +280,7 @@ enviroment<a class="anchor" aria-label="anchor" href="#set-up-the-giotto-envirom
 <span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/GiottoData"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giottosuite.com">Giotto</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Ensure the Python environment for Giotto has been installed.</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="co"># The following command need only be run once to install the Giotto environment.</span></span>
-<span>  <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giottosuite.com">Giotto</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="2">
 <h2 id="install-the-vitesscer-package">
@@ -320,14 +313,15 @@ spat_unit and feat_type arguments, as well as the expression values to
 use.</p>
 <p>In addition, you need to specify the path or name for creating a new
 folder that will store the Anndata-Zarr information.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">giottoToAnndataZarr</span>(visium_object,</span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>                    <span class="at">expression =</span> <span class="st">"raw"</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>                    <span class="at">output_path =</span> <span class="st">"visium_anndata_zarr"</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="fu">giottoToAnndataZarr</span>(vizgen_object,</span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>                    <span class="at">spat_unit =</span> <span class="st">"aggregate"</span>,</span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>                    <span class="at">expression =</span> <span class="st">"scaled"</span>,</span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>                    <span class="at">output_path =</span> <span class="st">"vizgen_anndata_zarr"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">giottoToAnndataZarr</span><span class="op">(</span><span class="va">visium_object</span>,</span>
+<span>                    expression <span class="op">=</span> <span class="st">"raw"</span>,</span>
+<span>                    output_path <span class="op">=</span> <span class="st">"visium_anndata_zarr"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">giottoToAnndataZarr</span><span class="op">(</span><span class="va">vizgen_object</span>,</span>
+<span>                    spat_unit <span class="op">=</span> <span class="st">"aggregate"</span>,</span>
+<span>                    expression <span class="op">=</span> <span class="st">"scaled"</span>,</span>
+<span>                    output_path <span class="op">=</span> <span class="st">"vizgen_anndata_zarr"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="5">
 <h2 id="create-the-vitesscer-object">

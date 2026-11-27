@@ -72,6 +72,7 @@
       <ul class="navbar-nav me-auto"><li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-get-started" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Get started</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-get-started"><li><a class="dropdown-item" href="../articles/installation.html">Giotto Installation</a></li>
+    <li><a class="dropdown-item" href="../articles/python.html">Python in Giotto Suite</a></li>
     <li><a class="dropdown-item" href="../articles/ecosystem.html">Giotto Ecosystem</a></li>
     <li><a class="dropdown-item" href="../articles/structure.html">Giotto Class Structure</a></li>
     <li><a class="dropdown-item" href="../articles/general_workflow.html">General Giotto Workflow</a></li>
@@ -142,7 +143,6 @@
     <li><a class="dropdown-item" href="../articles/create_simulated_object.html">Create a simulated dataset object</a></li>
     <li><a class="dropdown-item" href="../articles/instructions.html">Giotto instructions</a></li>
     <li><a class="dropdown-item" href="../articles/import_utilities.html">Technology-specific importers</a></li>
-    <li><a class="dropdown-item" href="../articles/configuration.html">Giotto configuration</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pre-processing</h6></li>
     <li><a class="dropdown-item" href="../articles/feature_aggregation.html">Feature aggregation</a></li>
@@ -248,7 +248,7 @@
 <span>  purity_loss_weight <span class="op">=</span> <span class="fl">300</span>,</span>
 <span>  regularization_loss_weight <span class="op">=</span> <span class="fl">0.1</span>,</span>
 <span>  beta <span class="op">=</span> <span class="fl">0.03</span>,</span>
-<span>  python_path <span class="op">=</span> <span class="st">"giotto_ontrac_env"</span></span>
+<span>  python_path <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -348,9 +348,11 @@ is 0.1</p></dd>
 <dd><p>the weight of entropy loss. Default is 0.03</p></dd>
 
 
-<dt id="arg-python-path-">python_path, <a class="anchor" aria-label="anchor" href="#arg-python-path-"></a></dt>
-<dd><p>path to python executable within a conda/miniconda
-environment. Default is "giotto_ontrac_env"</p></dd>
+<dt id="arg-python-path">python_path<a class="anchor" aria-label="anchor" href="#arg-python-path"></a></dt>
+<dd><p>`NULL` (default): ONTraC v1 is installed on first use in
+an environment of its own and run from a worker R session
+(`GiottoUtils::py_run()`). Or the path to a Python executable (or the name
+of a conda environment) that has ONTraC v1 installed.</p></dd>
 
 </dl></div>
     <div class="section level2">

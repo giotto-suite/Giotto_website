@@ -33,13 +33,6 @@ if(!"Giotto" %in% installed.packages()) {
 if(!"spatialDWLS" %in% installed.packages()) {
   pak::pkg_install("drieslab/spatialDWLS")
 }
-
-# Ensure the Python environment for Giotto has been installed
-genv_exists <- Giotto::checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment
-  Giotto::installGiottoEnvironment()
-}
 ```
 
 ## 3 Read the data

@@ -16,13 +16,6 @@ RNAseq from two prostate cancer patients. The raw dataset can be found
 if(!"Giotto" %in% installed.packages()) {
   pak::pkg_install("giotto-suite/Giotto")
 }
-
-# Ensure the Python environment for Giotto has been installed.
-genv_exists <- Giotto::checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment.
-  Giotto::installGiottoEnvironment()
-}
 ```
 
 ``` r
@@ -35,13 +28,11 @@ results_folder <- "/path/to/results/"
 # Optional: Specify a path to a Python executable within a conda or miniconda 
 # environment. If set to NULL (default), the Python executable within the previously
 # installed Giotto environment will be used.
-python_path <- NULL # alternatively, "/local/python/path/python" if desired.
 
 # 2. create giotto instructions
 instructions <- createGiottoInstructions(save_dir = results_folder,
                                          save_plot = TRUE,
-                                         show_plot = FALSE,
-                                         python_path = python_path)
+                                         show_plot = FALSE)
 ```
 
 ## 3 Create Giotto object from 10X dataset and join

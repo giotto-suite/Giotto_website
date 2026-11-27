@@ -48,18 +48,7 @@ Then activate that python env.
 
 library(Giotto)
 
-# Ensure Giotto can access a python env
-genv_exists <- checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to 
-  # install a default Giotto environment
-  installGiottoEnvironment()
-}
-
 # set specific python path to use or python environment name
-# leaving NULL will use default (see ?set_giotto_python_path())
-python_path <- NULL
-set_giotto_python_path(python_path = python_path)
 ```
 
 Check for presence of *tifffile* and *imagecodecs* in selected python
@@ -272,8 +261,7 @@ instrs = createGiottoInstructions(
     save_dir = results_folder,
     save_plot = TRUE,
     show_plot = FALSE,
-    return_plot = FALSE,
-    python_path = python_path
+    return_plot = FALSE
 )
 
 # These feat_type and split_keyword settings are specific to

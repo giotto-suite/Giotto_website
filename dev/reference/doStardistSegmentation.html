@@ -76,6 +76,7 @@ main parameters needed"><meta name="robots" content="noindex"><!-- Global site t
       <ul class="navbar-nav me-auto"><li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-get-started" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Get started</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-get-started"><li><a class="dropdown-item" href="../articles/installation.html">Giotto Installation</a></li>
+    <li><a class="dropdown-item" href="../articles/python.html">Python in Giotto Suite</a></li>
     <li><a class="dropdown-item" href="../articles/ecosystem.html">Giotto Ecosystem</a></li>
     <li><a class="dropdown-item" href="../articles/structure.html">Giotto Class Structure</a></li>
     <li><a class="dropdown-item" href="../articles/general_workflow.html">General Giotto Workflow</a></li>
@@ -146,7 +147,6 @@ main parameters needed"><meta name="robots" content="noindex"><!-- Global site t
     <li><a class="dropdown-item" href="../articles/create_simulated_object.html">Create a simulated dataset object</a></li>
     <li><a class="dropdown-item" href="../articles/instructions.html">Giotto instructions</a></li>
     <li><a class="dropdown-item" href="../articles/import_utilities.html">Technology-specific importers</a></li>
-    <li><a class="dropdown-item" href="../articles/configuration.html">Giotto configuration</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pre-processing</h6></li>
     <li><a class="dropdown-item" href="../articles/feature_aggregation.html">Feature aggregation</a></li>
@@ -234,7 +234,7 @@ main parameters needed</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">doStardistSegmentation</span><span class="op">(</span></span>
 <span>  <span class="va">input</span>,</span>
 <span>  <span class="va">mask_output</span>,</span>
-<span>  python_env <span class="op">=</span> <span class="st">"giotto_segmentation"</span>,</span>
+<span>  python_env <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  model_name <span class="op">=</span> <span class="st">"2D_versatile_fluo"</span>,</span>
 <span>  nuclei_channel <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  prob_thresh <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -257,9 +257,10 @@ main parameters needed</p>
 
 
 <dt id="arg-python-env">python_env<a class="anchor" aria-label="anchor" href="#arg-python-env"></a></dt>
-<dd><p>python environment with Stardist installed.
-default = "giotto_segmentation". See Stardist official website for more
-details.</p></dd>
+<dd><p>`NULL` (default): stardist is installed on first use in an
+environment of its own and run in a worker R session
+(`GiottoUtils::py_run()`). Or the path to a Python executable that has
+stardist installed.</p></dd>
 
 
 <dt id="arg-model-name">model_name<a class="anchor" aria-label="anchor" href="#arg-model-name"></a></dt>

@@ -36,13 +36,6 @@ if(!"GiottoData" %in% installed.packages()) {
 }
 
 library(GiottoData)
-
-# Ensure the Python environment for Giotto has been installed
-genv_exists <- checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment
-  installGiottoEnvironment()
-}
 ```
 
 ## 3 Create a Giotto object
@@ -118,7 +111,8 @@ params of interest are:
   filepaths that were recorded. This requires that the Giotto object is
   being loaded on the same system it was generated on and that those
   images have not been moved.
-- `python_path` allows a new python path to be set during loading.
+- `python_path` is only kept in the instructions; Python is not started
+  when loading.
 
 ``` r
 

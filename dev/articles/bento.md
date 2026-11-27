@@ -28,12 +28,6 @@ python_path <- "path/to/conda-env/envs/giotto_suite/bin/python"
 
 # Set python path to NULL if you want to automatically install (only the 1st time) and use the giotto miniconda environment
 python_path <- NULL
-
-genv_exists <- checkGiottoEnvironment()
-if (!genv_exists & is.null(python_path)) {
-    # The following command need only be run once to install the Giotto environment.
-    installGiottoEnvironment()
-}
 ```
 
 ## 3 Set up Giotto environment

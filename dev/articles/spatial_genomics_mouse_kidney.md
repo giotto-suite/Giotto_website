@@ -21,13 +21,6 @@ if (!"Giotto" %in% installed.packages()) {
 if (!"GiottoData" %in% installed.packages()) {
     pak::pkg_install("giotto-suite/GiottoData")
 }
-
-# Ensure the Python environment for Giotto has been installed
-genv_exists <- Giotto::checkGiottoEnvironment()
-if (!genv_exists) {
-    # The following command need only be run once to install the Giotto environment
-    Giotto::installGiottoEnvironment()
-}
 ```
 
 ## 3 Project Data Paths
@@ -239,7 +232,7 @@ my_spatPlot <- spatPlot2D(
 ``` r
 
 # Identify gene markers_gini per cluster
-markers_gini <- findmarkers_gini_one_vs_all(
+markers_gini <- findMarkers_one_vs_all(
     gobject = sg,
     method = "gini",
     expression_values = "normalized",

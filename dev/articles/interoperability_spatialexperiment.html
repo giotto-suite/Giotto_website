@@ -93,6 +93,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-get-started" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Get started</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-get-started">
 <li><a class="dropdown-item" href="../articles/installation.html">Giotto Installation</a></li>
+    <li><a class="dropdown-item" href="../articles/python.html">Python in Giotto Suite</a></li>
     <li><a class="dropdown-item" href="../articles/ecosystem.html">Giotto Ecosystem</a></li>
     <li><a class="dropdown-item" href="../articles/structure.html">Giotto Class Structure</a></li>
     <li><a class="dropdown-item" href="../articles/general_workflow.html">General Giotto Workflow</a></li>
@@ -169,7 +170,6 @@
     <li><a class="dropdown-item" href="../articles/create_simulated_object.html">Create a simulated dataset object</a></li>
     <li><a class="dropdown-item" href="../articles/instructions.html">Giotto instructions</a></li>
     <li><a class="dropdown-item" href="../articles/import_utilities.html">Technology-specific importers</a></li>
-    <li><a class="dropdown-item" href="../articles/configuration.html">Giotto configuration</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pre-processing</h6></li>
     <li><a class="dropdown-item" href="../articles/feature_aggregation.html">Feature aggregation</a></li>
@@ -295,20 +295,20 @@ SpatialExperiment<a class="anchor" aria-label="anchor" href="#giotto-to-spatiale
 <span></span>
 <span><span class="va">spe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoConnect/reference/giottoToSpatialExperiment.html" class="external-link">giottoToSpatialExperiment</a></span><span class="op">(</span><span class="va">g</span>, sfe <span class="op">=</span> <span class="st">"no"</span><span class="op">)</span></span>
 <span><span class="va">spe</span></span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>class<span class="sc">:</span> SpatialExperiment </span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>dim<span class="sc">:</span> <span class="dv">634</span> <span class="dv">624</span> </span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">metadata</span>(<span class="dv">1</span>)<span class="sc">:</span> giottoConnect</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="fu">assays</span>(<span class="dv">3</span>)<span class="sc">:</span> counts logcounts scaled</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="fu">rownames</span>(<span class="dv">634</span>)<span class="sc">:</span> Gna12 Ccnd2 ... <span class="dv">9630013</span>A20Rik <span class="dv">2900040</span>C04Rik</span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>rowData <span class="fu">names</span>(<span class="dv">6</span>)<span class="sc">:</span> nr_cells perc_cells ... mean_expr_det hvf</span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="fu">colnames</span>(<span class="dv">624</span>)<span class="sc">:</span> AAAGGGATGTAGCAAG<span class="dv">-1</span> AAATGGCATGTCTTGT<span class="dv">-1</span> ... TTGTGGCCCTGACAGT<span class="dv">-1</span></span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  TTGTTCAGTGTGCTAC<span class="dv">-1</span></span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>colData <span class="fu">names</span>(<span class="dv">7</span>)<span class="sc">:</span> in_tissue nr_feats ... custom_leiden sample_id</span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="fu">reducedDimNames</span>(<span class="dv">5</span>)<span class="sc">:</span> PCA custom_pca UMAP custom_umap TSNE</span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>mainExpName<span class="sc">:</span> <span class="cn">NULL</span></span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="fu">altExpNames</span>(<span class="dv">0</span>)<span class="sc">:</span></span>
-<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>spatialCoords <span class="fu">names</span>(<span class="dv">2</span>) <span class="sc">:</span> x y</span>
-<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>imgData <span class="fu">names</span>(<span class="dv">4</span>)<span class="sc">:</span> sample_id image_id data scaleFactor</span></code></pre></div>
+<pre><code>class: SpatialExperiment 
+dim: 634 624 
+metadata(1): giottoConnect
+assays(3): counts logcounts scaled
+rownames(634): Gna12 Ccnd2 ... 9630013A20Rik 2900040C04Rik
+rowData names(6): nr_cells perc_cells ... mean_expr_det hvf
+colnames(624): AAAGGGATGTAGCAAG-1 AAATGGCATGTCTTGT-1 ... TTGTGGCCCTGACAGT-1
+  TTGTTCAGTGTGCTAC-1
+colData names(7): in_tissue nr_feats ... custom_leiden sample_id
+reducedDimNames(5): PCA custom_pca UMAP custom_umap TSNE
+mainExpName: NULL
+altExpNames(0):
+spatialCoords names(2) : x y
+imgData names(4): sample_id image_id data scaleFactor</code></pre>
 <p>One spatial unit and feature type is converted at a time (the active
 ones by default; see the <code>spat_unit</code> and
 <code>feat_type</code> arguments). The raw counts become the
@@ -331,7 +331,7 @@ shown on the tissue with ggspavis:</p>
 Giotto object, part by part:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoConnect/reference/readbackCheck.html" class="external-link">readbackCheck</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">spe</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="sc">&lt;</span>giottoReadback<span class="sc">&gt;</span> PASS<span class="sc">:</span> <span class="dv">42</span> MATCH, <span class="dv">0</span> DECLARED, <span class="dv">0</span> UNDECLARED</span></code></pre></div>
+<pre><code>&lt;giottoReadback&gt; PASS: 42 MATCH, 0 DECLARED, 0 UNDECLARED</code></pre>
 </div>
 <div class="section level2" number="3">
 <h2 id="spatialexperiment-to-giotto">
@@ -345,21 +345,21 @@ annotated cortical layers.</p>
 <span></span>
 <span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoConnect/reference/spatialExperimentToGiotto.html" class="external-link">spatialExperimentToGiotto</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span></span>
 <span><span class="va">g2</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>An object of class giotto </span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="sc">&gt;</span>Active spat_unit<span class="sc">:</span>  cell </span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="sc">&gt;</span>Active feat_type<span class="sc">:</span>  rna </span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>dimensions    <span class="sc">:</span> <span class="dv">33538</span>, <span class="dv">4992</span> (features, cells)</span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>[SUBCELLULAR INFO]</span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>[AGGREGATE INFO]</span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>expression <span class="sc">-----------------------</span></span>
-<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>  [cell][rna] raw</span>
-<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>spatial locations <span class="sc">----------------</span></span>
-<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>  [cell] raw</span>
-<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>attached images <span class="sc">------------------</span></span>
-<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>images      <span class="sc">:</span> hires </span>
-<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a></span>
-<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a></span>
-<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a>Use <span class="fu">objHistory</span>() to see steps and params used</span></code></pre></div>
+<pre><code>An object of class giotto 
+&gt;Active spat_unit:  cell 
+&gt;Active feat_type:  rna 
+dimensions    : 33538, 4992 (features, cells)
+[SUBCELLULAR INFO]
+[AGGREGATE INFO]
+expression -----------------------
+  [cell][rna] raw
+spatial locations ----------------
+  [cell] raw
+attached images ------------------
+images      : hires 
+
+
+Use objHistory() to see steps and params used</code></pre>
 <p>The counts become the <code>raw</code> expression values of the
 feature type <code>rna</code>, the <code>colData</code> becomes the cell
 metadata, the Visium spot positions are converted from image pixels to
@@ -368,10 +368,10 @@ microns, and reductions and the tissue image are carried over.
 was estimated:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoConnect/reference/mappingProvenance.html" class="external-link">mappingProvenance</a></span><span class="op">(</span><span class="va">g2</span><span class="op">)</span><span class="op">$</span><span class="va">losses</span></span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>  part_id                      kind field</span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="dv">1</span>    locs recovered_from_parameters units</span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>                                                                note   source</span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="dv">1</span> <span class="fl">0.72991</span> um per <span class="fu">px</span> (<span class="dv">100</span> um spot pitch <span class="sc">/</span> measured spacing <span class="fl">137.00</span> px) recorded</span></code></pre></div>
+<pre><code>  part_id                      kind field
+1    locs recovered_from_parameters units
+                                                                note   source
+1 0.72991 um per px (100 um spot pitch / measured spacing 137.00 px) recorded</code></pre>
 <p>The annotated layers can be shown on the tissue with Giotto:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g2</span>,</span>

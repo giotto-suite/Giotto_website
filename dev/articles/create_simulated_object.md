@@ -8,13 +8,6 @@
 if(!"Giotto" %in% installed.packages()) {
   pak::pkg_install("giotto-suite/Giotto")
 }
-
-# Ensure the Python environment for Giotto has been installed.
-genv_exists <- Giotto::checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment.
-  Giotto::installGiottoEnvironment()
-}
 ```
 
 ## 2 Install the sCCIgen package
@@ -90,13 +83,11 @@ colnames(spatial_locs) <- c("sdimx", "sdimy", "cell_ID")
 library(Giotto)
 
 results_folder <- "path/to/results"
-python_path <- NULL
 
 instructions <- createGiottoInstructions(save_dir = results_folder,
                                          save_plot = TRUE,
                                          show_plot = FALSE,
-                                         return_plot = FALSE,
-                                         python_path = python_path)
+                                         return_plot = FALSE)
 ```
 
 ### 5.4 Create the Giotto object

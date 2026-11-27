@@ -61,6 +61,7 @@ Show first 4 rows
 ## 2 Set up Giotto
 
 ``` r
+
 # Ensure Giotto Suite is installed.
 if(!"Giotto" %in% installed.packages()) {
   pak::pkg_install("giotto-suite/Giotto")
@@ -68,14 +69,7 @@ if(!"Giotto" %in% installed.packages()) {
 
 # Ensure GiottoData, a small, helper module for tutorials, is installed.
 if(!"GiottoData" %in% installed.packages()) {
-  pak::pkg_install(("giotto-suite/GiottoData")
-}
-
-# Ensure the Python environment for Giotto has been installed.
-genv_exists <- Giotto::checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment.
-  Giotto::installGiottoEnvironment()
+  pak::pkg_install("giotto-suite/GiottoData")
 }
 ```
 
@@ -90,7 +84,6 @@ results_folder <- "/path/to/results/"
 # Optional: Specify a path to a Python executable within a conda or miniconda 
 # environment. If set to NULL (default), the Python executable within the previously
 # installed Giotto environment will be used.
-python_path <- NULL # alternatively, "/local/python/path/python" if desired.
 ```
 
 ## 3 Giotto global instructions and preparations
@@ -103,8 +96,7 @@ Define plot saving behavior and project data paths
 instructions <- createGiottoInstructions(save_dir = results_folder, 
                                          save_plot = TRUE, 
                                          show_plot = FALSE, 
-                                         return_plot = FALSE, 
-                                         python_path = python_path)
+                                         return_plot = FALSE)
 
 # Add Needed paths below:
 # provide path to pre-aggregated information
@@ -152,7 +144,7 @@ expr_matrix <- readExprMatrix(expr_path)
 meta_dt <- data.table::fread(meta_path)
 
 # create giotto object
-vizgen <- createGiottoObject(expression = Giottot_flex(expr_matrix),
+vizgen <- createGiottoObject(expression = t_flex(expr_matrix),
                              spatial_locs = meta_dt[,.(center_x, -center_y, V1)],
                              instructions = instructions)
 
@@ -375,20 +367,18 @@ Cell Metadata Preview
 print(pDataDT(vizgen))
 ```
 
-``` r
-cell_ID  fov    volume leiden_clus
-1: 110883424764611924400221639916314253469    0  432.1414           9
-2: 135188247894899244046039873973964001182    0 1351.8026           9
-3: 164766962839370328502017156371562646881    0 1080.6533           9
-4: 165747897693809971960756442245389760838    0 1652.0007           9
-5: 260943245639750847364278545493286724628    0 1343.3786           9
----                                                                   
-  78258: 165273009496786595275688065919008183969 1225 1159.6232           9
-78259: 250474226357477911702383283537224741401 1225 1058.0623           9
-78260:  66106840181174834341279408890707577820 1225 1155.3068           9
-78261:  66165211106933093510165165316573672348 1225  394.8081           9
-78262:  71051447268015582817266088343399517927 1225  798.6088           9
-```
+    cell_ID  fov    volume leiden_clus
+    1: 110883424764611924400221639916314253469    0  432.1414           9
+    2: 135188247894899244046039873973964001182    0 1351.8026           9
+    3: 164766962839370328502017156371562646881    0 1080.6533           9
+    4: 165747897693809971960756442245389760838    0 1652.0007           9
+    5: 260943245639750847364278545493286724628    0 1343.3786           9
+    ---                                                                   
+      78258: 165273009496786595275688065919008183969 1225 1159.6232           9
+    78259: 250474226357477911702383283537224741401 1225 1058.0623           9
+    78260:  66106840181174834341279408890707577820 1225 1155.3068           9
+    78261:  66165211106933093510165165316573672348 1225  394.8081           9
+    78262:  71051447268015582817266088343399517927 1225  798.6088           9
 
 Visualize the Leiden clustering results (“leiden_clus”) mapped onto the
 UMAP dimension reduction.
@@ -438,13 +428,11 @@ Preview km_spatialfeats
 print(km_spatialfeats$feats[1:30])
 ```
 
-``` r
-[1] "Slc47a1"   "Chat"      "Th"        "Insrr"     "Slc17a7"   "Pln"      
-[7] "Lmod1"     "Blank-119" "Hcar1"     "Glp1r"     "Ptgdr"     "Avpr2"    
-[13] "Gpr20"     "Myh11"     "Glp2r"     "Npy2r"     "Gpr182"    "Chrm1"    
-[19] "Adgrd1"    "Mrgprf"    "Trhr"      "Gfap"      "Slc17a8"   "Nmbr"     
-[25] "Pth2r"     "Rxfp1"     "Musk"      "F2rl1"     "Dgkk"      "Chrm5"    
-```
+    [1] "Slc47a1"   "Chat"      "Th"        "Insrr"     "Slc17a7"   "Pln"      
+    [7] "Lmod1"     "Blank-119" "Hcar1"     "Glp1r"     "Ptgdr"     "Avpr2"    
+    [13] "Gpr20"     "Myh11"     "Glp2r"     "Npy2r"     "Gpr182"    "Chrm1"    
+    [19] "Adgrd1"    "Mrgprf"    "Trhr"      "Gfap"      "Slc17a8"   "Nmbr"     
+    [25] "Pth2r"     "Rxfp1"     "Musk"      "F2rl1"     "Dgkk"      "Chrm5"    
 
 ``` r
 
@@ -490,10 +478,8 @@ FOVs needed
 print(subsetFOVs)
 ```
 
-``` r
-[1] 220 221 222 223 224 225 245 246 247 248 249 250 275 276 277 278 279 280 302
-[20] 303 304 305 306 307 330 331 332 333 334 335 358 359 360 361 362 363
-```
+    [1] 220 221 222 223 224 225 245 246 247 248 249 250 275 276 277 278 279 280 302
+    [20] 303 304 305 306 307 330 331 332 333 334 335 358 359 360 361 362 363
 
 **Note:** The following steps will be assuming that this step was run.
 

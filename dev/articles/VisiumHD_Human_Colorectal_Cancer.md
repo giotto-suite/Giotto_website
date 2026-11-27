@@ -10,13 +10,6 @@ Ensure that the Giotto Suite is correctly installed and configured.
 if(!"Giotto" %in% installed.packages()) {
   pak::pkg_install("giotto-suite/Giotto")
 }
-
-# check if the Python environment for Giotto has been installed.
-genv_exists <- Giotto::checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment.
-  Giotto::installGiottoEnvironment()
-}
 ```
 
 ## 2 Giotto global instructions and preparations
@@ -30,8 +23,6 @@ library(Giotto)
 
 # 1. set working directory
 results_folder <- "/path/to/results/"
-
-python_path <- NULL # alternatively, "/local/python/path/python" if desired.
 ```
 
 Create instructions for Giotto analysis, specifying the saving
@@ -45,8 +36,7 @@ instructions <- createGiottoInstructions(
     save_dir = results_folder,
     save_plot = TRUE,
     show_plot = FALSE,
-    return_plot = FALSE,
-    python_path = python_path
+    return_plot = FALSE
 )
 
 ## provide path to visium folder

@@ -93,6 +93,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-get-started" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Get started</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-get-started">
 <li><a class="dropdown-item" href="../articles/installation.html">Giotto Installation</a></li>
+    <li><a class="dropdown-item" href="../articles/python.html">Python in Giotto Suite</a></li>
     <li><a class="dropdown-item" href="../articles/ecosystem.html">Giotto Ecosystem</a></li>
     <li><a class="dropdown-item" href="../articles/structure.html">Giotto Class Structure</a></li>
     <li><a class="dropdown-item" href="../articles/general_workflow.html">General Giotto Workflow</a></li>
@@ -169,7 +170,6 @@
     <li><a class="dropdown-item" href="../articles/create_simulated_object.html">Create a simulated dataset object</a></li>
     <li><a class="dropdown-item" href="../articles/instructions.html">Giotto instructions</a></li>
     <li><a class="dropdown-item" href="../articles/import_utilities.html">Technology-specific importers</a></li>
-    <li><a class="dropdown-item" href="../articles/configuration.html">Giotto configuration</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pre-processing</h6></li>
     <li><a class="dropdown-item" href="../articles/feature_aggregation.html">Feature aggregation</a></li>
@@ -341,6 +341,32 @@ either curated for Giotto, or available through <a href="https://gene.ai.tencent
 <p>The scripts used to create both the mini giotto objects and mini
 objects are available in the repository so that we may extend and/or
 improve them and that you may utilize them for your own purposes!</p>
+<div class="section level3">
+<h3 id="giottodisk">GiottoDisk<a class="anchor" aria-label="anchor" href="#giottodisk"></a>
+</h3>
+<p><a href="https://giotto-suite.github.io/GiottoDisk/" class="external-link">GiottoDisk</a>
+keeps datasets larger than memory on disk, from import to analysis:
+expression, polygons and transcripts are stored in a project folder and
+read in chunks, while the <code>giotto</code> object and the analysis
+functions stay the same.</p>
+<p>To install GiottoDisk run:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"giotto-suite/GiottoUtils"</span>, ref <span class="op">=</span> <span class="st">"dev"</span><span class="op">)</span></span>
+<span><span class="fu">GiottoUtils</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoUtils/reference/suite_install.html" class="external-link">suite_install</a></span><span class="op">(</span><span class="st">"GiottoDisk"</span>, install_arrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="giottoconnect">GiottoConnect<a class="anchor" aria-label="anchor" href="#giottoconnect"></a>
+</h3>
+<p><a href="https://giotto-suite.github.io/GiottoConnect/" class="external-link">GiottoConnect</a>
+connects Giotto with other ecosystems and tools: it converts Seurat,
+AnnData (<code>.h5ad</code>) and SpatialExperiment objects to and from
+Giotto, and runs external methods such as SPARK-X, MAST, Scrublet,
+ONTraC, Banksy, BayesSpace, CellChat and nnSVG on a <code>giotto</code>
+object. Python tools install their own environment on first use (see <a href="python.html">Python in Giotto Suite</a>).</p>
+<p>To install GiottoConnect run:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/GiottoConnect"</span><span class="op">)</span></span></code></pre></div>
+</div>
 <div class="section level3">
 <h3 id="giottodb">GiottoDB<a class="anchor" aria-label="anchor" href="#giottodb"></a>
 </h3>

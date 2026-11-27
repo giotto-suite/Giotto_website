@@ -21,13 +21,6 @@ if(!"Giotto" %in% installed.packages()) {
 }
 
 library(Giotto)
-
-# check if the Python environment for Giotto has been installed.
-genv_exists <- Giotto::checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment.
-  Giotto::installGiottoEnvironment()
-}
 ```
 
 ## 3 Giotto global instructions and preparations
@@ -55,14 +48,12 @@ showing them in the viewer.
 data_path <- "/path/to/data/binned_outputs"
 results_folder <- "path/to/results"
 
-python_path <- NULL # alternatively, "/local/python/path/python" if desired.
 
 instructions <- createGiottoInstructions(
     save_dir = results_folder,
     save_plot = TRUE,
     show_plot = TRUE,
-    return_plot = TRUE,
-    python_path = python_path
+    return_plot = TRUE
 )
 ```
 

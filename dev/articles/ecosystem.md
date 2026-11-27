@@ -94,6 +94,39 @@ The scripts used to create both the mini giotto objects and mini objects
 are available in the repository so that we may extend and/or improve
 them and that you may utilize them for your own purposes!
 
+### GiottoDisk
+
+[GiottoDisk](https://giotto-suite.github.io/GiottoDisk/) keeps datasets
+larger than memory on disk, from import to analysis: expression,
+polygons and transcripts are stored in a project folder and read in
+chunks, while the `giotto` object and the analysis functions stay the
+same.
+
+To install GiottoDisk run:
+
+``` r
+
+remotes::install_github("giotto-suite/GiottoUtils", ref = "dev")
+GiottoUtils::suite_install("GiottoDisk", install_arrow = TRUE)
+```
+
+### GiottoConnect
+
+[GiottoConnect](https://giotto-suite.github.io/GiottoConnect/) connects
+Giotto with other ecosystems and tools: it converts Seurat, AnnData
+(`.h5ad`) and SpatialExperiment objects to and from Giotto, and runs
+external methods such as SPARK-X, MAST, Scrublet, ONTraC, Banksy,
+BayesSpace, CellChat and nnSVG on a `giotto` object. Python tools
+install their own environment on first use (see [Python in Giotto
+Suite](https://giottosuite.com/dev/articles/python.md)).
+
+To install GiottoConnect run:
+
+``` r
+
+pak::pkg_install("giotto-suite/GiottoConnect")
+```
+
 ### GiottoDB
 
 [GiottoDB](https://github.com/giotto-suite/GiottoDB) is Giotto Suite’s

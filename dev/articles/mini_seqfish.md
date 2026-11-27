@@ -13,13 +13,6 @@ if(!"Giotto" %in% installed.packages()) {
 if(!"GiottoData" %in% installed.packages()) {
   pak::pkg_install("giotto-suite/GiottoData")
 }
-
-# Ensure the Python environment for Giotto has been installed.
-genv_exists <- Giotto::checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment.
-  Giotto::installGiottoEnvironment()
-}
 ```
 
 ## 2 Load the Giotto object
@@ -35,8 +28,7 @@ A small seqFISH data is available through the giottoData package.
 ``` r
 
 # download data
-seqfish_mini <- loadGiottoMini("seqfish",
-                               python_path = NULL)
+seqfish_mini <- loadGiottoMini("seqfish")
 ```
 
 ### 2.1 Set Giotto instructions (optional)

@@ -4,9 +4,7 @@
 
 SpatialData is a versatile data framework for processing spatial omics
 data in python. This tutorial demonstrates how to convert Giotto objects
-to and from SpatialData object using
-[`giottoToSpatialData()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToSpatialData.html)
-and
+to and from SpatialData object using `giottoToSpatialData()` and
 [`spatialdataToGiotto()`](https://giotto-suite.github.io/GiottoConnect/reference/spatialdataToGiotto.html).
 
 ## 2 Set up Giotto Environment
@@ -21,13 +19,6 @@ if(!"Giotto" %in% installed.packages()) {
 # Ensure GiottoData is installed.
 if(!"GiottoData" %in% installed.packages()) {
   pak::pkg_install("giotto-suite/GiottoData")
-}
-
-# Ensure the Python environment for Giotto has been installed.
-genv_exists <- Giotto::checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment.
-  Giotto::installGiottoEnvironment()
 }
 
 # If your conda giotto environment doesn't have installed the modules 'spatialdata' and 'scanpy', you can install them by running the following command:
@@ -107,12 +98,10 @@ After running this line in python, you should have a folder at the path
 ‘tables’ for each component of the SpatialData object.
 
 Let’s say you already have the SpatialData object converted and saved on
-disk from
-[`giottoToSpatialData()`](https://giotto-suite.github.io/GiottoClass/reference/giottoToSpatialData.html).
-If you had nearest neighbor or spatial networks created or stored within
-your SpatialData, you can also include them in the conversion by either
-providing a .txt file or a list of the names of the keys for these
-networks.
+disk from `giottoToSpatialData()`. If you had nearest neighbor or
+spatial networks created or stored within your SpatialData, you can also
+include them in the conversion by either providing a .txt file or a list
+of the names of the keys for these networks.
 
 ``` r
 

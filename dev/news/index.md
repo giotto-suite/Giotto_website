@@ -59,6 +59,10 @@ Requires GiottoClass 0.8.0.
 - `getGEFtxCoords()` is removed.
   [`importStereoSeq()`](https://giottosuite.com/dev/reference/importStereoSeq.md)
   reads Stereo-seq GEF files.
+- `giottoToAnndataZarr()` is retired, and basilisk is no longer
+  imported.
+  [`GiottoConnect::giottoToAnnData()`](https://giotto-suite.github.io/GiottoConnect/reference/giottoToAnnData.html)
+  writes AnnData (.h5ad) without Python.
 - `doScrubletDetect()` moves to GiottoConnect as
   [`runScrublet()`](https://giotto-suite.github.io/GiottoConnect/reference/runScrublet.html),
   which gives the same scores (columns `scrublet_score` /
@@ -1823,10 +1827,8 @@ too, and will ship from there under that version.
 
 ### New
 
-- Add
-  [`giottoToAnndataZarr()`](https://giottosuite.com/dev/reference/giottoToAnndataZarr.md)
-  to create a local anndata zarr folder and interact with the vitessceR
-  package.
+- Add `giottoToAnndataZarr()` to create a local anndata zarr folder and
+  interact with the vitessceR package.
 - [`reduceDims()`](https://giottosuite.com/dev/reference/reduceDims.md)
   API function for dimension reductions
 - [`runNMF()`](https://giottosuite.com/dev/reference/runNMF.md)

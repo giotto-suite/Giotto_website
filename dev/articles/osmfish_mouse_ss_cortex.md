@@ -21,13 +21,6 @@ if (length(need_install) > 0L) {
   if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak")
   pak::pak(sprintf("giotto-suite/%s", need_install))
 }
-
-# Ensure the Python environment for Giotto has been installed.
-genv_exists <- Giotto::checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment.
-  Giotto::installGiottoEnvironment()
-}
 ```
 
 ``` r
@@ -41,13 +34,12 @@ results_folder <- "/path/to/results/"
 # Optional: Specify a path to a Python executable within a conda or miniconda 
 # environment. If set to NULL (default), the Python executable within the previously
 # installed Giotto environment will be used.
-python_path <- NULL # alternatively, "/local/python/path/python" if desired.
 ```
 
 ## 3 Dataset download
 
 The osmFISH data to run this tutorial can be found
-[here](https://github.com/giotto-suite/spatial-datasets/tree/master/data/2018_osmFISH_SScortex).
+[here](https://github.com/drieslab/spatial-datasets/tree/master/data/2018_osmFISH_SScortex).
 Alternatively you can use the **getSpatialDataset** to automatically
 download this dataset like we do in this example; to download the data
 used to create the Giotto Object below, please ensure that
@@ -71,8 +63,7 @@ getSpatialDataset(dataset = "osmfish_SS_cortex",
 instructions <- createGiottoInstructions(save_plot = TRUE, 
                                          show_plot = FALSE,
                                          return_plot = FALSE,
-                                         save_dir = results_folder,
-                                         python_path = python_path)
+                                         save_dir = results_folder)
 
 expr_path <- file.path(results_folder, "osmFISH_prep_expression.txt")
 loc_path <- file.path(results_folder, "osmFISH_prep_cell_coordinates.txt")
@@ -125,11 +116,6 @@ norm_genes_cells <- Giotto::createExprObj(norm_genes_cells,
 osm_test <- setGiotto(osm_test, 
                       x = norm_genes_cells)
 
-## add a python path
-x <- createGiottoInstructions()
-osm_test <- changeGiottoInstructions(osm_test,
-                                     params = "python_path",
-                                     new_values = x$python_path)
 
 ## add gene & cell statistics
 osm_test <- addStatistics(gobject = osm_test)

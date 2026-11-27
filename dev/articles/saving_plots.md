@@ -3,11 +3,11 @@
 ## 1 Explanation
 
 This tutorial walks through saving spatial data in plots. *Please see
-the*
-[Configuration](https://giottosuite.com/dev/articles/configuration_04122023.md)
-*and* [Giotto
-Object](https://giottosuite.com/dev/articles/getting_started_gobject.md)
-*vignettes before walking through this tutorial.*
+the* [Giotto
+instructions](https://giottosuite.com/dev/articles/instructions.md)
+*and* [Object
+creation](https://giottosuite.com/dev/articles/object_creation.md)
+*pages before walking through this tutorial.*
 
 R/Posit and Giotto provide different ways to save spatial data. Here, a
 **giottoObject** will be created without using **giottoInstructions** so
@@ -33,13 +33,6 @@ if(!"GiottoData" %in% installed.packages()) {
 }
 
 library(GiottoData)
-
-# Ensure the Python environment for Giotto has been installed
-genv_exists <- checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment
-  installGiottoEnvironment()
-}
 ```
 
 ## 3 Create a Giotto object

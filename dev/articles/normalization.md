@@ -7,13 +7,6 @@ if(!"Giotto" %in% installed.packages()) {
     remotes::install_github("giotto-suite/GiottoUtils")
     GiottoUtils::suite_install()
 }
-
-# Ensure the Python environment for Giotto has been installed.
-genv_exists <- Giotto::checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment.
-  Giotto::installGiottoEnvironment()
-}
 ```
 
 ## 1 Expression Value Processing Pipeline

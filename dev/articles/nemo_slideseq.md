@@ -96,14 +96,12 @@ results_folder <- "/path/to/results/"
 # 2. set giotto python path
 # set python path to your preferred python version path
 # set python path to NULL if you want to automatically install (only the 1st time) and use the giotto miniconda environment
-python_path <- NULL
 
 # 3. create giotto instructions
 instructions <- createGiottoInstructions(save_dir = results_folder, 
                                          save_plot = TRUE, 
                                          show_plot = FALSE, 
-                                         return_plot = FALSE, 
-                                         python_path = python_path)
+                                         return_plot = FALSE)
 ```
 
 ### 4.3 Create Giotto object

@@ -23,14 +23,6 @@ To run the current vignette you need to install the Giotto Suite branch.
   if(!"Giotto" %in% installed.packages()) {
   pak::pkg_install("giotto-suite/Giotto")
   }
-  
-  # Ensure the Python environment for Giotto has been installed
-  genv_exists <- Giotto::checkGiottoEnvironment()
-  
-  if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment.
-  Giotto::installGiottoEnvironment()
-  }
 ```
 
 ## 3 Create a Giotto object
@@ -50,13 +42,11 @@ data_path <- "/path/to/data/"
 # to automatically save figures in save_dir set save_plot to TRUE
 results_folder <- "/path/to/results/"
   
-python_path <- NULL
   
 instructions <- createGiottoInstructions(save_dir = results_folder, 
                                          save_plot = TRUE, 
                                          show_plot = FALSE, 
-                                         return_plot = FALSE, 
-                                         python_path = python_path)
+                                         return_plot = FALSE)
   
 # Create Giotto object
 visium_lungcancer <- createGiottoVisiumObject(visium_dir = data_path,
@@ -366,7 +356,7 @@ ways to calculate enrichment of specific cell-type signature gene lists:
 
 Corresponded Single cell dataset can be generated from [Single Cell
 Human Lung
-Adenocarcinoma](https://giotto-suite.github.io/Giotto/articles/singlecell_lung_adenocarcinoma.html)
+Adenocarcinoma](https://giottosuite.com/dev/articles/singlecell_lung_adenocarcinoma.md)
 vignette. You can also download the Giotto object, or count matrix and
 metadata from
 [here](https://drive.google.com/drive/folders/1lv3KYkJoTy4vzJxyRT0zhm6RALVO89M8)

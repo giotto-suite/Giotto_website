@@ -93,6 +93,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-get-started" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Get started</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-get-started">
 <li><a class="dropdown-item" href="../articles/installation.html">Giotto Installation</a></li>
+    <li><a class="dropdown-item" href="../articles/python.html">Python in Giotto Suite</a></li>
     <li><a class="dropdown-item" href="../articles/ecosystem.html">Giotto Ecosystem</a></li>
     <li><a class="dropdown-item" href="../articles/structure.html">Giotto Class Structure</a></li>
     <li><a class="dropdown-item" href="../articles/general_workflow.html">General Giotto Workflow</a></li>
@@ -169,7 +170,6 @@
     <li><a class="dropdown-item" href="../articles/create_simulated_object.html">Create a simulated dataset object</a></li>
     <li><a class="dropdown-item" href="../articles/instructions.html">Giotto instructions</a></li>
     <li><a class="dropdown-item" href="../articles/import_utilities.html">Technology-specific importers</a></li>
-    <li><a class="dropdown-item" href="../articles/configuration.html">Giotto configuration</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pre-processing</h6></li>
     <li><a class="dropdown-item" href="../articles/feature_aggregation.html">Feature aggregation</a></li>
@@ -268,7 +268,7 @@
 <p>SpatialData is a versatile data framework for processing spatial
 omics data in python. This tutorial demonstrates how to convert Giotto
 objects to and from SpatialData object using
-<code><a href="https://giotto-suite.github.io/GiottoClass/reference/giottoToSpatialData.html" class="external-link">giottoToSpatialData()</a></code> and
+<code>giottoToSpatialData()</code> and
 <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/spatialdataToGiotto.html" class="external-link">spatialdataToGiotto()</a></code>.</p>
 </div>
 <div class="section level2" number="2">
@@ -285,13 +285,6 @@ Environment<a class="anchor" aria-label="anchor" href="#set-up-giotto-environmen
 <span><span class="co"># Ensure GiottoData is installed.</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"GiottoData"</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/GiottoData"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># Ensure the Python environment for Giotto has been installed.</span></span>
-<span><span class="va">genv_exists</span> <span class="op">&lt;-</span> <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">checkGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="va">genv_exists</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="co"># The following command need only be run once to install the Giotto environment.</span></span>
-<span>  <span class="fu">Giotto</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_python.html" class="external-link">installGiottoEnvironment</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># If your conda giotto environment doesn't have installed the modules 'spatialdata' and 'scanpy', you can install them by running the following command:</span></span>
@@ -336,7 +329,7 @@ unknown, an arbitrary value is sufficient to convert the object and
 still be able to perform most of the analysis. The env_name must be the
 name of the env with python reticulate installed.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giottoToSpatialData.html" class="external-link">giottoToSpatialData</a></span><span class="op">(</span><span class="va">mini_gobject</span>,</span>
+<code class="sourceCode R"><span><span class="fu">giottoToSpatialData</span><span class="op">(</span><span class="va">mini_gobject</span>,</span>
 <span>                    spot_radius <span class="op">=</span> <span class="fl">55</span>,</span>
 <span>                    python_path <span class="op">=</span> <span class="va">python_path</span>,</span>
 <span>                    save_directory <span class="op">=</span> <span class="va">results_folder</span><span class="op">)</span></span></code></pre></div>
@@ -360,7 +353,7 @@ save the SpatialData object on disk like this:</p>
 path “save_folder” which will have subfolders named ‘images’, ‘shapes’,
 and ‘tables’ for each component of the SpatialData object.</p>
 <p>Let’s say you already have the SpatialData object converted and saved
-on disk from <code><a href="https://giotto-suite.github.io/GiottoClass/reference/giottoToSpatialData.html" class="external-link">giottoToSpatialData()</a></code>. If you had nearest
+on disk from <code>giottoToSpatialData()</code>. If you had nearest
 neighbor or spatial networks created or stored within your SpatialData,
 you can also include them in the conversion by either providing a .txt
 file or a list of the names of the keys for these networks.</p>
