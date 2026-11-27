@@ -36,21 +36,13 @@ R version 4.3.2 (2023-10-31)
 packageVersion("Giotto")
 ```
 
-```{r, eval=FALSE}
+```
 4.0.2
 ```
 
-- Are you using the Giotto environment or your own python path?
-
-```{r, eval=FALSE}
-# Check Giotto environment
-Giotto::checkGiottoEnvironment()
-```
-
-```{r, eval=FALSE}
-giotto environment found at 
-/Users/yuanlab/Library/r-miniconda/envs/giotto_env/bin/pythonw
-```
+- For an error in a Python tool (e.g. segmentation): are you using your own
+  Python (`getOption("giotto.py_python")`)? If not, say so; the tool's
+  environment is then made by Giotto.
 
 - Show sequential processing steps/commands in the Giotto object
 
@@ -58,7 +50,7 @@ giotto environment found at
 Giotto::showProcessingSteps(my_giotto_object)
 ```
 
-```{r, eval=FALSE}
+```
 Processing steps: 
 0_normalize 
 
@@ -113,7 +105,7 @@ Processing steps:
 str(my_giotto_object, max.level = 3)
 ```
 
-```{r, eval=FALSE}
+```
 Formal class "giotto" [package "Giotto"] with 23 slots
   ..@ expression         :List of 1
   .. ..$ cell:List of 1
@@ -209,7 +201,7 @@ my_giotto_object <- createGiottoObject(raw_exprs = "path/to/expression/data",
                                        spatial_locs = "path/to/spatial/data")
 ```
 
-```{r, eval=FALSE}
+```
 Warning message:
 In createGiottoObject(raw_exprs = "/Users/username/path/to/data",  :
     raw_exprs argument is deprecated, use expression argument in the future 
@@ -226,7 +218,7 @@ my_giotto_object <- createGiottoObject(expression = "path/to/expression/data",
 
 - Is this an error from Giotto?
 
-```{r, eval=FALSE}
+```
 Error in adjustGiottoMatrix(gobject = my_giotto_object, expression_values = c("normalized"): covariate column name(s) were not found in the cell metadata 
 ```
 
@@ -234,7 +226,7 @@ Error in adjustGiottoMatrix(gobject = my_giotto_object, expression_values = c("n
 
 - Is this an error from an external package?
 
-```{r, eval=FALSE}
+```
 Error in methods::as(as.matrix(x[, -1]), "Matrix") : 
 no method or default for coercing "matrix" to "Matrix"
 ```
@@ -292,7 +284,7 @@ my_giotto_object <- adjustGiottoMatrix(gobject = my_giotto_object,
 
 I expected that my matrix would be appropriately adjusted, but I got the following error:
 
-```{r, eval=FALSE}
+```
 Error in adjustGiottoMatrix(gobject = my_giotto_object, expression_values = c("normalized"): covariate column name(s) were not found in the cell metadata 
 ```
 

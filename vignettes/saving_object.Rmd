@@ -36,13 +36,6 @@ if(!"GiottoData" %in% installed.packages()) {
 }
 
 library(GiottoData)
-
-# Ensure the Python environment for Giotto has been installed
-genv_exists <- checkGiottoEnvironment()
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment
-  installGiottoEnvironment()
-}
 ```
 
 
@@ -104,7 +97,8 @@ Note that `qs` is an additional package that is not installed by default with Gi
 To load the object, only the path to the folder is needed. Additional params of interest are:
 
 - `reconnect_giottoImage` -instead of reading from the saved images in the folder- attempts to reconnect the pointer objects based on filepaths that were recorded. This requires that the Giotto object is being loaded on the same system it was generated on and that those images have not been moved.
-- `python_path` allows a new python path to be set during loading.
+- `python_path` is only kept in the instructions; Python is not started when
+  loading.
 
 
 ```{r, eval=FALSE}

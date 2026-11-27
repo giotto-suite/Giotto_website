@@ -35,13 +35,6 @@ To run this vignette, download the files from this [Google drive](https://drive.
 if(!"Giotto" %in% installed.packages()) {
   pak::pkg_install("giotto-suite/Giotto")
 }
-  
-# Ensure the Python environment for Giotto has been installed.
-genv_exists <- Giotto::checkGiottoEnvironment()
-if(!genv_exists){
-# The following command need only be run once to install the Giotto environment.
-  Giotto::installGiottoEnvironment()
-}
 ```
   
 ``` {r, eval=FALSE}
@@ -53,14 +46,12 @@ results_folder <- "/path/to/results/"
 # Optional: Specify a path to a Python executable within a conda or miniconda 
 # environment. If set to NULL (default), the Python executable within the previously
 # installed Giotto environment will be used.
-python_path <- NULL # alternatively, "/local/python/path/python" if desired.
 
 # 3. create giotto instructions
 instructions <- createGiottoInstructions(save_dir = results_folder,
                                          save_plot = TRUE,
                                          show_plot = FALSE,
-                                         return_plot = FALSE,
-                                         python_path = python_path)  
+                                         return_plot = FALSE)
 ```
   
 

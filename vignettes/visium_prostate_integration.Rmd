@@ -50,14 +50,6 @@ knitr::include_graphics("images/general_figs/Visium_FFPE_Human_Prostate_Cancer_i
 if(!"Giotto" %in% installed.packages()) {
   pak::pkg_install("giotto-suite/Giotto")
 }
-
-# Ensure the Python environment for Giotto has been installed
-genv_exists <- Giotto::checkGiottoEnvironment()
-
-if(!genv_exists){
-  # The following command need only be run once to install the Giotto environment
-  Giotto::installGiottoEnvironment()
-}
 ```
 
 ```{r, eval=FALSE}
@@ -69,7 +61,6 @@ results_folder <- "/path/to/results/"
 # 2. set giotto python path
 # set python path to your preferred python version path
 # set python path to NULL if you want to automatically install (only the 1st time) and use the giotto miniconda environment
-python_path <- NULL
 ```
 
 ```{r, eval=FALSE}
@@ -77,8 +68,7 @@ python_path <- NULL
 instructions <- createGiottoInstructions(save_dir = results_folder, 
                                          save_plot = TRUE, 
                                          show_plot = FALSE, 
-                                         return_plot = FALSE, 
-                                         python_path = python_path)
+                                         return_plot = FALSE)
 ```
 
 # Create Giotto objects and join
@@ -425,7 +415,7 @@ Visium spatial transcriptomics does not provide single-cell resolution, making c
 -   Rank
 -   [DWLS Deconvolution](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-021-02362-7)
 
-This is also the easiest way to integrate Visium datasets with single cell data. Example shown here is from [Ma et al.](https://pubmed.ncbi.nlm.nih.gov/33032611/) from two prostate cancer patients. The raw dataset can be found [here](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE157703) Giotto_SC is processed variable in the [single cell RNAseq tutorial](https://giottosuite.com/articles/singlecell_prostate_standard_Sep29_21.html). You can also get access to the processed files of this dataset using getSpatialDataset
+This is also the easiest way to integrate Visium datasets with single cell data. Example shown here is from [Ma et al.](https://pubmed.ncbi.nlm.nih.gov/33032611/) from two prostate cancer patients. The raw dataset can be found [here](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE157703) Giotto_SC is processed variable in the [single cell RNAseq tutorial](singlecell_prostate_standard.html). You can also get access to the processed files of this dataset using getSpatialDataset
 
 ```{r, eval=FALSE}
 # download data to results directory ####
