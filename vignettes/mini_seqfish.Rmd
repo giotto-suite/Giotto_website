@@ -462,74 +462,41 @@ spatPlot(gobject = seqfish_mini,
 
 # Cell neighborhood: cell-type/cell-type interactions
 
-```{r, eval=FALSE}
-set.seed(seed = 2841)
-
-cell_proximities <- cellProximityEnrichment(gobject = seqfish_mini,
-                                            cluster_column = "cell_types",
-                                            spatial_network_name = "Delaunay_network",
-                                            adjust_method = "fdr",
-                                            number_of_simulations = 1000)
-
-# barplot
-cellProximityBarplot(gobject = seqfish_mini, 
-                     CPscore = cell_proximities, 
-                     min_orig_ints = 5, 
-                     min_sim_ints = 5, 
-                     p_val = 0.5)
-```
-
-![](images/mini_seqfish/24-cellProximityBarplot.png)
+`cellProximityMotifs()` counts how often two cell types are neighbors in the
+spatial network, against the counts expected when the labels are shuffled.
+Pairs of neighbors (`size = 2`) give the proximity enrichment; see the
+[Atera breast cancer tutorial](atera_human_breast_cancer.html) for larger
+motifs.
 
 ```{r, eval=FALSE}
-## heatmap
-cellProximityHeatmap(gobject = seqfish_mini, 
-                     CPscore = cell_proximities, 
-                     order_cell_types = TRUE, 
-                     scale = TRUE,
-                     color_breaks = c(-1.5, 0, 1.5), 
-                     color_names = c("blue", "white", "red"))
+cell_proximities <- cellProximityMotifs(seqfish_mini,
+                                        spatial_network_name = "Delaunay_network",
+                                        cluster_column = "cell_types",
+                                        size = 2L,
+                                        n_perm = 1000L)
+
+head(cell_proximities[order(-z), .(motif_id, observed, expected, fold, p_adj)])
+
+plotMotifEnrichment(seqfish_mini, cell_proximities)
 ```
 
-![](images/mini_seqfish/25-cellProximityHeatmap.png)
+![](images/mini_seqfish/24-plotMotifEnrichment.png)
 
-```{r, eval=FALSE}
-# network
-cellProximityNetwork(gobject = seqfish_mini, 
-                     CPscore = cell_proximities, 
-                     remove_self_edges = TRUE, 
-                     only_show_enrichment_edges = TRUE)
-```
-
-![](images/mini_seqfish/26-cellProximityNetwork.png)
-
-```{r, eval=FALSE}
-# network with self-edges
-cellProximityNetwork(gobject = seqfish_mini, 
-                     CPscore = cell_proximities,
-                     remove_self_edges = FALSE, 
-                     self_loop_strength = 0.3,
-                     only_show_enrichment_edges = FALSE,
-                     rescale_edge_weights = TRUE,
-                     node_size = 8,
-                     edge_weight_range_depletion = c(1, 2),
-                     edge_weight_range_enrichment = c(2,5))
-```
-
-![](images/mini_seqfish/27-cellProximityNetwork.png)
+With 118 cells no pair is significant after correction; the mini dataset only
+demonstrates the workflow.
 
 ## Visualization of specific cell types
 
 ```{r, eval=FALSE}
 # Option 1
-spec_interaction <- "cell D--cell F"
+spec_interaction <- "cell C--cell F"
 
 cellProximitySpatPlot2D(gobject = seqfish_mini,
                         interaction_name = spec_interaction,
                         show_network = TRUE,
                         cluster_column = "cell_types",
                         cell_color = "cell_types",
-                        cell_color_code = c("cell D" = "lightblue", "cell F" = "red"),
+                        cell_color_code = c("cell C" = "lightblue", "cell F" = "red"),
                         point_size_select = 4, 
                         point_size_other = 2)
 ```
@@ -543,72 +510,31 @@ seqfish_mini <- addCellIntMetadata(seqfish_mini,
                                    spatial_network = "Delaunay_network",
                                    cluster_column = "cell_types",
                                    cell_interaction = spec_interaction,
-                                   name = "D_F_interactions")
+                                   name = "C_F_interactions")
 
 spatPlot(seqfish_mini, 
-         cell_color = "D_F_interactions", 
+         cell_color = "C_F_interactions", 
          legend_symbol_size = 3,
-         select_cell_groups =  c("other_cell D", "other_cell F", "select_cell D", "select_cell F"))
+         select_cell_groups =  c("other_cell C", "other_cell F", "select_cell C", "select_cell F"))
 ```
 
 ![](images/mini_seqfish/29-spatPlot2D.png)
 
 # Cell neighborhood: Interaction Changed Features
 
-```{r, eval=FALSE}
-## select top 25 highest expressing genes
-gene_metadata <- fDataDT(seqfish_mini)
-
-plot(gene_metadata$nr_cells, gene_metadata$mean_expr)
-
-plot(gene_metadata$nr_cells, gene_metadata$mean_expr_det)
-
-quantile(gene_metadata$mean_expr_det)
-
-high_expressed_genes <- gene_metadata[mean_expr_det > 4]$feat_ID
-
-## identify features (genes) that are associated with proximity to other cell types
-ICFscoresHighGenes <- findInteractionChangedFeats(gobject = seqfish_mini,
-                                                  selected_feats = high_expressed_genes,
-                                                  spatial_network_name = "Delaunay_network",
-                                                  cluster_column = "cell_types",
-                                                  method = "classic",
-                                                  diff_test = "permutation",
-                                                  adjust_method = "fdr",
-                                                  nr_permutations = 500,
-                                                  do_parallel = TRUE)
-
-## visualize all genes
-plotCellProximityFeats(seqfish_mini, 
-                       icfObject = ICFscoresHighGenes, 
-                       method = "dotplot")
-```
-
-![](images/mini_seqfish/30-plotCellProximityFeats.png)
+`findInteractionChangedFeats()` finds genes whose expression in one cell type
+changes with its exposure to another (edgeICG). By default it needs 60 cells
+per cell type; the mini dataset has fewer, and even with `min_cells = 10` there
+is nothing to test. See
+[interaction changed features](interaction_changed_features.html) for a full
+analysis.
 
 ```{r, eval=FALSE}
-## filter genes
-ICFscoresFilt <- filterICF(ICFscoresHighGenes, 
-                           min_cells = 2, 
-                           min_int_cells = 2, 
-                           min_fdr = 0.1,
-                           min_spat_diff = 0.1, 
-                           min_log2_fc = 0.1, 
-                           min_zscore = 1)
-
-## visualize subset of interaction changed genes (ICGs)
-ICF_genes <- c("Cpne2", "Scg3", "Cmtm3", "Cplx1", "Lingo1")
-ICF_genes_types <- c("cell E", "cell D", "cell D", "cell G", "cell E")
-names(ICF_genes) <- ICF_genes_types
-
-plotICF(gobject = seqfish_mini,
-        icfObject = ICFscoresHighGenes,
-        source_type = "cell A",
-        source_markers = c("Csf1r", "Laptm5"),
-        ICF_feats = ICF_genes)
+icf <- findInteractionChangedFeats(seqfish_mini,
+                                   cluster_column = "cell_types",
+                                   min_cells = 10)
+icf$edgeicg
 ```
-
-![](images/mini_seqfish/31-plotICF.png)
 
 # Cell Neighborhood: Ligand-Receptor Cell-Cell Communication
 

@@ -32,6 +32,7 @@ if(!"GiottoConnect" %in% installed.packages()) {
 }
 
 library(Giotto)
+library(GiottoConnect)
 ```
 
 `spatialdataToGiotto()` runs Python in your R session, unlike the Python tools
@@ -58,7 +59,7 @@ This creates a folder "save_folder" with subfolders 'images', 'shapes', and 'tab
 If you had nearest neighbor or spatial networks created or stored within your SpatialData, you can also include them in the conversion by either providing a .txt file or a list of the names of the keys for these networks.
 
 ```{r, eval = FALSE}
-converted_gobject <- GiottoConnect::spatialdataToGiotto(
+converted_gobject <- spatialdataToGiotto(
     spatialdata_path = "save_folder",
     n_key_added = "cell_rna_nn_network_keys_added.txt",
     spatial_n_key_added = "cell_rna_spatial_network_keys_added.txt",
