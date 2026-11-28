@@ -375,26 +375,25 @@ spatFeatPlot2D(sg,
 
 # Spatial Co-Expression Patterns
 
+Group the top 500 spatial genes into modules whose expression is correlated across neighbouring cells in the spatial network. See the [spatial co-expression modules](spatial_coexpression_modules.html) tutorial for details.
 
 ```{r, eval=FALSE}
-# Spatial Co-Expression
 spatial_genes <- km_spatialfeats[1:500]$feats
 
-# 1. create spatial correlation object
-spat_cor_netw_DT  <- detectSpatialCorFeats(sg,
-    method = "network",
+coexpr <- spatialCoexpression(sg,
+    feats = spatial_genes,
     spatial_network_name = "Delaunay_network",
-    subset_feats = spatial_genes
+    n_modules = 10,
+    return_gobject = FALSE
 )
+coexpr$summary
 
-# 2. identify most similar spatially correlated genes for one gene
-Acsm2_top10_genes <- showSpatialCorFeats(spat_cor_netw_DT, 
-                                         feats = "Acsm2", 
-                                         show_top_feats = 10)
+# genes most spatially correlated with one gene
+Acsm2_top10_genes <- sort(coexpr$cor["Acsm2", ], decreasing = TRUE)[2:11]
 
 spatFeatPlot2D(sg,
     expression_values = "scaled",
-    feats = Acsm2_top10_genes$variable[1:4], 
+    feats = names(Acsm2_top10_genes)[1:4], 
     point_size = 0.5,
     point_shape = "no_border"
 )
@@ -405,65 +404,41 @@ spatFeatPlot2D(sg,
 
 
 ```{r, eval=FALSE}
-# 3. cluster correlated genes & visualize
-spat_cor_netw_DT <- clusterSpatialCorFeats(spat_cor_netw_DT, 
-                                           name = "spat_netw_clus", 
-                                           k = 10)
-
-heatmSpatialCorFeats(sg,
-    spatCorObject = spat_cor_netw_DT, 
-    use_clus_name = "spat_netw_clus",
-    heatmap_legend_param = list(title = "Spatial Correlation")
-)
+heatmapCoexpression(sg, coexpr)
 ```
 
 
 ![](images/spatial_genomics_mouse_kidney/SpatialCorHeatMap.png)
 
 
-```{r, eval=FALSE}
-# 4. rank spatial correlated clusters and show genes for selected clusters
-netw_ranks <- rankSpatialCorGroups(sg,
-                                   spatCorObject = spat_cor_netw_DT,
-                                   use_clus_name = "spat_netw_clus"
-)
-
-top_netw_spat_cluster <- showSpatialCorFeats(spat_cor_netw_DT,
-                                             use_clus_name = "spat_netw_clus",
-                                             show_top_feats = 1
-)
-```
-
-
-![](images/spatial_genomics_mouse_kidney/RankSpatialCorGroups.png)
-
+Store the modules in the giotto object: each gene's module is added to the feature metadata and a score per module and cell as the spatial enrichment "spatial_module".
 
 ```{r, eval=FALSE}
-# 5. create metagene enrichment score for clusters
-cluster_genes <- top_netw_spat_cluster$clus
-names(cluster_genes) <- top_netw_spat_cluster$feat_ID
+sg <- spatialCoexpression(sg,
+    feats = spatial_genes,
+    spatial_network_name = "Delaunay_network",
+    n_modules = 10
+)
 
-sg <- createMetafeats(sg, 
-                      feat_clusters = cluster_genes, 
-                      name = "cluster_metagene")
+modules <- as.character(coexpr$summary$module)
 
 spatCellPlot(sg,
-    spat_enr_names = "cluster_metagene",
-    cell_annotation_values = netw_ranks[1:4]$clusters,
+    spat_enr_names = "spatial_module",
+    cell_annotation_values = modules[1:4],
     point_size = 0.05, 
     point_shape = "no_border"
 )
 
 spatCellPlot(sg,
-    spat_enr_names = "cluster_metagene",
-    cell_annotation_values = netw_ranks[5:8]$clusters,
+    spat_enr_names = "spatial_module",
+    cell_annotation_values = modules[5:8],
     point_size = 0.05, 
     point_shape = "no_border"
 )
 
 spatCellPlot(sg,
-    spat_enr_names = "cluster_metagene",
-    cell_annotation_values = netw_ranks[9:10]$clusters,
+    spat_enr_names = "spatial_module",
+    cell_annotation_values = modules[9:10],
     point_size = 0.05, 
     point_shape = "no_border"
 )
