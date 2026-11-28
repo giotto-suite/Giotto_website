@@ -23,12 +23,13 @@ both.
 
 ``` r
 
-remotes::install_github("giotto-suite/GiottoUtils", ref = "dev")
-GiottoUtils::suite_install("GiottoDisk", install_arrow = TRUE) # Giotto 4.3.5 or later
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
+
 install.packages(c("RcppHNSW", "geometry", "wk", "duckdb", "DBI", "dbplyr"))
 BiocManager::install("scran")
-# optional: compiled kernels that speed up PCA and spatial statistics
-install.packages("GiottoKernels", repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
 ```
 
 The Xenium files are zarr archives, decoded with the **blosc** package.
@@ -37,14 +38,6 @@ On Linux, `pak::pak("blosc")` also installs the system library it needs.
 ``` r
 
 install.packages("blosc")
-```
-
-The motif section uses **smotif** and its Rust backend **smotifrs**,
-both prebuilt on r-universe:
-
-``` r
-
-install.packages(c("smotif", "smotifrs"), repos = c("https://drieslab.r-universe.dev", "https://cloud.r-project.org"))
 ```
 
 ## 3 Dataset explanation

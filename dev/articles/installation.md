@@ -12,12 +12,23 @@ install.packages("GiottoUtils",
 GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
 ```
 
-This installs Giotto, GiottoDisk for large datasets, and the optional
-speed-ups (GiottoKernels, GiottoIngest, SedonaDB, smotif and others).
-The first run builds *arrow* with zstd support from source, which can
-take a while.
+This installs Giotto, GiottoData with the tutorial datasets, GiottoDisk
+for large datasets, GiottoConnect for other ecosystems and tools, and
+the optional speed-ups (GiottoKernels, GiottoIngest, SedonaDB, smotif,
+edgeicg and others): everything the tutorials use. The first run builds
+*arrow* with zstd support from source, which can take a while.
 
 ## More options
+
+**Lightest install: Giotto and the mini datasets**
+
+Giotto with the example datasets of GiottoData, for data that fits in
+memory. Skips GiottoDisk and the *arrow* build, so it installs quickly.
+
+``` r
+
+GiottoUtils::suite_install(c("Giotto", "GiottoData"), ref = "disk")
+```
 
 **Lighter install: Giotto and GiottoDisk only**
 
@@ -28,10 +39,24 @@ Skips the optional speed-ups. They can be added later, one by one.
 GiottoUtils::suite_install("GiottoDisk", install_arrow = TRUE)
 ```
 
+**Add a package later**
+
+Any package from the full install can be added on its own, for example
+GiottoConnect or smotif and its compiled backend:
+
+``` r
+
+GiottoUtils::suite_install(c("GiottoConnect", "smotif", "smotifrs"),
+    suite_deps = FALSE)
+```
+
+`suite_deps = FALSE` keeps the Giotto packages you already have.
+
 **Release version**
 
 The current release of Giotto. GiottoDisk is not part of a release yet
-and will be added in a future one.
+and will be added in a future one. Some tutorials use functions that are
+newer than the release; use the install above to run them.
 
 ``` r
 

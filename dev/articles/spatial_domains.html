@@ -293,6 +293,11 @@ adds:</p>
 image and layer annotation from the <a href="https://github.com/LieberInstitute/HumanPilot" class="external-link">HumanPilot</a>
 repository.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Install Giotto Suite once (see the Installation page)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"GiottoUtils"</span>,</span>
+<span>    repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://giotto-suite.r-universe.dev"</span>, <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">GiottoUtils</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoUtils/reference/suite_install.html" class="external-link">suite_install</a></span><span class="op">(</span>ref <span class="op">=</span> <span class="st">"disk_full"</span>, install_arrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giottosuite.com">Giotto</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">data_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"dlpfc_151673"</span><span class="op">)</span></span>
@@ -315,7 +320,7 @@ repository.</p>
 <span class="header-section-number">2</span> Create and process the
 object<a class="anchor" aria-label="anchor" href="#create-and-process-the-object"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createGiottoVisiumObject.html">createGiottoVisiumObject</a></span><span class="op">(</span>expr_data <span class="op">=</span> <span class="st">"filter"</span>,</span>
 <span>    h5_visium_path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"151673_filtered_feature_bc_matrix.h5"</span><span class="op">)</span>,</span>
 <span>    h5_tissue_positions_path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"spatial/tissue_positions_list.csv"</span><span class="op">)</span>,</span>
@@ -345,7 +350,7 @@ space<a class="anchor" aria-label="anchor" href="#clustering-without-space"></a>
 <p>The standard workflow clusters the spots on their expression alone:
 the most variable genes, PCA, a shared nearest neighbour network and
 Leiden.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculateHVF.html">calculateHVF</a></span><span class="op">(</span><span class="va">g</span>, method <span class="op">=</span> <span class="st">"var"</span>, n_top_feats <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPCA.html">runPCA</a></span><span class="op">(</span><span class="va">g</span>, feats_to_use <span class="op">=</span> <span class="st">"hvf"</span>, ncp <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">g</span>, dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>, k <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
@@ -366,7 +371,7 @@ variable genes<a class="anchor" aria-label="anchor" href="#clustering-on-spatial
 <p>The same workflow on the 1,000 most spatially variable genes. The
 clustering still ignores where the spots are, but the genes now carry
 the layer structure. HMRF below starts from the same genes.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># any spatialAutoCor() method works, for example Moran's I or Geary's C</span></span>
 <span><span class="va">sv</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialAutoCor.html">spatialAutoCor</a></span><span class="op">(</span><span class="va">g</span>, method <span class="op">=</span> <span class="st">"binspect"</span>, return_gobject <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">spatial_genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sv</span><span class="op">$</span><span class="va">feats</span>, <span class="fl">1000</span><span class="op">)</span></span>
@@ -391,7 +396,7 @@ neighbouring spots share a domain, set by <code>beta</code>. It runs on
 a few values per spot: here NMF factors of the same spatially variable
 genes. Few inputs make its k-means start fast and stable, and each step
 is a separate function, so any dimension reduction can be used.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># NMF factors of the spatially variable genes, stored as the dimension</span></span>
 <span><span class="co"># reduction "spatial_nmf"; NMF starts from random values, so set its seed</span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runNMF.html">runNMF</a></span><span class="op">(</span><span class="va">g</span>, feats_to_use <span class="op">=</span> <span class="va">spatial_genes</span>, k <span class="op">=</span> <span class="fl">10</span>, seed_number <span class="op">=</span> <span class="fl">1234</span>,</span>
@@ -415,7 +420,7 @@ values normalized to the median library size without log (BANKSY works
 best on other values than the steps above; see <a href="#choosing-the-features">normalization and features</a>), the 2,000
 most variable genes, <code>lambda</code> 0.2 and the 18 nearest spots
 (the first two rings of the Visium grid).</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/processExpression.html">processExpression</a></span><span class="op">(</span><span class="va">g</span>, <span class="fu"><a href="../reference/process_param.html">normParam</a></span><span class="op">(</span><span class="st">"library"</span>, scalefactor <span class="op">=</span> <span class="st">"median"</span><span class="op">)</span>,</span>
 <span>    name <span class="op">=</span> <span class="st">"medlib"</span><span class="op">)</span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculateHVF.html">calculateHVF</a></span><span class="op">(</span><span class="va">g</span>, expression_values <span class="op">=</span> <span class="st">"medlib"</span>, method <span class="op">=</span> <span class="st">"var"</span>,</span>
@@ -439,7 +444,7 @@ expect.</p>
 <span class="header-section-number">7</span> Compare with the
 layers<a class="anchor" aria-label="anchor" href="#compare-with-the-layers"></a>
 </h2>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
 <span><span class="va">domains</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"leiden_hvf"</span>, <span class="st">"leiden_spatial"</span>, <span class="st">"hmrf"</span>, <span class="st">"banksy"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">domains</span>, <span class="kw">function</span><span class="op">(</span><span class="va">d</span><span class="op">)</span> <span class="fu">mclust</span><span class="fu">::</span><span class="fu">adjustedRandIndex</span><span class="op">(</span><span class="va">meta</span><span class="op">[[</span><span class="va">d</span><span class="op">]</span><span class="op">]</span>, <span class="va">meta</span><span class="op">$</span><span class="va">layer</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -485,7 +490,7 @@ Choosing the HMRF settings
 them: <code>coherence</code> is the share of neighbouring spots in the
 same domain, and <code>smallest_domain</code> near 0 means
 <code>k</code> is too large.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runHMRF.html">runHMRF</a></span><span class="op">(</span><span class="va">g</span>, dim_reduction_to_use <span class="op">=</span> <span class="st">"nmf"</span>,</span>
 <span>    dim_reduction_name <span class="op">=</span> <span class="st">"spatial_nmf"</span>, k <span class="op">=</span> <span class="fl">7</span>, betas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/hmrfSummary.html">hmrfSummary</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span></code></pre></div>

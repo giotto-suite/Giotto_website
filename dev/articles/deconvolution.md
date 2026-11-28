@@ -10,28 +10,20 @@ of different cell types across spots in a tissue.
 Giotto runs DWLS through the
 [spatialDWLS](https://drieslab.github.io/spatialDWLS/) package, which
 [`runDWLSDeconv()`](https://giottosuite.com/dev/reference/runDWLSDeconv.md)
-calls for you; install it once with
-`pak::pkg_install("drieslab/spatialDWLS")`. The same call works on
+calls for you; it is installed with Giotto Suite. The same call works on
 objects whose expression is stored on disk with GiottoDisk.
 
 ## 1 Setup and load example dataset
 
 ``` r
 
-# Ensure Giotto Suite is installed
-if(!"Giotto" %in% installed.packages()) {
-  pak::pkg_install("giotto-suite/Giotto")
-}
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
 
-# Ensure spatialDWLS, the engine behind runDWLSDeconv(), is installed
-if(!"spatialDWLS" %in% installed.packages()) {
-  pak::pkg_install("drieslab/spatialDWLS")
-}
 
-# Ensure Giotto Data is installed
-if(!"GiottoData" %in% installed.packages()) {
-  pak::pkg_install("giotto-suite/GiottoData")
-}
+
 
 library(Giotto)
 ```

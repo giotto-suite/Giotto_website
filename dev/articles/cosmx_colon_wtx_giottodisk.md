@@ -25,19 +25,12 @@ dataset](https://brukerspatialbiology.com/products/cosmx-spatial-molecular-image
 
 ``` r
 
-remotes::install_github("giotto-suite/GiottoUtils", ref = "dev")
-GiottoUtils::suite_install("GiottoDisk", install_arrow = TRUE)
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
+
 BiocManager::install("scran")
-```
-
-The count matrix is read by **cosmxscan**, a small R package wrapping a
-Rust byte scanner. Its Rust source is compiled once when the package
-installs, and it is only needed to build the vault, not to read one that
-already exists.
-
-``` r
-
-remotes::install_github("drieslab/cosmxscan")
 ```
 
 ## 3 Setup

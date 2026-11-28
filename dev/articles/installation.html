@@ -270,23 +270,40 @@
 <span>    repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://giotto-suite.r-universe.dev"</span>, <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu">GiottoUtils</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoUtils/reference/suite_install.html" class="external-link">suite_install</a></span><span class="op">(</span>ref <span class="op">=</span> <span class="st">"disk_full"</span>, install_arrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>This installs Giotto, GiottoDisk for large datasets, and the optional
-speed-ups (GiottoKernels, GiottoIngest, SedonaDB, smotif and others).
-The first run builds <em>arrow</em> with zstd support from source, which
-can take a while.</p>
+<p>This installs Giotto, GiottoData with the tutorial datasets,
+GiottoDisk for large datasets, GiottoConnect for other ecosystems and
+tools, and the optional speed-ups (GiottoKernels, GiottoIngest,
+SedonaDB, smotif, edgeicg and others): everything the tutorials use. The
+first run builds <em>arrow</em> with zstd support from source, which can
+take a while.</p>
 </div>
 <div class="section level2">
 <h2 id="more-options">More options<a class="anchor" aria-label="anchor" href="#more-options"></a>
 </h2>
-<details><summary><strong>Lighter install: Giotto and GiottoDisk only</strong>
+<details><summary><strong>Lightest install: Giotto and the mini datasets</strong>
+</summary><p>Giotto with the example datasets of GiottoData, for data that fits in
+memory. Skips GiottoDisk and the <em>arrow</em> build, so it installs
+quickly.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">GiottoUtils</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoUtils/reference/suite_install.html" class="external-link">suite_install</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Giotto"</span>, <span class="st">"GiottoData"</span><span class="op">)</span>, ref <span class="op">=</span> <span class="st">"disk"</span><span class="op">)</span></span></code></pre></div>
+</details><details><summary><strong>Lighter install: Giotto and GiottoDisk only</strong>
 </summary><p>Skips the optional speed-ups. They can be added later, one by
 one.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">GiottoUtils</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoUtils/reference/suite_install.html" class="external-link">suite_install</a></span><span class="op">(</span><span class="st">"GiottoDisk"</span>, install_arrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+</details><details><summary><strong>Add a package later</strong>
+</summary><p>Any package from the full install can be added on its own, for
+example GiottoConnect or smotif and its compiled backend:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">GiottoUtils</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoUtils/reference/suite_install.html" class="external-link">suite_install</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GiottoConnect"</span>, <span class="st">"smotif"</span>, <span class="st">"smotifrs"</span><span class="op">)</span>,</span>
+<span>    suite_deps <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p><code>suite_deps = FALSE</code> keeps the Giotto packages you already
+have.</p>
 </details><details><summary><strong>Release version</strong>
 </summary><p>The current release of Giotto. GiottoDisk is not part of a release
-yet and will be added in a future one.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+yet and will be added in a future one. Some tutorials use functions that
+are newer than the release; use the install above to run them.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/Giotto"</span><span class="op">)</span></span></code></pre></div>
 </details><details><summary><strong>Other branches</strong>
@@ -319,7 +336,7 @@ right order from a chosen set of branches, set with
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">GiottoUtils</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoUtils/reference/suite_install.html" class="external-link">suite_install</a></span><span class="op">(</span>ref <span class="op">=</span> <span class="st">"dev"</span><span class="op">)</span></span></code></pre></div>
 <p>Add <code>dry_run = TRUE</code> to print the install commands without
 running them. See the <a href="https://giotto-suite.github.io/GiottoUtils/reference/suite_install.html" class="external-link"><code>suite_install()</code>

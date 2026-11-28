@@ -31,10 +31,10 @@ The tutorial uses two public datasets: a **Xenium** lung cancer crop
 
 ``` r
 
-# Giotto Suite with GiottoDisk; GiottoKernels is optional and speeds up the
-# edge sums on large data
-remotes::install_github("giotto-suite/GiottoUtils", ref = "dev")
-GiottoUtils::suite_install("GiottoDisk", install_arrow = TRUE)
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
 ```
 
 ``` r

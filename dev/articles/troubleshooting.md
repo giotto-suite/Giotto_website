@@ -24,17 +24,6 @@ instead this command to directly modify your R environment variable:
 
     echo "R_DEFAULT_INTERNET_TIMEOUT = 1000" >> .Renviron
 
-Alternatively, you can use the package pak to install Giotto
-
-``` r
-
-if(!"pak" %in% installed.packages()) {
-  install.packages("pak")
-}
-
-pak::pkg_install("giotto-suite/Giotto")
-```
-
 A Python tool fails to install or run
 
 Python tools (cellpose, StarDist, Mesmer, scikit-image, tifffile,

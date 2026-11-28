@@ -88,6 +88,14 @@ untar(tarfile = file.path(data_path, "2020-12-19_Puck_201112_26.matched.digital_
 
 ``` r
 
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
+```
+
+``` r
+
 library(Giotto)
 
 # 1. set results directory

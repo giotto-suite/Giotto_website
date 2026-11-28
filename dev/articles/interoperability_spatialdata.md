@@ -14,13 +14,11 @@ retired in GiottoClass 0.8.0; export will be revisited in GiottoConnect.
 
 ``` r
 
-# Ensure Giotto Suite and GiottoConnect are installed.
-if(!"Giotto" %in% installed.packages()) {
-  pak::pkg_install("giotto-suite/Giotto")
-}
-if(!"GiottoConnect" %in% installed.packages()) {
-  pak::pkg_install("giotto-suite/GiottoConnect")
-}
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
+
 
 library(Giotto)
 library(GiottoConnect)

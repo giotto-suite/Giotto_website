@@ -310,21 +310,18 @@ Human Whole Transcriptome colon dataset</a>.</p>
 <span class="header-section-number">2</span> Packages<a class="anchor" aria-label="anchor" href="#packages"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"giotto-suite/GiottoUtils"</span>, ref <span class="op">=</span> <span class="st">"dev"</span><span class="op">)</span></span>
-<span><span class="fu">GiottoUtils</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoUtils/reference/suite_install.html" class="external-link">suite_install</a></span><span class="op">(</span><span class="st">"GiottoDisk"</span>, install_arrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Install Giotto Suite once (see the Installation page)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"GiottoUtils"</span>,</span>
+<span>    repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://giotto-suite.r-universe.dev"</span>, <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">GiottoUtils</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoUtils/reference/suite_install.html" class="external-link">suite_install</a></span><span class="op">(</span>ref <span class="op">=</span> <span class="st">"disk_full"</span>, install_arrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"scran"</span><span class="op">)</span></span></code></pre></div>
-<p>The count matrix is read by <strong>cosmxscan</strong>, a small R
-package wrapping a Rust byte scanner. Its Rust source is compiled once
-when the package installs, and it is only needed to build the vault, not
-to read one that already exists.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"drieslab/cosmxscan"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="3">
 <h2 id="setup">
 <span class="header-section-number">3</span> Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/apache/arrow/" class="external-link">arrow</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giottosuite.com">Giotto</a></span><span class="op">)</span>; <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giotto-suite.github.io/GiottoClass/" class="external-link">GiottoClass</a></span><span class="op">)</span>; <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giotto-suite.github.io/Giotto/" class="external-link">GiottoVisuals</a></span><span class="op">)</span></span>
@@ -365,7 +362,7 @@ export<a class="anchor" aria-label="anchor" href="#repairing-the-vendor-export">
 if not corrected. Both are repaired as the polygons are read through
 passing <code>correct_polygons()</code> as the geometry
 <code>read_fun</code>.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">correct_polygons</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">path</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">polygons</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span></span>
 <span>  <span class="va">fov_pos</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">COSMX_DIR</span>, <span class="st">"S0_fov_positions_file.csv.gz"</span><span class="op">)</span>,</span>
@@ -407,7 +404,7 @@ passing <code>correct_polygons()</code> as the geometry
 <span class="header-section-number">4.2</span> Create the giotto
 object<a class="anchor" aria-label="anchor" href="#create-the-giotto-object"></a>
 </h3>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reader</span> <span class="op">&lt;-</span> <span class="fu">importCosMxDisk</span><span class="op">(</span>cosmx_dir <span class="op">=</span> <span class="va">COSMX_DIR</span>, backend <span class="op">=</span> <span class="va">giotto_source</span>,</span>
 <span>                          slide <span class="op">=</span> <span class="fl">1</span>, version <span class="op">=</span> <span class="st">"v6"</span>, poly_pref <span class="op">=</span> <span class="st">"csv"</span><span class="op">)</span></span>
 <span></span>
@@ -430,7 +427,7 @@ object<a class="anchor" aria-label="anchor" href="#create-the-giotto-object"></a
 filtering<a class="anchor" aria-label="anchor" href="#quality-control-and-filtering"></a>
 </h2>
 <details><summary><strong>Comparison to vendor data</strong>
-</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+</summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># spatial locations are the repaired polygon centroids, so comparing them</span></span>
 <span><span class="co"># against the vendor's own centers checks the repair where it actually landed</span></span>
 <span><span class="va">polygon_centroids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/getSpatialLocations.html" class="external-link">getSpatialLocations</a></span><span class="op">(</span><span class="va">g_cosmx</span>, output <span class="op">=</span> <span class="st">"data.table"</span><span class="op">)</span></span>
@@ -457,7 +454,7 @@ filtering<a class="anchor" aria-label="anchor" href="#quality-control-and-filter
 <p>Repaired centroids sit within a few tens of pixels of the vendor’s
 own <code>CenterX/Y_global_px</code>; before the repair they are off by
 ~3,500.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ingest_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/rbindlist.html" class="external-link">rbindlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rna"</span>, <span class="st">"negprobes"</span>, <span class="st">"falsecode"</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">ft</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">store</span> <span class="op">&lt;-</span> <span class="fu">GiottoClass</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/getExpression.html" class="external-link">getExpression</a></span><span class="op">(</span><span class="va">g_cosmx</span>, feat_type <span class="op">=</span> <span class="va">ft</span>, values <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span><span class="op">[</span><span class="op">]</span></span>
 <span>  <span class="va">agg</span>   <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span><span class="fu">storeRead</span><span class="op">(</span><span class="va">store</span>, output <span class="op">=</span> <span class="st">"query"</span><span class="op">)</span>,</span>
@@ -541,12 +538,12 @@ own <code>CenterX/Y_global_px</code>; before the repair they are off by
 <p><code>cells</code> reads 493,826 against the vendor’s 493,834 because
 the six polygons with fewer than three vertices were dropped in 4.1 and
 expression is sliced to the cells that still have a boundary.</p>
-</details><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+</details><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_cosmx</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addStatistics.html">addStatistics</a></span><span class="op">(</span><span class="va">g_cosmx</span>, stats <span class="op">=</span> <span class="st">"cell"</span>, expression_values <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span></code></pre></div>
 <p><code><a href="../reference/addStatistics.html">addStatistics()</a></code> writes per-cell counts, genes detected
 and total expression into the cell metadata. Those columns are enough to
 draw the slide.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gene_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">g_cosmx</span><span class="op">)</span><span class="op">$</span><span class="va">nr_feats</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.99</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">p_slide</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g_cosmx</span>, cell_color <span class="op">=</span> <span class="st">"nr_feats"</span>,</span>
@@ -563,7 +560,7 @@ draw the slide.</p>
 <span>                                       base_width <span class="op">=</span> <span class="fl">8</span>, base_height <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">p_slide</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/cosmx_colon_wtx_giottodisk/01_spatial-overview.png" alt="" width="100%"></p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p_counts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/filterDistributions.html">filterDistributions</a></span><span class="op">(</span><span class="va">g_cosmx</span>, detection <span class="op">=</span> <span class="st">"cells"</span>, method <span class="op">=</span> <span class="st">"sum"</span>,</span>
 <span>                                nr_bins <span class="op">=</span> <span class="fl">90</span>, show_plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                                return_plot <span class="op">=</span> <span class="cn">TRUE</span>, save_plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
@@ -583,7 +580,7 @@ draw the slide.</p>
 <span>                                       base_width <span class="op">=</span> <span class="fl">10.6</span>, base_height <span class="op">=</span> <span class="fl">3.4</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">p_qc</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/cosmx_colon_wtx_giottodisk/02_qc-figs.png" alt="" width="100%"></p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">prefilter_qc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">g_cosmx</span><span class="op">)</span></span>
 <span><span class="va">qc_probs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span>, <span class="fl">0.9</span>, <span class="fl">0.99</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">qc_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span></span>
@@ -622,7 +619,7 @@ draw the slide.</p>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_cosmx</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/filterGiotto.html">filterGiotto</a></span><span class="op">(</span><span class="va">g_cosmx</span>,</span>
 <span>                        expression_threshold    <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>                        feat_det_in_min_cells   <span class="op">=</span> <span class="fl">100</span>,</span>
@@ -634,7 +631,7 @@ draw the slide.</p>
 <span class="header-section-number">6</span> Normalization and
 dimension reduction<a class="anchor" aria-label="anchor" href="#normalization-and-dimension-reduction"></a>
 </h2>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># PC1 is a depth axis (see the figure below), so PCs 2:20 are what the</span></span>
 <span><span class="co"># neighbor graph and UMAP in section 7 use. SEED is reused by every</span></span>
 <span><span class="co"># stochastic step.</span></span>
@@ -654,7 +651,7 @@ dimension reduction<a class="anchor" aria-label="anchor" href="#normalization-an
 <span><span class="va">gene_metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">g_cosmx</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">gene_metadata</span><span class="op">[</span><span class="va">hvf</span> <span class="op">==</span> <span class="st">"yes"</span>, <span class="va">feat_ID</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "A4GNT"  "AAAS"   "AAGAB"  "ABAT"   "ABCA10" "ABCA12"</span></span></code></pre>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_cosmx</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPCA.html">runPCA</a></span><span class="op">(</span><span class="va">g_cosmx</span>, feats_to_use <span class="op">=</span> <span class="st">"hvf"</span>, scale_unit <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                  center <span class="op">=</span> <span class="cn">TRUE</span>, ncp <span class="op">=</span> <span class="fl">20</span>, method <span class="op">=</span> <span class="st">"auto"</span>, set_seed <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                  seed_number <span class="op">=</span> <span class="va">SEED</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -664,10 +661,10 @@ dimension reduction<a class="anchor" aria-label="anchor" href="#normalization-an
 <code>FALSE</code> because scaling densifies;
 <code>scale_unit = TRUE</code> inside <code><a href="../reference/runPCA.html">runPCA()</a></code> standardizes
 without materializing.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/screePlot.html">screePlot</a></span><span class="op">(</span><span class="va">g_cosmx</span>, ncp <span class="op">=</span> <span class="fl">20</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/cosmx_colon_wtx_giottodisk/03_scree.png" alt="" width="100%"></p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cell_metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">g_cosmx</span><span class="op">)</span></span>
 <span><span class="va">pc_matrix</span>     <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/getDimReduction.html" class="external-link">getDimReduction</a></span><span class="op">(</span><span class="va">g_cosmx</span>, reduction_method <span class="op">=</span> <span class="st">"pca"</span>,</span>
 <span>                                 output <span class="op">=</span> <span class="st">"matrix"</span><span class="op">)</span></span>
@@ -697,7 +694,7 @@ Decide this from the figure on any new round rather than from habit.</p>
 <span class="header-section-number">7</span> Neighbors, UMAP,
 clustering<a class="anchor" aria-label="anchor" href="#neighbors-umap-clustering"></a>
 </h2>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_cosmx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">g_cosmx</span>, k <span class="op">=</span> <span class="fl">30</span>, dimensions_to_use <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">20</span>,</span>
 <span>                                engine <span class="op">=</span> <span class="st">"hnsw"</span>, ef <span class="op">=</span> <span class="fl">400</span>,</span>
 <span>                                n_threads_build <span class="op">=</span> <span class="fl">1</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -712,7 +709,7 @@ clustering<a class="anchor" aria-label="anchor" href="#neighbors-umap-clustering
 <span>                   verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto</a></span><span class="op">(</span><span class="va">g_cosmx</span>, name <span class="op">=</span> <span class="st">"processed"</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cell_metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">g_cosmx</span><span class="op">)</span></span>
 <span><span class="va">cell_metadata</span><span class="op">[</span>, <span class="va">clus</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">leiden_clus</span>,</span>
 <span>                               levels <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">leiden_clus</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
@@ -737,7 +734,7 @@ clustering<a class="anchor" aria-label="anchor" href="#neighbors-umap-clustering
 <td align="right">54831</td>
 </tr></tbody>
 </table>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p_umap_clusters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span><span class="va">g_cosmx</span>, cell_color <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>                            cell_color_code <span class="op">=</span> <span class="va">LEIDEN_PAL</span>,</span>
 <span>                            point_size <span class="op">=</span> <span class="fl">0.25</span>, point_alpha <span class="op">=</span> <span class="fl">0.4</span>,</span>
@@ -770,12 +767,12 @@ clustering<a class="anchor" aria-label="anchor" href="#neighbors-umap-clustering
 <p><code><a href="../reference/findScranMarkers_one_vs_all.html">findScranMarkers_one_vs_all()</a></code> compares each cluster
 against the pooled remainder and returns a <code>ranking</code> column,
 which orders the genes within each cluster.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scran_markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/findScranMarkers_one_vs_all.html">findScranMarkers_one_vs_all</a></span><span class="op">(</span><span class="va">g_cosmx</span>,</span>
 <span>                                             cluster_column <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>                                             expression_values <span class="op">=</span> <span class="st">"normalized"</span>,</span>
 <span>                                             verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">markers_de</span> <span class="op">&lt;-</span> <span class="va">scran_markers</span><span class="op">[</span></span>
 <span>  , <span class="fu">.</span><span class="op">(</span><span class="va">feats</span>, cluster <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">cluster</span><span class="op">)</span>, <span class="va">logFC</span>, p_value <span class="op">=</span> <span class="va">p.value</span>, <span class="va">FDR</span>,</span>
 <span>      <span class="va">ranking</span><span class="op">)</span><span class="op">]</span></span>
@@ -849,7 +846,7 @@ which orders the genes within each cluster.</p>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">top_markers</span> <span class="op">&lt;-</span> <span class="va">markers_de</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">cluster</span>, <span class="va">ranking</span><span class="op">)</span><span class="op">]</span><span class="op">[</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">10</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">cluster</span><span class="op">]</span></span>
 <span><span class="va">cluster_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/merge.html" class="external-link">merge</a></span><span class="op">(</span></span>
 <span>  <span class="va">cell_metadata</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span>cells <span class="op">=</span> <span class="va">.N</span><span class="op">)</span>, by <span class="op">=</span> <span class="fu">.</span><span class="op">(</span>cluster <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">clus</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>,</span>
@@ -1025,7 +1022,7 @@ clusters<a class="anchor" aria-label="anchor" href="#naming-the-clusters"></a>
 markers found above, and its QC profile: counts, genes and area. The dot
 plot below adds a third check, using curated marker genes that were
 chosen independently of this clustering.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cluster_qc</span> <span class="op">&lt;-</span> <span class="va">cell_metadata</span><span class="op">[</span></span>
 <span>  , <span class="fu">.</span><span class="op">(</span>cells           <span class="op">=</span> <span class="va">.N</span>,</span>
 <span>      median_counts   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summarize-generics.html" class="external-link">median</a></span><span class="op">(</span><span class="va">nCount_RNA</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -1105,7 +1102,7 @@ panels<a class="anchor" aria-label="anchor" href="#curated-marker-panels"></a>
 </h3>
 <p>One curated gene set per broad cell type, used to read the clusters
 and to pick the genes drawn in the dot plot.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">colon_markers_l1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  immune_myeloid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD68"</span>, <span class="st">"CD14"</span>, <span class="st">"CSF1R"</span>, <span class="st">"AIF1"</span>, <span class="st">"TYROBP"</span>, <span class="st">"FCER1G"</span>,</span>
 <span>                     <span class="st">"ITGAM"</span>, <span class="st">"MNDA"</span><span class="op">)</span>,</span>
@@ -1137,7 +1134,7 @@ and to pick the genes drawn in the dot plot.</p>
 <span class="header-section-number">9.2</span> Attaching labels<a class="anchor" aria-label="anchor" href="#attaching-labels"></a>
 </h3>
 <p>Manually assign cell-type annotations per leiden cluster.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">broad_palette</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  epithelial_colonocyte  <span class="op">=</span> <span class="st">"#238B45"</span>,</span>
 <span>  epithelial_secretory   <span class="op">=</span> <span class="st">"#74C476"</span>,</span>
@@ -1185,7 +1182,7 @@ and to pick the genes drawn in the dot plot.</p>
 <span>  <span class="st">"22"</span> <span class="op">=</span> <span class="st">"fibroblast_CAF"</span>,</span>
 <span>  <span class="st">"23"</span> <span class="op">=</span> <span class="st">"immune_plasma"</span>,</span>
 <span>  <span class="st">"24"</span> <span class="op">=</span> <span class="st">"tumor"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_cosmx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/annotateGiotto.html" class="external-link">annotateGiotto</a></span><span class="op">(</span><span class="va">g_cosmx</span>, annotation_vector <span class="op">=</span> <span class="va">BROAD</span>,</span>
 <span>                          cluster_column <span class="op">=</span> <span class="st">"leiden_clus"</span>,</span>
 <span>                          name <span class="op">=</span> <span class="st">"cell_type_broad"</span><span class="op">)</span></span>
@@ -1198,7 +1195,7 @@ and to pick the genes drawn in the dot plot.</p>
 <span>                                         <span class="va">cell_metadata</span><span class="op">$</span><span class="va">cell_type_broad</span><span class="op">]</span></span>
 <span><span class="va">CELL_TYPE_COLORS</span> <span class="op">&lt;-</span> <span class="va">broad_palette</span><span class="op">[</span><span class="va">CELL_TYPES</span><span class="op">]</span></span>
 <span><span class="va">cell_metadata</span><span class="op">[</span>, <span class="va">cell_type</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">cell_type_broad</span>, levels <span class="op">=</span> <span class="va">CELL_TYPES</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">panel_feats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/spatIDs-generic.html" class="external-link">featIDs</a></span><span class="op">(</span><span class="va">g_cosmx</span><span class="op">)</span></span>
 <span><span class="va">dot_genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span></span>
 <span>  <span class="va">colon_markers_l1</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">intersect</a></span><span class="op">(</span><span class="va">CELL_TYPES</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">colon_markers_l1</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>,</span>
@@ -1223,7 +1220,7 @@ and to pick the genes drawn in the dot plot.</p>
 <span>        axis_text            <span class="op">=</span> <span class="fl">6</span>,</span>
 <span>        theme_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/cosmx_colon_wtx_giottodisk/06_dot-broad.png" alt="" width="100%"></p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">heat_genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">markers_de</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">cluster</span>, <span class="va">ranking</span><span class="op">)</span><span class="op">]</span><span class="op">[</span></span>
 <span>  , <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">2</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">cluster</span><span class="op">]</span><span class="op">$</span><span class="va">feats</span><span class="op">)</span></span>
 <span></span>
@@ -1235,7 +1232,7 @@ and to pick the genes drawn in the dot plot.</p>
 <span>                    x_text_angle <span class="op">=</span> <span class="fl">45</span>, x_text_size <span class="op">=</span> <span class="fl">8</span>,</span>
 <span>                    y_text_size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/cosmx_colon_wtx_giottodisk/07_marker-heatmap.png" alt="" width="100%"></p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cell_type_counts</span> <span class="op">&lt;-</span> <span class="va">cell_metadata</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span>cells <span class="op">=</span> <span class="va">.N</span><span class="op">)</span>, by <span class="op">=</span> <span class="fu">.</span><span class="op">(</span>label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">cell_type</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="va">cell_type_counts</span><span class="op">[</span>, <span class="va">pct_of_cells</span> <span class="op">:=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">100</span> <span class="op">*</span> <span class="va">cells</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">cells</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">cell_type_counts</span>, <span class="op">-</span><span class="va">cells</span><span class="op">)</span></span>
@@ -1258,7 +1255,7 @@ and to pick the genes drawn in the dot plot.</p>
 <span class="header-section-number">10</span> Full annotated
 slide<a class="anchor" aria-label="anchor" href="#full-annotated-slide"></a>
 </h2>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p_umap_cell_type</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/plotUMAP.html" class="external-link">plotUMAP</a></span><span class="op">(</span><span class="va">g_cosmx</span>, cell_color <span class="op">=</span> <span class="st">"cell_type_broad"</span>,</span>
 <span>                           cell_color_code <span class="op">=</span> <span class="va">CELL_TYPE_COLORS</span>,</span>
 <span>                           point_size <span class="op">=</span> <span class="fl">0.25</span>, point_alpha <span class="op">=</span> <span class="fl">0.4</span>,</span>
@@ -1274,7 +1271,7 @@ slide<a class="anchor" aria-label="anchor" href="#full-annotated-slide"></a>
 <span>                                       base_width <span class="op">=</span> <span class="fl">8</span>, base_height <span class="op">=</span> <span class="fl">6.4</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">p_umap_cell_type</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/cosmx_colon_wtx_giottodisk/09_umap-celltype.png" alt="" width="100%"></p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span></span>
 <span>  <span class="va">g_cosmx</span>, cell_color <span class="op">=</span> <span class="st">"cell_type_broad"</span>,</span>
 <span>  cell_color_code <span class="op">=</span> <span class="va">CELL_TYPE_COLORS</span>,</span>
@@ -1287,7 +1284,7 @@ slide<a class="anchor" aria-label="anchor" href="#full-annotated-slide"></a>
 <p><img src="images/cosmx_colon_wtx_giottodisk/10_spatial-celltype.png" alt="" width="100%"></p>
 <p>The annotation was never given spatial information, so the histology
 above is an independent check on it.</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cell_type_plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">CELL_TYPES</span>, <span class="kw">function</span><span class="op">(</span><span class="va">cell_type</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g_cosmx</span>, cell_color <span class="op">=</span> <span class="st">"cell_type_broad"</span>,</span>
 <span>             cell_color_code <span class="op">=</span> <span class="va">CELL_TYPE_COLORS</span>,</span>
@@ -1309,7 +1306,7 @@ above is an independent check on it.</p>
 <span class="header-section-number">11</span> Segmentation
 boundaries<a class="anchor" aria-label="anchor" href="#segmentation-boundaries"></a>
 </h2>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ZOOM_UM</span> <span class="op">&lt;-</span> <span class="fl">1024</span></span>
 <span><span class="va">side</span>    <span class="op">&lt;-</span> <span class="va">ZOOM_UM</span> <span class="op">/</span> <span class="fl">0.12028</span>   <span class="co"># px2um for this instrument</span></span>
 <span></span>
@@ -1348,7 +1345,7 @@ between each pair of cell types (<code>size = 2</code>) against a null
 where the labels are shuffled. The network is stored in the vault as an
 edge store, which the motif counts stream from. See the <a href="atera_human_breast_cancer.html">Atera breast cancer tutorial</a>
 for larger motifs.</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_cosmx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span><span class="va">g_cosmx</span>, name <span class="op">=</span> <span class="st">"knn_network"</span>,</span>
 <span>                                method <span class="op">=</span> <span class="st">"kNN"</span>, k <span class="op">=</span> <span class="fl">20</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
@@ -1369,10 +1366,10 @@ name:</strong> <code>pca</code> (section 6), <code>processed</code>
 <code>proximity</code> (section 12). A snapshot records only the R-side
 object; the matrix, polygons and edges stay as parquet in the vault, so
 a reload re-attaches them rather than rebuilding.</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># uncomment below to reload the proximity snapshot</span></span>
 <span><span class="co"># g_cosmx &lt;- loadGiotto(VAULT, name = "proximity", verbose = FALSE)</span></span></code></pre></div>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotMotifEnrichment.html">plotMotifEnrichment</a></span><span class="op">(</span><span class="va">g_cosmx</span>, <span class="va">proximity</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="13">
@@ -1380,7 +1377,7 @@ a reload re-attaches them rather than rebuilding.</p>
 <span class="header-section-number">13</span> Session
 information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## R version 4.5.2 (2025-10-31)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>

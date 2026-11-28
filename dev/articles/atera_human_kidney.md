@@ -36,23 +36,21 @@ cores help most there. See [Memory and window
 size](#memory-and-window-size) to check and adjust how much memory each
 step uses on your machine.
 
-## 2 Install extra packages
+## 2 Installation
 
 ### 2.1 Giotto extensions
 
-This tutorial uses GiottoDisk for on-disk processing. These are preview
-dev builds off the dev and gsource Giotto package branches. If
-GiottoDisk has not been installed yet, use the following:
+Install Giotto Suite once, as on the
+[Installation](https://giottosuite.com/dev/articles/installation.md)
+page. This includes GiottoDisk and the optional packages this tutorial
+uses.
 
 ``` r
 
-# GiottoDisk install; also installs arrow (with zstd support) and tilework
-remotes::install_github("giotto-suite/GiottoUtils", ref = "dev")
-GiottoUtils::suite_install("GiottoDisk", install_arrow = TRUE)
-# Optional for matrix maths speedup:
-install.packages("GiottoKernels",
-    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org")
-)
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
 ```
 
 ### 2.2 Zarr readers
@@ -69,35 +67,8 @@ BiocManager::install("Rarr")
 install.packages("zip")
 ```
 
-### 2.3 *SedonaDB* and *DuckDB* installation
-
-GiottoDisk runs spatial joins, such as the aggregation of transcripts
-into cells below, in SedonaDB when it is installed, and in DuckDB
-otherwise. Both are optional; without them it falls back to tiled terra
-operations, which are much slower at this scale.
-
-``` r
-
-install.packages("sedonadb",
-    repos = c("https://apache.r-universe.dev", "https://cloud.r-project.org")
-)
-install.packages("duckdb")
-```
-
 Loading SedonaDB can print messages about PROJ or GDAL data directories
 it did not find. They do not affect the steps in this tutorial.
-
-### 2.4 *smotif* installation
-
-The cell-cell interaction section at the end uses smotif and its Rust
-backend smotifrs to count cell type motifs:
-
-``` r
-
-install.packages(c("smotif", "smotifrs"),
-    repos = c("https://drieslab.r-universe.dev", "https://cloud.r-project.org")
-)
-```
 
 ## 3 Dataset explanation
 

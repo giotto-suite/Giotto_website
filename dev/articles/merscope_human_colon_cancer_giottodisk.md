@@ -28,8 +28,11 @@ parquet once and caches it in the vault.
 
 ``` r
 
-remotes::install_github("giotto-suite/GiottoUtils", ref = "dev")
-GiottoUtils::suite_install("GiottoDisk", install_arrow = TRUE)
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
+
 BiocManager::install(c("scran", "ComplexHeatmap"))
 install.packages(c("RcppHNSW", "wk"))
 ```

@@ -12,15 +12,10 @@ hybridization (seqFISH) to visualize 220 genes directly in the sample.
 
 ``` r
 
-# Ensure Giotto Suite is installed
-if (!"Giotto" %in% installed.packages()) {
-    pak::pkg_install("giotto-suite/Giotto")
-}
-
-# Ensure Giotto Data is installed
-if (!"GiottoData" %in% installed.packages()) {
-    pak::pkg_install("giotto-suite/GiottoData")
-}
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
 ```
 
 ## 3 Project Data Paths

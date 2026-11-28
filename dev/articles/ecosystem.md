@@ -7,6 +7,10 @@ analyze spatial-omics data. The modular nature of these packages make it
 easy to extend and further build upon the ecosystem. This page
 introduces each of the modules and outlines their purposes.
 
+All modules on this page install together with the two commands on the
+[Installation](https://giottosuite.com/dev/articles/installation.md)
+page.
+
 ## Core modules
 
 Giotto Suite’s core modules are all installed by default. They do not
@@ -21,13 +25,6 @@ in the Giotto ecosystem. These range from things such as commonly used
 imports to pretty prints. Users should not need to directly interact
 with this package.
 
-To install GiottoUtils run:
-
-``` r
-
-pak::pkg_install("giotto-suite/GiottoUtils")
-```
-
 ### GiottoClass
 
 [GiottoClass](https://giotto-suite.github.io/GiottoClass/) contains the
@@ -39,13 +36,6 @@ available when Giotto is loaded. Applications of this framework and
 convenience functions for loading specific technologies are found in the
 Giotto package.
 
-To install GiottoClass run:
-
-``` r
-
-pak::pkg_install("giotto-suite/GiottoClass")
-```
-
 ### GiottoVisuals
 
 [GiottoVisuals](https://giotto-suite.github.io/GiottoVisuals/) contains
@@ -53,13 +43,6 @@ the main visualization functions for Giotto Suite. These consist mainly
 of dimension reduction and spatial plots at both the aggreagated and
 subcellular level that are designed to work with the `giotto` class.
 Also found here are color scale helpers and plot output handlers.
-
-To install GiottoVisuals run:
-
-``` r
-
-pak::pkg_install("giotto-suite/GiottoVisuals")
-```
 
 ### Giotto
 
@@ -83,13 +66,6 @@ easy download and import of publicly available datasets, either curated
 for Giotto, or available through
 [SODB](https://gene.ai.tencent.com/SpatialOmics/).
 
-To install GiottoData run:
-
-``` r
-
-pak::pkg_install("giotto-suite/GiottoData")
-```
-
 The scripts used to create both the mini giotto objects and mini objects
 are available in the repository so that we may extend and/or improve
 them and that you may utilize them for your own purposes!
@@ -102,14 +78,6 @@ polygons and transcripts are stored in a project folder and read in
 chunks, while the `giotto` object and the analysis functions stay the
 same.
 
-To install GiottoDisk run:
-
-``` r
-
-remotes::install_github("giotto-suite/GiottoUtils", ref = "dev")
-GiottoUtils::suite_install("GiottoDisk", install_arrow = TRUE)
-```
-
 ### GiottoConnect
 
 [GiottoConnect](https://giotto-suite.github.io/GiottoConnect/) connects
@@ -119,13 +87,6 @@ external methods such as SPARK-X, MAST, Scrublet, ONTraC, Banksy,
 BayesSpace, CellChat and nnSVG on a `giotto` object. Python tools
 install their own environment on first use (see [Python in Giotto
 Suite](https://giottosuite.com/dev/articles/python.md)).
-
-To install GiottoConnect run:
-
-``` r
-
-pak::pkg_install("giotto-suite/GiottoConnect")
-```
 
 ### GiottoDB
 

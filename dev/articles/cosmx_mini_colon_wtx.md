@@ -33,8 +33,11 @@ fetches and unpacks it in one call.
 
 ``` r
 
-remotes::install_github("giotto-suite/GiottoUtils", ref = "dev")
-GiottoUtils::suite_install(c("Giotto", "GiottoData"), ref = "disk")
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
+
 BiocManager::install("scran")
 ```
 

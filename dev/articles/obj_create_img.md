@@ -4,10 +4,11 @@
 
 ``` r
 
-# Ensure Giotto Suite is installed.
-if(!"Giotto" %in% installed.packages()) {
-  pak::pkg_install("giotto-suite/Giotto")
-}
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
+
 
 library(Giotto)
 ```
@@ -23,14 +24,8 @@ data extractions.
 
 ``` r
 
-# Ensure imcdatasets and exactextractr are installed.
-if(!"imcdatasets" %in% installed.packages()) {
-    # this should also ensure cytomapper is installed
-  pak::pkg_install("imcdatasets")
-}
-if(!"exactextractr" %in% installed.packages()) {
-  pak::pkg_install("exactextractr")
-}
+# imcdatasets (also installs cytomapper) and exactextractr
+BiocManager::install(c("imcdatasets", "exactextractr"))
 
 # load dataset
 imc_masks <- imcdatasets::IMMUcan_2022_CancerExample("masks")

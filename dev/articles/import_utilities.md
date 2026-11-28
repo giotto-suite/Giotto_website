@@ -31,6 +31,14 @@ locations in the output directory.
 
 ``` r
 
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
+```
+
+``` r
+
 library(Giotto)
 ?importCosMx  
 

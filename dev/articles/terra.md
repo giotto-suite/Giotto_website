@@ -46,16 +46,10 @@ Now you can install the Giotto package by running the R commmand:
 
 ``` r
 
-install.packages("pak")
-pak::pkg_install("giotto-suite/Giotto")
-```
-
-Or:
-
-``` r
-
-install.packages("remotes")
-remotes::install_github("giotto-suite/Giotto")
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
 ```
 
 ## 6 Create a ready-to-use Cloud Environment with Giotto

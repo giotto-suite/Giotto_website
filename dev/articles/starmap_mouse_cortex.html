@@ -262,14 +262,13 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giottosuite.com">Giotto</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># install extra package needed later in this example</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggridges"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"ggridges"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># set specific python path to use or python environment name</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Install Giotto Suite once (see the Installation page)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"GiottoUtils"</span>,</span>
+<span>    repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://giotto-suite.r-universe.dev"</span>, <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">GiottoUtils</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoUtils/reference/suite_install.html" class="external-link">suite_install</a></span><span class="op">(</span>ref <span class="op">=</span> <span class="st">"disk_full"</span>, install_arrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ggridges"</span>, <span class="st">"rgl"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giottosuite.com">Giotto</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2" number="1">
 <h2 id="dataset-setup">
 <span class="header-section-number">1</span> Dataset Setup<a class="anchor" aria-label="anchor" href="#dataset-setup"></a>
@@ -341,12 +340,8 @@ directory.</p>
 <li>…/starmap/STARmap_3D_data_expression.txt</li>
 <li>…/starmap/STARmap_3D_data_cell_locations.txt</li>
 </ul>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"GiottoData"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"giotto-suite/GiottoData"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># ** DOWNLOAD DATA TO WORKING DIRECTORY OR OTHER DESIRED DIRECTORY **</span></span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># ** DOWNLOAD DATA TO WORKING DIRECTORY OR OTHER DESIRED DIRECTORY **</span></span>
 <span><span class="va">data_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"starmap"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># if wget is installed, set method = 'wget'</span></span>
@@ -379,7 +374,7 @@ Instructions<a class="anchor" aria-label="anchor" href="#project-instructions"><
 define behaviors that should be applied on the project level. For
 further info, see the <a href="%22instructions.html%22">Giotto
 instructions tutorial</a></p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ** SET WORKING DIRECTORY WHERE PROJECT OUTPUTS WILL SAVE TO **</span></span>
 <span><span class="va">results_folder</span> <span class="op">=</span> <span class="st">'/path/to/results/'</span></span>
 <span></span>
@@ -399,7 +394,7 @@ Object<a class="anchor" aria-label="anchor" href="#create-giotto-object"></a>
 coordinates with no mapped cell IDs.</p>
 <details><summary>
 What does the raw data to load look like?
-</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+</summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">star_expr_table</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">expr_path</span>, header <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">feature_names</span> <span class="op">&lt;-</span> <span class="va">star_expr_table</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span> <span class="co"># extract first table column of gene names</span></span>
 <span><span class="va">star_expr</span> <span class="op">&lt;-</span> <span class="va">star_expr_table</span><span class="op">[</span>, <span class="fl">2</span><span class="op">:</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">star_expr_table</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -413,7 +408,7 @@ Gad1     0  0  0  0  0  0  0 5073   0   0
 Nov      0  0  0  0  0  0  0 2248   0   0
 Rasgrf2  0  0  0  0  0  0  0  952   0   0
 Rorb     0  0  0  0  0  0  0 3526   0   0</code></pre>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">star_locs</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">loc_path</span>, header <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setattr.html" class="external-link">setnames</a></span><span class="op">(</span><span class="va">star_locs</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span>, <span class="st">"z"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/force.html" class="external-link">force</a></span><span class="op">(</span><span class="va">star_locs</span><span class="op">)</span></span></code></pre></div>
@@ -430,11 +425,8 @@ Rorb     0  0  0  0  0  0  0 3526   0   0</code></pre>
 33596:  1563  1508    94
 33597:  1568  1390    94
 33598:  1648  1181    94</code></pre>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"rgl"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"rgl"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span><span class="fu">rgl</span><span class="fu">::</span><span class="fu">plot3d</span><span class="op">(</span><span class="va">star_locs</span><span class="op">$</span><span class="va">x</span>, <span class="va">star_locs</span><span class="op">$</span><span class="va">y</span>, <span class="va">star_locs</span><span class="op">$</span><span class="va">z</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">rgl</span><span class="fu">::</span><span class="fu">plot3d</span><span class="op">(</span><span class="va">star_locs</span><span class="op">$</span><span class="va">x</span>, <span class="va">star_locs</span><span class="op">$</span><span class="va">y</span>, <span class="va">star_locs</span><span class="op">$</span><span class="va">z</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <img src="images/starmap_mouse_brain/0_rgl.png" alt="Preview of STARmap 3D Coordinates" width="60%"><p class="caption">
 Preview of STARmap 3D Coordinates
@@ -443,24 +435,24 @@ Preview of STARmap 3D Coordinates
 </details><p>These data can be fed into <code><a href="https://giotto-suite.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject()</a></code> which
 will generate a simple identifier for each of the cells and map them to
 the expression and spatial information.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span></span>
 <span>    expression <span class="op">=</span> <span class="va">expr_path</span>,</span>
 <span>    spatial_locs <span class="op">=</span> <span class="va">loc_path</span>,</span>
 <span>    instructions <span class="op">=</span> <span class="va">instrs</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The default names created for each cell:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">star</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code>[1] "cell_1" "cell_2" "cell_3" "cell_4" "cell_5" "cell_6"</code></pre>
 <p>Preview of the feature names in the dataset, just to check that these
 are attached correctly.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/row-plus-colnames-generic.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">star</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code>[1] "Slc17a7" "Mgp"     "Gad1"    "Nov"     "Rasgrf2" "Rorb"</code></pre>
 <p>Lastly, we can check how many cells and features are available in
 this dataset by using <code><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim()</a></code></p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">star</span><span class="op">)</span></span></code></pre></div>
 <pre><code>[1]    28 33598</code></pre>
 <p>There are 33598 cells in this dataset with information on the
@@ -490,7 +482,7 @@ Distribution<a class="anchor" aria-label="anchor" href="#view-expression-distrib
 </h4>
 <p>We can get a grasp of the expression distribution of the data by
 using <code><a href="../reference/filterDistributions.html">filterDistributions()</a></code>.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/filterDistributions.html">filterDistributions</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    detection <span class="op">=</span> <span class="st">"feats"</span>,</span>
 <span>    save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">'1_a_distribution_features'</span><span class="op">)</span></span>
@@ -516,7 +508,7 @@ peaks is interesting, and suggest at either high feature/celltype
 specificity or some kind of technical artefact.</p>
 <p>The data also has a normal distribution after log2 transforms of both
 axes, suggesting that the overall data quality is good (right).</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/filterDistributions.html">filterDistributions</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    detection <span class="op">=</span> <span class="st">"cells"</span>,</span>
 <span>    save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">'1_c_distribution_cells'</span><span class="op">)</span></span>
@@ -547,16 +539,16 @@ of statistics. (See <code>?addCellStatistics()</code> and
 <code>?addFeatStatistics()</code> for details). For this step, we are
 interested in specifically the cell metadata’s <code>total_expr</code>
 (total sum of feature expression per cell)</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addStatistics.html">addStatistics</a></span><span class="op">(</span><span class="va">star</span>, expression_values <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span></code></pre></div>
 <p>Next, we can set up a logical column in the metadata based on whether
 the <code>total_expr</code> is 0.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">star</span><span class="op">$</span><span class="va">no_expression</span> <span class="op">&lt;-</span> <span class="va">star</span><span class="op">$</span><span class="va">total_expr</span> <span class="op">==</span> <span class="fl">0</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">star</span><span class="op">$</span><span class="va">no_expression</span><span class="op">)</span></span></code></pre></div>
 <pre><code>[1] 753</code></pre>
 <p>There are 753 cells with 0 expression.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"no_expression"</span>,</span>
 <span>    color_as_factor <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -576,7 +568,7 @@ distributions are strange in biological data.</p>
 <p>Since there are not many features in this dataset, we can explore
 this further by viewing the number of feature species detected per cell
 as a categorical.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"nr_feats"</span>,</span>
 <span>    color_as_factor <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># make these values categorical</span></span>
@@ -625,7 +617,7 @@ of feature richness (different feature species). This helps ensure that
 the cells used in downstream analyses are good quality.</p>
 <p>We can preview the effects of different filtering parameters using
 <code><a href="../reference/filterCombinations.html">filterCombinations()</a></code>.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/filterCombinations.html">filterCombinations</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    expression_thresholds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span>
 <span>    feat_det_in_min_cells <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20000</span>, <span class="fl">20000</span>, <span class="fl">30000</span><span class="op">)</span>,</span>
@@ -646,7 +638,7 @@ cells at the edges. Based on the distribution plots, the overall cells
 and features are high quality.</p>
 <p>The cells with detection sensitivity issues can be addressed
 separately from this step.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/filterGiotto.html">filterGiotto</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    expression_threshold <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>    feat_det_in_min_cells <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -676,7 +668,7 @@ is log2 transformed. This is then preserved as a matrix in the
 These values are best used for differential expression analyses and
 other techniques that benefit most from absolute as opposed to relative
 values.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/processExpression.html">processExpression</a></span><span class="op">(</span><span class="va">star</span>, <span class="fu"><a href="../reference/process_param.html">normParam</a></span><span class="op">(</span><span class="st">"default"</span><span class="op">)</span>, expression_values <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4" number="3.2.2">
@@ -691,7 +683,7 @@ across cells to help accont for differences between cells that beyond
 just sequencing depth.</p>
 <p>This result is preserved in the <code>giotto</code> object as a
 matrix called <code>"scaled"</code> by default.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/processExpression.html">processExpression</a></span><span class="op">(</span><span class="va">star</span>, <span class="fu"><a href="../reference/process_param.html">scaleParam</a></span><span class="op">(</span><span class="st">"default"</span><span class="op">)</span>, expression_values <span class="op">=</span> <span class="st">"normalized"</span><span class="op">)</span></span></code></pre></div>
 <p><em>These two steps can also be run in one step using the
 <code><a href="../reference/normalizeGiotto.html">normalizeGiotto()</a></code> convenience function.</em></p>
@@ -703,11 +695,11 @@ Calculation<a class="anchor" aria-label="anchor" href="#statistics-calculation">
 </h4>
 <p>Next, we can refresh the statistics calculated per cell based on the
 normalized values.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># normalized expression is also used by default for this function.</span></span>
 <span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addStatistics.html">addStatistics</a></span><span class="op">(</span><span class="va">star</span>, expression_values <span class="op">=</span> <span class="st">"normalized"</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Visualize the total raw expression</strong></p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    point_size <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"total_expr"</span>,</span>
@@ -717,7 +709,7 @@ normalized values.</p>
 <p><img src="images/starmap_mouse_brain/3_a_splot_cube.png" alt="" width="70%" style="display: block; margin: auto;"></p>
 <p>By default, this is displayed in 3D <code>"cube"</code> scaling. We
 can change this to <code>"real"</code> to get an undistorted view.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    point_size <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"total_expr"</span>,</span>
@@ -737,7 +729,7 @@ statistics, and also feature statistics which are kept in the feature
 metadata. Of particular interest is the <code>"perc_cells"</code> column
 which describes the percentage of cells in which the feature is
 present.</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">star</span><span class="op">)</span></span></code></pre></div>
 <details><summary>
 feature metadata table
@@ -776,7 +768,7 @@ feature metadata table
 and some with low percentage to get an idea of whether all features
 (both high and low presence percentages) show a marked decrease in
 normalized expression on the z max and x min faces.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatFeatPlot3D.html" class="external-link">spatFeatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>        <span class="st">"Slc17a7"</span>, <span class="co"># 100%</span></span>
@@ -815,7 +807,7 @@ groups demarcated by provided covariate information.</p>
 with <code>adjustParam("limma")</code>.</p>
 <p>First, we can try out specifying just the cells that seem to be
 problematic using a cutoff on <code>nr_feats</code></p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">star</span><span class="op">$</span><span class="va">technical</span> <span class="op">&lt;-</span> <span class="va">star</span><span class="op">$</span><span class="va">nr_feats</span> <span class="op">&lt;</span> <span class="fl">27</span> <span class="co"># add a logical column "technical" to metadata</span></span>
 <span></span>
 <span><span class="va">limma</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/process_param.html">adjustParam</a></span><span class="op">(</span><span class="st">"limma"</span><span class="op">)</span></span>
@@ -824,7 +816,7 @@ problematic using a cutoff on <code>nr_feats</code></p>
 <span>    expression_values <span class="op">=</span> <span class="st">"normalized"</span>, </span>
 <span>    name <span class="op">=</span> <span class="st">"technical_regress"</span> <span class="co"># create as new matrix called "technical_regress"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatFeatPlot3D.html" class="external-link">spatFeatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>        <span class="st">"Slc17a7"</span>, <span class="co"># 100%</span></span>
@@ -850,7 +842,7 @@ but general biological signal reduces greatly.</p>
 to find the correct way to implement them. For brevity in this example,
 we will be dropping these problem cells and redoing the normalization
 and scaling on the updated sample space.</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">star</span>, subset <span class="op">=</span> <span class="va">technical</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co"># remove the "technical" marked cells</span></span>
 <span></span>
 <span><span class="co"># repeat normalization and scaling for new expression space</span></span>
@@ -907,14 +899,14 @@ the values in the dataset.</p>
 variation into the earlier dimensions, making it easier to describe the
 cells using the fewest dimensions, making it easier for possible
 downstream tasks such as feature extraction or network construction.</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPCA.html">runPCA</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    feats_to_use <span class="op">=</span> <span class="cn">NULL</span>, <span class="co"># usually this would default to "hvf", which we skipped.</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>We can perform a <code><a href="../reference/screePlot.html">screePlot()</a></code> to view the amount of
 variance captured per PC, and figure out if we want to set a cutoff on
 number of PCs to include for downstream steps.</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/screePlot.html">screePlot</a></span><span class="op">(</span><span class="va">star</span>, save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"4_scree"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/starmap_mouse_brain/4_scree.png" alt="" width="70%" style="display: block; margin: auto;"></p>
 <p>From the scree plot, we want to select a number of PCs to use for
@@ -931,12 +923,12 @@ reduction down to two or three dimensions using Uniform Manifold
 Approximation and Projection. This method does distort the values, but
 provides a low-dimensional projection that tries to visually encode the
 clustering separation of the high dimensional information.</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    dimensions_to_use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">15</span>,</span>
 <span>    n_components <span class="op">=</span> <span class="fl">3</span> <span class="co"># make 3D UMAP</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/dimPlot.html" class="external-link">dimPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"5_umap_3d"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -962,7 +954,7 @@ to build a network to perform the clustering on.</p>
 <p>A common approach is creating a shared Nearest Network (sNN) network
 based on the PCA space.</p>
 <p>Note that we are using the first 15 dimensions of the PCA again.</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createNearestNetwork.html" class="external-link">createNearestNetwork</a></span><span class="op">(</span><span class="va">star</span>, dimensions <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">15</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4" number="4.3.2">
@@ -976,7 +968,7 @@ how granular the clustering is, with higher values preferring more
 clusters and a smaller value splitting the data up less. The
 <code>resolution</code> is a param that needs to be optimized for the
 clustering.</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lres</span> <span class="op">&lt;-</span> <span class="fl">0.2</span></span>
 <span><span class="va">lname</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"leiden_%s"</span>, <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">lres</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/doLeidenCluster.html">doLeidenCluster</a></span><span class="op">(</span><span class="va">star</span>, resolution <span class="op">=</span> <span class="va">lres</span>, name <span class="op">=</span> <span class="va">lname</span><span class="op">)</span></span>
@@ -990,7 +982,7 @@ clustering.</p>
 <p>After some testing (not shown), we arrive at 0.2 as a good toplevel
 resolution. The calculated clusters map well to the observed clusters in
 the 3D UMAP.</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="va">lname</span>,</span>
 <span>    save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>save_name <span class="op">=</span> <span class="st">"6_b_splot_leiden"</span><span class="op">)</span></span>
@@ -1014,7 +1006,7 @@ markers that define one cluster vs the rest of the dataset.</p>
 <p>We sort on <code>"ranking"</code> in order to get the features that
 best serve as positive markers for the cluster, then grab the best two
 features per cluster.</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">markers</span> <span class="op">=</span> <span class="fu"><a href="../reference/findMarkers_one_vs_all.html">findMarkers_one_vs_all</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    method <span class="op">=</span> <span class="st">"scran"</span>,</span>
 <span>    expression_values <span class="op">=</span> <span class="st">"normalized"</span>,</span>
@@ -1029,7 +1021,7 @@ features per cluster.</p>
 <p>To get an idea of how specific these markers are, we can use
 <code><a href="https://giotto-suite.github.io/GiottoVisuals/reference/violinPlot.html" class="external-link">violinPlot()</a></code> to examine the distributions of these features
 across clusters.</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># violinplot</span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/violinPlot.html" class="external-link">violinPlot</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    feats <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">top_markers</span><span class="op">$</span><span class="va">feats</span><span class="op">)</span>,</span>
@@ -1042,7 +1034,7 @@ across clusters.</p>
 take a look at the overall expression of these features per cluster with
 <code><a href="https://giotto-suite.github.io/GiottoVisuals/reference/plotMetaDataHeatmap.html" class="external-link">plotMetaDataHeatmap()</a></code> without specifying any
 <code>selected_feats</code>.</p>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/plotMetaDataHeatmap.html" class="external-link">plotMetaDataHeatmap</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    expression_values <span class="op">=</span> <span class="st">"scaled"</span>,</span>
 <span>    metadata_cols <span class="op">=</span> <span class="va">lname</span>,</span>
@@ -1058,7 +1050,7 @@ better idea of the cell characteristics and makeup of each cluster.</p>
 <p>To effectively perform expression distribution comparisons between
 features on the intra-cluster level, we can use <code><a href="https://giotto-suite.github.io/GiottoVisuals/reference/ridgePlot.html" class="external-link">ridgePlot()</a></code>
 with <code>group_by"</code> set on the leiden clustering.</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">excit_feats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Slc17a7"</span>, <span class="st">"Rasgrf2"</span>, <span class="st">"Rorb"</span>, <span class="st">"Cux2"</span>, <span class="st">"Pcp4"</span>, <span class="st">"Sema3e"</span><span class="op">)</span></span>
 <span><span class="va">inhib_feats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Gad1"</span>, <span class="st">"Sst"</span>, <span class="st">"Pvalb"</span>, <span class="st">"Vip"</span>, <span class="st">"Calb2"</span>, <span class="st">"Cck"</span>, <span class="st">"Npy"</span>, <span class="st">"Reln"</span><span class="op">)</span></span>
 <span><span class="va">glial_feats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Gja1"</span>, <span class="st">"Ctss"</span>, <span class="st">"Mbp"</span>, <span class="st">"Flt1"</span><span class="op">)</span></span>
@@ -1076,7 +1068,7 @@ with <code>group_by"</code> set on the leiden clustering.</p>
 <span>    <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/starmap_mouse_brain/9_a_ridge_excite.png" alt="" width="100%" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/ridgePlot.html" class="external-link">ridgePlot</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    feats <span class="op">=</span> <span class="va">inhib_feats</span>,</span>
 <span>    expression_values <span class="op">=</span> <span class="st">"normalized"</span>, </span>
@@ -1090,7 +1082,7 @@ with <code>group_by"</code> set on the leiden clustering.</p>
 <span>    <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/starmap_mouse_brain/9_b_ridge_inhib.png" alt="" width="100%" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/ridgePlot.html" class="external-link">ridgePlot</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    feats <span class="op">=</span> <span class="va">glial_feats</span>,</span>
 <span>    expression_values <span class="op">=</span> <span class="st">"normalized"</span>, </span>
@@ -1112,7 +1104,7 @@ all the features in the signature per cell. See:
 <p>Note that the fact we set up the metafeature this way does not mean
 that signatures are calculated relative to each other, just that they
 are in one single set of results.</p>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># set up metafeature definition table</span></span>
 <span><span class="va">mfeat_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>    clus <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -1132,7 +1124,7 @@ enrichment information of the <code>giotto</code> object.</p>
 <p>We can plot the metafeatures in 3D using <code><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D()</a></code> by
 adding <code>spat_enr_names = "neuro_sigs</code> to make sure that the
 results are attached to the information that can be pulled.</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"excitatory"</span>,</span>
 <span>    spat_enr_names <span class="op">=</span> <span class="st">"neuro_sigs"</span>,</span>
@@ -1181,7 +1173,7 @@ position)</li>
 supposed to be. This is actually expected based on the driving features
 of the clusters and the lack of specific markers to the hippocampus
 (such as Prox1) in the panel</em></p>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># CC is corpus callosum</span></span>
 <span><span class="va">types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"L2-L4"</span>, <span class="st">"L5-L6"</span>, <span class="st">"CC"</span>, <span class="st">"interneuron"</span>, <span class="st">"L1"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">types</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq.int</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span>
@@ -1212,7 +1204,7 @@ brain layers more convenient.</p>
 appropriate thickness based on the usual distance between cells. The
 generated cross section object is also currently attached to the spatial
 network once created.</p>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span><span class="va">star</span>, delaunay_method <span class="op">=</span> <span class="st">"delaunayn_geometry"</span><span class="op">)</span> <span class="co"># create 3D delaunay</span></span>
 <span></span>
 <span><span class="va">star</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCrossSection.html">createCrossSection</a></span><span class="op">(</span><span class="va">star</span>,</span>
@@ -1222,7 +1214,7 @@ network once created.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p>You can use <code><a href="../reference/insertCrossSectionSpatPlot3D.html">insertCrossSectionSpatPlot3D()</a></code> to visualize
 the virtual section and where it was taken from.</p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/insertCrossSectionSpatPlot3D.html">insertCrossSectionSpatPlot3D</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"cell_types"</span>,</span>
 <span>    axis_scale <span class="op">=</span> <span class="st">'real'</span>,</span>
@@ -1231,7 +1223,7 @@ the virtual section and where it was taken from.</p>
 <p><img src="images/starmap_mouse_brain/11_3D_cross_section.png" alt="" width="100%" style="display: block; margin: auto;"></p>
 <p><code><a href="../reference/crossSectionPlot.html">crossSectionPlot()</a></code> can be used to plot the 2D projection
 of the sliced through region.</p>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/crossSectionPlot.html">crossSectionPlot</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    point_size <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"cell_types"</span>,</span>
@@ -1246,7 +1238,7 @@ of the sliced through region.</p>
 like mentioned earlier (which should be strongly expressed in L2-L6, but
 not elsewhere) alongside other patterened features. This is a matches
 what is seen in the Wang et al.’s <strong>Fig2E</strong>.</p>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/crossSectionFeatPlot.html">crossSectionFeatPlot</a></span><span class="op">(</span><span class="va">star</span>,</span>
 <span>    feats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>        <span class="st">"Slc17a7"</span>, <span class="st">"Nov"</span>, <span class="st">"Cux2"</span>, <span class="st">"Rorb"</span>, </span>
@@ -1283,7 +1275,7 @@ cropped out of the original.
 <h2 id="session-info">
 <span class="header-section-number">8</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code>R version 4.4.1 (2024-06-14)
 Platform: aarch64-apple-darwin20

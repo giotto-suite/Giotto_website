@@ -292,6 +292,11 @@ top, refined downward</li>
 </h2>
 <p>Load the clustered object saved at the end of the <a href="atera_human_breast_cancer.html">Atera example</a>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Install Giotto Suite once (see the Installation page)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"GiottoUtils"</span>,</span>
+<span>    repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://giotto-suite.r-universe.dev"</span>, <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">GiottoUtils</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoUtils/reference/suite_install.html" class="external-link">suite_install</a></span><span class="op">(</span>ref <span class="op">=</span> <span class="st">"disk_full"</span>, install_arrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/apache/arrow/" class="external-link">arrow</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giottosuite.com">Giotto</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">GiottoDisk</span><span class="op">)</span></span>
@@ -322,7 +327,7 @@ variable ones that were calculated in the previous example.</p>
 <code>giottoTree</code>, which is a subclass of <code>hclust</code> with
 some additional information attached. The returned <code>tree</code> is
 kept in order to drive marker detection in later steps.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get the set of highly variable features calculated earlier</span></span>
 <span><span class="co"># this content is stored in the feature metadata</span></span>
 <span><span class="va">hvf</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/fDataDT.html" class="external-link">fDataDT</a></span><span class="op">(</span><span class="va">g</span>, feat_type <span class="op">=</span> <span class="st">"rna"</span><span class="op">)</span><span class="op">[</span><span class="va">hvf</span> <span class="op">==</span> <span class="st">"yes"</span><span class="op">]</span><span class="op">$</span><span class="va">feat_ID</span></span>
@@ -335,7 +340,7 @@ kept in order to drive marker detection in later steps.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p><code>giottoTree</code> can be directly plotted using
 <code>hclust</code>’s base plotting function.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">tree</span>, hang <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/cell_typing_cluster_tree/01_tree.png" alt="" width="100%"></p>
 <p>The object also retains an attached copy of the correlation matrix
@@ -346,13 +351,13 @@ tree’s order, use
 <code>showClusterHeatmap(g, cluster_column = CLUS, cluster_custom_order = tree$labels[tree$order])</code>.</p>
 <details><summary>
 Correlation heatmap
-</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+</summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">tree</span>, what <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/cell_typing_cluster_tree/02_cor_heatmap.png" alt="" width="100%"></p>
 </details><p>We additionally register an <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame()</a></code> method that
 converts the tree into a 4 column table with nodeID, node height, and
 left and right cluster members.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">splits</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">tree</span><span class="op">)</span></span>
 <span><span class="va">splits</span></span></code></pre></div>
 <details><summary><code>splits</code> print
@@ -405,7 +410,7 @@ markers<a class="anchor" aria-label="anchor" href="#per-cluster-markers"></a>
 <p>scran (one-vs-all): for each cluster, the genes most strongly up
 against all other cells combined, ranked by pi (fold change ×
 significance).</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mk</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/findMarkers_one_vs_all.html">findMarkers_one_vs_all</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    method <span class="op">=</span> <span class="st">"scran"</span>,</span>
 <span>    cluster_column <span class="op">=</span> <span class="va">CLUS</span>,</span>
@@ -431,7 +436,7 @@ scran output
 </details><p>Gini (one-vs-all): for each cluster, the genes concentrated in that
 cluster and low everywhere else. This call also returns
 detection_margin, which flags clusters with no gene of their own.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/findGiniMarkers_one_vs_all.html">findGiniMarkers_one_vs_all</a></span><span class="op">(</span><span class="va">g</span>, </span>
 <span>    cluster_column <span class="op">=</span> <span class="va">CLUS</span>,</span>
 <span>    min_feats <span class="op">=</span> <span class="fl">10</span>,</span>
@@ -477,7 +482,7 @@ percentage points more of a cluster’s cells detect a gene than of the
 next-highest single cluster’s. A cluster whose best margin is low has no
 gene of its own, which usually means an overclustered fragment or a cell
 state rather than a distinct type.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lvls</span> <span class="op">&lt;-</span> <span class="fu">GiottoUtils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gtools/man/mixedsort.html" class="external-link">mixedsort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">[[</span><span class="va">CLUS</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="va">gi</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span>margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">detection_margin</span><span class="op">)</span>,</span>
@@ -488,7 +493,7 @@ state rather than a distinct type.</p>
 <pre><code>13 of 33 clusters flagged</code></pre>
 <details><summary>
 ggplot code
-</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+</summary><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cmeta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
 <span><span class="va">NCELL</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">cmeta</span><span class="op">[[</span><span class="va">CLUS</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="va">lvls</span><span class="op">]</span><span class="op">)</span>, <span class="va">lvls</span><span class="op">)</span></span>
 <span><span class="va">plot_spec</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/copy.html" class="external-link">copy</a></span><span class="op">(</span><span class="va">spec</span><span class="op">)</span></span>
@@ -511,7 +516,7 @@ markers<a class="anchor" aria-label="anchor" href="#tree-node-markers"></a>
 </h3>
 <p>For each split we count the strong markers: genes with a clear fold
 change that are also clearly significant.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/findClusterTreeMarkers.html">findClusterTreeMarkers</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    cluster_column <span class="op">=</span> <span class="va">CLUS</span>,</span>
 <span>    tree <span class="op">=</span> <span class="va">tree</span>,</span>
@@ -525,7 +530,7 @@ change that are also clearly significant.</p>
 <pre><code>32 nodes, 7 flagged as weak splits</code></pre>
 <details><summary>
 ggplot code
-</summary><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+</summary><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">node_meta</span>, <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html" class="external-link">reorder</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">nodeID</span><span class="op">)</span>, <span class="op">-</span><span class="va">n_strong</span><span class="op">)</span>, <span class="va">n_strong</span>,</span>
 <span>                      fill <span class="op">=</span> <span class="va">weak_split</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -554,7 +559,7 @@ freeform place to describe the sample. Anything that would help someone
 reading the markers.</p>
 <p>We write the prompt to a temp file. The text is also returned
 directly returned from the function for inspection.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"atera_celltyping_prompt.txt"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">q</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/writeClusterTreeQuery.html">writeClusterTreeQuery</a></span><span class="op">(</span><span class="va">g</span>,</span>
@@ -572,7 +577,7 @@ directly returned from the function for inspection.</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">q</span><span class="op">)</span>, <span class="st">"lines\n"</span><span class="op">)</span></span></code></pre></div>
 <pre><code>537 lines</code></pre>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">temp</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 <pre><code> [1] "# Cell type annotation task"                                          
  [2] ""                                                                     
@@ -593,7 +598,7 @@ from a single answer, in the next step.</p>
 <p>Give the file to a model of your choice and save its reply. The reply
 is a JSON file, which we read back in below.</p>
 <p>For reproducibility, we include an example output:</p>
-<details><summary></summary><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<details><summary></summary><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ans</span> <span class="op">&lt;-</span> <span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/jsonlite/man/fromJSON.html" class="external-link">fromJSON</a></span><span class="op">(</span>simplifyVector <span class="op">=</span> <span class="cn">FALSE</span>, <span class="st">'{</span></span>
 <span><span class="st">  "nodes": [</span></span>
 <span><span class="st">    {"node": 32, "short": "all", "label": "all cells"},</span></span>
@@ -676,7 +681,7 @@ at several levels<a class="anchor" aria-label="anchor" href="#apply-the-annotati
 near the top it gives a few broad groups, near the bottom one label per
 cluster. <code>k</code> is the number of groups to cut into. Here we ask
 for 3, 8 and 16 groups, plus one label per cluster.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># see collapsible above for example output</span></span>
 <span><span class="va">ans</span> <span class="op">&lt;-</span> <span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/jsonlite/man/fromJSON.html" class="external-link">fromJSON</a></span><span class="op">(</span><span class="st">"atera_cell_types.json"</span>, simplifyVector <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
@@ -699,7 +704,7 @@ for 3, 8 and 16 groups, plus one label per cluster.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p>This adds one annotation column to the cell metadata for each value
 of <code>k</code>, from broad lineages down to the finest labels.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">cell_types_k3</span><span class="op">)</span></span></code></pre></div>
 <pre><code>  epi   imm strom 
 98774 23375 47271 </code></pre>
@@ -718,7 +723,7 @@ tree, a band of labels for each level of <code>k</code>, and tracks
 showing each cluster’s size and detection margin. Read the bands from
 top to bottom to see broad labels split into finer ones. The tracks show
 which clusters the data really supports.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">GiottoVisuals</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/plotClusterTree.html" class="external-link">plotClusterTree</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    cluster_column <span class="op">=</span> <span class="va">CLUS</span>,</span>
 <span>    tree <span class="op">=</span> <span class="va">tree</span>,</span>
@@ -739,7 +744,7 @@ coarser.</p>
 annotations<a class="anchor" aria-label="anchor" href="#coarse-annotations"></a>
 </h3>
 <p><strong>k3</strong> (coarsest)</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    color_as_factor <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"cell_types_k3"</span>,</span>
@@ -752,7 +757,7 @@ annotations<a class="anchor" aria-label="anchor" href="#coarse-annotations"></a>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/cell_typing_cluster_tree/06_k3.png" alt="" width="100%"></p>
 <p><strong>k8</strong> (coarsest)</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    color_as_factor <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"cell_types_k8"</span>,</span>
@@ -770,7 +775,7 @@ annotations<a class="anchor" aria-label="anchor" href="#coarse-annotations"></a>
 <span class="header-section-number">7.3</span> finest
 annotation<a class="anchor" aria-label="anchor" href="#finest-annotation"></a>
 </h3>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># for consistency with downstream plots</span></span>
 <span><span class="va">fine_clus</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">cell_types_k33</span><span class="op">)</span></span>
 <span><span class="va">fine_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoUtils/reference/getDistinctColors.html" class="external-link">getDistinctColors</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">fine_clus</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -787,7 +792,7 @@ annotation<a class="anchor" aria-label="anchor" href="#finest-annotation"></a>
 <span>    show_legend <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/cell_typing_cluster_tree/08_umap_k33.png" alt="" width="100%"></p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">g</span>,</span>
 <span>    color_as_factor <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>    cell_color <span class="op">=</span> <span class="st">"cell_types_k33"</span>,</span>
@@ -810,7 +815,7 @@ tissue<a class="anchor" aria-label="anchor" href="#each-lineage-in-tissue"></a>
 misleading, but cell types should sit where we expect them. Epithelial
 cells should form duct-like structures. Immune cells, fibroblasts and
 endothelial cells should be spread through the stroma between them.</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cmeta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
 <span><span class="va">lineage_groups</span> <span class="op">&lt;-</span> <span class="va">cmeta</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span>fine <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">cell_types_k33</span><span class="op">)</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">cell_types_k3</span><span class="op">]</span></span>
 <span></span>
@@ -843,7 +848,7 @@ endothelial cells should be spread through the stroma between them.</p>
 <span class="header-section-number">7.5</span> Markers, in tree
 order<a class="anchor" aria-label="anchor" href="#markers-in-tree-order"></a>
 </h3>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ord</span> <span class="op">&lt;-</span> <span class="va">tree</span><span class="op">$</span><span class="va">labels</span><span class="op">[</span><span class="va">tree</span><span class="op">$</span><span class="va">order</span><span class="op">]</span></span>
 <span><span class="co"># top 2 markers per cluster, taken in tree order so the dots run diagonally</span></span>
 <span><span class="va">top2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">mk</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">cluster</span>, <span class="va">ord</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="fl">2</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">cluster</span><span class="op">]</span><span class="op">$</span><span class="va">feats</span><span class="op">)</span></span>
@@ -877,98 +882,98 @@ order<a class="anchor" aria-label="anchor" href="#markers-in-tree-order"></a>
 <h2 id="save">
 <span class="header-section-number">8</span> Save<a class="anchor" aria-label="anchor" href="#save"></a>
 </h2>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/saveGiotto.html" class="external-link">saveGiotto</a></span><span class="op">(</span><span class="va">g</span>, name <span class="op">=</span> <span class="st">"annotated"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="9">
 <h2 id="session-info">
 <span class="header-section-number">9</span> Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a>R version <span class="dv">4</span>.<span class="fl">5.2</span> (<span class="dv">2025-10-31</span>)</span>
-<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a>Platform<span class="sc">:</span> aarch64<span class="sc">-</span>apple<span class="sc">-</span>darwin20</span>
-<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a>Running under<span class="sc">:</span> macOS Sequoia <span class="fl">15.5</span></span>
-<span id="cb34-4"><a href="#cb34-4" tabindex="-1"></a></span>
-<span id="cb34-5"><a href="#cb34-5" tabindex="-1"></a>Matrix products<span class="sc">:</span> default</span>
-<span id="cb34-6"><a href="#cb34-6" tabindex="-1"></a>BLAS<span class="sc">:</span>   <span class="er">/</span>System<span class="sc">/</span>Library<span class="sc">/</span>Frameworks<span class="sc">/</span>Accelerate.framework<span class="sc">/</span>Versions<span class="sc">/</span>A<span class="sc">/</span>Frameworks<span class="sc">/</span>vecLib.framework<span class="sc">/</span>Versions<span class="sc">/</span>A<span class="sc">/</span>libBLAS.dylib </span>
-<span id="cb34-7"><a href="#cb34-7" tabindex="-1"></a>LAPACK<span class="sc">:</span> <span class="er">/</span>Library<span class="sc">/</span>Frameworks<span class="sc">/</span>R.framework<span class="sc">/</span>Versions<span class="sc">/</span><span class="fl">4.5</span><span class="sc">-</span>arm64<span class="sc">/</span>Resources<span class="sc">/</span>lib<span class="sc">/</span>libRlapack.dylib;  LAPACK version <span class="dv">3</span>.<span class="fl">12.1</span></span>
-<span id="cb34-8"><a href="#cb34-8" tabindex="-1"></a></span>
-<span id="cb34-9"><a href="#cb34-9" tabindex="-1"></a>locale<span class="sc">:</span></span>
-<span id="cb34-10"><a href="#cb34-10" tabindex="-1"></a>[<span class="dv">1</span>] en_US.UTF<span class="dv">-8</span><span class="sc">/</span>en_US.UTF<span class="dv">-8</span><span class="sc">/</span>en_US.UTF<span class="dv">-8</span><span class="sc">/</span>C<span class="sc">/</span>en_US.UTF<span class="dv">-8</span><span class="sc">/</span>en_US.UTF<span class="dv">-8</span></span>
-<span id="cb34-11"><a href="#cb34-11" tabindex="-1"></a></span>
-<span id="cb34-12"><a href="#cb34-12" tabindex="-1"></a>time zone<span class="sc">:</span> America<span class="sc">/</span>New_York</span>
-<span id="cb34-13"><a href="#cb34-13" tabindex="-1"></a>tzcode source<span class="sc">:</span> internal</span>
-<span id="cb34-14"><a href="#cb34-14" tabindex="-1"></a></span>
-<span id="cb34-15"><a href="#cb34-15" tabindex="-1"></a>attached base packages<span class="sc">:</span></span>
-<span id="cb34-16"><a href="#cb34-16" tabindex="-1"></a>[<span class="dv">1</span>] stats     graphics  grDevices utils     datasets  methods   base     </span>
-<span id="cb34-17"><a href="#cb34-17" tabindex="-1"></a></span>
-<span id="cb34-18"><a href="#cb34-18" tabindex="-1"></a>other attached packages<span class="sc">:</span></span>
-<span id="cb34-19"><a href="#cb34-19" tabindex="-1"></a>[<span class="dv">1</span>] GiottoDisk_0.<span class="dv">0</span>.<span class="fl">0.3</span> Giotto_4.<span class="fl">3.0</span>       GiottoClass_0.<span class="fl">7.7</span>  arrow_23.<span class="dv">0</span>.<span class="fl">1.2</span>    </span>
-<span id="cb34-20"><a href="#cb34-20" tabindex="-1"></a></span>
-<span id="cb34-21"><a href="#cb34-21" tabindex="-1"></a>loaded via a <span class="fu">namespace</span> (and not attached)<span class="sc">:</span></span>
-<span id="cb34-22"><a href="#cb34-22" tabindex="-1"></a>  [<span class="dv">1</span>] colorRamp2_0.<span class="fl">1.0</span>            gridExtra_2<span class="fl">.3</span>              </span>
-<span id="cb34-23"><a href="#cb34-23" tabindex="-1"></a>  [<span class="dv">3</span>] rlang_1.<span class="fl">2.0</span>                 magrittr_2.<span class="fl">0.5</span>             </span>
-<span id="cb34-24"><a href="#cb34-24" tabindex="-1"></a>  [<span class="dv">5</span>] otel_0.<span class="fl">2.0</span>                  GiottoUtils_0.<span class="fl">2.7</span>          </span>
-<span id="cb34-25"><a href="#cb34-25" tabindex="-1"></a>  [<span class="dv">7</span>] matrixStats_1.<span class="fl">5.0</span>           compiler_4.<span class="fl">5.2</span>             </span>
-<span id="cb34-26"><a href="#cb34-26" tabindex="-1"></a>  [<span class="dv">9</span>] callr_3.<span class="fl">7.6</span>                 systemfonts_1.<span class="fl">3.1</span>          </span>
-<span id="cb34-27"><a href="#cb34-27" tabindex="-1"></a> [<span class="dv">11</span>] png_0<span class="fl">.1</span><span class="dv">-9</span>                   vctrs_0.<span class="fl">7.3</span>                </span>
-<span id="cb34-28"><a href="#cb34-28" tabindex="-1"></a> [<span class="dv">13</span>] pkgconfig_2.<span class="fl">0.3</span>             SpatialExperiment_1.<span class="fl">20.0</span>   </span>
-<span id="cb34-29"><a href="#cb34-29" tabindex="-1"></a> [<span class="dv">15</span>] fastmap_1.<span class="fl">2.0</span>               backports_1.<span class="fl">5.1</span>            </span>
-<span id="cb34-30"><a href="#cb34-30" tabindex="-1"></a> [<span class="dv">17</span>] magick_2.<span class="fl">9.0</span>                XVector_0.<span class="fl">50.0</span>             </span>
-<span id="cb34-31"><a href="#cb34-31" tabindex="-1"></a> [<span class="dv">19</span>] scuttle_1.<span class="fl">20.0</span>              labeling_0.<span class="fl">4.3</span>             </span>
-<span id="cb34-32"><a href="#cb34-32" tabindex="-1"></a> [<span class="dv">21</span>] ggraph_2.<span class="fl">2.2</span>                ps_1.<span class="fl">9.1</span>                   </span>
-<span id="cb34-33"><a href="#cb34-33" tabindex="-1"></a> [<span class="dv">23</span>] ragg_1.<span class="fl">5.0</span>                  purrr_1.<span class="fl">2.1</span>                </span>
-<span id="cb34-34"><a href="#cb34-34" tabindex="-1"></a> [<span class="dv">25</span>] bit_4.<span class="fl">6.0</span>                   xfun_0<span class="fl">.56</span>                  </span>
-<span id="cb34-35"><a href="#cb34-35" tabindex="-1"></a> [<span class="dv">27</span>] bluster_1.<span class="fl">20.0</span>              cachem_1.<span class="fl">1.0</span>               </span>
-<span id="cb34-36"><a href="#cb34-36" tabindex="-1"></a> [<span class="dv">29</span>] beachmat_2.<span class="fl">26.0</span>             jsonlite_2.<span class="fl">0.0</span>             </span>
-<span id="cb34-37"><a href="#cb34-37" tabindex="-1"></a> [<span class="dv">31</span>] pak_0.<span class="fl">9.2</span>                   DelayedArray_0.<span class="fl">36.1</span>        </span>
-<span id="cb34-38"><a href="#cb34-38" tabindex="-1"></a> [<span class="dv">33</span>] BiocParallel_1.<span class="fl">44.0</span>         tweenr_2.<span class="fl">0.3</span>               </span>
-<span id="cb34-39"><a href="#cb34-39" tabindex="-1"></a> [<span class="dv">35</span>] terra_1<span class="fl">.9</span><span class="dv">-27</span>                irlba_2.<span class="fl">3.7</span>                </span>
-<span id="cb34-40"><a href="#cb34-40" tabindex="-1"></a> [<span class="dv">37</span>] parallel_4.<span class="fl">5.2</span>              cluster_2.<span class="dv">1</span>.<span class="fl">8.1</span>            </span>
-<span id="cb34-41"><a href="#cb34-41" tabindex="-1"></a> [<span class="dv">39</span>] R6_2.<span class="fl">6.1</span>                    RColorBrewer_1<span class="fl">.1</span><span class="dv">-3</span>         </span>
-<span id="cb34-42"><a href="#cb34-42" tabindex="-1"></a> [<span class="dv">41</span>] limma_3.<span class="fl">66.0</span>                reticulate_1.<span class="fl">46.0</span>          </span>
-<span id="cb34-43"><a href="#cb34-43" tabindex="-1"></a> [<span class="dv">43</span>] GenomicRanges_1.<span class="fl">62.1</span>        scattermore_1<span class="fl">.2</span>            </span>
-<span id="cb34-44"><a href="#cb34-44" tabindex="-1"></a> [<span class="dv">45</span>] knitr_1<span class="fl">.51</span>                  Rcpp_1.<span class="fl">1.1-1.1</span>             </span>
-<span id="cb34-45"><a href="#cb34-45" tabindex="-1"></a> [<span class="dv">47</span>] Seqinfo_1.<span class="fl">0.0</span>               assertthat_0.<span class="fl">2.1</span>           </span>
-<span id="cb34-46"><a href="#cb34-46" tabindex="-1"></a> [<span class="dv">49</span>] SummarizedExperiment_1.<span class="fl">40.0</span> base64enc_0<span class="fl">.1</span><span class="dv">-6</span>            </span>
-<span id="cb34-47"><a href="#cb34-47" tabindex="-1"></a> [<span class="dv">51</span>] IRanges_2.<span class="fl">44.0</span>              Matrix_1<span class="fl">.7</span><span class="dv">-4</span>               </span>
-<span id="cb34-48"><a href="#cb34-48" tabindex="-1"></a> [<span class="dv">53</span>] igraph_2.<span class="fl">3.2</span>                tidyselect_1.<span class="fl">2.1</span>           </span>
-<span id="cb34-49"><a href="#cb34-49" tabindex="-1"></a> [<span class="dv">55</span>] abind_1<span class="fl">.4</span><span class="dv">-8</span>                 viridis_0.<span class="fl">6.5</span>              </span>
-<span id="cb34-50"><a href="#cb34-50" tabindex="-1"></a> [<span class="dv">57</span>] codetools_0<span class="fl">.2</span><span class="dv">-20</span>            processx_3.<span class="fl">8.6</span>             </span>
-<span id="cb34-51"><a href="#cb34-51" tabindex="-1"></a> [<span class="dv">59</span>] lattice_0<span class="fl">.22</span><span class="dv">-7</span>              tibble_3.<span class="fl">3.1</span>               </span>
-<span id="cb34-52"><a href="#cb34-52" tabindex="-1"></a> [<span class="dv">61</span>] Biobase_2.<span class="fl">70.0</span>              withr_3.<span class="fl">0.2</span>                </span>
-<span id="cb34-53"><a href="#cb34-53" tabindex="-1"></a> [<span class="dv">63</span>] S7_0.<span class="fl">2.1</span>                    evaluate_1.<span class="fl">0.5</span>             </span>
-<span id="cb34-54"><a href="#cb34-54" tabindex="-1"></a> [<span class="dv">65</span>] polyclip_1<span class="fl">.10</span><span class="dv">-7</span>             filelock_1.<span class="fl">0.3</span>             </span>
-<span id="cb34-55"><a href="#cb34-55" tabindex="-1"></a> [<span class="dv">67</span>] pillar_1.<span class="fl">11.1</span>               MatrixGenerics_1.<span class="fl">22.0</span>      </span>
-<span id="cb34-56"><a href="#cb34-56" tabindex="-1"></a> [<span class="dv">69</span>] checkmate_2.<span class="fl">3.4</span>             stats4_4.<span class="fl">5.2</span>               </span>
-<span id="cb34-57"><a href="#cb34-57" tabindex="-1"></a> [<span class="dv">71</span>] plotly_4.<span class="fl">12.0</span>               generics_0.<span class="fl">1.4</span>             </span>
-<span id="cb34-58"><a href="#cb34-58" tabindex="-1"></a> [<span class="dv">73</span>] RcppHNSW_0.<span class="fl">6.0</span>              S4Vectors_0.<span class="fl">48.1</span>           </span>
-<span id="cb34-59"><a href="#cb34-59" tabindex="-1"></a> [<span class="dv">75</span>] ggplot2_4.<span class="fl">0.2</span>               scales_1.<span class="fl">4.0</span>               </span>
-<span id="cb34-60"><a href="#cb34-60" tabindex="-1"></a> [<span class="dv">77</span>] gtools_3.<span class="fl">9.5</span>                glue_1.<span class="fl">8.1</span>                 </span>
-<span id="cb34-61"><a href="#cb34-61" tabindex="-1"></a> [<span class="dv">79</span>] BPCells_0.<span class="fl">3.1</span>               metapod_1.<span class="fl">18.0</span>             </span>
-<span id="cb34-62"><a href="#cb34-62" tabindex="-1"></a> [<span class="dv">81</span>] lazyeval_0.<span class="fl">2.2</span>              tools_4.<span class="fl">5.2</span>                </span>
-<span id="cb34-63"><a href="#cb34-63" tabindex="-1"></a> [<span class="dv">83</span>] GiottoVisuals_0.<span class="fl">2.16</span>        tilework_1.<span class="fl">0.0</span>             </span>
-<span id="cb34-64"><a href="#cb34-64" tabindex="-1"></a> [<span class="dv">85</span>] BiocNeighbors_2.<span class="fl">4.0</span>         data.table_1.<span class="fl">18.4</span>          </span>
-<span id="cb34-65"><a href="#cb34-65" tabindex="-1"></a> [<span class="dv">87</span>] ScaledMatrix_1.<span class="fl">18.0</span>         locfit_1<span class="fl">.5-9.12</span>            </span>
-<span id="cb34-66"><a href="#cb34-66" tabindex="-1"></a> [<span class="dv">89</span>] rgl_1.<span class="fl">3.34</span>                  scran_1.<span class="fl">38.1</span>               </span>
-<span id="cb34-67"><a href="#cb34-67" tabindex="-1"></a> [<span class="dv">91</span>] graphlayouts_1.<span class="fl">2.2</span>          tidygraph_1.<span class="fl">3.1</span>            </span>
-<span id="cb34-68"><a href="#cb34-68" tabindex="-1"></a> [<span class="dv">93</span>] cowplot_1.<span class="fl">2.0</span>               grid_4.<span class="fl">5.2</span>                 </span>
-<span id="cb34-69"><a href="#cb34-69" tabindex="-1"></a> [<span class="dv">95</span>] tidyr_1.<span class="fl">3.2</span>                 edgeR_4.<span class="fl">8.2</span>                </span>
-<span id="cb34-70"><a href="#cb34-70" tabindex="-1"></a> [<span class="dv">97</span>] colorspace_2<span class="fl">.1</span><span class="dv">-2</span>            SingleCellExperiment_1.<span class="fl">32.0</span></span>
-<span id="cb34-71"><a href="#cb34-71" tabindex="-1"></a> [<span class="dv">99</span>] BiocSingular_1.<span class="fl">26.1</span>         ggforce_0.<span class="fl">5.0</span>              </span>
-<span id="cb34-72"><a href="#cb34-72" tabindex="-1"></a>[<span class="dv">101</span>] cli_3.<span class="fl">6.6</span>                   rsvd_1.<span class="fl">0.5</span>                 </span>
-<span id="cb34-73"><a href="#cb34-73" tabindex="-1"></a>[<span class="dv">103</span>] textshaping_1.<span class="fl">0.4</span>           S4Arrays_1.<span class="fl">10.1</span>            </span>
-<span id="cb34-74"><a href="#cb34-74" tabindex="-1"></a>[<span class="dv">105</span>] viridisLite_0.<span class="fl">4.3</span>           ggdendro_0.<span class="fl">2.0</span>             </span>
-<span id="cb34-75"><a href="#cb34-75" tabindex="-1"></a>[<span class="dv">107</span>] dplyr_1.<span class="fl">2.0</span>                 gtable_0.<span class="fl">3.6</span>               </span>
-<span id="cb34-76"><a href="#cb34-76" tabindex="-1"></a>[<span class="dv">109</span>] digest_0.<span class="fl">6.39</span>               progressr_0.<span class="fl">19.0</span>           </span>
-<span id="cb34-77"><a href="#cb34-77" tabindex="-1"></a>[<span class="dv">111</span>] BiocGenerics_0.<span class="fl">56.0</span>         dqrng_0.<span class="fl">4.1</span>                </span>
-<span id="cb34-78"><a href="#cb34-78" tabindex="-1"></a>[<span class="dv">113</span>] SparseArray_1.<span class="fl">10.10</span>         ggrepel_0.<span class="fl">9.6</span>              </span>
-<span id="cb34-79"><a href="#cb34-79" tabindex="-1"></a>[<span class="dv">115</span>] rjson_0.<span class="fl">2.23</span>                htmlwidgets_1.<span class="fl">6.4</span>          </span>
-<span id="cb34-80"><a href="#cb34-80" tabindex="-1"></a>[<span class="dv">117</span>] farver_2.<span class="fl">1.2</span>                memoise_2.<span class="fl">0.1</span>              </span>
-<span id="cb34-81"><a href="#cb34-81" tabindex="-1"></a>[<span class="dv">119</span>] htmltools_0.<span class="fl">5.9</span>             lifecycle_1.<span class="fl">0.5</span>            </span>
-<span id="cb34-82"><a href="#cb34-82" tabindex="-1"></a>[<span class="dv">121</span>] httr_1.<span class="fl">4.7</span>                  statmod_1.<span class="fl">5.1</span>              </span>
-<span id="cb34-83"><a href="#cb34-83" tabindex="-1"></a>[<span class="dv">123</span>] bit64_4.<span class="fl">6.0</span><span class="dv">-1</span>               MASS_7<span class="fl">.3</span><span class="dv">-65</span>    </span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a>R version <span class="dv">4</span>.<span class="fl">5.2</span> (<span class="dv">2025-10-31</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a>Platform<span class="sc">:</span> aarch64<span class="sc">-</span>apple<span class="sc">-</span>darwin20</span>
+<span id="cb35-3"><a href="#cb35-3" tabindex="-1"></a>Running under<span class="sc">:</span> macOS Sequoia <span class="fl">15.5</span></span>
+<span id="cb35-4"><a href="#cb35-4" tabindex="-1"></a></span>
+<span id="cb35-5"><a href="#cb35-5" tabindex="-1"></a>Matrix products<span class="sc">:</span> default</span>
+<span id="cb35-6"><a href="#cb35-6" tabindex="-1"></a>BLAS<span class="sc">:</span>   <span class="er">/</span>System<span class="sc">/</span>Library<span class="sc">/</span>Frameworks<span class="sc">/</span>Accelerate.framework<span class="sc">/</span>Versions<span class="sc">/</span>A<span class="sc">/</span>Frameworks<span class="sc">/</span>vecLib.framework<span class="sc">/</span>Versions<span class="sc">/</span>A<span class="sc">/</span>libBLAS.dylib </span>
+<span id="cb35-7"><a href="#cb35-7" tabindex="-1"></a>LAPACK<span class="sc">:</span> <span class="er">/</span>Library<span class="sc">/</span>Frameworks<span class="sc">/</span>R.framework<span class="sc">/</span>Versions<span class="sc">/</span><span class="fl">4.5</span><span class="sc">-</span>arm64<span class="sc">/</span>Resources<span class="sc">/</span>lib<span class="sc">/</span>libRlapack.dylib;  LAPACK version <span class="dv">3</span>.<span class="fl">12.1</span></span>
+<span id="cb35-8"><a href="#cb35-8" tabindex="-1"></a></span>
+<span id="cb35-9"><a href="#cb35-9" tabindex="-1"></a>locale<span class="sc">:</span></span>
+<span id="cb35-10"><a href="#cb35-10" tabindex="-1"></a>[<span class="dv">1</span>] en_US.UTF<span class="dv">-8</span><span class="sc">/</span>en_US.UTF<span class="dv">-8</span><span class="sc">/</span>en_US.UTF<span class="dv">-8</span><span class="sc">/</span>C<span class="sc">/</span>en_US.UTF<span class="dv">-8</span><span class="sc">/</span>en_US.UTF<span class="dv">-8</span></span>
+<span id="cb35-11"><a href="#cb35-11" tabindex="-1"></a></span>
+<span id="cb35-12"><a href="#cb35-12" tabindex="-1"></a>time zone<span class="sc">:</span> America<span class="sc">/</span>New_York</span>
+<span id="cb35-13"><a href="#cb35-13" tabindex="-1"></a>tzcode source<span class="sc">:</span> internal</span>
+<span id="cb35-14"><a href="#cb35-14" tabindex="-1"></a></span>
+<span id="cb35-15"><a href="#cb35-15" tabindex="-1"></a>attached base packages<span class="sc">:</span></span>
+<span id="cb35-16"><a href="#cb35-16" tabindex="-1"></a>[<span class="dv">1</span>] stats     graphics  grDevices utils     datasets  methods   base     </span>
+<span id="cb35-17"><a href="#cb35-17" tabindex="-1"></a></span>
+<span id="cb35-18"><a href="#cb35-18" tabindex="-1"></a>other attached packages<span class="sc">:</span></span>
+<span id="cb35-19"><a href="#cb35-19" tabindex="-1"></a>[<span class="dv">1</span>] GiottoDisk_0.<span class="dv">0</span>.<span class="fl">0.3</span> Giotto_4.<span class="fl">3.0</span>       GiottoClass_0.<span class="fl">7.7</span>  arrow_23.<span class="dv">0</span>.<span class="fl">1.2</span>    </span>
+<span id="cb35-20"><a href="#cb35-20" tabindex="-1"></a></span>
+<span id="cb35-21"><a href="#cb35-21" tabindex="-1"></a>loaded via a <span class="fu">namespace</span> (and not attached)<span class="sc">:</span></span>
+<span id="cb35-22"><a href="#cb35-22" tabindex="-1"></a>  [<span class="dv">1</span>] colorRamp2_0.<span class="fl">1.0</span>            gridExtra_2<span class="fl">.3</span>              </span>
+<span id="cb35-23"><a href="#cb35-23" tabindex="-1"></a>  [<span class="dv">3</span>] rlang_1.<span class="fl">2.0</span>                 magrittr_2.<span class="fl">0.5</span>             </span>
+<span id="cb35-24"><a href="#cb35-24" tabindex="-1"></a>  [<span class="dv">5</span>] otel_0.<span class="fl">2.0</span>                  GiottoUtils_0.<span class="fl">2.7</span>          </span>
+<span id="cb35-25"><a href="#cb35-25" tabindex="-1"></a>  [<span class="dv">7</span>] matrixStats_1.<span class="fl">5.0</span>           compiler_4.<span class="fl">5.2</span>             </span>
+<span id="cb35-26"><a href="#cb35-26" tabindex="-1"></a>  [<span class="dv">9</span>] callr_3.<span class="fl">7.6</span>                 systemfonts_1.<span class="fl">3.1</span>          </span>
+<span id="cb35-27"><a href="#cb35-27" tabindex="-1"></a> [<span class="dv">11</span>] png_0<span class="fl">.1</span><span class="dv">-9</span>                   vctrs_0.<span class="fl">7.3</span>                </span>
+<span id="cb35-28"><a href="#cb35-28" tabindex="-1"></a> [<span class="dv">13</span>] pkgconfig_2.<span class="fl">0.3</span>             SpatialExperiment_1.<span class="fl">20.0</span>   </span>
+<span id="cb35-29"><a href="#cb35-29" tabindex="-1"></a> [<span class="dv">15</span>] fastmap_1.<span class="fl">2.0</span>               backports_1.<span class="fl">5.1</span>            </span>
+<span id="cb35-30"><a href="#cb35-30" tabindex="-1"></a> [<span class="dv">17</span>] magick_2.<span class="fl">9.0</span>                XVector_0.<span class="fl">50.0</span>             </span>
+<span id="cb35-31"><a href="#cb35-31" tabindex="-1"></a> [<span class="dv">19</span>] scuttle_1.<span class="fl">20.0</span>              labeling_0.<span class="fl">4.3</span>             </span>
+<span id="cb35-32"><a href="#cb35-32" tabindex="-1"></a> [<span class="dv">21</span>] ggraph_2.<span class="fl">2.2</span>                ps_1.<span class="fl">9.1</span>                   </span>
+<span id="cb35-33"><a href="#cb35-33" tabindex="-1"></a> [<span class="dv">23</span>] ragg_1.<span class="fl">5.0</span>                  purrr_1.<span class="fl">2.1</span>                </span>
+<span id="cb35-34"><a href="#cb35-34" tabindex="-1"></a> [<span class="dv">25</span>] bit_4.<span class="fl">6.0</span>                   xfun_0<span class="fl">.56</span>                  </span>
+<span id="cb35-35"><a href="#cb35-35" tabindex="-1"></a> [<span class="dv">27</span>] bluster_1.<span class="fl">20.0</span>              cachem_1.<span class="fl">1.0</span>               </span>
+<span id="cb35-36"><a href="#cb35-36" tabindex="-1"></a> [<span class="dv">29</span>] beachmat_2.<span class="fl">26.0</span>             jsonlite_2.<span class="fl">0.0</span>             </span>
+<span id="cb35-37"><a href="#cb35-37" tabindex="-1"></a> [<span class="dv">31</span>] pak_0.<span class="fl">9.2</span>                   DelayedArray_0.<span class="fl">36.1</span>        </span>
+<span id="cb35-38"><a href="#cb35-38" tabindex="-1"></a> [<span class="dv">33</span>] BiocParallel_1.<span class="fl">44.0</span>         tweenr_2.<span class="fl">0.3</span>               </span>
+<span id="cb35-39"><a href="#cb35-39" tabindex="-1"></a> [<span class="dv">35</span>] terra_1<span class="fl">.9</span><span class="dv">-27</span>                irlba_2.<span class="fl">3.7</span>                </span>
+<span id="cb35-40"><a href="#cb35-40" tabindex="-1"></a> [<span class="dv">37</span>] parallel_4.<span class="fl">5.2</span>              cluster_2.<span class="dv">1</span>.<span class="fl">8.1</span>            </span>
+<span id="cb35-41"><a href="#cb35-41" tabindex="-1"></a> [<span class="dv">39</span>] R6_2.<span class="fl">6.1</span>                    RColorBrewer_1<span class="fl">.1</span><span class="dv">-3</span>         </span>
+<span id="cb35-42"><a href="#cb35-42" tabindex="-1"></a> [<span class="dv">41</span>] limma_3.<span class="fl">66.0</span>                reticulate_1.<span class="fl">46.0</span>          </span>
+<span id="cb35-43"><a href="#cb35-43" tabindex="-1"></a> [<span class="dv">43</span>] GenomicRanges_1.<span class="fl">62.1</span>        scattermore_1<span class="fl">.2</span>            </span>
+<span id="cb35-44"><a href="#cb35-44" tabindex="-1"></a> [<span class="dv">45</span>] knitr_1<span class="fl">.51</span>                  Rcpp_1.<span class="fl">1.1-1.1</span>             </span>
+<span id="cb35-45"><a href="#cb35-45" tabindex="-1"></a> [<span class="dv">47</span>] Seqinfo_1.<span class="fl">0.0</span>               assertthat_0.<span class="fl">2.1</span>           </span>
+<span id="cb35-46"><a href="#cb35-46" tabindex="-1"></a> [<span class="dv">49</span>] SummarizedExperiment_1.<span class="fl">40.0</span> base64enc_0<span class="fl">.1</span><span class="dv">-6</span>            </span>
+<span id="cb35-47"><a href="#cb35-47" tabindex="-1"></a> [<span class="dv">51</span>] IRanges_2.<span class="fl">44.0</span>              Matrix_1<span class="fl">.7</span><span class="dv">-4</span>               </span>
+<span id="cb35-48"><a href="#cb35-48" tabindex="-1"></a> [<span class="dv">53</span>] igraph_2.<span class="fl">3.2</span>                tidyselect_1.<span class="fl">2.1</span>           </span>
+<span id="cb35-49"><a href="#cb35-49" tabindex="-1"></a> [<span class="dv">55</span>] abind_1<span class="fl">.4</span><span class="dv">-8</span>                 viridis_0.<span class="fl">6.5</span>              </span>
+<span id="cb35-50"><a href="#cb35-50" tabindex="-1"></a> [<span class="dv">57</span>] codetools_0<span class="fl">.2</span><span class="dv">-20</span>            processx_3.<span class="fl">8.6</span>             </span>
+<span id="cb35-51"><a href="#cb35-51" tabindex="-1"></a> [<span class="dv">59</span>] lattice_0<span class="fl">.22</span><span class="dv">-7</span>              tibble_3.<span class="fl">3.1</span>               </span>
+<span id="cb35-52"><a href="#cb35-52" tabindex="-1"></a> [<span class="dv">61</span>] Biobase_2.<span class="fl">70.0</span>              withr_3.<span class="fl">0.2</span>                </span>
+<span id="cb35-53"><a href="#cb35-53" tabindex="-1"></a> [<span class="dv">63</span>] S7_0.<span class="fl">2.1</span>                    evaluate_1.<span class="fl">0.5</span>             </span>
+<span id="cb35-54"><a href="#cb35-54" tabindex="-1"></a> [<span class="dv">65</span>] polyclip_1<span class="fl">.10</span><span class="dv">-7</span>             filelock_1.<span class="fl">0.3</span>             </span>
+<span id="cb35-55"><a href="#cb35-55" tabindex="-1"></a> [<span class="dv">67</span>] pillar_1.<span class="fl">11.1</span>               MatrixGenerics_1.<span class="fl">22.0</span>      </span>
+<span id="cb35-56"><a href="#cb35-56" tabindex="-1"></a> [<span class="dv">69</span>] checkmate_2.<span class="fl">3.4</span>             stats4_4.<span class="fl">5.2</span>               </span>
+<span id="cb35-57"><a href="#cb35-57" tabindex="-1"></a> [<span class="dv">71</span>] plotly_4.<span class="fl">12.0</span>               generics_0.<span class="fl">1.4</span>             </span>
+<span id="cb35-58"><a href="#cb35-58" tabindex="-1"></a> [<span class="dv">73</span>] RcppHNSW_0.<span class="fl">6.0</span>              S4Vectors_0.<span class="fl">48.1</span>           </span>
+<span id="cb35-59"><a href="#cb35-59" tabindex="-1"></a> [<span class="dv">75</span>] ggplot2_4.<span class="fl">0.2</span>               scales_1.<span class="fl">4.0</span>               </span>
+<span id="cb35-60"><a href="#cb35-60" tabindex="-1"></a> [<span class="dv">77</span>] gtools_3.<span class="fl">9.5</span>                glue_1.<span class="fl">8.1</span>                 </span>
+<span id="cb35-61"><a href="#cb35-61" tabindex="-1"></a> [<span class="dv">79</span>] BPCells_0.<span class="fl">3.1</span>               metapod_1.<span class="fl">18.0</span>             </span>
+<span id="cb35-62"><a href="#cb35-62" tabindex="-1"></a> [<span class="dv">81</span>] lazyeval_0.<span class="fl">2.2</span>              tools_4.<span class="fl">5.2</span>                </span>
+<span id="cb35-63"><a href="#cb35-63" tabindex="-1"></a> [<span class="dv">83</span>] GiottoVisuals_0.<span class="fl">2.16</span>        tilework_1.<span class="fl">0.0</span>             </span>
+<span id="cb35-64"><a href="#cb35-64" tabindex="-1"></a> [<span class="dv">85</span>] BiocNeighbors_2.<span class="fl">4.0</span>         data.table_1.<span class="fl">18.4</span>          </span>
+<span id="cb35-65"><a href="#cb35-65" tabindex="-1"></a> [<span class="dv">87</span>] ScaledMatrix_1.<span class="fl">18.0</span>         locfit_1<span class="fl">.5-9.12</span>            </span>
+<span id="cb35-66"><a href="#cb35-66" tabindex="-1"></a> [<span class="dv">89</span>] rgl_1.<span class="fl">3.34</span>                  scran_1.<span class="fl">38.1</span>               </span>
+<span id="cb35-67"><a href="#cb35-67" tabindex="-1"></a> [<span class="dv">91</span>] graphlayouts_1.<span class="fl">2.2</span>          tidygraph_1.<span class="fl">3.1</span>            </span>
+<span id="cb35-68"><a href="#cb35-68" tabindex="-1"></a> [<span class="dv">93</span>] cowplot_1.<span class="fl">2.0</span>               grid_4.<span class="fl">5.2</span>                 </span>
+<span id="cb35-69"><a href="#cb35-69" tabindex="-1"></a> [<span class="dv">95</span>] tidyr_1.<span class="fl">3.2</span>                 edgeR_4.<span class="fl">8.2</span>                </span>
+<span id="cb35-70"><a href="#cb35-70" tabindex="-1"></a> [<span class="dv">97</span>] colorspace_2<span class="fl">.1</span><span class="dv">-2</span>            SingleCellExperiment_1.<span class="fl">32.0</span></span>
+<span id="cb35-71"><a href="#cb35-71" tabindex="-1"></a> [<span class="dv">99</span>] BiocSingular_1.<span class="fl">26.1</span>         ggforce_0.<span class="fl">5.0</span>              </span>
+<span id="cb35-72"><a href="#cb35-72" tabindex="-1"></a>[<span class="dv">101</span>] cli_3.<span class="fl">6.6</span>                   rsvd_1.<span class="fl">0.5</span>                 </span>
+<span id="cb35-73"><a href="#cb35-73" tabindex="-1"></a>[<span class="dv">103</span>] textshaping_1.<span class="fl">0.4</span>           S4Arrays_1.<span class="fl">10.1</span>            </span>
+<span id="cb35-74"><a href="#cb35-74" tabindex="-1"></a>[<span class="dv">105</span>] viridisLite_0.<span class="fl">4.3</span>           ggdendro_0.<span class="fl">2.0</span>             </span>
+<span id="cb35-75"><a href="#cb35-75" tabindex="-1"></a>[<span class="dv">107</span>] dplyr_1.<span class="fl">2.0</span>                 gtable_0.<span class="fl">3.6</span>               </span>
+<span id="cb35-76"><a href="#cb35-76" tabindex="-1"></a>[<span class="dv">109</span>] digest_0.<span class="fl">6.39</span>               progressr_0.<span class="fl">19.0</span>           </span>
+<span id="cb35-77"><a href="#cb35-77" tabindex="-1"></a>[<span class="dv">111</span>] BiocGenerics_0.<span class="fl">56.0</span>         dqrng_0.<span class="fl">4.1</span>                </span>
+<span id="cb35-78"><a href="#cb35-78" tabindex="-1"></a>[<span class="dv">113</span>] SparseArray_1.<span class="fl">10.10</span>         ggrepel_0.<span class="fl">9.6</span>              </span>
+<span id="cb35-79"><a href="#cb35-79" tabindex="-1"></a>[<span class="dv">115</span>] rjson_0.<span class="fl">2.23</span>                htmlwidgets_1.<span class="fl">6.4</span>          </span>
+<span id="cb35-80"><a href="#cb35-80" tabindex="-1"></a>[<span class="dv">117</span>] farver_2.<span class="fl">1.2</span>                memoise_2.<span class="fl">0.1</span>              </span>
+<span id="cb35-81"><a href="#cb35-81" tabindex="-1"></a>[<span class="dv">119</span>] htmltools_0.<span class="fl">5.9</span>             lifecycle_1.<span class="fl">0.5</span>            </span>
+<span id="cb35-82"><a href="#cb35-82" tabindex="-1"></a>[<span class="dv">121</span>] httr_1.<span class="fl">4.7</span>                  statmod_1.<span class="fl">5.1</span>              </span>
+<span id="cb35-83"><a href="#cb35-83" tabindex="-1"></a>[<span class="dv">123</span>] bit64_4.<span class="fl">6.0</span><span class="dv">-1</span>               MASS_7<span class="fl">.3</span><span class="dv">-65</span>    </span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

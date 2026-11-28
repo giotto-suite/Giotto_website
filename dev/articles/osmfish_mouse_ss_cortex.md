@@ -13,14 +13,10 @@ somatosensory cortex with the expression of 33 genes in 5,328 cells.
 
 ``` r
 
-# Ensure Giotto Suite and GiottoData, a small, helper module for tutorials, are installed.
-pkgs <- c("Giotto", "GiottoData")
-need_install <- pkgs[sapply(pkgs, function(pkg) !requireNamespace(pkg, quietly = TRUE))]
-
-if (length(need_install) > 0L) {
-  if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak")
-  pak::pak(sprintf("giotto-suite/%s", need_install))
-}
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
 ```
 
 ``` r

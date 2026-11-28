@@ -2,11 +2,10 @@
 
 ``` r
 
-# Ensure Giotto Suite is installed.
-if(!"Giotto" %in% installed.packages()) {
-    remotes::install_github("giotto-suite/GiottoUtils")
-    GiottoUtils::suite_install()
-}
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
 ```
 
 ## 1 Expression Value Processing Pipeline

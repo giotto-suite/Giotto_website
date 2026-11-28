@@ -279,13 +279,6 @@ running this code in your R console:</p>
 run instead this command to directly modify your R environment
 variable:</p>
 <pre><code>echo "R_DEFAULT_INTERNET_TIMEOUT = 1000" &gt;&gt; .Renviron</code></pre>
-<p>Alternatively, you can use the package pak to install Giotto</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"pak"</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/Giotto"</span><span class="op">)</span></span></code></pre></div>
 </details><details><summary>
 A Python tool fails to install or run
 </summary><p>Python tools (cellpose, StarDist, Mesmer, scikit-image, tifffile,
@@ -313,7 +306,7 @@ function <code>as_cholmod_sparse</code> not provided by package ‘Matrix’
 </summary><p>Matrix underwent a breaking change after versoin 1.6-2. Reinstalling
 <em>irlba</em> from source will fix this. See this GitHub <a href="https://github.com/bwlewis/irlba/issues/70" class="external-link">issue</a> for more
 info.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"irlba"</span>, type <span class="op">=</span> <span class="st">"source"</span><span class="op">)</span></span></code></pre></div>
 </details><details><summary>
 Xenium/VisiumHD: arrow and ZSTD support
@@ -322,7 +315,7 @@ Xenium/VisiumHD: arrow and ZSTD support
 compression which the default <em>arrow</em> installation may not
 provide. The following code will check for whether arrow is installed
 with ZSTD support, and reinstall if it is not present.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">has_arrow</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"arrow"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">zstd</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="va">has_arrow</span><span class="op">)</span> <span class="op">{</span></span>

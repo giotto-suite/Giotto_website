@@ -14,21 +14,19 @@ cells](https://giottosuite.com/dev/articles/stereoseq_testis_cells_giottodisk.md
 and from [the 0.5 µm bins and your own
 polygons](https://giottosuite.com/dev/articles/stereoseq_testis_own_polygons_giottodisk.md).
 
-## 2 Install extra packages
+## 2 Installation
 
-This tutorial uses GiottoDisk for on-disk processing. These are preview
-dev builds off the dev and gsource Giotto package branches. If
-GiottoDisk has not been installed yet, use the following:
+Install Giotto Suite once, as on the
+[Installation](https://giottosuite.com/dev/articles/installation.md)
+page. This includes GiottoDisk and the optional packages this tutorial
+uses.
 
 ``` r
 
-# GiottoDisk install; also installs arrow (with zstd support) and tilework
-remotes::install_github("giotto-suite/GiottoUtils", ref = "dev")
-GiottoUtils::suite_install("GiottoDisk", install_arrow = TRUE)
-# Optional for matrix maths speedup:
-install.packages("GiottoKernels",
-    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org")
-)
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
 ```
 
 ## 3 Dataset explanation
@@ -639,5 +637,3 @@ sessionInfo()
     [127] scales_1.4.0                purrr_1.2.1                
     [129] crayon_1.5.3                GetoptLong_1.1.1           
     [131] rlang_1.3.0                 cowplot_1.2.0
-
-NA \`\`\`

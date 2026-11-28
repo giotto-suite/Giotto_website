@@ -2,14 +2,16 @@
 
 ``` r
 
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
+install.packages(c("ggridges", "rgl"))
+```
+
+``` r
+
 library(Giotto)
-
-# install extra package needed later in this example
-if (!requireNamespace("ggridges", quietly = TRUE)) {
-    install.packages("ggridges")
-}
-
-# set specific python path to use or python environment name
 ```
 
 ## 1 Dataset Setup
@@ -84,10 +86,6 @@ We will download two `.txt` files containing the STARmap data into a
 - …/starmap/STARmap_3D_data_cell_locations.txt
 
 ``` r
-
-if (!requireNamespace("GiottoData", quietly = TRUE)) {
-    remotes::install_github("giotto-suite/GiottoData")
-}
 
 # ** DOWNLOAD DATA TO WORKING DIRECTORY OR OTHER DESIRED DIRECTORY **
 data_path <- file.path(getwd(), "starmap")
@@ -179,9 +177,6 @@ force(star_locs)
 
 ``` r
 
-if (!requireNamespace("rgl", quietly = TRUE)) {
-    install.packages("rgl")
-}
 rgl::plot3d(star_locs$x, star_locs$y, star_locs$z)
 ```
 

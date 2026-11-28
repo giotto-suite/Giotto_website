@@ -19,10 +19,10 @@ To run the current vignette you need to install the Giotto Suite branch.
 
 ``` r
 
-  # Ensure Giotto Suite and GiottoData packages are installed
-  if(!"Giotto" %in% installed.packages()) {
-  pak::pkg_install("giotto-suite/Giotto")
-  }
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
 ```
 
 ## 3 Create a Giotto object

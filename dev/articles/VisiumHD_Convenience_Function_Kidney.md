@@ -15,10 +15,11 @@ Ensure that the Giotto Suite is correctly installed and configured.
 
 ``` r
 
-# Verify that the Giotto Suite is installed.
-if(!"Giotto" %in% installed.packages()) {
-  pak::pkg_install("giotto-suite/Giotto")
-}
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
+
 
 library(Giotto)
 ```

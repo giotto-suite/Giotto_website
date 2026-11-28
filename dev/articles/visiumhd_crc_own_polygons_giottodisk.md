@@ -14,21 +14,19 @@ cells](https://giottosuite.com/dev/articles/visiumhd_crc_cells_giottodisk.md)
 and from the [8 µm
 bins](https://giottosuite.com/dev/articles/visiumhd_crc_bins_giottodisk.md).
 
-## 2 Install extra packages
+## 2 Installation
 
-This tutorial uses GiottoDisk for on-disk processing. These are preview
-dev builds off the dev and gsource Giotto package branches. If
-GiottoDisk has not been installed yet, use the following:
+Install Giotto Suite once, as on the
+[Installation](https://giottosuite.com/dev/articles/installation.md)
+page. This includes GiottoDisk and the optional packages this tutorial
+uses.
 
 ``` r
 
-# GiottoDisk install; also installs arrow (with zstd support) and tilework
-remotes::install_github("giotto-suite/GiottoUtils", ref = "dev")
-GiottoUtils::suite_install("GiottoDisk", install_arrow = TRUE)
-# Optional for matrix maths speedup:
-install.packages("GiottoKernels",
-    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org")
-)
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
 ```
 
 ## 3 Dataset explanation
@@ -612,5 +610,3 @@ sessionInfo()
     [119] memoise_2.0.1               htmltools_0.5.9            
     [121] lifecycle_1.0.5             httr_1.4.8                 
     [123] bit64_4.6.0-1               MASS_7.3-65
-
-NA \`\`\`
