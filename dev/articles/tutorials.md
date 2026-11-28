@@ -30,7 +30,7 @@ Dimension reduction & clustering 5
 
 Cell type annotation 4
 
-Spatial expression patterns 5
+Spatial expression patterns 4
 
 Spatial domains & niches 5
 
@@ -40,9 +40,9 @@ Multiple samples & integration 3
 
 Spatial alignment & 3D 3
 
-Visualization & interactive exploration 7
+Visualization & interactive exploration 5
 
-Interoperability 8
+Interoperability 6
 
 Clear filters
 
@@ -119,19 +119,11 @@ Transformations](https://giottosuite.com/dev/articles/spatial_transformations.md
 Registration](https://giottosuite.com/dev/articles/affine_registration.md)
 [Visualization & interactive exploration Interactive
 selection](https://giottosuite.com/dev/articles/interactive_selection.md)
-[Visualization & interactive exploration · Interoperability Interactive
-visualization with
-vitessceR](https://giottosuite.com/dev/articles/interactive_giotto_vitessceR.md)
-[Visualization & interactive exploration Interactive region selection on
-large
-datasets](https://giottosuite.com/dev/articles/interactive_selection_cosmx.md)
 [Visualization & interactive exploration Interactive viewing with
 GiottoLens
 GiottoDiskGiottoLens](https://giottosuite.com/dev/articles/giottolens.md)
 [Interoperability Interoperability:
 AnnData](https://giottosuite.com/dev/articles/interoperability_anndata.md)
-[Interoperability · Spatial expression patterns Integrate Bento
-Analysis](https://giottosuite.com/dev/articles/bento.md)
 [Interoperability · Spatial domains & niches Integrate ONTraC
 Analysis](https://giottosuite.com/dev/articles/ontrac.md)
 [Interoperability · Spatial domains & niches Integrate MISTy

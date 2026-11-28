@@ -133,10 +133,6 @@ Interactive selection and exploration.
 
 - [Interactive
   selection](https://giottosuite.com/dev/articles/interactive_selection.md):
-- [Interactive visualization with
-  vitessceR](https://giottosuite.com/dev/articles/interactive_giotto_vitessceR.md):
-- [Interactive region selection on large
-  datasets](https://giottosuite.com/dev/articles/interactive_selection_cosmx.md):
 - [Interactive viewing with
   GiottoLens](https://giottosuite.com/dev/articles/giottolens.md):
 
@@ -154,8 +150,6 @@ Moving data between Giotto and other ecosystems.
 
 - [Interoperability:
   AnnData](https://giottosuite.com/dev/articles/interoperability_anndata.md):
-- [Integrate Bento
-  Analysis](https://giottosuite.com/dev/articles/bento.md):
 - [Integrate ONTraC
   Analysis](https://giottosuite.com/dev/articles/ontrac.md):
 - [Integrate MISTy

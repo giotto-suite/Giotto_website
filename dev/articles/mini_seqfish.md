@@ -350,7 +350,7 @@ Identify spatial genes with 3 different methods:
 
 - binSpect with k-means binarization (default)
 - binSpect with rank binarization
-- silhouetteRank
+- Moran’s I
 
 Visualize top 4 genes per method.
 
@@ -391,11 +391,13 @@ spatFeatPlot2D(seqfish_mini,
 
 ``` r
 
-silh_spatialgenes <- silhouetteRank(gobject = seqfish_mini) # TODO: suppress print output
+moran_spatialgenes <- spatialAutoCor(seqfish_mini,
+                                     method = "moran",
+                                     return_gobject = FALSE)
 
 spatFeatPlot2D(seqfish_mini, 
                expression_values = "scaled", 
-               feats = silh_spatialgenes[1:4]$genes,
+               feats = moran_spatialgenes$feats[1:4],
                point_shape = "border", 
                point_border_stroke = 0.1,
                show_network = FALSE, 
@@ -408,64 +410,42 @@ spatFeatPlot2D(seqfish_mini,
 
 ## 11 Spatial co-expression patterns
 
-Identify robust spatial co-expression patterns using the spatial network
-or grid and a subset of individual spatial genes.
-
-1.  Calculate spatial correlation scores
-2.  Cluster correlation scores
+Identify spatial co-expression modules: groups of spatial genes whose
+expression is correlated across neighbouring cells in the spatial
+network. See the [spatial co-expression
+modules](https://giottosuite.com/dev/articles/spatial_coexpression_modules.md)
+tutorial for details.
 
 ``` r
 
-# 1. calculate spatial correlation scores 
 ext_spatial_genes <- km_spatialfeats[1:500]$feats
 
-spat_cor_netw_DT <- detectSpatialCorFeats(seqfish_mini,
-                                          method = "network", 
-                                          spatial_network_name = "Delaunay_network",
-                                          subset_feats = ext_spatial_genes)
+coexpr <- spatialCoexpression(seqfish_mini,
+                              feats = ext_spatial_genes,
+                              spatial_network_name = "Delaunay_network",
+                              n_modules = 8,
+                              return_gobject = FALSE)
+coexpr$summary
 
-# 2. cluster correlation scores
-spat_cor_netw_DT <- clusterSpatialCorFeats(spat_cor_netw_DT, 
-                                           name = "spat_netw_clus", 
-                                           k = 8)
-
-heatmSpatialCorFeats(seqfish_mini, 
-                     spatCorObject = spat_cor_netw_DT, 
-                     use_clus_name = "spat_netw_clus")
+heatmapCoexpression(seqfish_mini, coexpr)
 ```
 
-![](images/mini_seqfish/20-heatmSpatialCorFeats.png)
+![](images/mini_seqfish/20-heatmapCoexpression.png)
+
+Store the modules in the giotto object: each gene’s module is added to
+the feature metadata and a score per module and cell as the spatial
+enrichment “spatial_module”.
 
 ``` r
 
-netw_ranks <- rankSpatialCorGroups(seqfish_mini, 
-                                   spatCorObject = spat_cor_netw_DT, 
-                                   use_clus_name = "spat_netw_clus")
-```
-
-![](images/mini_seqfish/21-rankSpatialCorGroups.png)
-
-``` r
-
-top_netw_spat_cluster <- showSpatialCorFeats(spat_cor_netw_DT, 
-                                             use_clus_name = "spat_netw_clus",
-                                             selected_clusters = 6, 
-                                             show_top_feats = 1)
-
-cluster_genes_DT <- showSpatialCorFeats(spat_cor_netw_DT, 
-                                        use_clus_name = "spat_netw_clus",
-                                        show_top_feats = 1)
-
-cluster_genes <- cluster_genes_DT$clus 
-names(cluster_genes) <- cluster_genes_DT$feat_ID
-
-seqfish_mini <- createMetafeats(seqfish_mini,
-                                feat_clusters = cluster_genes,
-                                name = "cluster_metagene")
+seqfish_mini <- spatialCoexpression(seqfish_mini,
+                                    feats = ext_spatial_genes,
+                                    spatial_network_name = "Delaunay_network",
+                                    n_modules = 8)
 
 spatCellPlot(seqfish_mini,
-             spat_enr_names = "cluster_metagene",
-             cell_annotation_values = netw_ranks$clusters,
+             spat_enr_names = "spatial_module",
+             cell_annotation_values = as.character(coexpr$summary$module),
              point_size = 1.5, 
              cow_n_col = 3)
 ```
@@ -474,49 +454,32 @@ spatCellPlot(seqfish_mini,
 
 ## 12 Spatial HMRF domains
 
-The following HMRF function requires {smfishHmrf} .
+Find spatial domains with a hidden Markov random field (HMRF). HMRF
+works best on a few spatially informed values per cell, here the
+co-expression module scores from above.
+[`runHMRF()`](https://giottosuite.com/dev/reference/runHMRF.md) fits
+several `betas` (the strength of the spatial smoothing) in one call;
+[`hmrfSummary()`](https://giottosuite.com/dev/reference/hmrfSummary.md)
+compares them: a higher `beta` gives more coherent domains, until small
+domains disappear. See the [spatial
+domains](https://giottosuite.com/dev/articles/spatial_domains.md)
+tutorial for details.
 
 ``` r
 
-# remotes::install_bitbucket(repo = "qzhudfci/smfishhmrf-r", ref="master")
-library(smfishHmrf)
+seqfish_mini <- runHMRF(seqfish_mini,
+                        spat_enr_name = "spatial_module",
+                        spatial_network_name = "Delaunay_network",
+                        k = 9,
+                        betas = c(0, 2, 5, 10))
+hmrfSummary(seqfish_mini)
 
-hmrf_folder <- paste0(results_folder, "/11_HMRF/")
-
-if(!file.exists(hmrf_folder)) dir.create(hmrf_folder, recursive = TRUE)
-
-# perform hmrf
-my_spatial_genes <- km_spatialfeats[1:100]$feats
-
-HMRF_spatial_genes <- doHMRF(gobject = seqfish_mini,
-                            expression_values = "scaled",
-                            spatial_genes = my_spatial_genes,
-                            spatial_network_name = "Delaunay_network",
-                            k = 9,
-                            betas = c(28,2,2),
-                            output_folder = paste0(hmrf_folder, "/", "Spatial_genes/SG_top100_k9_scaled"))
-
-# check and select hmrf
-for(i in seq(28, 30, by = 2)) {
-  viewHMRFresults2D(gobject = seqfish_mini,
-                    HMRFoutput = HMRF_spatial_genes,
-                    k = 9, 
-                    betas_to_view = i,
-                    point_size = 2)
-}
-
-seqfish_mini <- addHMRF(gobject = seqfish_mini,
-                        HMRFoutput = HMRF_spatial_genes,
-                        k = 9, 
-                        betas_to_add = 28,
-                        hmrf_name = "HMRF")
-
-# visualize selected hmrf result
+# visualize the domains for beta = 5
 giotto_colors <- getDistinctColors(9)
 names(giotto_colors) <- 1:9
 
 spatPlot(gobject = seqfish_mini, 
-         cell_color = "HMRF_k9_b.28",
+         cell_color = "hmrf_k9_b5",
          point_size = 3, 
          coord_fix_ratio = 1, 
          cell_color_code = giotto_colors)
@@ -526,79 +489,45 @@ spatPlot(gobject = seqfish_mini,
 
 ## 13 Cell neighborhood: cell-type/cell-type interactions
 
-``` r
-
-set.seed(seed = 2841)
-
-cell_proximities <- cellProximityEnrichment(gobject = seqfish_mini,
-                                            cluster_column = "cell_types",
-                                            spatial_network_name = "Delaunay_network",
-                                            adjust_method = "fdr",
-                                            number_of_simulations = 1000)
-
-# barplot
-cellProximityBarplot(gobject = seqfish_mini, 
-                     CPscore = cell_proximities, 
-                     min_orig_ints = 5, 
-                     min_sim_ints = 5, 
-                     p_val = 0.5)
-```
-
-![](images/mini_seqfish/24-cellProximityBarplot.png)
+[`cellProximityMotifs()`](https://giottosuite.com/dev/reference/cellProximityMotifs.md)
+counts how often two cell types are neighbors in the spatial network,
+against the counts expected when the labels are shuffled. Pairs of
+neighbors (`size = 2`) give the proximity enrichment; see the [Atera
+breast cancer
+tutorial](https://giottosuite.com/dev/articles/atera_human_breast_cancer.md)
+for larger motifs.
 
 ``` r
 
-## heatmap
-cellProximityHeatmap(gobject = seqfish_mini, 
-                     CPscore = cell_proximities, 
-                     order_cell_types = TRUE, 
-                     scale = TRUE,
-                     color_breaks = c(-1.5, 0, 1.5), 
-                     color_names = c("blue", "white", "red"))
+cell_proximities <- cellProximityMotifs(seqfish_mini,
+                                        spatial_network_name = "Delaunay_network",
+                                        cluster_column = "cell_types",
+                                        size = 2L,
+                                        n_perm = 1000L)
+
+head(cell_proximities[order(-z), .(motif_id, observed, expected, fold, p_adj)])
+
+plotMotifEnrichment(seqfish_mini, cell_proximities)
 ```
 
-![](images/mini_seqfish/25-cellProximityHeatmap.png)
+![](images/mini_seqfish/24-plotMotifEnrichment.png)
 
-``` r
-
-# network
-cellProximityNetwork(gobject = seqfish_mini, 
-                     CPscore = cell_proximities, 
-                     remove_self_edges = TRUE, 
-                     only_show_enrichment_edges = TRUE)
-```
-
-![](images/mini_seqfish/26-cellProximityNetwork.png)
-
-``` r
-
-# network with self-edges
-cellProximityNetwork(gobject = seqfish_mini, 
-                     CPscore = cell_proximities,
-                     remove_self_edges = FALSE, 
-                     self_loop_strength = 0.3,
-                     only_show_enrichment_edges = FALSE,
-                     rescale_edge_weights = TRUE,
-                     node_size = 8,
-                     edge_weight_range_depletion = c(1, 2),
-                     edge_weight_range_enrichment = c(2,5))
-```
-
-![](images/mini_seqfish/27-cellProximityNetwork.png)
+With 118 cells no pair is significant after correction; the mini dataset
+only demonstrates the workflow.
 
 ### 13.1 Visualization of specific cell types
 
 ``` r
 
 # Option 1
-spec_interaction <- "cell D--cell F"
+spec_interaction <- "cell C--cell F"
 
 cellProximitySpatPlot2D(gobject = seqfish_mini,
                         interaction_name = spec_interaction,
                         show_network = TRUE,
                         cluster_column = "cell_types",
                         cell_color = "cell_types",
-                        cell_color_code = c("cell D" = "lightblue", "cell F" = "red"),
+                        cell_color_code = c("cell C" = "lightblue", "cell F" = "red"),
                         point_size_select = 4, 
                         point_size_other = 2)
 ```
@@ -613,73 +542,33 @@ seqfish_mini <- addCellIntMetadata(seqfish_mini,
                                    spatial_network = "Delaunay_network",
                                    cluster_column = "cell_types",
                                    cell_interaction = spec_interaction,
-                                   name = "D_F_interactions")
+                                   name = "C_F_interactions")
 
 spatPlot(seqfish_mini, 
-         cell_color = "D_F_interactions", 
+         cell_color = "C_F_interactions", 
          legend_symbol_size = 3,
-         select_cell_groups =  c("other_cell D", "other_cell F", "select_cell D", "select_cell F"))
+         select_cell_groups =  c("other_cell C", "other_cell F", "select_cell C", "select_cell F"))
 ```
 
 ![](images/mini_seqfish/29-spatPlot2D.png)
 
 ## 14 Cell neighborhood: Interaction Changed Features
 
-``` r
-
-## select top 25 highest expressing genes
-gene_metadata <- fDataDT(seqfish_mini)
-
-plot(gene_metadata$nr_cells, gene_metadata$mean_expr)
-
-plot(gene_metadata$nr_cells, gene_metadata$mean_expr_det)
-
-quantile(gene_metadata$mean_expr_det)
-
-high_expressed_genes <- gene_metadata[mean_expr_det > 4]$feat_ID
-
-## identify features (genes) that are associated with proximity to other cell types
-ICFscoresHighGenes <- findInteractionChangedFeats(gobject = seqfish_mini,
-                                                  selected_feats = high_expressed_genes,
-                                                  spatial_network_name = "Delaunay_network",
-                                                  cluster_column = "cell_types",
-                                                  diff_test = "permutation",
-                                                  adjust_method = "fdr",
-                                                  nr_permutations = 500,
-                                                  do_parallel = TRUE)
-
-## visualize all genes
-plotCellProximityFeats(seqfish_mini, 
-                       icfObject = ICFscoresHighGenes, 
-                       method = "dotplot")
-```
-
-![](images/mini_seqfish/30-plotCellProximityFeats.png)
+[`findInteractionChangedFeats()`](https://giottosuite.com/dev/reference/findInteractionChangedFeats.md)
+finds genes whose expression in one cell type changes with its exposure
+to another (edgeICG). By default it needs 60 cells per cell type; the
+mini dataset has fewer, and even with `min_cells = 10` there is nothing
+to test. See [interaction changed
+features](https://giottosuite.com/dev/articles/interaction_changed_features.md)
+for a full analysis.
 
 ``` r
 
-## filter genes
-ICFscoresFilt <- filterICF(ICFscoresHighGenes, 
-                           min_cells = 2, 
-                           min_int_cells = 2, 
-                           min_fdr = 0.1,
-                           min_spat_diff = 0.1, 
-                           min_log2_fc = 0.1, 
-                           min_zscore = 1)
-
-## visualize subset of interaction changed genes (ICGs)
-ICF_genes <- c("Cpne2", "Scg3", "Cmtm3", "Cplx1", "Lingo1")
-ICF_genes_types <- c("cell E", "cell D", "cell D", "cell G", "cell E")
-names(ICF_genes) <- ICF_genes_types
-
-plotICF(gobject = seqfish_mini,
-        icfObject = ICFscoresHighGenes,
-        source_type = "cell A",
-        source_markers = c("Csf1r", "Laptm5"),
-        ICF_feats = ICF_genes)
+icf <- findInteractionChangedFeats(seqfish_mini,
+                                   cluster_column = "cell_types",
+                                   min_cells = 10)
+icf$edgeicg
 ```
-
-![](images/mini_seqfish/31-plotICF.png)
 
 ## 15 Cell Neighborhood: Ligand-Receptor Cell-Cell Communication
 

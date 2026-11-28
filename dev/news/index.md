@@ -150,6 +150,31 @@ Requires GiottoClass 0.8.0.
 
 ### changes
 
+- The ONTraC v1 functions are deprecated in favour of
+  [`GiottoConnect::runONTraC()`](https://giotto-suite.github.io/GiottoConnect/reference/runONTraC.html),
+  which installs ONTraC on first use and stores its results in the
+  object:
+  [`getONTraCv1Input()`](https://giottosuite.com/dev/reference/getONTraCv1Input.md),
+  [`runONTraCV1()`](https://giottosuite.com/dev/reference/runONTraCV1.md)
+  and
+  [`loadOntraCResults()`](https://giottosuite.com/dev/reference/loadOntraCResults.md).
+  Their plots move to general ones:
+  [`plotSpatNicheClusterProb()`](https://giottosuite.com/dev/reference/plotSpatNicheClusterProb.md)
+  to
+  [`spatCellPlot2D()`](https://giotto-suite.github.io/GiottoVisuals/reference/spatCellPlot.html),
+  [`plotSpatNicheClusterBin()`](https://giottosuite.com/dev/reference/plotSpatNicheClusterBin.md)
+  to
+  [`spatPlot2D()`](https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html),
+  [`plotCellTypeNTScore()`](https://giottosuite.com/dev/reference/plotCellTypeNTScore.md)
+  to
+  [`ridgePlot()`](https://giotto-suite.github.io/GiottoVisuals/reference/ridgePlot.html),
+  [`plotCTCompositionInNicheCluster()`](https://giottosuite.com/dev/reference/plotCTCompositionInNicheCluster.md)
+  to
+  [`plotLabelComposition()`](https://giotto-suite.github.io/GiottoVisuals/reference/plotLabelComposition.html)
+  and
+  [`plotNicheClusterConnectivity()`](https://giottosuite.com/dev/reference/plotNicheClusterConnectivity.md)
+  to
+  [`GiottoConnect::plotONTraCConnectivity()`](https://giotto-suite.github.io/GiottoConnect/reference/plotONTraCConnectivity.html).
 - The CosMx reader reads the exprMat in batches of lines and parses only
   the rows of the requested `fovs`, so memory follows the selected cells
   instead of the whole slide (reading the 9-FOV breast subset: 3.0
@@ -164,6 +189,17 @@ Requires GiottoClass 0.8.0.
 
 ### bug fixes
 
+- [`findInteractionChangedFeats()`](https://giottosuite.com/dev/reference/findInteractionChangedFeats.md)
+  (edgeicg) returns an empty `ICFscores` table when nothing passes,
+  instead of failing with “non-numeric argument to mathematical
+  function”.
+- [`get10Xmatrix()`](https://giottosuite.com/dev/reference/get10Xmatrix.md)
+  reads a `features.tsv` with fewer columns than `gene_column_index`
+  again, using column 1 with a warning (broke in 4.3.7 development,
+  e.g. the VisiumHD workshop data).
+- [`plotCellProximityFeats()`](https://giottosuite.com/dev/reference/plotCellProximityFeats.md)
+  works with its default `show_plot`, `save_plot` and `return_plot`
+  (`NULL`); it failed with “argument is of length zero”.
 - `clusterCells(cluster_method = "leiden")`,
   `subClusterCells(cluster_method = "leiden")` and
   [`doLeidenSubCluster()`](https://giottosuite.com/dev/reference/subClusterCells.md)

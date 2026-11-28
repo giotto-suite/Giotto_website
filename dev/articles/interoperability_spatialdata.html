@@ -266,110 +266,69 @@
 <span class="header-section-number">1</span> Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>SpatialData is a versatile data framework for processing spatial
-omics data in python. This tutorial demonstrates how to convert Giotto
-objects to and from SpatialData object using
-<code>giottoToSpatialData()</code> and
-<code><a href="https://giotto-suite.github.io/GiottoConnect/reference/spatialdataToGiotto.html" class="external-link">spatialdataToGiotto()</a></code>.</p>
+omics data in python. This tutorial demonstrates how to convert a
+SpatialData object saved on disk to a Giotto object with
+<code><a href="https://giotto-suite.github.io/GiottoConnect/reference/spatialdataToGiotto.html" class="external-link">GiottoConnect::spatialdataToGiotto()</a></code>.</p>
+<p>Exporting a Giotto object to SpatialData
+(<code>giottoToSpatialData()</code>) was retired in GiottoClass 0.8.0;
+export will be revisited in GiottoConnect.</p>
 </div>
 <div class="section level2" number="2">
-<h2 id="set-up-giotto-environment">
-<span class="header-section-number">2</span> Set up Giotto
-Environment<a class="anchor" aria-label="anchor" href="#set-up-giotto-environment"></a>
+<h2 id="set-up">
+<span class="header-section-number">2</span> Set up<a class="anchor" aria-label="anchor" href="#set-up"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite is installed.</span></span>
+<code class="sourceCode R"><span><span class="co"># Ensure Giotto Suite and GiottoConnect are installed.</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"Giotto"</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/Giotto"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># Ensure GiottoData is installed.</span></span>
-<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"GiottoData"</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/GiottoData"</span><span class="op">)</span></span>
+<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">"GiottoConnect"</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"giotto-suite/GiottoConnect"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="co"># If your conda giotto environment doesn't have installed the modules 'spatialdata' and 'scanpy', you can install them by running the following command:</span></span>
-<span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/conda-tools.html" class="external-link">conda_install</a></span><span class="op">(</span>envname <span class="op">=</span> <span class="st">"giotto_env"</span>, packages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"spatialdata"</span>, <span class="st">"scanpy"</span><span class="op">)</span>, pip <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># load package</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giottosuite.com">Giotto</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Important: Specify a path to a Python executable within a conda or miniconda reticulate</span></span>
-<span><span class="co"># environment. If set to NULL (default), the Python executable within the previously</span></span>
-<span><span class="co"># installed Giotto environment will be used.</span></span>
-<span><span class="va">python_path</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></code></pre></div>
-<div class="section level3" number="2.1">
-<h3 id="create-a-mini-giotto-object">
-<span class="header-section-number">2.1</span> Create a mini Giotto
-object<a class="anchor" aria-label="anchor" href="#create-a-mini-giotto-object"></a>
-</h3>
-<p>For the purpose of this demonstration, the pre-processed and analyzed
-10X Visium Giotto mini object will be used. To test on different
-datasets, you can choose from ‘visium’, ‘vizgen’, ‘cosmx’,
-‘spatialgenomics’, ‘seqfish’, or ‘starmap’.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Specify path for SpatialData object output directory</span></span>
-<span><span class="va">results_folder</span> <span class="op">&lt;-</span> <span class="st">"/path/to/results/"</span></span>
-<span></span>
-<span><span class="co"># Load mini object or giotto object</span></span>
-<span><span class="va">mini_gobject</span> <span class="op">&lt;-</span> <span class="fu">GiottoData</span><span class="fu">::</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoData/reference/loadGiottoMini.html" class="external-link">loadGiottoMini</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"visium"</span>, </span>
-<span>                                           python_path <span class="op">=</span> <span class="va">python_path</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Replace saving directory</span></span>
-<span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/giotto_instructions.html" class="external-link">instructions</a></span><span class="op">(</span><span class="va">mini_gobject</span>, <span class="st">"save_dir"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">results_folder</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://giotto-suite.github.io/GiottoConnect/" class="external-link">GiottoConnect</a></span><span class="op">)</span></span></code></pre></div>
+<p><code><a href="https://giotto-suite.github.io/GiottoConnect/reference/spatialdataToGiotto.html" class="external-link">spatialdataToGiotto()</a></code> runs Python in your R session,
+unlike the Python tools described in <a href="python.html">Python in
+Giotto Suite</a>. Give it a Python installation that has the
+<code>spatialdata</code> and <code>scanpy</code> modules installed:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">python_path</span> <span class="op">&lt;-</span> <span class="st">"/path/to/python"</span> <span class="co"># with spatialdata and scanpy installed</span></span></code></pre></div>
 </div>
-<div class="section level3" number="2.2">
-<h3 id="giottotospatialdata">
-<span class="header-section-number">2.2</span>
-giottoToSpatialData()<a class="anchor" aria-label="anchor" href="#giottotospatialdata"></a>
-</h3>
-<p>When converting a Giotto object to a SpatialData object, please note
-that you must supply a known spot radius for your corresponding dataset
-for the creation of the ShapesModel in SpatialData. If spot radius is
-unknown, an arbitrary value is sufficient to convert the object and
-still be able to perform most of the analysis. The env_name must be the
-name of the env with python reticulate installed.</p>
+<div class="section level2" number="3">
+<h2 id="save-the-spatialdata-object">
+<span class="header-section-number">3</span> Save the SpatialData
+object<a class="anchor" aria-label="anchor" href="#save-the-spatialdata-object"></a>
+</h2>
+<p>In Python, save your SpatialData object on disk:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Let's say your spatialdata object is called sdata:</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>sdata.write(<span class="st">"save_folder"</span>)</span></code></pre></div>
+<p>This creates a folder “save_folder” with subfolders ‘images’,
+‘shapes’, and ‘tables’ for each component of the SpatialData object.</p>
+</div>
+<div class="section level2" number="4">
+<h2 id="spatialdatatogiotto">
+<span class="header-section-number">4</span>
+spatialdataToGiotto()<a class="anchor" aria-label="anchor" href="#spatialdatatogiotto"></a>
+</h2>
+<p>If you had nearest neighbor or spatial networks created or stored
+within your SpatialData, you can also include them in the conversion by
+either providing a .txt file or a list of the names of the keys for
+these networks.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">giottoToSpatialData</span><span class="op">(</span><span class="va">mini_gobject</span>,</span>
-<span>                    spot_radius <span class="op">=</span> <span class="fl">55</span>,</span>
-<span>                    python_path <span class="op">=</span> <span class="va">python_path</span>,</span>
-<span>                    save_directory <span class="op">=</span> <span class="va">results_folder</span><span class="op">)</span></span></code></pre></div>
-<p>To verify successful conversion, you can load the converted
-SpatialData object in Python like this:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="im">from</span> spatialdata <span class="im">import</span> SpatialData</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>converted_spatialdata <span class="op">=</span> SpatialData.read(r.results_folder)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">converted_gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoConnect/reference/spatialdataToGiotto.html" class="external-link">spatialdataToGiotto</a></span><span class="op">(</span></span>
+<span>    spatialdata_path <span class="op">=</span> <span class="st">"save_folder"</span>,</span>
+<span>    n_key_added <span class="op">=</span> <span class="st">"cell_rna_nn_network_keys_added.txt"</span>,</span>
+<span>    spatial_n_key_added <span class="op">=</span> <span class="st">"cell_rna_spatial_network_keys_added.txt"</span>,</span>
+<span>    python_path <span class="op">=</span> <span class="va">python_path</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3" number="2.3">
-<h3 id="spatialdatatogiotto">
-<span class="header-section-number">2.3</span>
-spatialDataToGiotto()<a class="anchor" aria-label="anchor" href="#spatialdatatogiotto"></a>
-</h3>
-<p>If you have your own SpatialData object that you have been using on
-your analysis and would like to convert it to Giotto object, you must
-save the SpatialData object on disk like this:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Let's say your spatialdata object is called sdata:</span></span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>sdata.write(<span class="st">"save_folder"</span>)</span></code></pre></div>
-<p>After running this line in python, you should have a folder at the
-path “save_folder” which will have subfolders named ‘images’, ‘shapes’,
-and ‘tables’ for each component of the SpatialData object.</p>
-<p>Let’s say you already have the SpatialData object converted and saved
-on disk from <code>giottoToSpatialData()</code>. If you had nearest
-neighbor or spatial networks created or stored within your SpatialData,
-you can also include them in the conversion by either providing a .txt
-file or a list of the names of the keys for these networks.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">converted_gobject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoConnect/reference/spatialdataToGiotto.html" class="external-link">spatialdataToGiotto</a></span><span class="op">(</span>spatialdata_path <span class="op">=</span> <span class="va">results_folder</span>,</span>
-<span>                                         n_key_added <span class="op">=</span> <span class="st">"cell_rna_nn_network_keys_added.txt"</span>,</span>
-<span>                                         spatial_n_key_added <span class="op">=</span> <span class="st">"cell_rna_spatial_network_keys_added.txt"</span>,</span>
-<span>                                         python_path <span class="op">=</span> <span class="va">python_path</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3" number="2.4">
-<h3 id="session-info">
-<span class="header-section-number">2.4</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
-</h3>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="section level2" number="5">
+<h2 id="session-info">
+<span class="header-section-number">5</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+</h2>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
