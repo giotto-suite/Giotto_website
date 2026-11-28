@@ -461,15 +461,20 @@ settings. A <code>Param</code> holds settings only, never data.</p>
 <span class="header-section-number">7</span> Dependencies<a class="anchor" aria-label="anchor" href="#dependencies"></a>
 </h2>
 <ul>
-<li>The tool is never in <code>Imports</code>. It goes in
-<code>Suggests</code> (CRAN, Bioconductor), or in <code>Remotes</code>
-plus an install hint for GitHub-only tools, and is checked with
-<code>package_check()</code> when the function runs. Call functions of a
-GitHub-only tool with <code><a href="https://rdrr.io/r/base/ns-reflect.html" class="external-link">getExportedValue()</a></code> so
-<code>R CMD check</code> stays clean.</li>
-<li>Python tools get their environment when first run, with
-<code><a href="https://rstudio.github.io/reticulate/reference/py_require.html" class="external-link">reticulate::py_require()</a></code> (reticulate &gt;= 1.41). Pin the
-tool’s version.</li>
+<li>The tool is never in <code>Imports</code>. A CRAN or Bioconductor
+tool goes in <code>Suggests</code>. A tool only on GitHub gets an
+install hint from
+<code>package_check(repository = "github:owner/repo")</code> and is
+called with <code><a href="https://rdrr.io/r/base/ns-reflect.html" class="external-link">getExportedValue()</a></code>, so <code>R CMD check</code>
+stays clean; the Suite’s own engine packages (spatialHMRF, spatialDWLS)
+go in <code>Suggests</code> and <code>Remotes</code>. Every tool is
+checked with <code>package_check()</code> when the function runs.</li>
+<li>Python tools run in a separate R session through
+<code><a href="https://giotto-suite.github.io/GiottoUtils/reference/py_run.html" class="external-link">GiottoUtils::py_run()</a></code> (or <code>py_run_cli()</code> for a
+command line program), in an environment built on first use, so tools
+with conflicting requirements can be used side by side. Pin the tool’s
+version, and record the returned <code>py_versions</code> with the
+<code>Param</code>.</li>
 <li>Tests use <code>skip_if_not_installed()</code>, so a broken tool
 release breaks only its own function.</li>
 <li>A function shared with another package is exported as a documented
@@ -501,8 +506,12 @@ integration<a class="anchor" aria-label="anchor" href="#checking-an-integration"
 </h2>
 <ul>
 <li>Compare against the original tool on the same input, with a seed,
-and keep the comparison script outside the package (for example in
-<code>examples/&lt;tool&gt;_comparison/</code>).</li>
+keep the comparison script outside the package (for example in
+<code>examples/&lt;tool&gt;_comparison/</code>), and report the
+difference in the pull request.</li>
+<li>A pull request adds one method. Changes to other methods or shared
+helpers, even improvements, go in a pull request of their own, so each
+can be reviewed and reverted alone.</li>
 <li>
 <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/checkGiottoMethod.html" class="external-link">GiottoConnect::checkGiottoMethod()</a></code> (and
 <code>expect_giotto_method()</code> in tests) checks a wrapper against

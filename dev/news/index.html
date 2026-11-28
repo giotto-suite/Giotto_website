@@ -271,7 +271,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="changes-4-3-7">changes<a class="anchor" aria-label="anchor" href="#changes-4-3-7"></a></h3>
-<ul><li>
+<ul><li>Functions with a <code>cores</code> argument (<code><a href="../reference/binSpect.html">binSpect()</a></code> and the other spatial gene methods, the Visium reader) set data.table threads only while they run; they no longer change the session setting. Requires GiottoUtils 0.2.12.</li>
+<li>
 <code><a href="../reference/cellProximityMotifs.html">cellProximityMotifs()</a></code> needs smotif and smotifrs 0.2.0 or later (both in Suggests, installed from GitHub); 0.1.0 fails on disk-backed objects.</li>
 <li>The ONTraC v1 functions are deprecated in favour of <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/runONTraC.html" class="external-link">GiottoConnect::runONTraC()</a></code>, which installs ONTraC on first use and stores its results in the object: <code><a href="../reference/getONTraCv1Input.html">getONTraCv1Input()</a></code>, <code><a href="../reference/runONTraCV1.html">runONTraCV1()</a></code> and <code><a href="../reference/loadOntraCResults.html">loadOntraCResults()</a></code>. Their plots move to general ones: <code><a href="../reference/plotSpatNicheClusterProb.html">plotSpatNicheClusterProb()</a></code> to <code><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatCellPlot.html" class="external-link">spatCellPlot2D()</a></code>, <code><a href="../reference/plotSpatNicheClusterBin.html">plotSpatNicheClusterBin()</a></code> to <code><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D()</a></code>, <code><a href="../reference/plotCellTypeNTScore.html">plotCellTypeNTScore()</a></code> to <code><a href="https://giotto-suite.github.io/GiottoVisuals/reference/ridgePlot.html" class="external-link">ridgePlot()</a></code>, <code><a href="../reference/plotCTCompositionInNicheCluster.html">plotCTCompositionInNicheCluster()</a></code> to <code><a href="https://giotto-suite.github.io/GiottoVisuals/reference/plotLabelComposition.html" class="external-link">plotLabelComposition()</a></code> and <code><a href="../reference/plotNicheClusterConnectivity.html">plotNicheClusterConnectivity()</a></code> to <code><a href="https://giotto-suite.github.io/GiottoConnect/reference/plotONTraCConnectivity.html" class="external-link">GiottoConnect::plotONTraCConnectivity()</a></code>.</li>
 <li>The CosMx reader reads the exprMat in batches of lines and parses only the rows of the requested <code>fovs</code>, so memory follows the selected cells instead of the whole slide (reading the 9-FOV breast subset: 3.0 instead of 7.3 GB). In-memory transcripts and polygons with <code>FOVs</code> are read the same way (one FOV of a 3.8 GB transcript file: 7.2 GB before).</li>
@@ -280,7 +281,10 @@
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-4-3-7">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-4-3-7"></a></h3>
-<ul><li>
+<ul><li>The VisiumHD reader loads data without tissue images (e.g. cropped exports) with its default <code>load_image = TRUE</code>: it warns and continues without an image instead of stopping.</li>
+<li>
+<code><a href="../reference/plotICF_edgeicg.html">plotICFExposure()</a></code> works with one feature on an in-memory object; the subset dropped to a vector and was sent to <code>GiottoDisk::storeRead()</code>.</li>
+<li>
 <code><a href="../reference/findInteractionChangedFeats.html">findInteractionChangedFeats()</a></code> (edgeicg) returns an empty <code>ICFscores</code> table when nothing passes, instead of failing with “non-numeric argument to mathematical function”.</li>
 <li>
 <code><a href="../reference/get10Xmatrix.html">get10Xmatrix()</a></code> reads a <code>features.tsv</code> with fewer columns than <code>gene_column_index</code> again, using column 1 with a warning (broke in 4.3.7 development, e.g. the VisiumHD workshop data).</li>

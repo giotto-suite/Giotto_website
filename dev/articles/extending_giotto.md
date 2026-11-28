@@ -112,15 +112,19 @@ holds settings only, never data.
 
 ## 7 Dependencies
 
-- The tool is never in `Imports`. It goes in `Suggests` (CRAN,
-  Bioconductor), or in `Remotes` plus an install hint for GitHub-only
-  tools, and is checked with `package_check()` when the function runs.
-  Call functions of a GitHub-only tool with
-  [`getExportedValue()`](https://rdrr.io/r/base/ns-reflect.html) so
-  `R CMD check` stays clean.
-- Python tools get their environment when first run, with
-  [`reticulate::py_require()`](https://rstudio.github.io/reticulate/reference/py_require.html)
-  (reticulate \>= 1.41). Pin the tool’s version.
+- The tool is never in `Imports`. A CRAN or Bioconductor tool goes in
+  `Suggests`. A tool only on GitHub gets an install hint from
+  `package_check(repository = "github:owner/repo")` and is called with
+  [`getExportedValue()`](https://rdrr.io/r/base/ns-reflect.html), so
+  `R CMD check` stays clean; the Suite’s own engine packages
+  (spatialHMRF, spatialDWLS) go in `Suggests` and `Remotes`. Every tool
+  is checked with `package_check()` when the function runs.
+- Python tools run in a separate R session through
+  [`GiottoUtils::py_run()`](https://giotto-suite.github.io/GiottoUtils/reference/py_run.html)
+  (or `py_run_cli()` for a command line program), in an environment
+  built on first use, so tools with conflicting requirements can be used
+  side by side. Pin the tool’s version, and record the returned
+  `py_versions` with the `Param`.
 - Tests use `skip_if_not_installed()`, so a broken tool release breaks
   only its own function.
 - A function shared with another package is exported as a documented
@@ -142,9 +146,13 @@ holds settings only, never data.
 
 ## 9 Checking an integration
 
-- Compare against the original tool on the same input, with a seed, and
-  keep the comparison script outside the package (for example in
-  `examples/<tool>_comparison/`).
+- Compare against the original tool on the same input, with a seed, keep
+  the comparison script outside the package (for example in
+  `examples/<tool>_comparison/`), and report the difference in the pull
+  request.
+- A pull request adds one method. Changes to other methods or shared
+  helpers, even improvements, go in a pull request of their own, so each
+  can be reviewed and reverted alone.
 - [`GiottoConnect::checkGiottoMethod()`](https://giotto-suite.github.io/GiottoConnect/reference/checkGiottoMethod.html)
   (and `expect_giotto_method()` in tests) checks a wrapper against these
   rules: which slots it wrote, that the history holds its `Param`, and

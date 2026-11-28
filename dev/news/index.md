@@ -150,6 +150,11 @@ Requires GiottoClass 0.8.0.
 
 ### changes
 
+- Functions with a `cores` argument
+  ([`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md) and
+  the other spatial gene methods, the Visium reader) set data.table
+  threads only while they run; they no longer change the session
+  setting. Requires GiottoUtils 0.2.12.
 - [`cellProximityMotifs()`](https://giottosuite.com/dev/reference/cellProximityMotifs.md)
   needs smotif and smotifrs 0.2.0 or later (both in Suggests, installed
   from GitHub); 0.1.0 fails on disk-backed objects.
@@ -192,6 +197,12 @@ Requires GiottoClass 0.8.0.
 
 ### bug fixes
 
+- The VisiumHD reader loads data without tissue images (e.g. cropped
+  exports) with its default `load_image = TRUE`: it warns and continues
+  without an image instead of stopping.
+- [`plotICFExposure()`](https://giottosuite.com/dev/reference/plotICF_edgeicg.md)
+  works with one feature on an in-memory object; the subset dropped to a
+  vector and was sent to `GiottoDisk::storeRead()`.
 - [`findInteractionChangedFeats()`](https://giottosuite.com/dev/reference/findInteractionChangedFeats.md)
   (edgeicg) returns an empty `ICFscores` table when nothing passes,
   instead of failing with “non-numeric argument to mathematical
