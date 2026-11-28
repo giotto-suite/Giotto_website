@@ -814,26 +814,29 @@ spatInSituPlotPoints(
 
 ## 12 Spatial neighborhood composition
 
-Each cell is linked to its 20 nearest neighbors in space, and the number
-of contacts between each pair of cell types is compared against a null
-where the labels are shuffled. The network is stored in the vault as an
-edge store, which is what
-[`cellProximityEnrichment()`](https://giottosuite.com/dev/reference/cellProximityEnrichment.md)
-reads.
+Each cell is linked to its 20 nearest neighbors in space, and
+[`cellProximityMotifs()`](https://giottosuite.com/dev/reference/cellProximityMotifs.md)
+compares the number of contacts between each pair of cell types
+(`size = 2`) against a null where the labels are shuffled. The network
+is stored in the vault as an edge store, which the motif counts stream
+from. See the [Atera breast cancer
+tutorial](https://giottosuite.com/dev/articles/atera_human_breast_cancer.md)
+for larger motifs.
 
 ``` r
 
 g_cosmx <- createSpatialNetwork(g_cosmx, name = "knn_network",
                                 method = "kNN", k = 20, verbose = FALSE)
 
-proximity <- cellProximityEnrichment(
+proximity <- cellProximityMotifs(
   g_cosmx,
-  cluster_column        = "cell_type_broad",
-  spatial_network_name  = "knn_network",
-  number_of_simulations = 100,
-  set_seed = TRUE, seed_number = SEED)
+  cluster_column       = "cell_type_broad",
+  spatial_network_name = "knn_network",
+  size                 = 2L,
+  n_perm               = 1000L,
+  seed_number          = SEED)
 
-proximity_res <- proximity$enrichm_res
+head(proximity[order(-z), .(motif_id, observed, expected, fold, p_adj)], 10)
 
 saveGiotto(g_cosmx, name = "proximity", overwrite = TRUE, verbose = FALSE)
 ```
@@ -852,34 +855,8 @@ re-attaches them rather than rebuilding.
 
 ``` r
 
-cellProximityHeatmap(
-  g_cosmx, CPscore = proximity, order_cell_types = TRUE, scale = TRUE)
+plotMotifEnrichment(g_cosmx, proximity)
 ```
-
-![](images/cosmx_colon_wtx_giottodisk/13_cp-heatmap.png)
-
-``` r
-
-proximity_top <- proximity
-proximity_top$enrichm_res <- proximity_res[
-  order(-abs(enrichm))][seq_len(min(20, .N))]
-
-cellProximityBarplot(
-  g_cosmx, CPscore = proximity_top, min_orig_ints = 1000,
-  min_sim_ints = 1000, p_val = 0.01)
-```
-
-![](images/cosmx_colon_wtx_giottodisk/14_cp-barplot.png)
-
-``` r
-
-cellProximityNetwork(
-  g_cosmx, CPscore = proximity, remove_self_edges = TRUE,
-  only_show_enrichment_edges = TRUE, layout = "Fruchterman",
-  node_size = 5, node_text_size = 5, node_color_code = CELL_TYPE_COLORS)
-```
-
-![](images/cosmx_colon_wtx_giottodisk/15_cp-network.png)
 
 ## 13 Session information
 

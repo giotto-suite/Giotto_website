@@ -1,5 +1,13 @@
 # VisiumHD Human Colorectal Cancer
 
+This tutorial runs in memory on a small crop of the dataset. For the
+full section, use the GiottoDisk tutorials:
+[bins](https://giottosuite.com/dev/articles/visiumhd_crc_bins_giottodisk.md),
+[segmented
+cells](https://giottosuite.com/dev/articles/visiumhd_crc_cells_giottodisk.md)
+and [your own
+polygons](https://giottosuite.com/dev/articles/visiumhd_crc_own_polygons_giottodisk.md).
+
 ## 1 Setup Giotto Environment
 
 Ensure that the Giotto Suite is correctly installed and configured.
@@ -14,8 +22,7 @@ if(!"Giotto" %in% installed.packages()) {
 
 ## 2 Giotto global instructions and preparations
 
-Set up the working directory and optionally specify a custom Python
-executable path if not using the default Giotto environment.
+Set up the working directory.
 
 ``` r
 
@@ -25,9 +32,8 @@ library(Giotto)
 results_folder <- "/path/to/results/"
 ```
 
-Create instructions for Giotto analysis, specifying the saving
-directory, whether to save plots, and the Python executable path if
-needed.
+Create instructions for Giotto analysis, specifying the saving directory
+and whether to save plots.
 
 ``` r
 
@@ -76,15 +82,13 @@ readerHD <- importVisiumHD(
 )
 
 ## directly from Visium folder
-visiumHD <- readerHD$create_gobject(image_type = "lowres")
+# the workshop subset has no tissue image
+visiumHD <- readerHD$create_gobject(load_image = FALSE)
 
 ## check metadata
 pDataDT(visiumHD,
     spat_unit = "bin002"
 )
-
-# check available image names
-showGiottoImageNames(visiumHD) # "image" is the default name
 ```
 
 ### 4.2 Read in data manually
@@ -658,12 +662,12 @@ Visualize top 2 ranked spatial genes per expression bin:
 
 ``` r
 
-set0 <- ranktest[high_expr < 50][1:2]$feats
-set1 <- ranktest[high_expr > 50 & high_expr < 100][1:2]$feats
-set2 <- ranktest[high_expr > 100 & high_expr < 200][1:2]$feats
-set3 <- ranktest[high_expr > 200 & high_expr < 400][1:2]$feats
-set4 <- ranktest[high_expr > 400 & high_expr < 1000][1:2]$feats
-set5 <- ranktest[high_expr > 1000][1:2]$feats
+set0 <- ranktest[n_on < 50][1:2]$feats
+set1 <- ranktest[n_on > 50 & n_on < 100][1:2]$feats
+set2 <- ranktest[n_on > 100 & n_on < 200][1:2]$feats
+set3 <- ranktest[n_on > 200 & n_on < 400][1:2]$feats
+set4 <- ranktest[n_on > 400 & n_on < 1000][1:2]$feats
+set5 <- ranktest[n_on > 1000][1:2]$feats
 
 spatFeatPlot2D(visiumHD,
     spat_unit = "hex100",
@@ -696,64 +700,57 @@ spatFeatPlot2D(visiumHD,
 Investigating individual genes is a good start, but here we would like
 to identify recurrent spatial expression patterns that are shared by
 spatial co-expression modules that might represent spatially organized
-biological processes.
+biological processes. See the [spatial co-expression
+modules](https://giottosuite.com/dev/articles/spatial_coexpression_modules.md)
+tutorial for details.
 
 ``` r
 
 ext_spatial_genes <- ranktest[adj.p.value < 0.001]$feats
 
-spat_cor_netw_DT <- detectSpatialCorFeats(visiumHD,
+coexpr <- spatialCoexpression(visiumHD,
     spat_unit = "hex100",
-    method = "network",
     spatial_network_name = "kNN_network",
-    subset_feats = ext_spatial_genes
+    feats = ext_spatial_genes,
+    n_modules = 16,
+    return_gobject = FALSE
 )
 
-# cluster spatial genes
-spat_cor_netw_DT <- clusterSpatialCorFeats(spat_cor_netw_DT,
-    name = "spat_netw_clus",
-    k = 16
-)
+# one row per module, the most coherent and distinct modules first
+coexpr$summary
 
-# visualize clusters
-heatmSpatialCorFeats(visiumHD,
-    spatCorObject = spat_cor_netw_DT,
-    use_clus_name = "spat_netw_clus",
-    heatmap_legend_param = list(title = NULL)
-)
+# visualize modules
+heatmapCoexpression(visiumHD, coexpr)
 ```
 
-![](images/VisiumHD_Human_Colorectal_Cancer/16-heatmSpatialCorFeats.png)
+![](images/VisiumHD_Human_Colorectal_Cancer/16-heatmapCoexpression.png)
+
+Store the modules in the giotto object: each gene’s module is added to
+the feature metadata and a score per module and cell as the spatial
+enrichment “spatial_module”.
 
 ``` r
 
-# create metagene enrichment score for clusters
-cluster_genes_DT <- showSpatialCorFeats(spat_cor_netw_DT,
-    use_clus_name = "spat_netw_clus",
-    show_top_feats = 1
-)
-
-cluster_genes <- cluster_genes_DT$clus
-names(cluster_genes) <- cluster_genes_DT$feat_ID
-
-visiumHD <- createMetafeats(visiumHD,
+visiumHD <- spatialCoexpression(visiumHD,
     spat_unit = "hex100",
-    expression_values = "normalized",
-    feat_clusters = cluster_genes,
-    name = "cluster_metagene"
+    spatial_network_name = "kNN_network",
+    feats = ext_spatial_genes,
+    n_modules = 16
 )
 
 showGiottoSpatEnrichments(visiumHD)
+
+top_modules <- as.character(coexpr$summary$module)
 ```
 
 ``` r
 
 spatCellPlot(visiumHD,
     spat_unit = "hex100",
-    spat_enr_names = "cluster_metagene",
+    spat_enr_names = "spatial_module",
     gradient_style = "sequential",
     cell_color_gradient = c("blue", "white", "yellow", "orange", "red", "darkred"),
-    cell_annotation_values = as.character(c(1:4)),
+    cell_annotation_values = top_modules[1:4],
     point_size = 1, cow_n_col = 2
 )
 ```
@@ -764,10 +761,10 @@ spatCellPlot(visiumHD,
 
 spatCellPlot(visiumHD,
     spat_unit = "hex100",
-    spat_enr_names = "cluster_metagene",
+    spat_enr_names = "spatial_module",
     gradient_style = "sequential",
     cell_color_gradient = c("blue", "white", "yellow", "orange", "red", "darkred"),
-    cell_annotation_values = as.character(c(5:8)),
+    cell_annotation_values = top_modules[5:8],
     point_size = 1, cow_n_col = 2
 )
 ```
@@ -778,10 +775,10 @@ spatCellPlot(visiumHD,
 
 spatCellPlot(visiumHD,
     spat_unit = "hex100",
-    spat_enr_names = "cluster_metagene",
+    spat_enr_names = "spatial_module",
     gradient_style = "sequential",
     cell_color_gradient = c("blue", "white", "yellow", "orange", "red", "darkred"),
-    cell_annotation_values = as.character(c(9:12)),
+    cell_annotation_values = top_modules[9:12],
     point_size = 1, cow_n_col = 2
 )
 ```
@@ -792,10 +789,10 @@ spatCellPlot(visiumHD,
 
 spatCellPlot(visiumHD,
     spat_unit = "hex100",
-    spat_enr_names = "cluster_metagene",
+    spat_enr_names = "spatial_module",
     gradient_style = "sequential",
     cell_color_gradient = c("blue", "white", "yellow", "orange", "red", "darkred"),
-    cell_annotation_values = as.character(c(13:16)),
+    cell_annotation_values = top_modules[13:16],
     point_size = 1, cow_n_col = 2
 )
 ```
@@ -807,23 +804,21 @@ spatCellPlot(visiumHD,
 Hack! Vendors of spatial technologies typically like to show very
 interesting spatial gene expression patterns. Here we will follow a
 similar strategy by selecting a balanced set of genes for each spatial
-co-expression module and then to simply give them the same color in the
+co-expression module (the 5 genes that correlate best with the rest of
+their module) and then to simply give them the same color in the
 spatInSituPlotPoints function.
 
 ``` r
 
-balanced_genes <- getBalancedSpatCoexpressionFeats(
-    spatCorObject = spat_cor_netw_DT,
-    maximum = 5
-)
-selected_feats <- names(balanced_genes)
+balanced_genes <- coexpr$feats[order(-module_cor), head(.SD, 5), by = module]
+selected_feats <- balanced_genes$feat_ID
 
-# give genes from same cluster same color
+# give genes from same module same color
 distinct_colors <- getDistinctColors(n = 20)
 names(distinct_colors) <- 1:20
 
-my_colors <- distinct_colors[balanced_genes]
-names(my_colors) <- names(balanced_genes)
+my_colors <- distinct_colors[balanced_genes$module]
+names(my_colors) <- selected_feats
 
 spatInSituPlotPoints(visiumHD,
     spat_unit = "hex100",
@@ -1101,6 +1096,7 @@ visiumHD_subset <- labelTransfer(
     y = temp_gobject,
     spat_unit = "hex25",
     labels = "sub_hclust",
+    name = "knn_labels",
     reduction_method = "pca",
     reduction_name = "pca.projection",
     prob = FALSE,

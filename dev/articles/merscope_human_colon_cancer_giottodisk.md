@@ -441,40 +441,29 @@ p_tx + coord_fixed(xlim = XL, ylim = YL, expand = FALSE)
 ## 12 Spatial neighborhood composition
 
 Each cell is linked to its twenty nearest neighbors.
-[`cellProximityEnrichment()`](https://giottosuite.com/dev/reference/cellProximityEnrichment.md)
-counts the links between each pair of cell types and compares the counts
-with 1,000 random relabelings of the cells, so a log2 enrichment above 0
-means the pairing is more common than chance. The clustering used no
-spatial information, so this tests whether the expression-defined
-populations are spatially organized.
+[`cellProximityMotifs()`](https://giottosuite.com/dev/reference/cellProximityMotifs.md)
+counts the links between each pair of cell types (`size = 2`) and
+compares the counts with 1,000 random relabelings of the cells, so a
+fold above 1 means the pairing is more common than chance. The
+clustering used no spatial information, so this tests whether the
+expression-defined populations are spatially organized. See the [Atera
+breast cancer
+tutorial](https://giottosuite.com/dev/articles/atera_human_breast_cancer.md)
+for larger motifs.
 
 ``` r
 
 g <- createSpatialNetwork(g, method = "kNN", k = 20, name = "kNN20")
-cpe <- cellProximityEnrichment(g, cluster_column = "cell_type",
-                               spatial_network_name = "kNN20",
-                               number_of_simulations = 1000)
-head(cpe$enrichm_res[type_int == "hetero"][order(-enrichm)], 8)[
-    , .(pair = unified_int, enrichment = round(enrichm, 2), p.adj_higher)]
+nb <- cellProximityMotifs(g, cluster_column = "cell_type",
+                          spatial_network_name = "kNN20",
+                          size = 2L, n_perm = 1000L)
+head(nb[order(-z), .(motif_id, observed, expected, fold, p_adj)], 8)
 ```
-
-| pair                                  | enrichment | p.adj_higher |
-|:--------------------------------------|-----------:|-------------:|
-| Fibroblast–Plasma                     |       1.10 |     0.000999 |
-| Myeloid–T/NK                          |       0.84 |     0.000999 |
-| Plasma–T/NK                           |       0.83 |     0.000999 |
-| Endothelial–Fibroblast                |       0.59 |     0.000999 |
-| Endothelial–Plasma                    |       0.57 |     0.000999 |
-| Epithelial 1–Proliferating epithelial |       0.52 |     0.000999 |
-| Fibroblast–T/NK                       |       0.49 |     0.000999 |
-| Fibroblast–Myeloid                    |       0.44 |     0.000999 |
 
 ``` r
 
-cellProximityHeatmap(g, CPscore = cpe, order_cell_types = TRUE, scale = FALSE)
+plotMotifEnrichment(g, nb)
 ```
-
-![](images/merscope_human_colon_cancer_giottodisk/12_neighbour-heatmap.png)
 
 ## 13 Session
 

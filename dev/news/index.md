@@ -150,6 +150,9 @@ Requires GiottoClass 0.8.0.
 
 ### changes
 
+- [`cellProximityMotifs()`](https://giottosuite.com/dev/reference/cellProximityMotifs.md)
+  needs smotif and smotifrs 0.2.0 or later (both in Suggests, installed
+  from GitHub); 0.1.0 fails on disk-backed objects.
 - The ONTraC v1 functions are deprecated in favour of
   [`GiottoConnect::runONTraC()`](https://giotto-suite.github.io/GiottoConnect/reference/runONTraC.html),
   which installs ONTraC on first use and stores its results in the

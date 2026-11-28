@@ -34,11 +34,9 @@ image:
 
 library(Giotto)
 
-data_path <- "/path/to/data/"
-
-GiottoData::getSpatialDataset(dataset = "seqfish_SS_cortex", 
-                              directory = data_path, 
-                              method = "wget")
+# returns the folder with the downloaded files
+data_path <- GiottoData::getSpatialDataset(dataset = "seqfish_SS_cortex",
+                                           directory = "/path/to/data/")
 ```
 
 ## 4 Giotto Instructions and Preparation
@@ -56,9 +54,9 @@ instructions <- createGiottoInstructions(
 )
 
 # create giotto object from provided paths ####
-expr_path <- paste0(data_path, "cortex_svz_expression.txt")
-loc_path <- paste0(data_path, "cortex_svz_centroids_coord.txt")
-meta_path <- paste0(data_path, "cortex_svz_centroids_annot.txt")
+expr_path <- file.path(data_path, "cortex_svz_expression.txt")
+loc_path <- file.path(data_path, "cortex_svz_centroids_coord.txt")
+meta_path <- file.path(data_path, "cortex_svz_centroids_annot.txt")
 
 # This dataset contains multiple field of views which need to be stitched together
 # first merge location and additional metadata
@@ -238,14 +236,14 @@ SS_seqfish <- doLeidenSubCluster(gobject = SS_seqfish,
                                  pca_param = list(expression_values = "normalized", 
                                                   scale_unit = FALSE),
                                  nn_param = list(dimensions_to_use = 1:5),
-                                 selected_clusters = c(5, 6, 7),
+                                 selected_clusters = c(2, 7),
                                  name = "sub_leiden_clus_select"
 )
 
 ## set colors for clusters
 subleiden_order <- c(
-    1.1, 2.1, 3.1, 4.1, 5.1, 5.2,
-    6.1, 6.2, 7.1, 7.2, 8.1, 9.1
+    1.1, 2.1, 2.2, 3.1, 4.1, 5.1,
+    6.1, 7.1, 7.2, 8.1
 )
 
 giotto_colors <- getDistinctColors(length(subleiden_order))
@@ -308,7 +306,7 @@ spatDimPlot(gobject = SS_seqfish,
 ``` r
 
 # selected groups and provide new colors
-groups_of_interest <- c(6.1, 6.2, 7.1, 7.2)
+groups_of_interest <- c(4.1, 6.1, 7.1, 7.2)
 group_colors <- c("red", "green", "blue", "purple")
 names(group_colors) <- groups_of_interest
 
@@ -374,15 +372,15 @@ plotMetaDataHeatmap(SS_seqfish,
 ## general cell types
 ## create vector with names
 clusters_cell_types <- c("1.1" = "L4 eNeuron",
-                         "2.1" = "L6 eNeuron",
-                         "3.1" = "L5 eNeuron", 
-                         "4.1" = "endothelial",
-                         "5.1" = "Lhx6 iNeuron", 
-                         "5.2" = "Adarb2 iNeuron",
-                         "6.1" = "Olig",
-                         "6.2" = "OPC",
-                         "7.1" = "astrocytes",
-                         "8.1" = "microglia"
+                         "2.1" = "Lhx6 iNeuron",
+                         "2.2" = "Adarb2 iNeuron",
+                         "3.1" = "L5 eNeuron",
+                         "4.1" = "microglia",
+                         "5.1" = "endothelial",
+                         "6.1" = "astrocytes",
+                         "7.1" = "Olig",
+                         "7.2" = "OPC",
+                         "8.1" = "L6 eNeuron"
 )
 
 SS_seqfish <- annotateGiotto(gobject = SS_seqfish, 
@@ -598,70 +596,42 @@ spatFeatPlot2D(SS_seqfish,
 
 ### 13.2 Spatial Genes Co-Expression Modules
 
+Identify spatial co-expression modules: groups of spatial genes whose
+expression is correlated across neighbouring cells in the spatial
+network. See the [spatial co-expression
+modules](https://giottosuite.com/dev/articles/spatial_coexpression_modules.md)
+tutorial for details.
+
 ``` r
 
-## spatial co-expression patterns ##
 ext_spatial_genes <- km_spatialfeats[1:500]$feats
 
-## 1. calculate gene spatial correlation and single-cell correlation
-## create spatial correlation object
-spat_cor_netw_DT <- detectSpatialCorFeats(SS_seqfish,
-                                          method = "network",
-                                          spatial_network_name = "Delaunay_network",
-                                          subset_feats = ext_spatial_genes
-)
+coexpr <- spatialCoexpression(SS_seqfish,
+                              feats = ext_spatial_genes,
+                              spatial_network_name = "Delaunay_network",
+                              n_modules = 8,
+                              return_gobject = FALSE)
+coexpr$summary
 
-## 2. cluster correlated genes & visualize
-spat_cor_netw_DT <- clusterSpatialCorFeats(spat_cor_netw_DT,
-                                           name = "spat_netw_clus",
-                                           k = 8
-)
-
-heatmSpatialCorFeats(SS_seqfish,
-                     spatCorObject = spat_cor_netw_DT, 
-                     use_clus_name = "spat_netw_clus",
-                     heatmap_legend_param = list(title = NULL)
-)
+heatmapCoexpression(SS_seqfish, coexpr)
 ```
 
-![](images/seqfish_cortex/25-heatmSpatialCorFeats.png)
+![](images/seqfish_cortex/25-heatmapCoexpression.png)
+
+Store the modules in the giotto object: each gene’s module is added to
+the feature metadata and a score per module and cell as the spatial
+enrichment “spatial_module”.
 
 ``` r
 
-# 3. rank spatial correlated clusters and show genes for selected clusters
-netw_ranks <- rankSpatialCorGroups(SS_seqfish,
-                                   spatCorObject = spat_cor_netw_DT,
-                                   use_clus_name = "spat_netw_clus"
-)
-
-top_netw_spat_cluster <- showSpatialCorFeats(spat_cor_netw_DT,
-                                             use_clus_name = "spat_netw_clus",
-                                             selected_clusters = 6,
-                                             show_top_feats = 1
-)
-```
-
-![](images/seqfish_cortex/26-rankSpatialCorGroups.png)
-
-``` r
-
-# 4. create metagene enrichment score for clusters
-cluster_genes_DT <- showSpatialCorFeats(spat_cor_netw_DT,
-                                        use_clus_name = "spat_netw_clus",
-                                        show_top_feats = 1
-)
-
-cluster_genes <- cluster_genes_DT$clus
-names(cluster_genes) <- cluster_genes_DT$feat_ID
-
-SS_seqfish <- createMetafeats(SS_seqfish,
-                              feat_clusters = cluster_genes,
-                              name = "cluster_metagene"
-)
+SS_seqfish <- spatialCoexpression(SS_seqfish,
+                                  feats = ext_spatial_genes,
+                                  spatial_network_name = "Delaunay_network",
+                                  n_modules = 8)
 
 spatCellPlot(SS_seqfish,
-             spat_enr_names = "cluster_metagene",
-             cell_annotation_values = netw_ranks$clusters,
+             spat_enr_names = "spatial_module",
+             cell_annotation_values = as.character(coexpr$summary$module),
              point_size = 1.5, 
              cow_n_col = 3
 )
@@ -671,49 +641,30 @@ spatCellPlot(SS_seqfish,
 
 ## 14 HMRF Spatial Domains
 
+Find spatial domains with a hidden Markov random field (HMRF). HMRF
+works best on a few spatially informed values per cell, here the
+co-expression module scores from above.
+[`runHMRF()`](https://giottosuite.com/dev/reference/runHMRF.md) fits
+several `betas` (the strength of the spatial smoothing) in one call;
+[`hmrfSummary()`](https://giottosuite.com/dev/reference/hmrfSummary.md)
+compares them: a higher `beta` gives more coherent domains, until small
+domains disappear. See the [spatial
+domains](https://giottosuite.com/dev/articles/spatial_domains.md)
+tutorial for details.
+
 ``` r
 
-hmrf_folder <- paste0(results_folder, "/11_HMRF/")
+SS_seqfish <- runHMRF(SS_seqfish,
+                      spat_enr_name = "spatial_module",
+                      spatial_network_name = "Delaunay_network",
+                      k = 9,
+                      betas = c(0, 2, 5, 10))
+hmrfSummary(SS_seqfish)
 
-if (!file.exists(hmrf_folder)) dir.create(hmrf_folder, recursive = TRUE)
-
-my_spatial_genes <- km_spatialfeats[1:100]$feats
-
-# do HMRF with different betas
-HMRF_spatial_genes <- doHMRF(
-    gobject = SS_seqfish,
-    expression_values = "scaled",
-    spatial_genes = my_spatial_genes,
-    spatial_network_name = "Delaunay_network",
-    k = 9,
-    betas = c(28, 2, 3),
-    output_folder = paste0(hmrf_folder, "/Spatial_genes/SG_top100_k9_scaled")
-)
-
-## view results of HMRF
-for (i in seq(28, 32, by = 2)) {
-    viewHMRFresults2D(
-        gobject = SS_seqfish,
-        HMRFoutput = HMRF_spatial_genes,
-        k = 9, 
-        betas_to_view = i,
-        point_size = 2
-    )
-}
-
-## add HMRF of interest to giotto object
-SS_seqfish <- addHMRF(
-    gobject = SS_seqfish,
-    HMRFoutput = HMRF_spatial_genes,
-    k = 9, 
-    betas_to_add = c(28),
-    hmrf_name = "HMRF_2"
-)
-
-## visualize
+## visualize the domains for beta = 5
 spatPlot(
     gobject = SS_seqfish,
-    cell_color = "HMRF_2_k9_b.28",
+    cell_color = "hmrf_k9_b5",
     point_size = 3,
     coord_fix_ratio = 1
 )
@@ -723,67 +674,30 @@ spatPlot(
 
 ## 15 Cell Neighborhood: Cell-Type/Cell-Type Interactions
 
-``` r
-
-cell_proximities <- cellProximityEnrichment(gobject = SS_seqfish,
-                                            cluster_column = "cell_types",
-                                            spatial_network_name = "Delaunay_network",
-                                            adjust_method = "fdr",
-                                            number_of_simulations = 2000
-)
-
-## barplot
-cellProximityBarplot(gobject = SS_seqfish,
-                     CPscore = cell_proximities,
-                     min_orig_ints = 5, 
-                     min_sim_ints = 5
-)
-```
-
-![](images/seqfish_cortex/29-cellProximityBarplot.png)
+[`cellProximityMotifs()`](https://giottosuite.com/dev/reference/cellProximityMotifs.md)
+counts how often two cell types are neighbors in the spatial network,
+against the counts expected when the labels are shuffled. Pairs of
+neighbors (`size = 2`) give the proximity enrichment; see the [Atera
+breast cancer
+tutorial](https://giottosuite.com/dev/articles/atera_human_breast_cancer.md)
+for larger motifs.
 
 ``` r
 
-## heatmap
-cellProximityHeatmap(gobject = SS_seqfish,
-                     CPscore = cell_proximities,
-                     order_cell_types = TRUE, 
-                     scale = TRUE,
-                     color_breaks = c(-1.5, 0, 1.5),
-                     color_names = c("blue", "white", "red")
+cell_proximities <- cellProximityMotifs(SS_seqfish,
+                                        spatial_network_name = "Delaunay_network",
+                                        cluster_column = "cell_types",
+                                        size = 2L,
+                                        n_perm = 1000L
 )
+
+head(cell_proximities[order(-z), .(motif_id, observed, expected, fold, p_adj)], 10)
+
+plotMotifEnrichment(SS_seqfish, cell_proximities)
 ```
 
-![](images/seqfish_cortex/30-cellProximityHeatmap.png)
-
-``` r
-
-## network
-cellProximityNetwork(gobject = SS_seqfish,
-                     CPscore = cell_proximities, 
-                     remove_self_edges = TRUE,
-                     only_show_enrichment_edges = TRUE
-)
-```
-
-![](images/seqfish_cortex/31-cellProximityNetwork.png)
-
-``` r
-
-## network with self-edges
-cellProximityNetwork(gobject = SS_seqfish, 
-                     CPscore = cell_proximities,
-                     remove_self_edges = FALSE, 
-                     self_loop_strength = 0.3,
-                     only_show_enrichment_edges = FALSE,
-                     rescale_edge_weights = TRUE,
-                     node_size = 8,
-                     edge_weight_range_depletion = c(1, 2),
-                     edge_weight_range_enrichment = c(2, 5)
-)
-```
-
-![](images/seqfish_cortex/32-cellProximityNetwork.png)
+Neurons of the same layer are enriched next to each other, as are L5
+eNeurons and Lhx6 iNeurons.
 
 ``` r
 
@@ -825,57 +739,40 @@ spatPlot(SS_seqfish,
 
 ## 16 Cell Neighborhood: Interaction Changed Features
 
+[`findInteractionChangedFeats()`](https://giottosuite.com/dev/reference/findInteractionChangedFeats.md)
+finds genes whose expression in one cell type changes with its exposure
+to another (edgeICG), at three scales: direct contact, the paracrine
+range and the wider niche. See [interaction changed
+features](https://giottosuite.com/dev/articles/interaction_changed_features.md)
+for the method and its plots.
+
 ``` r
 
-library(future)
-
-## select top 25th highest expressing genes
-gene_metadata <- fDataDT(SS_seqfish)
-
-plot(gene_metadata$nr_cells, gene_metadata$mean_expr)
-
-plot(gene_metadata$nr_cells, gene_metadata$mean_expr_det)
-
-quantile(gene_metadata$mean_expr_det)
-
-high_expressed_genes <- gene_metadata[mean_expr_det > 3.5]$feat_ID
-
-## identify genes that are associated with proximity to other cell types
-plan("multisession", workers = 6)
-
-ICFsForesHighGenes <- findInteractionChangedFeats(
-    gobject = SS_seqfish,
-    selected_feats = high_expressed_genes,
-    spatial_network_name = "Delaunay_network",
-    cluster_column = "cell_types",
-    diff_test = "permutation",
-    adjust_method = "fdr",
-    nr_permutations = 2000,
-    do_parallel = TRUE
-)
-
-## visualize all genes
-plotCellProximityFeats(SS_seqfish,
-                       icfObject = ICFsForesHighGenes,
-                       method = "dotplot")
+icf <- findInteractionChangedFeats(SS_seqfish,
+                                   cluster_column = "cell_types")
+icf$edgeicg
 ```
 
+    EdgeICG: 523 cells, 10 types, 10000 genes, 18 pairs
+      hits: q < 0.05 and |log2 FC| >= 0.25 (q < 0.05 alone)
+      contact   0 (0)
+      paracrine 0 (0)
+      niche     1 (1), screen
+
+Only 18 receiver and sender pairs have enough cells to test. One gene
+changes: Casp2 is lower in L6 eNeurons with more L5 eNeurons in their
+niche.
+
 ``` r
 
-## filter genes
-ICFscoresFilt <- filterICF(ICFsForesHighGenes)
+icf$ICFscores[p.adj < 0.05, .(feats, cell_type, int_cell_type, scale, log2fc, p.adj)]
 
-## visualize subset of interaction changed genes (ICFs)
-ICF_genes <- c("Jakmip1", "Golgb1", "Dact2", "Ddx27", "Abl1", "Zswim8")
-ICF_genes_types <- c("Lhx6 iNeuron", "Lhx6 iNeuron", "L4 eNeuron", "L4 eNeuron", "astrocytes", "astrocytes")
-names(ICF_genes) <- ICF_genes_types
+plotICFOverview(SS_seqfish, icf, scale = "niche")
 
-plotICF(gobject = SS_seqfish,
-        icfObject = ICFsForesHighGenes,
-        source_type = "endothelial",
-        source_markers = c("Pltp", "Cldn5", "Apcdd1"),
-        ICF_feats = ICF_genes
-)
+plotICFPair(SS_seqfish, icf,
+            receiver = "L6 eNeuron",
+            sender = "L5 eNeuron",
+            scale = "niche")
 ```
 
 ## 17 Cell Neighborhood: Ligand-Receptor Cell-Cell Communication

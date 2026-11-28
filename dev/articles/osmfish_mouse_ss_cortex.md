@@ -541,13 +541,12 @@ spatPlot2D(gobject = osm_test,
 
 # km binarization
 km_spatialfeats <- binSpect(osm_test, 
-                            calc_hub = TRUE, 
-                            hub_min_int = 5,
+
                             bin_method = "kmeans")
 
 spatDimFeatPlot2D(osm_test, 
                   expression_values = "scaled",
-                  feats = km_spatialgenes$feats[1:3], 
+                  feats = km_spatialfeats$feats[1:3], 
                   plot_alignment = "horizontal",
                   spat_point_shape = "no_border",
                   dim_point_shape = "no_border",
@@ -561,48 +560,27 @@ spatDimFeatPlot2D(osm_test,
 
 ## 14 Cell-cell preferential proximity
 
+[`cellProximityMotifs()`](https://giottosuite.com/dev/reference/cellProximityMotifs.md)
+counts how often two cell types are neighbors in the spatial network,
+against the counts expected when the labels are shuffled. Pairs of
+neighbors (`size = 2`) give the proximity enrichment; see the [Atera
+breast cancer
+tutorial](https://giottosuite.com/dev/articles/atera_human_breast_cancer.md)
+for larger motifs.
+
 ``` r
 
 ## calculate frequently seen proximities
-cell_proximities <- cellProximityEnrichment(gobject = osm_test,
-                                            cluster_column = "ClusterName",
-                                            number_of_simulations = 1000)
-## barplot
-cellProximityBarplot(gobject = osm_test, 
-                     CPscore = cell_proximities, 
-                     min_orig_ints = 25, 
-                     min_sim_ints = 25,
-                     save_param = list(save_name = "12_a_barplot_cell_cell_enrichment"))
+cell_proximities <- cellProximityMotifs(gobject = osm_test,
+                                        cluster_column = "ClusterName",
+                                        size = 2L,
+                                        n_perm = 1000L)
+head(cell_proximities[order(-z), .(motif_id, observed, expected, fold, p_adj)], 10)
+
+plotMotifEnrichment(gobject = osm_test,
+                    motif_result = cell_proximities,
+                    save_param = list(save_name = "12_a_motif_enrichment"))
 ```
-
-![](images/osmfish_mouse_ss_cortex/12_a_barplot_cell_cell_enrichment.png)
-
-``` r
-
-## heatmap
-cellProximityHeatmap(gobject = osm_test, 
-                     CPscore = cell_proximities, 
-                     order_cell_types = TRUE, 
-                     scale = TRUE,
-                     color_breaks = c(-1.5, 0, 1.5), 
-                     color_names = c("blue", "white", "red"),
-                     save_param = list(save_name = "12_b_heatmap_cell_cell_enrichment", 
-                      unit = "in"))
-```
-
-![](images/osmfish_mouse_ss_cortex/12_b_heatmap_cell_cell_enrichment.png)
-
-``` r
-
-## network
-cellProximityNetwork(gobject = osm_test, 
-                     CPscore = cell_proximities, 
-                     remove_self_edges = FALSE, 
-                     only_show_enrichment_edges = TRUE,
-                     save_param = list(save_name = "12_c_network_cell_cell_enrichment"))
-```
-
-![](images/osmfish_mouse_ss_cortex/12_c_network_cell_cell_enrichment.png)
 
 ``` r
 

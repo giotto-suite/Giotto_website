@@ -162,7 +162,8 @@ the 2 × 2 table of edges by the on/off state of their two cells (the
 
 With `return_gobject = TRUE` (the default), the results are written to
 the feature metadata instead, as `binspect.z`, `binspect.p` and
-`binspect.padj` (and `binSpect.pval`, which `doHMRF()` reads):
+`binspect.padj` (and `binSpect.pval`, the adjusted p-value under its
+earlier name):
 
 ``` r
 

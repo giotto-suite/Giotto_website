@@ -88,8 +88,7 @@ for more information about this step.
 
 ranktest <- binSpect(g, 
     bin_method = "rank",
-    calc_hub = TRUE, 
-    hub_min_int = 5,
+
     spatial_network_name = "spatial_network"
 )
 

@@ -556,19 +556,21 @@ spatPlot(seqfish_mini,
 
 [`findInteractionChangedFeats()`](https://giottosuite.com/dev/reference/findInteractionChangedFeats.md)
 finds genes whose expression in one cell type changes with its exposure
-to another (edgeICG). By default it needs 60 cells per cell type; the
-mini dataset has fewer, and even with `min_cells = 10` there is nothing
-to test. See [interaction changed
+to another (edgeICG). Each cell type needs enough cells for its fit (44
+here, with 8 cell types); the mini dataset has at most 24, so there is
+nothing to test. See [interaction changed
 features](https://giottosuite.com/dev/articles/interaction_changed_features.md)
 for a full analysis.
 
 ``` r
 
 icf <- findInteractionChangedFeats(seqfish_mini,
-                                   cluster_column = "cell_types",
-                                   min_cells = 10)
+                                   cluster_column = "cell_types")
 icf$edgeicg
 ```
+
+    edgeicg: no cell type has at least min_cells = 44 cells (largest: 24); nothing to test
+    EdgeICG: 118 cells, 8 types, 1339 genes, 0 pairs ()
 
 ## 15 Cell Neighborhood: Ligand-Receptor Cell-Cell Communication
 

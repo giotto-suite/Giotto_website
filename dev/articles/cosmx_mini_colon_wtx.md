@@ -325,7 +325,7 @@ data.table(clusters = uniqueN(cell_metadata$clus),
 
 | clusters | cells | smallest | largest |
 |---------:|------:|---------:|--------:|
-|       10 |  1738 |       21 |     349 |
+|       11 |  1738 |       23 |     347 |
 
 ``` r
 
@@ -391,11 +391,11 @@ head(markers_de, 5)
 
 | feats  | cluster |     logFC |   p_value |       FDR | ranking |
 |:-------|--------:|----------:|----------:|----------:|--------:|
-| RPS18  |       1 | 0.6442366 | 0.0000098 | 0.0000872 |       1 |
-| RPS4X  |       1 | 0.4593824 | 0.0008676 | 0.0036157 |       2 |
-| TMSB10 |       1 | 0.4477043 | 0.0007153 | 0.0030872 |       3 |
-| PIGR   |       1 | 0.4150404 | 0.0053978 | 0.0158247 |       4 |
-| RPS19  |       1 | 0.3930049 | 0.0068114 | 0.0192436 |       5 |
+| RPS18  |       1 | 0.7141620 | 0.0000008 | 0.0000107 |       1 |
+| TMSB10 |       1 | 0.5210765 | 0.0000751 | 0.0004883 |       2 |
+| RPS4X  |       1 | 0.5023198 | 0.0002653 | 0.0013833 |       3 |
+| PIGR   |       1 | 0.4654608 | 0.0017941 | 0.0066424 |       4 |
+| RPS19  |       1 | 0.4359923 | 0.0026528 | 0.0090539 |       5 |
 
 ``` r
 
@@ -413,16 +413,17 @@ cluster_table[]
 
 | cluster | cells | top_genes |
 |---:|---:|:---|
-| 1 | 349 | RPS18, RPS4X, TMSB10, PIGR, RPS19, RPLP2 |
-| 2 | 159 | MPV17L, AEBP1, THBS1 |
-| 3 | 312 | RIMBP3B, OR10H5, NPIPB3, MPV17L, ZNF91, GID4, RPS3, MEX3C |
-| 4 | 329 | OR10H5, RIMBP3B, MPV17L, NPIPB3, ZNF91, EPCAM, MEX3C, NPIPB11 |
-| 5 | 144 | RPS27A |
-| 6 | 112 | COL1A1 |
-| 7 | 189 | RIMBP3B, OR10H5, MEX3C, RPS3, NPIPB11, ATP10B, MPV17L |
-| 8 | 77 | CD74, CTSB, CTSD, RNASE1, HLA-DRB1, SPP1, C1QC, APOE |
-| 9 | 46 | COL4A1, SPARC, COL4A2, COL18A1, PLVAP, IGFBP7, SPARCL1, HSPG2 |
-| 10 | 21 | IGKC, IGHA1, IGHG1, JCHAIN, PRMT8, COL1A1, DENND6B, SMCO3 |
+| 1 | 347 | RPS18, TMSB10, RPS4X, PIGR, RPS19, RPLP2, RPLP0, RPL27A |
+| 2 | 134 | MPV17L, TUBA1A |
+| 3 | 189 | RIMBP3B |
+| 4 | 325 | OR10H5, RIMBP3B, MPV17L, NPIPB3, ZNF91, EPCAM, MEX3C, NPIPB8 |
+| 5 | 123 | (no markers passed the filter) |
+| 6 | 127 | COL1A1, COL1A2, SPARC, COL3A1, COL6A2, AEBP1, TPSB2, C1S |
+| 7 | 162 | RPS21, RIMBP3B, CEACAM5, RPS3, RPS19, PIGR, LEFTY1, H4C11 |
+| 8 | 191 | OR10H5, RIMBP3B, CEACAM5, PIGR, RPL36, RPS3, RPS18, RPL31 |
+| 9 | 71 | CD74, CTSB, RNASE1, CTSD, HLA-DRB1, SPP1, C1QC, HLA-DRA |
+| 10 | 46 | COL4A1, SPARC, COL4A2, COL18A1, PLVAP, IGFBP7, SPARCL1, HSPG2 |
+| 11 | 23 | IGKC, IGHA1, IGHG1, JCHAIN, PRMT8, COL1A1, DENND6B, SMCO3 |
 
 ## 9 Naming the clusters
 
@@ -464,11 +465,12 @@ broad_palette <- c(
   QC_unassigned         = "gray70")
 
 BROAD <- c(
-  "1"  = "epithelial_colonocyte", "2"  = "fibroblast_CAF",
+  "1"  = "epithelial_colonocyte", "2"  = "tumor",
   "3"  = "tumor",                 "4"  = "tumor",
   "5"  = "QC_unassigned",         "6"  = "fibroblast_CAF",
-  "7"  = "tumor",                 "8"  = "immune_myeloid",
-  "9"  = "endothelial",           "10" = "immune_plasma")
+  "7"  = "tumor",                 "8"  = "tumor",
+  "9"  = "immune_myeloid",        "10" = "endothelial",
+  "11" = "immune_plasma")
 ```
 
 ``` r
@@ -661,21 +663,21 @@ mini_cosmx <- createSpatialNetwork(mini_cosmx, name = "Delaunay_network",
 hvf_genes    <- fDataDT(mini_cosmx)[hvf == "yes", feat_ID]
 binspect_res <- binSpect(mini_cosmx, subset_feats = hvf_genes, verbose = FALSE)
 
-spatial_genes <- binspect_res[score >= 30 & adj.p.value <= 0.05, feats]
+spatial_genes <- binspect_res[adj.p.value <= 0.01, feats]
 
-head(binspect_res[, .(feats, score, adj.p.value)], 5)
+head(binspect_res[, .(feats, z, odds_ratio, adj.p.value)], 5)
 length(spatial_genes)
 ```
 
-| feats   |      score | adj.p.value |
-|:--------|-----------:|------------:|
-| IGKC    | 11521.2360 |           0 |
-| IGHA1   |  1543.5242 |           0 |
-| IGFBP7  |   466.1884 |           0 |
-| LUM     |   416.3125 |           0 |
-| COL12A1 |   305.0607 |           0 |
+| feats  |     z | odds_ratio | adj.p.value |
+|:-------|------:|-----------:|------------:|
+| IGKC   | 27.04 |      48.62 |           0 |
+| IGHA1  | 15.42 |      18.92 |           0 |
+| IGFBP7 | 12.30 |       4.05 |           0 |
+| LUM    | 11.75 |       3.52 |           0 |
+| MMP2   | 11.31 |       3.68 |           0 |
 
-    ## [1] 65
+    ## [1] 70
 
 ``` r
 
@@ -687,90 +689,95 @@ spatFeatPlot2D(mini_cosmx, expression_values = "normalized",
 
 ![](images/cosmx_mini_colon_wtx/14_binspect-figs.png)
 
+Genes with a spatial pattern often share it.
+[`spatialCoexpression()`](https://giottosuite.com/dev/reference/spatialCoexpression.md)
+correlates the spatial genes across neighbouring cells in the Delaunay
+network and groups them into co-expression modules. See the [spatial
+co-expression
+modules](https://giottosuite.com/dev/articles/spatial_coexpression_modules.md)
+tutorial for details.
+
 ``` r
 
-spat_cor <- detectSpatialCorFeats(mini_cosmx, method = "network",
+# n_modules = 6 was chosen by eye, not optimized
+coexpr <- spatialCoexpression(mini_cosmx, feats = spatial_genes,
+                              spatial_network_name = "Delaunay_network",
+                              n_modules = 6, return_gobject = FALSE)
+```
+
+``` r
+
+heatmapCoexpression(mini_cosmx, coexpr)
+```
+
+![](images/cosmx_mini_colon_wtx/15_coexpr-heatmap.png)
+
+`coexpr$summary` has one row per module, the most coherent and distinct
+modules first; `coexpr$feats` gives each gene’s module.
+
+``` r
+
+module_genes <- coexpr$feats[order(-module_cor),
+                             .(genes = paste(feat_ID, collapse = ", ")),
+                             by = module]
+merge(coexpr$summary, module_genes, by = "module")[order(-score)]
+```
+
+| module | size | within_cor | between_cor | score | genes |
+|---:|---:|---:|---:|---:|:---|
+| 1 | 4 | 0.51 | 0.07 | 0.44 | IGHA1, IGKC, JCHAIN, RGS1 |
+| 4 | 6 | 0.47 | 0.16 | 0.37 | RNASE1, C1QC, HLA-DRB1, APOE, SPP1, HLA-DRA |
+| 2 | 35 | 0.36 | 0.12 | 0.29 | LUM, IGFBP7, BGN, FBN1, MMP2, COL6A1, SULF1, SPON2, C1S, COL5A1, COL12A1, VIM, CALD1, LAMA4, CTHRC1, TNC, POSTN, COL4A2, TIMP3, FSTL1, HTRA3, A2M, EMILIN1, MRC2, VCAN, C1R, FBLN1, FNDC1, CDH11, IGFBP3, ANTXR1, GREM1, IGFBP5, CACNA1H, WNT5A |
+| 5 | 7 | 0.26 | 0.17 | 0.20 | CCN2, CCN1, F3, PLAU, LMCD1, SERPINF1, SERPINE1 |
+| 6 | 7 | 0.21 | 0.14 | 0.17 | SPARCL1, ACTA2, C11orf96, COL15A1, TAGLN, LTBP1, PLVAP |
+| 3 | 11 | 0.06 | -0.06 | 0.06 | MMP7, PSMB5, RASSF6, ATP5PD, PPP1R9B, H2AC20, SARAF, MZF1, OLFM4, PI3, GORASP2 |
+
+Stored in the object, each gene’s module goes into the feature metadata
+and a score per module and cell into the spatial enrichment
+`spatial_module`.
+
+``` r
+
+mini_cosmx <- spatialCoexpression(mini_cosmx, feats = spatial_genes,
                                   spatial_network_name = "Delaunay_network",
-                                  subset_feats = spatial_genes,
-                                  expression_values = "normalized")
+                                  n_modules = 6)
 
-# k = 6 was chosen by eye, not optimized
-spat_cor <- clusterSpatialCorFeats(spat_cor, name = "spat_netw_clus", k = 6)
+spatCellPlot(mini_cosmx, spat_enr_names = "spatial_module",
+             cell_annotation_values = as.character(coexpr$summary$module),
+             point_shape = "no_border", point_size = 0.6, cow_n_col = 3,
+             gradient_style = "sequential")
 ```
 
-``` r
-
-heatmSpatialCorFeats(mini_cosmx, spatCorObject = spat_cor,
-                     use_clus_name = "spat_netw_clus",
-                     col = circlize::colorRamp2(c(-0.12, 0.08, 0.5),
-                                                c("#3B4CC0", "white", "#B40426")))
-```
-
-![](images/cosmx_mini_colon_wtx/15_spatcor-heatmap.png)
-
-``` r
-
-spat_modules <- spat_cor[["cor_clusters"]][["spat_netw_clus"]]
-module_genes <- data.table(module = as.integer(spat_modules),
-                           gene   = names(spat_modules))
-module_genes[, .(n_genes = .N, genes = paste(gene, collapse = ", ")),
-             by = module][order(module)]
-```
-
-| module | n_genes | genes |
-|---:|---:|:---|
-| 1 | 21 | A2M, BGN, C11orf96, C1R, CALD1, COL15A1, COL4A2, EMILIN1, FBN1, FNDC1, FSTL1, IGFBP3, IGFBP5, IGFBP7, LAMA4, PLVAP, SPARCL1, SULF1, TIMP3, VIM, WNT5A |
-| 2 | 5 | ACTA2, CCN1, CCN2, PLAU, TAGLN |
-| 3 | 6 | C1QC, HLA-DRA, HLA-DRB1, RGS1, RNASE1, SPP1 |
-| 4 | 15 | C1S, CDH11, COL12A1, COL5A1, COL6A1, F3, FBLN1, HTRA3, LUM, MMP2, PODN, POSTN, SPON2, TNC, VCAN |
-| 5 | 14 | EMP1, HIGD2B, IFNA16, IGHM, IL13RA2, KATNAL1, LIPN, MAB21L4, MMP7, MSTN, OLFM4, PI3, TBX22, XPNPEP2 |
-| 6 | 4 | IGHA1, IGKC, JCHAIN, PRMT8 |
+![](images/cosmx_mini_colon_wtx/16_module-scores.png)
 
 ## 13 Spatial neighborhood composition
 
+[`cellProximityMotifs()`](https://giottosuite.com/dev/reference/cellProximityMotifs.md)
+counts how often two cell types are neighbors in the spatial network,
+against the counts expected when the labels are shuffled. Pairs of
+neighbors (`size = 2`) give the proximity enrichment; see the [Atera
+breast cancer
+tutorial](https://giottosuite.com/dev/articles/atera_human_breast_cancer.md)
+for larger motifs.
+
 ``` r
 
-proximity <- cellProximityEnrichment(
+proximity <- cellProximityMotifs(
   mini_cosmx, cluster_column = "cell_type_broad",
   spatial_network_name = "Delaunay_network",
-  number_of_simulations = 200, set_seed = TRUE, seed_number = SEED)
+  size = 2L, n_perm = 1000L, seed_number = SEED)
+
+head(proximity[order(-z), .(motif_id, observed, expected, fold, p_adj)], 8)
 ```
 
 ``` r
 
-cellProximityBarplot(mini_cosmx, CPscore = proximity, min_orig_ints = 1,
-                     min_sim_ints = 1, p_val = 0.01)
+plotMotifEnrichment(mini_cosmx, proximity)
 ```
 
-![](images/cosmx_mini_colon_wtx/16_cp-barplot.png)
-
-``` r
-
-cellProximityHeatmap(mini_cosmx, CPscore = proximity, order_cell_types = TRUE,
-                     scale = TRUE)
-```
-
-![](images/cosmx_mini_colon_wtx/17_cp-heatmap.png)
-
-The heatmap shows every pair at once, so the self-association above
-appears as a bright diagonal; off-diagonal warmth marks types that
-interleave, and cool off-diagonal cells mark compartments that exclude
-one another.
-
-``` r
-
-cellProximityNetwork(mini_cosmx, CPscore = proximity, remove_self_edges = TRUE,
-                     only_show_enrichment_edges = FALSE, node_size = 4,
-                     node_text_size = 5)
-```
-
-![](images/cosmx_mini_colon_wtx/18_cp-network.png)
-
-Edge thickness scales with the size of the score and edge color gives
-its sign: red where a pair is found together more often than chance,
-light green where it is found together less. Dropping the diagonal makes
-chains of mutually adjacent cell types easier to see than isolated
-pairs.
+Each cell type is enriched next to its own kind. Plasma cells, myeloid
+cells and endothelial cells also sit next to each other, and all three
+are depleted next to tumor cells.
 
 ## 14 Saving the object
 

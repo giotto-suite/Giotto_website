@@ -787,71 +787,21 @@ per cell type, colored like its cell type, over the same polygons:</p>
 composition<a class="anchor" aria-label="anchor" href="#spatial-neighborhood-composition"></a>
 </h2>
 <p>Each cell is linked to its twenty nearest neighbors.
-<code><a href="../reference/cellProximityEnrichment.html">cellProximityEnrichment()</a></code> counts the links between each
-pair of cell types and compares the counts with 1,000 random relabelings
-of the cells, so a log2 enrichment above 0 means the pairing is more
-common than chance. The clustering used no spatial information, so this
-tests whether the expression-defined populations are spatially
-organized.</p>
+<code><a href="../reference/cellProximityMotifs.html">cellProximityMotifs()</a></code> counts the links between each pair of
+cell types (<code>size = 2</code>) and compares the counts with 1,000
+random relabelings of the cells, so a fold above 1 means the pairing is
+more common than chance. The clustering used no spatial information, so
+this tests whether the expression-defined populations are spatially
+organized. See the <a href="atera_human_breast_cancer.html">Atera breast
+cancer tutorial</a> for larger motifs.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createSpatialNetwork.html" class="external-link">createSpatialNetwork</a></span><span class="op">(</span><span class="va">g</span>, method <span class="op">=</span> <span class="st">"kNN"</span>, k <span class="op">=</span> <span class="fl">20</span>, name <span class="op">=</span> <span class="st">"kNN20"</span><span class="op">)</span></span>
-<span><span class="va">cpe</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cellProximityEnrichment.html">cellProximityEnrichment</a></span><span class="op">(</span><span class="va">g</span>, cluster_column <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
-<span>                               spatial_network_name <span class="op">=</span> <span class="st">"kNN20"</span>,</span>
-<span>                               number_of_simulations <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">cpe</span><span class="op">$</span><span class="va">enrichm_res</span><span class="op">[</span><span class="va">type_int</span> <span class="op">==</span> <span class="st">"hetero"</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">enrichm</span><span class="op">)</span><span class="op">]</span>, <span class="fl">8</span><span class="op">)</span><span class="op">[</span></span>
-<span>    , <span class="fu">.</span><span class="op">(</span>pair <span class="op">=</span> <span class="va">unified_int</span>, enrichment <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html" class="external-link">round</a></span><span class="op">(</span><span class="va">enrichm</span>, <span class="fl">2</span><span class="op">)</span>, <span class="va">p.adj_higher</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<table class="table">
-<thead><tr class="header">
-<th align="left">pair</th>
-<th align="right">enrichment</th>
-<th align="right">p.adj_higher</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">Fibroblast–Plasma</td>
-<td align="right">1.10</td>
-<td align="right">0.000999</td>
-</tr>
-<tr class="even">
-<td align="left">Myeloid–T/NK</td>
-<td align="right">0.84</td>
-<td align="right">0.000999</td>
-</tr>
-<tr class="odd">
-<td align="left">Plasma–T/NK</td>
-<td align="right">0.83</td>
-<td align="right">0.000999</td>
-</tr>
-<tr class="even">
-<td align="left">Endothelial–Fibroblast</td>
-<td align="right">0.59</td>
-<td align="right">0.000999</td>
-</tr>
-<tr class="odd">
-<td align="left">Endothelial–Plasma</td>
-<td align="right">0.57</td>
-<td align="right">0.000999</td>
-</tr>
-<tr class="even">
-<td align="left">Epithelial 1–Proliferating epithelial</td>
-<td align="right">0.52</td>
-<td align="right">0.000999</td>
-</tr>
-<tr class="odd">
-<td align="left">Fibroblast–T/NK</td>
-<td align="right">0.49</td>
-<td align="right">0.000999</td>
-</tr>
-<tr class="even">
-<td align="left">Fibroblast–Myeloid</td>
-<td align="right">0.44</td>
-<td align="right">0.000999</td>
-</tr>
-</tbody>
-</table>
+<span><span class="va">nb</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cellProximityMotifs.html">cellProximityMotifs</a></span><span class="op">(</span><span class="va">g</span>, cluster_column <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
+<span>                          spatial_network_name <span class="op">=</span> <span class="st">"kNN20"</span>,</span>
+<span>                          size <span class="op">=</span> <span class="fl">2L</span>, n_perm <span class="op">=</span> <span class="fl">1000L</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">nb</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">z</span><span class="op">)</span>, <span class="fu">.</span><span class="op">(</span><span class="va">motif_id</span>, <span class="va">observed</span>, <span class="va">expected</span>, <span class="va">fold</span>, <span class="va">p_adj</span><span class="op">)</span><span class="op">]</span>, <span class="fl">8</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/cellProximityHeatmap.html">cellProximityHeatmap</a></span><span class="op">(</span><span class="va">g</span>, CPscore <span class="op">=</span> <span class="va">cpe</span>, order_cell_types <span class="op">=</span> <span class="cn">TRUE</span>, scale <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/merscope_human_colon_cancer_giottodisk/12_neighbour-heatmap.png" alt="" width="100%"></p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotMotifEnrichment.html">plotMotifEnrichment</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">nb</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2" number="13">
 <h2 id="session">

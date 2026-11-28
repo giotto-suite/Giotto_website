@@ -40,8 +40,8 @@ detection through
 [`binSpect()`](https://giottosuite.com/dev/reference/binSpect.md), or
 cell cell communication through
 [`spatCellCellcom()`](https://giottosuite.com/dev/reference/spatCellCellcom.md),
-and enrichment through
-[`cellProximityEnrichment()`](https://giottosuite.com/dev/reference/cellProximityEnrichment.md).
+and cell type proximity enrichment through
+[`cellProximityMotifs()`](https://giottosuite.com/dev/reference/cellProximityMotifs.md).
 
 Giotto allows generation of Delaunay and k-nearest neighbors (KNN)
 networks for spatial networks.

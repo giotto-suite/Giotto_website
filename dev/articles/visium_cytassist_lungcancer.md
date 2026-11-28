@@ -556,23 +556,28 @@ spatFeatPlot2D(visium_lungcancer,
 
 ![](images/visium_cytassist_lungcancer/24-spatFeatPlot2D.png)
 
+### 11.1 Spatial co-expression patterns
+
+Group spatial genes into co-expression modules: genes whose expression
+is correlated across neighbouring spots in the spatial network. See the
+[spatial co-expression
+modules](https://giottosuite.com/dev/articles/spatial_coexpression_modules.md)
+tutorial for details.
+
 ``` r
 
-## spatially correlated genes ##
 my_spatial_genes <- km_spatialfeats[1:500]$feats
 
-# 1. calculate gene spatial correlation and single-cell correlation
-# create spatial correlation object
-spat_cor_netw_DT <- detectSpatialCorFeats(
-  visium_lungcancer,
-  method = "network",
-  spatial_network_name = "Delaunay_network",
-  subset_feats = my_spatial_genes)
+coexpr <- spatialCoexpression(visium_lungcancer,
+                              feats = my_spatial_genes,
+                              spatial_network_name = "Delaunay_network",
+                              n_modules = 10,
+                              return_gobject = FALSE)
+coexpr$summary
 
-# 2. identify most similar spatially correlated genes for one gene
-top10_genes <- showSpatialCorFeats(spat_cor_netw_DT, 
-                                   feats = "DNAI1", 
-                                   show_top_feats = 10)
+# genes most correlated with one gene
+top10_genes <- sort(coexpr$cor["DNAI1", ], decreasing = TRUE)[2:11]
+top10_genes
 
 spatFeatPlot2D(visium_lungcancer, 
                expression_values = "scaled",
@@ -594,58 +599,27 @@ spatFeatPlot2D(visium_lungcancer,
 
 ``` r
 
-# 3. cluster correlated genes & visualize
-spat_cor_netw_DT <- clusterSpatialCorFeats(spat_cor_netw_DT, 
-                                           name = "spat_netw_clus", 
-                                           k = 10)
-
-heatmSpatialCorFeats(visium_lungcancer,
-                     spatCorObject = spat_cor_netw_DT,
-                     use_clus_name = "spat_netw_clus",
-                     save_param = list(save_name = "27-heatmap_correlated_genes",
-                                       save_format = "pdf",
-                                       base_height = 6,
-                                       base_width = 8,
-                                       units = "cm"),
-                     heatmap_legend_param = list(title = NULL))
+heatmapCoexpression(visium_lungcancer, coexpr)
 ```
+
+![](images/visium_cytassist_lungcancer/27-heatmapCoexpression.png)
+
+Store the modules in the giotto object: each gene’s module is added to
+the feature metadata and a score per module and spot as the spatial
+enrichment “spatial_module”.
 
 ``` r
 
-# 4. rank spatial correlated clusters and show genes for selected clusters
-netw_ranks <- rankSpatialCorGroups(visium_lungcancer,
-                                   spatCorObject = spat_cor_netw_DT,
-                                   use_clus_name = "spat_netw_clus",
-                                   save_param = list(save_name = "28-rank_correlated_groups",
-                                                  base_height = 3, base_width = 5))
-
-top_netw_spat_cluster <- showSpatialCorFeats(spat_cor_netw_DT, 
-                                             use_clus_name = "spat_netw_clus",
-                                             selected_clusters = 6, 
-                                             show_top_feats = 1)
-```
-
-![](images/visium_cytassist_lungcancer/28-rank_correlated_groups.png)
-
-``` r
-
-# 5. create metagene enrichment score for clusters
-cluster_genes_DT <- showSpatialCorFeats(spat_cor_netw_DT, 
-                                        use_clus_name = "spat_netw_clus", 
-                                        show_top_feats = 1)
-
-cluster_genes <- cluster_genes_DT$clus 
-names(cluster_genes) <- cluster_genes_DT$feat_ID
-
-visium_lungcancer <- createMetafeats(visium_lungcancer, 
-                                     feat_clusters = cluster_genes, 
-                                     name = "cluster_metagene")
+visium_lungcancer <- spatialCoexpression(visium_lungcancer,
+                                         feats = my_spatial_genes,
+                                         spatial_network_name = "Delaunay_network",
+                                         n_modules = 10)
 
 showGiottoSpatEnrichments(visium_lungcancer)
 
 spatCellPlot(visium_lungcancer,
-             spat_enr_names = "cluster_metagene",
-             cell_annotation_values = netw_ranks$clusters,
+             spat_enr_names = "spatial_module",
+             cell_annotation_values = as.character(coexpr$summary$module),
              point_size = 1.5, 
              cow_n_col = 4)
 ```
@@ -654,6 +628,16 @@ spatCellPlot(visium_lungcancer,
 
 ## 12 HMRF Domains
 
+Find spatial domains with a hidden Markov random field (HMRF). HMRF
+works best on a few spatially informed values per spot, here the
+co-expression module scores from above.
+[`runHMRF()`](https://giottosuite.com/dev/reference/runHMRF.md) fits
+several `betas` (the strength of the spatial smoothing) in one call;
+[`hmrfSummary()`](https://giottosuite.com/dev/reference/hmrfSummary.md)
+compares them. See the [spatial
+domains](https://giottosuite.com/dev/articles/spatial_domains.md)
+tutorial for details.
+
 ``` r
 
 # HMRF requires a fully connected network!
@@ -661,43 +645,16 @@ visium_lungcancer <- createSpatialNetwork(gobject = visium_lungcancer,
                                           minimum_k = 2, 
                                           name = "Delaunay_full")
 
-# spatial genes
-my_spatial_genes <- km_spatialfeats[1:100]$feats
-
-# do HMRF with different betas
-hmrf_folder <- file.path(results_dir, "HMRF_results")
-
-if(!file.exists(hmrf_folder)) dir.create(hmrf_folder, recursive = TRUE)
-
-# if Rscript is not found, you might have to create a symbolic link, e.g.
-# cd /usr/local/bin
-# sudo ln -s /Library/Frameworks/R.framework/Resources/Rscript Rscript
-HMRF_spatial_genes <- doHMRF(gobject = visium_lungcancer,
-                             expression_values = "scaled",
+visium_lungcancer <- runHMRF(visium_lungcancer,
+                             spat_enr_name = "spatial_module",
                              spatial_network_name = "Delaunay_full",
-                             spatial_genes = my_spatial_genes,
                              k = 5,
-                             betas = c(0, 10, 3),
-                             output_folder = file.path(hmrf_folder, "Spatial_genes/SG_topgenes_k5_scaled"))
-
-## alternative way to view HMRF results
-# results = writeHMRFresults(gobject = ST_test,
-#                            HMRFoutput = HMRF_spatial_genes,
-#                            k = 5, betas_to_view = seq(0, 25, by = 5))
-# ST_test = addCellMetadata(ST_test, new_metadata = results, by_column = T, column_cell_ID = "cell_ID")
-
-## add HMRF of interest to giotto object
-visium_lungcancer <- addHMRF(gobject = visium_lungcancer,
-                             HMRFoutput = HMRF_spatial_genes,
-                             k = 5, 
-                             betas_to_add = c(0,10,20),
-                             hmrf_name = "HMRF")
-
-showGiottoSpatEnrichments(visium_lungcancer)
+                             betas = c(0, 2, 5, 10))
+hmrfSummary(visium_lungcancer)
 
 ## visualize
 spatPlot(gobject = visium_lungcancer, 
-         cell_color = "HMRF_k5_b.0", 
+         cell_color = "hmrf_k5_b0", 
          point_size = 3)
 ```
 
@@ -706,7 +663,7 @@ spatPlot(gobject = visium_lungcancer,
 ``` r
 
 spatPlot(gobject = visium_lungcancer, 
-         cell_color = "HMRF_k5_b.10", 
+         cell_color = "hmrf_k5_b5", 
          point_size = 3)
 ```
 

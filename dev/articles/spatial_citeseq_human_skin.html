@@ -357,7 +357,7 @@ spatial positions.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/create_giotto.html" class="external-link">createGiottoObject</a></span><span class="op">(</span>expression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rna <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>raw <span class="op">=</span> <span class="va">rna_matrix</span><span class="op">)</span>,</span>
 <span>                                                         protein <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>raw <span class="op">=</span> <span class="va">protein_matrix</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>                                       expression_feat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"rna"</span>, <span class="st">"protein"</span><span class="op">)</span>,</span>
+<span>                                       expression_feat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rna"</span>, <span class="st">"protein"</span><span class="op">)</span>,</span>
 <span>                                       spatial_locs <span class="op">=</span> <span class="va">spatial_coords</span>,</span>
 <span>                                       instructions <span class="op">=</span> <span class="va">instructions</span><span class="op">)</span></span></code></pre></div>
 <p>Add the tissue image.</p>
@@ -703,10 +703,8 @@ will store the result in the Giotto object under the multiomics
 slot.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runWNN.html">runWNN</a></span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
-<span>                           modality_1 <span class="op">=</span> <span class="st">"rna"</span>,</span>
-<span>                           modality_2 <span class="op">=</span> <span class="st">"protein"</span>,</span>
-<span>                           pca_name_modality_1 <span class="op">=</span> <span class="st">"rna.pca"</span>,</span>
-<span>                           pca_name_modality_2 <span class="op">=</span> <span class="st">"protein.pca"</span>,</span>
+<span>                           feat_types <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rna"</span>, <span class="st">"protein"</span><span class="op">)</span>,</span>
+<span>                           reduction_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rna.pca"</span>, <span class="st">"protein.pca"</span><span class="op">)</span>,</span>
 <span>                           k <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3" number="8.3">
@@ -719,8 +717,7 @@ and UMAP will be calculated, which reflects the integration of the two
 omics.</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runIntegratedUMAP.html">runIntegratedUMAP</a></span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
-<span>                                      modality1 <span class="op">=</span> <span class="st">"rna"</span>,</span>
-<span>                                      modality2 <span class="op">=</span> <span class="st">"protein"</span><span class="op">)</span></span></code></pre></div>
+<span>                                      feat_types <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rna"</span>, <span class="st">"protein"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3" number="8.4">
 <h3 id="calculate-leiden-clusters">
@@ -786,8 +783,7 @@ variable genes<a class="anchor" aria-label="anchor" href="#calculate-spatially-v
 <span></span>
 <span><span class="va">rank_spatialfeats</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/binSpect.html">binSpect</a></span><span class="op">(</span><span class="va">my_giotto_object</span>, </span>
 <span>                     bin_method <span class="op">=</span> <span class="st">"rank"</span>,</span>
-<span>                     calc_hub <span class="op">=</span> <span class="cn">TRUE</span>, </span>
-<span>                     hub_min_int <span class="op">=</span> <span class="fl">5</span>,</span>
+<span></span>
 <span>                     spatial_network_name <span class="op">=</span> <span class="st">"spatial_network"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatFeatPlot2D.html" class="external-link">spatFeatPlot2D</a></span><span class="op">(</span><span class="va">my_giotto_object</span>, </span>
@@ -797,34 +793,29 @@ variable genes<a class="anchor" aria-label="anchor" href="#calculate-spatially-v
 <span>               point_size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/spatial_citeseq_human_skin/9-spatFeatPlot2D.png"></p>
 <div class="section level3" number="9.1">
-<h3 id="spatially-correlated-genes">
-<span class="header-section-number">9.1</span> Spatially correlated
-genes<a class="anchor" aria-label="anchor" href="#spatially-correlated-genes"></a>
+<h3 id="spatial-co-expression-modules">
+<span class="header-section-number">9.1</span> Spatial co-expression
+modules<a class="anchor" aria-label="anchor" href="#spatial-co-expression-modules"></a>
 </h3>
+<p>Group the top 500 spatial genes into modules whose expression is
+correlated across neighbouring cells in the spatial network. See the <a href="spatial_coexpression_modules.html">spatial co-expression
+modules</a> tutorial for details.</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># 3.1 cluster the top 500 spatial genes into 20 clusters</span></span>
-<span><span class="va">ext_spatial_genes</span> <span class="op">&lt;-</span> <span class="va">rank_spatialfeats</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">500</span>,<span class="op">]</span><span class="op">$</span><span class="va">feats</span></span>
+<code class="sourceCode R"><span><span class="va">ext_spatial_genes</span> <span class="op">&lt;-</span> <span class="va">rank_spatialfeats</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">500</span>,<span class="op">]</span><span class="op">$</span><span class="va">feats</span></span>
 <span></span>
-<span><span class="co"># here we use existing detectSpatialCorGenes function to calculate pairwise distances between genes (but set network_smoothing=0 to use default clustering)</span></span>
-<span><span class="va">spat_cor_netw_DT</span> <span class="op">&lt;-</span> <span class="fu">detectSpatialCorFeats</span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
-<span>                                          method <span class="op">=</span> <span class="st">"network"</span>,</span>
-<span>                                          spatial_network_name <span class="op">=</span> <span class="st">"spatial_network"</span>,</span>
-<span>                                          subset_feats <span class="op">=</span> <span class="va">ext_spatial_genes</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># 3.3 identify potential spatial co-expression</span></span>
-<span><span class="va">spat_cor_netw_DT</span> <span class="op">&lt;-</span> <span class="fu">clusterSpatialCorFeats</span><span class="op">(</span><span class="va">spat_cor_netw_DT</span>, </span>
-<span>                                           name <span class="op">=</span> <span class="st">"spat_netw_clus"</span>, </span>
-<span>                                           k <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="va">coexpr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialCoexpression.html">spatialCoexpression</a></span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
+<span>                              feats <span class="op">=</span> <span class="va">ext_spatial_genes</span>,</span>
+<span>                              spatial_network_name <span class="op">=</span> <span class="st">"spatial_network"</span>,</span>
+<span>                              n_modules <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>                              return_gobject <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">coexpr</span><span class="op">$</span><span class="va">summary</span></span>
 <span></span>
-<span><span class="co"># visualize clusters</span></span>
-<span><span class="fu">heatmSpatialCorFeats</span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
-<span>                     spatCorObject <span class="op">=</span> <span class="va">spat_cor_netw_DT</span>,</span>
-<span>                     use_clus_name <span class="op">=</span> <span class="st">"spat_netw_clus"</span>,</span>
-<span>                     heatmap_legend_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>title <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>,</span>
-<span>                     save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>base_height <span class="op">=</span> <span class="fl">6</span>, </span>
-<span>                                       base_width <span class="op">=</span> <span class="fl">8</span>, </span>
-<span>                                       units <span class="op">=</span> <span class="st">"cm"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="images/spatial_citeseq_human_skin/10-heatmSpatialCorFeats.png"></p>
+<span><span class="fu"><a href="../reference/heatmapCoexpression.html">heatmapCoexpression</a></span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
+<span>                    <span class="va">coexpr</span>,</span>
+<span>                    save_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>base_height <span class="op">=</span> <span class="fl">6</span>,</span>
+<span>                                      base_width <span class="op">=</span> <span class="fl">8</span>,</span>
+<span>                                      units <span class="op">=</span> <span class="st">"cm"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/spatial_citeseq_human_skin/10-heatmapCoexpression.png"></p>
 </div>
 </div>
 <div class="section level2" number="10">
@@ -832,18 +823,18 @@ genes<a class="anchor" aria-label="anchor" href="#spatially-correlated-genes"></
 <span class="header-section-number">10</span>
 Metagenes/co-expression modules<a class="anchor" aria-label="anchor" href="#metagenesco-expression-modules"></a>
 </h2>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># 3.4 create metagenes / co-expression modules</span></span>
-<span><span class="va">cluster_genes</span> <span class="op">&lt;-</span> <span class="fu">getBalancedSpatCoexpressionFeats</span><span class="op">(</span><span class="va">spat_cor_netw_DT</span>, </span>
-<span>                                                  maximum <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/createMetafeats.html" class="external-link">createMetafeats</a></span><span class="op">(</span><span class="va">my_giotto_object</span>, </span>
-<span>                                    feat_clusters <span class="op">=</span> <span class="va">cluster_genes</span>, </span>
-<span>                                    name <span class="op">=</span> <span class="st">"cluster_metagene"</span><span class="op">)</span></span>
+<p>Store the modules in the giotto object: each gene’s module is added
+to the feature metadata and a score per module and cell as the spatial
+enrichment “spatial_module”.</p>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialCoexpression.html">spatialCoexpression</a></span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
+<span>                                        feats <span class="op">=</span> <span class="va">ext_spatial_genes</span>,</span>
+<span>                                        spatial_network_name <span class="op">=</span> <span class="st">"spatial_network"</span>,</span>
+<span>                                        n_modules <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatCellPlot.html" class="external-link">spatCellPlot</a></span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
-<span>             spat_enr_names <span class="op">=</span> <span class="st">"cluster_metagene"</span>,</span>
-<span>             cell_annotation_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>             spat_enr_names <span class="op">=</span> <span class="st">"spatial_module"</span>,</span>
+<span>             cell_annotation_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">coexpr</span><span class="op">$</span><span class="va">summary</span><span class="op">$</span><span class="va">module</span><span class="op">)</span>,</span>
 <span>             point_size <span class="op">=</span> <span class="fl">1</span>, </span>
 <span>             cow_n_col <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <p><img src="images/spatial_citeseq_human_skin/11-spatCellPlot2D.png"></p>
@@ -853,8 +844,9 @@ Metagenes/co-expression modules<a class="anchor" aria-label="anchor" href="#meta
 <span class="header-section-number">11</span> Spatially informed
 clustering<a class="anchor" aria-label="anchor" href="#spatially-informed-clustering"></a>
 </h2>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">my_spatial_genes</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">cluster_genes</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># up to 30 genes per module, those most correlated with their module</span></span>
+<span><span class="va">my_spatial_genes</span> <span class="op">&lt;-</span> <span class="va">coexpr</span><span class="op">$</span><span class="va">feats</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">module_cor</span><span class="op">)</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">feat_ID</span>, <span class="fl">30</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">module</span><span class="op">]</span><span class="op">$</span><span class="va">V1</span></span>
 <span></span>
 <span><span class="va">my_giotto_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPCA.html">runPCA</a></span><span class="op">(</span>gobject <span class="op">=</span> <span class="va">my_giotto_object</span>,</span>
 <span>                           feats_to_use <span class="op">=</span> <span class="va">my_spatial_genes</span>,</span>
@@ -877,21 +869,14 @@ clustering<a class="anchor" aria-label="anchor" href="#spatially-informed-cluste
 <span>                                    n_iterations <span class="op">=</span> <span class="fl">1000</span>,</span>
 <span>                                    name <span class="op">=</span> <span class="st">"custom_leiden"</span><span class="op">)</span></span>
 <span></span>
+<span><span class="va">custom_clusters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://giotto-suite.github.io/GiottoClass/reference/pDataDT.html" class="external-link">pDataDT</a></span><span class="op">(</span><span class="va">my_giotto_object</span><span class="op">)</span><span class="op">$</span><span class="va">custom_leiden</span><span class="op">)</span></span>
+<span><span class="va">custom_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://giotto-suite.github.io/GiottoUtils/reference/getDistinctColors.html" class="external-link">getDistinctColors</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">custom_clusters</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">custom_colors</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">custom_clusters</span></span>
+<span></span>
 <span><span class="fu"><a href="https://giotto-suite.github.io/GiottoVisuals/reference/spatPlot.html" class="external-link">spatPlot2D</a></span><span class="op">(</span><span class="va">my_giotto_object</span>,</span>
 <span>           show_image <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>           cell_color <span class="op">=</span> <span class="st">"custom_leiden"</span>, </span>
-<span>           cell_color_code <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#eb4034"</span>,</span>
-<span>                               <span class="st">"#5877e8"</span>,</span>
-<span>                               <span class="st">"#ebd834"</span>,</span>
-<span>                               <span class="st">"#9beb34"</span>,</span>
-<span>                               <span class="st">"#6fab6a"</span>,</span>
-<span>                               <span class="st">"#24703f"</span>,</span>
-<span>                               <span class="st">"#58e8cb"</span>,</span>
-<span>                               <span class="st">"#58d0e8"</span>,</span>
-<span>                               <span class="st">"#eb8f34"</span>,</span>
-<span>                               <span class="st">"#7f58e8"</span>,</span>
-<span>                               <span class="st">"#d758e8"</span>,</span>
-<span>                               <span class="st">"#e85892"</span><span class="op">)</span>,</span>
+<span>           cell_color_code <span class="op">=</span> <span class="va">custom_colors</span>,</span>
 <span>           point_size <span class="op">=</span> <span class="fl">3.5</span>,</span>
 <span>           background_color <span class="op">=</span> <span class="st">"black"</span>,</span>
 <span>           title <span class="op">=</span> <span class="st">"Spatially informed clustering"</span><span class="op">)</span></span></code></pre></div>
@@ -901,59 +886,59 @@ clustering<a class="anchor" aria-label="anchor" href="#spatially-informed-cluste
 <h2 id="session-info">
 <span class="header-section-number">12</span> Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" tabindex="-1"></a>R version <span class="dv">4</span>.<span class="fl">3.2</span> (<span class="dv">2023-10-31</span>)</span>
-<span id="cb41-2"><a href="#cb41-2" tabindex="-1"></a>Platform<span class="sc">:</span> aarch64<span class="sc">-</span>apple<span class="sc">-</span><span class="fu">darwin20</span> (<span class="dv">64</span><span class="sc">-</span>bit)</span>
-<span id="cb41-3"><a href="#cb41-3" tabindex="-1"></a>Running under<span class="sc">:</span> macOS Sonoma <span class="dv">14</span>.<span class="fl">2.1</span></span>
-<span id="cb41-4"><a href="#cb41-4" tabindex="-1"></a></span>
-<span id="cb41-5"><a href="#cb41-5" tabindex="-1"></a>Matrix products<span class="sc">:</span> default</span>
-<span id="cb41-6"><a href="#cb41-6" tabindex="-1"></a>BLAS<span class="sc">:</span>   <span class="er">/</span>System<span class="sc">/</span>Library<span class="sc">/</span>Frameworks<span class="sc">/</span>Accelerate.framework<span class="sc">/</span>Versions<span class="sc">/</span>A<span class="sc">/</span>Frameworks<span class="sc">/</span>vecLib.framework<span class="sc">/</span>Versions<span class="sc">/</span>A<span class="sc">/</span>libBLAS.dylib </span>
-<span id="cb41-7"><a href="#cb41-7" tabindex="-1"></a>LAPACK<span class="sc">:</span> <span class="er">/</span>Library<span class="sc">/</span>Frameworks<span class="sc">/</span>R.framework<span class="sc">/</span>Versions<span class="sc">/</span><span class="fl">4.3</span><span class="sc">-</span>arm64<span class="sc">/</span>Resources<span class="sc">/</span>lib<span class="sc">/</span>libRlapack.dylib;  LAPACK version <span class="dv">3</span>.<span class="fl">11.0</span></span>
-<span id="cb41-8"><a href="#cb41-8" tabindex="-1"></a></span>
-<span id="cb41-9"><a href="#cb41-9" tabindex="-1"></a>locale<span class="sc">:</span></span>
-<span id="cb41-10"><a href="#cb41-10" tabindex="-1"></a>[<span class="dv">1</span>] en_US.UTF<span class="dv">-8</span><span class="sc">/</span>en_US.UTF<span class="dv">-8</span><span class="sc">/</span>en_US.UTF<span class="dv">-8</span><span class="sc">/</span>C<span class="sc">/</span>en_US.UTF<span class="dv">-8</span><span class="sc">/</span>en_US.UTF<span class="dv">-8</span></span>
-<span id="cb41-11"><a href="#cb41-11" tabindex="-1"></a></span>
-<span id="cb41-12"><a href="#cb41-12" tabindex="-1"></a>time zone<span class="sc">:</span> America<span class="sc">/</span>New_York</span>
-<span id="cb41-13"><a href="#cb41-13" tabindex="-1"></a>tzcode source<span class="sc">:</span> internal</span>
-<span id="cb41-14"><a href="#cb41-14" tabindex="-1"></a></span>
-<span id="cb41-15"><a href="#cb41-15" tabindex="-1"></a>attached base packages<span class="sc">:</span></span>
-<span id="cb41-16"><a href="#cb41-16" tabindex="-1"></a>[<span class="dv">1</span>] stats     graphics  grDevices utils     datasets  methods   base     </span>
-<span id="cb41-17"><a href="#cb41-17" tabindex="-1"></a></span>
-<span id="cb41-18"><a href="#cb41-18" tabindex="-1"></a>other attached packages<span class="sc">:</span></span>
-<span id="cb41-19"><a href="#cb41-19" tabindex="-1"></a>[<span class="dv">1</span>] Giotto_4.<span class="fl">0.3</span>      GiottoClass_0.<span class="fl">1.3</span></span>
-<span id="cb41-20"><a href="#cb41-20" tabindex="-1"></a></span>
-<span id="cb41-21"><a href="#cb41-21" tabindex="-1"></a>loaded via a <span class="fu">namespace</span> (and not attached)<span class="sc">:</span></span>
-<span id="cb41-22"><a href="#cb41-22" tabindex="-1"></a>  [<span class="dv">1</span>] colorRamp2_0.<span class="fl">1.0</span>            bitops_1<span class="fl">.0</span><span class="dv">-7</span>                rlang_1.<span class="fl">1.3</span>                 magrittr_2.<span class="fl">0.3</span>             </span>
-<span id="cb41-23"><a href="#cb41-23" tabindex="-1"></a>  [<span class="dv">5</span>] clue_0<span class="fl">.3</span><span class="dv">-65</span>                 GetoptLong_1.<span class="fl">0.5</span>            GiottoUtils_0.<span class="fl">1.5</span>           matrixStats_1.<span class="fl">2.0</span>          </span>
-<span id="cb41-24"><a href="#cb41-24" tabindex="-1"></a>  [<span class="dv">9</span>] compiler_4.<span class="fl">3.2</span>              png_0<span class="fl">.1</span><span class="dv">-8</span>                   systemfonts_1.<span class="fl">0.5</span>           vctrs_0.<span class="fl">6.5</span>                </span>
-<span id="cb41-25"><a href="#cb41-25" tabindex="-1"></a> [<span class="dv">13</span>] stringr_1.<span class="fl">5.1</span>               shape_1.<span class="fl">4.6</span>                 pkgconfig_2.<span class="fl">0.3</span>             SpatialExperiment_1.<span class="fl">12.0</span>   </span>
-<span id="cb41-26"><a href="#cb41-26" tabindex="-1"></a> [<span class="dv">17</span>] crayon_1.<span class="fl">5.2</span>                fastmap_1.<span class="fl">1.1</span>               backports_1.<span class="fl">4.1</span>             magick_2.<span class="fl">8.3</span>               </span>
-<span id="cb41-27"><a href="#cb41-27" tabindex="-1"></a> [<span class="dv">21</span>] XVector_0.<span class="fl">42.0</span>              labeling_0.<span class="fl">4.3</span>              utf8_1.<span class="fl">2.4</span>                  rmarkdown_2<span class="fl">.25</span>             </span>
-<span id="cb41-28"><a href="#cb41-28" tabindex="-1"></a> [<span class="dv">25</span>] ragg_1.<span class="fl">2.7</span>                  xfun_0<span class="fl">.42</span>                   zlibbioc_1.<span class="fl">48.0</span>             beachmat_2.<span class="fl">18.1</span>            </span>
-<span id="cb41-29"><a href="#cb41-29" tabindex="-1"></a> [<span class="dv">29</span>] GenomeInfoDb_1.<span class="fl">38.6</span>         jsonlite_1.<span class="fl">8.8</span>              flashClust_1<span class="fl">.01</span><span class="dv">-2</span>           DelayedArray_0.<span class="fl">28.0</span>        </span>
-<span id="cb41-30"><a href="#cb41-30" tabindex="-1"></a> [<span class="dv">33</span>] BiocParallel_1.<span class="fl">36.0</span>         terra_1<span class="fl">.7</span><span class="dv">-71</span>                irlba_2.<span class="dv">3</span>.<span class="fl">5.1</span>               parallel_4.<span class="fl">3.2</span>             </span>
-<span id="cb41-31"><a href="#cb41-31" tabindex="-1"></a> [<span class="dv">37</span>] cluster_2.<span class="fl">1.6</span>               R6_2.<span class="fl">5.1</span>                    RColorBrewer_1<span class="fl">.1</span><span class="dv">-3</span>          stringi_1.<span class="fl">8.3</span>              </span>
-<span id="cb41-32"><a href="#cb41-32" tabindex="-1"></a> [<span class="dv">41</span>] reticulate_1.<span class="fl">35.0</span>           GenomicRanges_1.<span class="fl">54.1</span>        estimability_1<span class="fl">.5</span>            iterators_1.<span class="fl">0.14</span>           </span>
-<span id="cb41-33"><a href="#cb41-33" tabindex="-1"></a> [<span class="dv">45</span>] Rcpp_1.<span class="fl">0.12</span>                 SummarizedExperiment_1.<span class="fl">32.0</span> knitr_1<span class="fl">.45</span>                  R.utils_2.<span class="fl">12.3</span>             </span>
-<span id="cb41-34"><a href="#cb41-34" tabindex="-1"></a> [<span class="dv">49</span>] FNN_1.<span class="fl">1.4</span>                   IRanges_2.<span class="fl">36.0</span>              igraph_2.<span class="fl">0.2</span>                Matrix_1<span class="fl">.6</span><span class="dv">-5</span>               </span>
-<span id="cb41-35"><a href="#cb41-35" tabindex="-1"></a> [<span class="dv">53</span>] tidyselect_1.<span class="fl">2.0</span>            rstudioapi_0.<span class="fl">15.0</span>           abind_1<span class="fl">.4</span><span class="dv">-5</span>                 yaml_2.<span class="fl">3.8</span>                 </span>
-<span id="cb41-36"><a href="#cb41-36" tabindex="-1"></a> [<span class="dv">57</span>] doParallel_1.<span class="fl">0.17</span>           codetools_0<span class="fl">.2</span><span class="dv">-19</span>            lattice_0<span class="fl">.22</span><span class="dv">-5</span>              tibble_3.<span class="fl">2.1</span>               </span>
-<span id="cb41-37"><a href="#cb41-37" tabindex="-1"></a> [<span class="dv">61</span>] Biobase_2.<span class="fl">62.0</span>              withr_3.<span class="fl">0.0</span>                 evaluate_0<span class="fl">.23</span>               circlize_0.<span class="fl">4.16</span>            </span>
-<span id="cb41-38"><a href="#cb41-38" tabindex="-1"></a> [<span class="dv">65</span>] pillar_1.<span class="fl">9.0</span>                MatrixGenerics_1.<span class="fl">14.0</span>       foreach_1.<span class="fl">5.2</span>               checkmate_2.<span class="fl">3.1</span>            </span>
-<span id="cb41-39"><a href="#cb41-39" tabindex="-1"></a> [<span class="dv">69</span>] DT_0<span class="fl">.32</span>                     stats4_4.<span class="fl">3.2</span>                dbscan_1<span class="fl">.1</span><span class="dv">-12</span>               generics_0.<span class="fl">1.3</span>             </span>
-<span id="cb41-40"><a href="#cb41-40" tabindex="-1"></a> [<span class="dv">73</span>] RCurl_1<span class="fl">.98-1.14</span>             S4Vectors_0.<span class="fl">40.2</span>            ggplot2_3.<span class="fl">4.4</span>               munsell_0.<span class="fl">5.0</span>              </span>
-<span id="cb41-41"><a href="#cb41-41" tabindex="-1"></a> [<span class="dv">77</span>] scales_1.<span class="fl">3.0</span>                gtools_3.<span class="fl">9.5</span>                xtable_1<span class="fl">.8</span><span class="dv">-4</span>                leaps_3<span class="fl">.1</span>                  </span>
-<span id="cb41-42"><a href="#cb41-42" tabindex="-1"></a> [<span class="dv">81</span>] glue_1.<span class="fl">7.0</span>                  emmeans_1.<span class="fl">10.0</span>              scatterplot3d_0<span class="fl">.3</span><span class="dv">-44</span>        tools_4.<span class="fl">3.2</span>                </span>
-<span id="cb41-43"><a href="#cb41-43" tabindex="-1"></a> [<span class="dv">85</span>] GiottoVisuals_0.<span class="fl">1.4</span>         data.table_1.<span class="fl">15.0</span>           ScaledMatrix_1.<span class="fl">10.0</span>         mvtnorm_1<span class="fl">.2</span><span class="dv">-4</span>              </span>
-<span id="cb41-44"><a href="#cb41-44" tabindex="-1"></a> [<span class="dv">89</span>] Cairo_1<span class="fl">.6</span><span class="dv">-2</span>                 cowplot_1.<span class="fl">1.3</span>               grid_4.<span class="fl">3.2</span>                  colorspace_2<span class="fl">.1</span><span class="dv">-0</span>           </span>
-<span id="cb41-45"><a href="#cb41-45" tabindex="-1"></a> [<span class="dv">93</span>] SingleCellExperiment_1.<span class="fl">24.0</span> GenomeInfoDbData_1.<span class="fl">2.11</span>     BiocSingular_1.<span class="fl">18.0</span>         cli_3.<span class="fl">6.2</span>                  </span>
-<span id="cb41-46"><a href="#cb41-46" tabindex="-1"></a> [<span class="dv">97</span>] rsvd_1.<span class="fl">0.5</span>                  textshaping_0.<span class="fl">3.7</span>           fansi_1.<span class="fl">0.6</span>                 S4Arrays_1.<span class="fl">2.0</span>             </span>
-<span id="cb41-47"><a href="#cb41-47" tabindex="-1"></a>[<span class="dv">101</span>] ComplexHeatmap_2.<span class="fl">18.0</span>       dplyr_1.<span class="fl">1.4</span>                 uwot_0.<span class="fl">1.16</span>                 gtable_0.<span class="fl">3.4</span>               </span>
-<span id="cb41-48"><a href="#cb41-48" tabindex="-1"></a>[<span class="dv">105</span>] R.methodsS3_1.<span class="fl">8.2</span>           digest_0.<span class="fl">6.34</span>               BiocGenerics_0.<span class="fl">48.1</span>         SparseArray_1.<span class="fl">2.4</span>          </span>
-<span id="cb41-49"><a href="#cb41-49" tabindex="-1"></a>[<span class="dv">109</span>] ggrepel_0.<span class="fl">9.5</span>               htmlwidgets_1.<span class="fl">6.4</span>           FactoMineR_2<span class="fl">.9</span>              rjson_0.<span class="fl">2.21</span>               </span>
-<span id="cb41-50"><a href="#cb41-50" tabindex="-1"></a>[<span class="dv">113</span>] farver_2.<span class="fl">1.1</span>                htmltools_0.<span class="fl">5.7</span>             R.oo_1.<span class="fl">26.0</span>                 lifecycle_1.<span class="fl">0.4</span>            </span>
-<span id="cb41-51"><a href="#cb41-51" tabindex="-1"></a>[<span class="dv">117</span>] multcompView_0<span class="fl">.1</span><span class="dv">-9</span>          GlobalOptions_0.<span class="fl">1.2</span>         MASS_7<span class="fl">.3</span><span class="dv">-60</span>.<span class="fl">0.1</span> </span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a>R version <span class="dv">4</span>.<span class="fl">3.2</span> (<span class="dv">2023-10-31</span>)</span>
+<span id="cb40-2"><a href="#cb40-2" tabindex="-1"></a>Platform<span class="sc">:</span> aarch64<span class="sc">-</span>apple<span class="sc">-</span><span class="fu">darwin20</span> (<span class="dv">64</span><span class="sc">-</span>bit)</span>
+<span id="cb40-3"><a href="#cb40-3" tabindex="-1"></a>Running under<span class="sc">:</span> macOS Sonoma <span class="dv">14</span>.<span class="fl">2.1</span></span>
+<span id="cb40-4"><a href="#cb40-4" tabindex="-1"></a></span>
+<span id="cb40-5"><a href="#cb40-5" tabindex="-1"></a>Matrix products<span class="sc">:</span> default</span>
+<span id="cb40-6"><a href="#cb40-6" tabindex="-1"></a>BLAS<span class="sc">:</span>   <span class="er">/</span>System<span class="sc">/</span>Library<span class="sc">/</span>Frameworks<span class="sc">/</span>Accelerate.framework<span class="sc">/</span>Versions<span class="sc">/</span>A<span class="sc">/</span>Frameworks<span class="sc">/</span>vecLib.framework<span class="sc">/</span>Versions<span class="sc">/</span>A<span class="sc">/</span>libBLAS.dylib </span>
+<span id="cb40-7"><a href="#cb40-7" tabindex="-1"></a>LAPACK<span class="sc">:</span> <span class="er">/</span>Library<span class="sc">/</span>Frameworks<span class="sc">/</span>R.framework<span class="sc">/</span>Versions<span class="sc">/</span><span class="fl">4.3</span><span class="sc">-</span>arm64<span class="sc">/</span>Resources<span class="sc">/</span>lib<span class="sc">/</span>libRlapack.dylib;  LAPACK version <span class="dv">3</span>.<span class="fl">11.0</span></span>
+<span id="cb40-8"><a href="#cb40-8" tabindex="-1"></a></span>
+<span id="cb40-9"><a href="#cb40-9" tabindex="-1"></a>locale<span class="sc">:</span></span>
+<span id="cb40-10"><a href="#cb40-10" tabindex="-1"></a>[<span class="dv">1</span>] en_US.UTF<span class="dv">-8</span><span class="sc">/</span>en_US.UTF<span class="dv">-8</span><span class="sc">/</span>en_US.UTF<span class="dv">-8</span><span class="sc">/</span>C<span class="sc">/</span>en_US.UTF<span class="dv">-8</span><span class="sc">/</span>en_US.UTF<span class="dv">-8</span></span>
+<span id="cb40-11"><a href="#cb40-11" tabindex="-1"></a></span>
+<span id="cb40-12"><a href="#cb40-12" tabindex="-1"></a>time zone<span class="sc">:</span> America<span class="sc">/</span>New_York</span>
+<span id="cb40-13"><a href="#cb40-13" tabindex="-1"></a>tzcode source<span class="sc">:</span> internal</span>
+<span id="cb40-14"><a href="#cb40-14" tabindex="-1"></a></span>
+<span id="cb40-15"><a href="#cb40-15" tabindex="-1"></a>attached base packages<span class="sc">:</span></span>
+<span id="cb40-16"><a href="#cb40-16" tabindex="-1"></a>[<span class="dv">1</span>] stats     graphics  grDevices utils     datasets  methods   base     </span>
+<span id="cb40-17"><a href="#cb40-17" tabindex="-1"></a></span>
+<span id="cb40-18"><a href="#cb40-18" tabindex="-1"></a>other attached packages<span class="sc">:</span></span>
+<span id="cb40-19"><a href="#cb40-19" tabindex="-1"></a>[<span class="dv">1</span>] Giotto_4.<span class="fl">0.3</span>      GiottoClass_0.<span class="fl">1.3</span></span>
+<span id="cb40-20"><a href="#cb40-20" tabindex="-1"></a></span>
+<span id="cb40-21"><a href="#cb40-21" tabindex="-1"></a>loaded via a <span class="fu">namespace</span> (and not attached)<span class="sc">:</span></span>
+<span id="cb40-22"><a href="#cb40-22" tabindex="-1"></a>  [<span class="dv">1</span>] colorRamp2_0.<span class="fl">1.0</span>            bitops_1<span class="fl">.0</span><span class="dv">-7</span>                rlang_1.<span class="fl">1.3</span>                 magrittr_2.<span class="fl">0.3</span>             </span>
+<span id="cb40-23"><a href="#cb40-23" tabindex="-1"></a>  [<span class="dv">5</span>] clue_0<span class="fl">.3</span><span class="dv">-65</span>                 GetoptLong_1.<span class="fl">0.5</span>            GiottoUtils_0.<span class="fl">1.5</span>           matrixStats_1.<span class="fl">2.0</span>          </span>
+<span id="cb40-24"><a href="#cb40-24" tabindex="-1"></a>  [<span class="dv">9</span>] compiler_4.<span class="fl">3.2</span>              png_0<span class="fl">.1</span><span class="dv">-8</span>                   systemfonts_1.<span class="fl">0.5</span>           vctrs_0.<span class="fl">6.5</span>                </span>
+<span id="cb40-25"><a href="#cb40-25" tabindex="-1"></a> [<span class="dv">13</span>] stringr_1.<span class="fl">5.1</span>               shape_1.<span class="fl">4.6</span>                 pkgconfig_2.<span class="fl">0.3</span>             SpatialExperiment_1.<span class="fl">12.0</span>   </span>
+<span id="cb40-26"><a href="#cb40-26" tabindex="-1"></a> [<span class="dv">17</span>] crayon_1.<span class="fl">5.2</span>                fastmap_1.<span class="fl">1.1</span>               backports_1.<span class="fl">4.1</span>             magick_2.<span class="fl">8.3</span>               </span>
+<span id="cb40-27"><a href="#cb40-27" tabindex="-1"></a> [<span class="dv">21</span>] XVector_0.<span class="fl">42.0</span>              labeling_0.<span class="fl">4.3</span>              utf8_1.<span class="fl">2.4</span>                  rmarkdown_2<span class="fl">.25</span>             </span>
+<span id="cb40-28"><a href="#cb40-28" tabindex="-1"></a> [<span class="dv">25</span>] ragg_1.<span class="fl">2.7</span>                  xfun_0<span class="fl">.42</span>                   zlibbioc_1.<span class="fl">48.0</span>             beachmat_2.<span class="fl">18.1</span>            </span>
+<span id="cb40-29"><a href="#cb40-29" tabindex="-1"></a> [<span class="dv">29</span>] GenomeInfoDb_1.<span class="fl">38.6</span>         jsonlite_1.<span class="fl">8.8</span>              flashClust_1<span class="fl">.01</span><span class="dv">-2</span>           DelayedArray_0.<span class="fl">28.0</span>        </span>
+<span id="cb40-30"><a href="#cb40-30" tabindex="-1"></a> [<span class="dv">33</span>] BiocParallel_1.<span class="fl">36.0</span>         terra_1<span class="fl">.7</span><span class="dv">-71</span>                irlba_2.<span class="dv">3</span>.<span class="fl">5.1</span>               parallel_4.<span class="fl">3.2</span>             </span>
+<span id="cb40-31"><a href="#cb40-31" tabindex="-1"></a> [<span class="dv">37</span>] cluster_2.<span class="fl">1.6</span>               R6_2.<span class="fl">5.1</span>                    RColorBrewer_1<span class="fl">.1</span><span class="dv">-3</span>          stringi_1.<span class="fl">8.3</span>              </span>
+<span id="cb40-32"><a href="#cb40-32" tabindex="-1"></a> [<span class="dv">41</span>] reticulate_1.<span class="fl">35.0</span>           GenomicRanges_1.<span class="fl">54.1</span>        estimability_1<span class="fl">.5</span>            iterators_1.<span class="fl">0.14</span>           </span>
+<span id="cb40-33"><a href="#cb40-33" tabindex="-1"></a> [<span class="dv">45</span>] Rcpp_1.<span class="fl">0.12</span>                 SummarizedExperiment_1.<span class="fl">32.0</span> knitr_1<span class="fl">.45</span>                  R.utils_2.<span class="fl">12.3</span>             </span>
+<span id="cb40-34"><a href="#cb40-34" tabindex="-1"></a> [<span class="dv">49</span>] FNN_1.<span class="fl">1.4</span>                   IRanges_2.<span class="fl">36.0</span>              igraph_2.<span class="fl">0.2</span>                Matrix_1<span class="fl">.6</span><span class="dv">-5</span>               </span>
+<span id="cb40-35"><a href="#cb40-35" tabindex="-1"></a> [<span class="dv">53</span>] tidyselect_1.<span class="fl">2.0</span>            rstudioapi_0.<span class="fl">15.0</span>           abind_1<span class="fl">.4</span><span class="dv">-5</span>                 yaml_2.<span class="fl">3.8</span>                 </span>
+<span id="cb40-36"><a href="#cb40-36" tabindex="-1"></a> [<span class="dv">57</span>] doParallel_1.<span class="fl">0.17</span>           codetools_0<span class="fl">.2</span><span class="dv">-19</span>            lattice_0<span class="fl">.22</span><span class="dv">-5</span>              tibble_3.<span class="fl">2.1</span>               </span>
+<span id="cb40-37"><a href="#cb40-37" tabindex="-1"></a> [<span class="dv">61</span>] Biobase_2.<span class="fl">62.0</span>              withr_3.<span class="fl">0.0</span>                 evaluate_0<span class="fl">.23</span>               circlize_0.<span class="fl">4.16</span>            </span>
+<span id="cb40-38"><a href="#cb40-38" tabindex="-1"></a> [<span class="dv">65</span>] pillar_1.<span class="fl">9.0</span>                MatrixGenerics_1.<span class="fl">14.0</span>       foreach_1.<span class="fl">5.2</span>               checkmate_2.<span class="fl">3.1</span>            </span>
+<span id="cb40-39"><a href="#cb40-39" tabindex="-1"></a> [<span class="dv">69</span>] DT_0<span class="fl">.32</span>                     stats4_4.<span class="fl">3.2</span>                dbscan_1<span class="fl">.1</span><span class="dv">-12</span>               generics_0.<span class="fl">1.3</span>             </span>
+<span id="cb40-40"><a href="#cb40-40" tabindex="-1"></a> [<span class="dv">73</span>] RCurl_1<span class="fl">.98-1.14</span>             S4Vectors_0.<span class="fl">40.2</span>            ggplot2_3.<span class="fl">4.4</span>               munsell_0.<span class="fl">5.0</span>              </span>
+<span id="cb40-41"><a href="#cb40-41" tabindex="-1"></a> [<span class="dv">77</span>] scales_1.<span class="fl">3.0</span>                gtools_3.<span class="fl">9.5</span>                xtable_1<span class="fl">.8</span><span class="dv">-4</span>                leaps_3<span class="fl">.1</span>                  </span>
+<span id="cb40-42"><a href="#cb40-42" tabindex="-1"></a> [<span class="dv">81</span>] glue_1.<span class="fl">7.0</span>                  emmeans_1.<span class="fl">10.0</span>              scatterplot3d_0<span class="fl">.3</span><span class="dv">-44</span>        tools_4.<span class="fl">3.2</span>                </span>
+<span id="cb40-43"><a href="#cb40-43" tabindex="-1"></a> [<span class="dv">85</span>] GiottoVisuals_0.<span class="fl">1.4</span>         data.table_1.<span class="fl">15.0</span>           ScaledMatrix_1.<span class="fl">10.0</span>         mvtnorm_1<span class="fl">.2</span><span class="dv">-4</span>              </span>
+<span id="cb40-44"><a href="#cb40-44" tabindex="-1"></a> [<span class="dv">89</span>] Cairo_1<span class="fl">.6</span><span class="dv">-2</span>                 cowplot_1.<span class="fl">1.3</span>               grid_4.<span class="fl">3.2</span>                  colorspace_2<span class="fl">.1</span><span class="dv">-0</span>           </span>
+<span id="cb40-45"><a href="#cb40-45" tabindex="-1"></a> [<span class="dv">93</span>] SingleCellExperiment_1.<span class="fl">24.0</span> GenomeInfoDbData_1.<span class="fl">2.11</span>     BiocSingular_1.<span class="fl">18.0</span>         cli_3.<span class="fl">6.2</span>                  </span>
+<span id="cb40-46"><a href="#cb40-46" tabindex="-1"></a> [<span class="dv">97</span>] rsvd_1.<span class="fl">0.5</span>                  textshaping_0.<span class="fl">3.7</span>           fansi_1.<span class="fl">0.6</span>                 S4Arrays_1.<span class="fl">2.0</span>             </span>
+<span id="cb40-47"><a href="#cb40-47" tabindex="-1"></a>[<span class="dv">101</span>] ComplexHeatmap_2.<span class="fl">18.0</span>       dplyr_1.<span class="fl">1.4</span>                 uwot_0.<span class="fl">1.16</span>                 gtable_0.<span class="fl">3.4</span>               </span>
+<span id="cb40-48"><a href="#cb40-48" tabindex="-1"></a>[<span class="dv">105</span>] R.methodsS3_1.<span class="fl">8.2</span>           digest_0.<span class="fl">6.34</span>               BiocGenerics_0.<span class="fl">48.1</span>         SparseArray_1.<span class="fl">2.4</span>          </span>
+<span id="cb40-49"><a href="#cb40-49" tabindex="-1"></a>[<span class="dv">109</span>] ggrepel_0.<span class="fl">9.5</span>               htmlwidgets_1.<span class="fl">6.4</span>           FactoMineR_2<span class="fl">.9</span>              rjson_0.<span class="fl">2.21</span>               </span>
+<span id="cb40-50"><a href="#cb40-50" tabindex="-1"></a>[<span class="dv">113</span>] farver_2.<span class="fl">1.1</span>                htmltools_0.<span class="fl">5.7</span>             R.oo_1.<span class="fl">26.0</span>                 lifecycle_1.<span class="fl">0.4</span>            </span>
+<span id="cb40-51"><a href="#cb40-51" tabindex="-1"></a>[<span class="dv">117</span>] multcompView_0<span class="fl">.1</span><span class="dv">-9</span>          GlobalOptions_0.<span class="fl">1.2</span>         MASS_7<span class="fl">.3</span><span class="dv">-60</span>.<span class="fl">0.1</span> </span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

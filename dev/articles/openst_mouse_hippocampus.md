@@ -28,13 +28,10 @@ if(!"Giotto" %in% installed.packages()) {
 ``` r
 
 library(Giotto)
+library(GiottoConnect)
 
 # 1. set working directory
 results_folder <- "path/to/results"
-
-# Optional: Specify a path to a Python executable within a conda or miniconda 
-# environment. If set to NULL (default), the Python executable within the previously
-# installed Giotto environment will be used.
 ```
 
 ``` r
@@ -43,7 +40,7 @@ results_folder <- "path/to/results"
 data_path <- "/path/to/data/"
 
 ## create the object directly from the h5ad file
-giotto_object <- GiottoConnect::anndataToGiotto(file.path(data_path, "openst_demo_adult_mouse_by_cell.h5ad"))
+giotto_object <- anndataToGiotto(file.path(data_path, "openst_demo_adult_mouse_by_cell.h5ad"))
 
 ## update instructions
 instructions(giotto_object, "save_plot") <- TRUE
@@ -220,8 +217,7 @@ spatPlot2D(gobject = giotto_object,
 ## rank binarization
 ranktest <- binSpect(giotto_object, 
                      bin_method = "rank",
-                     calc_hub = TRUE, 
-                     hub_min_int = 5,
+
                      spatial_network_name = "spatial_network")
 
 spatFeatPlot2D(giotto_object, 
@@ -235,25 +231,29 @@ spatFeatPlot2D(giotto_object,
 
 ## 10 Spatial Co-Expression modules
 
+Group the top 500 spatial genes into modules whose expression is
+correlated across neighbouring cells in the spatial network. See the
+[spatial co-expression
+modules](https://giottosuite.com/dev/articles/spatial_coexpression_modules.md)
+tutorial for details.
+
 ``` r
 
-# cluster the top 500 spatial genes into 10 clusters
 my_spatial_genes <- ranktest[1:500,]$feats
 
-# here we use existing detectSpatialCorGenes function to calculate pairwise distances between genes (but set network_smoothing=0 to use default clustering)
-spat_cor_netw_DT <- detectSpatialCorFeats(giotto_object,
-                                          method = "network",
-                                          spatial_network_name = "spatial_network",
-                                          subset_feats = my_spatial_genes)
+coexpr <- spatialCoexpression(giotto_object,
+                              feats = my_spatial_genes,
+                              spatial_network_name = "spatial_network",
+                              n_modules = 6,
+                              return_gobject = FALSE)
+coexpr$summary
 
-# 2. identify most similar spatially correlated genes for one gene
-top10_genes <- showSpatialCorFeats(spat_cor_netw_DT, 
-                                   feats = "Kl", 
-                                   show_top_feats = 10)
+# genes most spatially correlated with one gene
+top10_genes <- sort(coexpr$cor["Kl", ], decreasing = TRUE)[2:11]
 
 spatFeatPlot2D(giotto_object, 
                expression_values = "scaled",
-               feats = top10_genes$variable[1:4], 
+               feats = names(top10_genes)[1:4], 
                point_size = 1)
 ```
 
@@ -261,75 +261,38 @@ spatFeatPlot2D(giotto_object,
 
 ``` r
 
-# cluster spatial genes
-spat_cor_netw_DT <- clusterSpatialCorFeats(spat_cor_netw_DT, 
-                                           name = "spat_netw_clus", 
-                                           k = 6)
-
-# visualize clusters
-heatmSpatialCorFeats(giotto_object,
-                     spatCorObject = spat_cor_netw_DT,
-                     use_clus_name = "spat_netw_clus",
-                     heatmap_legend_param = list(title = NULL))
+heatmapCoexpression(giotto_object, coexpr)
 ```
 
-![](images/openst_mouse_hippocampus/12-heatmSpatialCorFeats.png)
+![](images/openst_mouse_hippocampus/12-heatmapCoexpression.png)
+
+Store the modules in the giotto object: each gene’s module is added to
+the feature metadata and a score per module and cell as the spatial
+enrichment “spatial_module”.
 
 ``` r
 
-# 4. rank spatial correlated clusters and show genes for selected clusters
-netw_ranks <- rankSpatialCorGroups(giotto_object,
-                                   spatCorObject = spat_cor_netw_DT, 
-                                   use_clus_name = "spat_netw_clus")
-
-top_netw_spat_cluster <- showSpatialCorFeats(spat_cor_netw_DT, 
-                                             use_clus_name = "spat_netw_clus",
-                                             selected_clusters = 6, 
-                                             show_top_feats = 1)
-```
-
-![](images/openst_mouse_hippocampus/13-rankSpatialCorGroups.png)
-
-``` r
-
-# 5. create metagene enrichment score for clusters
-cluster_genes_DT <- showSpatialCorFeats(spat_cor_netw_DT, 
-                                        use_clus_name = "spat_netw_clus", 
-                                        show_top_feats = 1)
-
-cluster_genes <- cluster_genes_DT$clus 
-names(cluster_genes) <- cluster_genes_DT$feat_ID
-
-giotto_object <- createMetafeats(giotto_object, 
-                                feat_clusters = cluster_genes, 
-                                name = "cluster_metagene")
+giotto_object <- spatialCoexpression(giotto_object,
+                                     feats = my_spatial_genes,
+                                     spatial_network_name = "spatial_network",
+                                     n_modules = 6)
 
 spatCellPlot(giotto_object,
-             spat_enr_names = "cluster_metagene",
-             cell_annotation_values = netw_ranks$clusters,
+             spat_enr_names = "spatial_module",
+             cell_annotation_values = as.character(coexpr$summary$module),
              point_size = 0.3, 
              cow_n_col = 2,
              gradient_limits = c(-2,2))
 ```
 
-![](images/openst_mouse_hippocampus/14-spatCellPlot2D.png)
+![](images/openst_mouse_hippocampus/13-spatCellPlot2D.png)
 
 ## 11 Spatially informed clusters
 
 ``` r
 
-# top 30 genes per spatial co-expression cluster
-table(spat_cor_netw_DT$cor_clusters$spat_netw_clus)
-
-coexpr_dt <- data.table::data.table(
-  genes = names(spat_cor_netw_DT$cor_clusters$spat_netw_clus),
-  cluster = spat_cor_netw_DT$cor_clusters$spat_netw_clus)
-
-data.table::setorder(coexpr_dt, cluster)
-
-top30_coexpr_dt <- coexpr_dt[, head(.SD, 30), by = cluster]
-
-my_spatial_genes <- top30_coexpr_dt$genes
+# up to 30 genes per module, those most correlated with their module
+my_spatial_genes <- coexpr$feats[order(-module_cor), head(feat_ID, 30), by = module]$V1
 
 giotto_object <- runPCA(gobject = giotto_object,
                        feats_to_use = my_spatial_genes,
@@ -364,7 +327,7 @@ spatPlot2D(giotto_object,
            point_size = 1)
 ```
 
-![](images/openst_mouse_hippocampus/15-spatPlot2D.png)
+![](images/openst_mouse_hippocampus/14-spatPlot2D.png)
 
 ## 12 Session info
 

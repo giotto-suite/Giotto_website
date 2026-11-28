@@ -37,11 +37,12 @@ Call the function as any other; there is nothing to set up first.
 ``` r
 
 library(Giotto)
+library(GiottoConnect)
 
 g <- GiottoData::loadGiottoMini("visium")
 
 # first run: installs Scrublet in its own environment
-g <- GiottoConnect::runScrublet(g)
+g <- runScrublet(g)
 ```
 
 The first run of a tool says that its environment is being installed:

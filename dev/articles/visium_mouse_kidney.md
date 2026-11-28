@@ -33,10 +33,6 @@ library(Giotto)
 
 # 1. set working directory
 results_folder <- "/path/to/results/"
-
-# Optional: Specify a path to a Python executable within a conda or miniconda
-# environment. If set to NULL (default), the Python executable within the previously
-# installed Giotto environment will be used.
 ```
 
 ``` r
@@ -419,28 +415,30 @@ spatFeatPlot2D(visium_kidney,
 
 ### 12.2 Spatial co-expression patterns
 
+Group spatial genes into co-expression modules: genes whose expression
+is correlated across neighbouring spots in the spatial network. See the
+[spatial co-expression
+modules](https://giottosuite.com/dev/articles/spatial_coexpression_modules.md)
+tutorial for details.
+
 ``` r
 
-## spatially correlated genes ##
 my_spatial_genes <- km_spatialfeats[1:500]$feats
 
-# 1. calculate gene spatial correlation and single-cell correlation
-# create spatial correlation object
-spat_cor_netw_DT <- detectSpatialCorFeats(
-  visium_kidney,
-  method = "network",
-  spatial_network_name = "Delaunay_network",
-  subset_feats = my_spatial_genes
-)
+coexpr <- spatialCoexpression(visium_kidney,
+                              feats = my_spatial_genes,
+                              spatial_network_name = "Delaunay_network",
+                              n_modules = 8,
+                              return_gobject = FALSE)
+coexpr$summary
 
-# 2. identify most similar spatially correlated genes for one gene
-top10_genes <- showSpatialCorFeats(spat_cor_netw_DT, 
-                                   feats = "Napsa", 
-                                   show_top_feats = 10)
+# genes most correlated with one gene
+top10_genes <- sort(coexpr$cor["Napsa", ], decreasing = TRUE)[2:11]
+top10_genes
 
 spatFeatPlot2D(visium_kidney,
                expression_values = "scaled",
-               feats = c("Napsa", "Kap", "Defb29", "Prdx1"), 
+               feats = c("Napsa", names(top10_genes)[1:3]), 
                point_size = 3)
 ```
 
@@ -448,53 +446,27 @@ spatFeatPlot2D(visium_kidney,
 
 ``` r
 
-# 3. cluster correlated genes & visualize
-spat_cor_netw_DT <- clusterSpatialCorFeats(spat_cor_netw_DT,
-                                           name = "spat_netw_clus", 
-                                           k = 8)
-
-heatmSpatialCorFeats(visium_kidney,
-                     spatCorObject = spat_cor_netw_DT,
-                     use_clus_name = "spat_netw_clus",
-                     heatmap_legend_param = list(title = NULL))
+heatmapCoexpression(visium_kidney, coexpr)
 ```
 
-![](images/visium_mouse_kidney/24-heatmSpatialCorFeats.png)
+![](images/visium_mouse_kidney/24-heatmapCoexpression.png)
+
+Store the modules in the giotto object: each gene’s module is added to
+the feature metadata and a score per module and spot as the spatial
+enrichment “spatial_module”.
 
 ``` r
 
-# 4. rank spatial correlated clusters and show genes for selected clusters
-netw_ranks <- rankSpatialCorGroups(visium_kidney,
-                                   spatCorObject = spat_cor_netw_DT,
-                                   use_clus_name = "spat_netw_clus")
-```
-
-![](images/visium_mouse_kidney/25-rankSpatialCorGroups.png)
-
-``` r
-
-top_netw_spat_cluster <- showSpatialCorFeats(spat_cor_netw_DT,
-                                             use_clus_name = "spat_netw_clus",
-                                             selected_clusters = 6,
-                                             show_top_feats = 1)
-
-# 5. create metagene enrichment score for clusters
-cluster_genes_DT <- showSpatialCorFeats(spat_cor_netw_DT,
-                                        use_clus_name = "spat_netw_clus",
-                                        show_top_feats = 1)
-
-cluster_genes <- cluster_genes_DT$clus
-names(cluster_genes) <- cluster_genes_DT$feat_ID
-
-visium_kidney <- createMetafeats(visium_kidney,
-                                 feat_clusters = cluster_genes,
-                                 name = "cluster_metagene")
+visium_kidney <- spatialCoexpression(visium_kidney,
+                                     feats = my_spatial_genes,
+                                     spatial_network_name = "Delaunay_network",
+                                     n_modules = 8)
 
 showGiottoSpatEnrichments(visium_kidney)
 
 spatCellPlot(visium_kidney,
-             spat_enr_names = "cluster_metagene",
-             cell_annotation_values = netw_ranks$clusters,
+             spat_enr_names = "spatial_module",
+             cell_annotation_values = as.character(coexpr$summary$module),
              point_size = 1.5, 
              cow_n_col = 4)
 ```
@@ -503,6 +475,16 @@ spatCellPlot(visium_kidney,
 
 ## 13 HMRF domains
 
+Find spatial domains with a hidden Markov random field (HMRF). HMRF
+works best on a few spatially informed values per spot, here the
+co-expression module scores from above.
+[`runHMRF()`](https://giottosuite.com/dev/reference/runHMRF.md) fits
+several `betas` (the strength of the spatial smoothing) in one call;
+[`hmrfSummary()`](https://giottosuite.com/dev/reference/hmrfSummary.md)
+compares them. See the [spatial
+domains](https://giottosuite.com/dev/articles/spatial_domains.md)
+tutorial for details.
+
 ``` r
 
 # HMRF requires a fully connected network!
@@ -510,45 +492,16 @@ visium_kidney <- createSpatialNetwork(gobject = visium_kidney,
                                       minimum_k = 2,
                                       name = "Delaunay_full")
 
-# spatial genes
-my_spatial_genes <- km_spatialfeats[1:100]$feats
-
-# do HMRF with different betas
-hmrf_folder <- file.path(data_path, "HMRF_results")
-if (!file.exists(hmrf_folder)) dir.create(hmrf_folder, recursive = TRUE)
-
-# if Rscript is not found, you might have to create a symbolic link, e.g.
-# cd /usr/local/bin
-# sudo ln -s /Library/Frameworks/R.framework/Resources/Rscript Rscript
-HMRF_spatial_genes <- doHMRF(
-    gobject = visium_kidney,
-    expression_values = "scaled",
-    spatial_network_name = "Delaunay_full",
-    spatial_genes = my_spatial_genes,
-    k = 5,
-    betas = c(0, 1, 6),
-    output_folder = file.path(hmrf_folder, "Spatial_genes/SG_topgenes_k5_scaled"))
-```
-
-``` r
-
-## alternative way to view HMRF results
-# results = writeHMRFresults(gobject = ST_test,
-#                           HMRFoutput = HMRF_spatial_genes,
-#                           k = 5, betas_to_view = seq(0, 25, by = 5))
-# ST_test = addCellMetadata(ST_test, new_metadata = results, by_column = T, column_cell_ID = 'cell_ID')
-
-
-## add HMRF of interest to giotto object
-visium_kidney <- addHMRF(gobject = visium_kidney,
-                         HMRFoutput = HMRF_spatial_genes,
-                         k = 5, 
-                         betas_to_add = c(0, 2),
-                         hmrf_name = "HMRF")
+visium_kidney <- runHMRF(visium_kidney,
+                         spat_enr_name = "spatial_module",
+                         spatial_network_name = "Delaunay_full",
+                         k = 5,
+                         betas = c(0, 2, 5, 10))
+hmrfSummary(visium_kidney)
 
 ## visualize
 spatPlot(gobject = visium_kidney,
-         cell_color = "HMRF_k5_b.0",
+         cell_color = "hmrf_k5_b0",
          point_size = 5)
 ```
 
@@ -557,7 +510,7 @@ spatPlot(gobject = visium_kidney,
 ``` r
 
 spatPlot(gobject = visium_kidney,
-         cell_color = "HMRF_k5_b.2",
+         cell_color = "hmrf_k5_b5",
          point_size = 5)
 ```
 

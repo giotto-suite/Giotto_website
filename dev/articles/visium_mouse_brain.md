@@ -41,32 +41,31 @@ running these commands:
 
 ``` r
 
-dir.create("/path/to/data/")
+data_path <- "/path/to/data/"
+dir.create(data_path, recursive = TRUE)
 
 download.file(url = "https://cf.10xgenomics.com/samples/spatial-exp/1.1.0/V1_Adult_Mouse_Brain/V1_Adult_Mouse_Brain_raw_feature_bc_matrix.tar.gz",
-              destfile = "data/V1_Adult_Mouse_Brain_raw_feature_bc_matrix.tar.gz")
+              destfile = file.path(data_path, "V1_Adult_Mouse_Brain_raw_feature_bc_matrix.tar.gz"))
 
 download.file(url = "https://cf.10xgenomics.com/samples/spatial-exp/1.1.0/V1_Adult_Mouse_Brain/V1_Adult_Mouse_Brain_spatial.tar.gz",
-              destfile = "data/V1_Adult_Mouse_Brain_spatial.tar.gz")
+              destfile = file.path(data_path, "V1_Adult_Mouse_Brain_spatial.tar.gz"))
 ```
 
 After downloading, unzip the gz files. You should get the
-“raw_feature_bc_matrix” and “spatial” folders inside your
-“/path/to/data/”.
+“raw_feature_bc_matrix” and “spatial” folders inside your data folder.
 
 ``` r
 
-untar(tarfile = "data/V1_Adult_Mouse_Brain_raw_feature_bc_matrix.tar.gz", 
-      exdir = "data/")
+untar(tarfile = file.path(data_path, "V1_Adult_Mouse_Brain_raw_feature_bc_matrix.tar.gz"), 
+      exdir = data_path)
 
-untar(tarfile = "data/V1_Adult_Mouse_Brain_spatial.tar.gz", 
-      exdir = "data/")
+untar(tarfile = file.path(data_path, "V1_Adult_Mouse_Brain_spatial.tar.gz"), 
+      exdir = data_path)
 ```
 
 ## 3 Set up Giotto environment
 
-Ensure that the Giotto package is installed. Additionally, check that
-the mini conda Giotto environment with Python dependencies is installed.
+Ensure that the Giotto package is installed.
 
 If you have installation troubles, visit the
 [Installation](https://giotto-suite.github.io/Giotto_website/articles/installation.html)
@@ -100,10 +99,7 @@ instructions are stored in the giotto object @instructions slot.
 library(Giotto)
 
 # Set the results directory to save plots
-results_folder <- "path/to/results"
-
-# Optional: Specify the path to a Python executable within a conda or miniconda 
-# environment. If set to NULL (default), the Python executable within the previously installed Giotto environment will be used.
+results_folder <- "/path/to/results/"
 
 # Create Giotto Instructions
 instructions <- createGiottoInstructions(save_dir = results_folder,
@@ -1069,8 +1065,7 @@ take a few minutes to run.
 
 ranktest <- binSpect(visium_brain, 
                      bin_method = "rank",
-                     calc_hub = TRUE, 
-                     hub_min_int = 5,
+
                      spatial_network_name = "spatial_network")
 ```
 
@@ -1092,34 +1087,31 @@ expression.](images/visium_mouse_brain/33-spatFeatPlot2D.png)
 ### 17.3 Spatial Co-Expression modules
 
 Once we have found spatial genes, we can group those genes with similar
-spatial patterns into co-expression modules.
+spatial patterns into co-expression modules: genes whose expression is
+correlated across neighbouring spots in the spatial network. See the
+[spatial co-expression
+modules](https://giottosuite.com/dev/articles/spatial_coexpression_modules.md)
+tutorial for details.
 
-- Cluster the top 500 spatial genes into 20 clusters
+- Group the top 500 spatial genes into 20 modules.
 
 ``` r
 
 ext_spatial_genes <- ranktest[1:500,]$feats
+
+coexpr <- spatialCoexpression(visium_brain,
+                              feats = ext_spatial_genes,
+                              spatial_network_name = "spatial_network",
+                              n_modules = 20,
+                              return_gobject = FALSE)
+coexpr$summary
 ```
 
-- Use detectSpatialCorGenes() to calculate pairwise distances between
-  genes.
+- Identify the genes most correlated with one gene.
 
 ``` r
 
-spat_cor_netw_DT <- detectSpatialCorFeats(
-    visium_brain,
-    method = "network",
-    spatial_network_name = "spatial_network",
-    subset_feats = ext_spatial_genes)
-```
-
-- Identify most similar spatially correlated genes for one gene.
-
-``` r
-
-top10_genes <- showSpatialCorFeats(spat_cor_netw_DT, 
-                                  feats = "Mbp", 
-                                  show_top_feats = 10)
+top10_genes <- sort(coexpr$cor["Mbp", ], decreasing = TRUE)[1:10]
 ```
 
 - Plot the scaled expression of the 3 genes with most similar spatial
@@ -1129,7 +1121,7 @@ top10_genes <- showSpatialCorFeats(spat_cor_netw_DT,
 
 spatFeatPlot2D(visium_brain, 
                expression_values = "scaled",
-               feats = top10_genes$variable[1:4], 
+               feats = names(top10_genes)[1:4], 
                point_size = 1.5)
 ```
 
@@ -1137,83 +1129,41 @@ spatFeatPlot2D(visium_brain,
 spatial pattern to
 Mbp.](images/visium_mouse_brain/34-spatFeatPlot2D.png)
 
-- Cluster spatial genes.
+- Plot the correlation of the top 500 spatial genes, grouped by module.
 
 ``` r
 
-spat_cor_netw_DT <- clusterSpatialCorFeats(spat_cor_netw_DT, 
-                                           name = "spat_netw_clus", 
-                                           k = 20)
+heatmapCoexpression(visium_brain, coexpr)
 ```
 
-- Plot the correlation of the top 500 spatial genes with their assigned
-  cluster.
+![Correlation heatmap of spatial genes grouped by co-expression
+module.](images/visium_mouse_brain/35-heatmapCoexpression.png)
+
+- Store the modules in the giotto object: each gene’s module is added to
+  the feature metadata and a score per module and spot as the spatial
+  enrichment “spatial_module”.
 
 ``` r
 
-heatmSpatialCorFeats(visium_brain,
-                     spatCorObject = spat_cor_netw_DT,
-                     use_clus_name = "spat_netw_clus",
-                     heatmap_legend_param = list(title = NULL))
+visium_brain <- spatialCoexpression(visium_brain,
+                                    feats = ext_spatial_genes,
+                                    spatial_network_name = "spatial_network",
+                                    n_modules = 20)
 ```
 
-![Correlations heatmap between spatial genes and correlated
-clusters.](images/visium_mouse_brain/35-heatmSpatialCorFeats.png)
-
-- Rank spatial correlated clusters and show genes for selected clusters.
-
-``` r
-
-netw_ranks <- rankSpatialCorGroups(
-  visium_brain,
-  spatCorObject = spat_cor_netw_DT, 
-  use_clus_name = "spat_netw_clus")
-```
-
-- Plot the correlation and number of spatial genes in each cluster.
-
-``` r
-
-top_netw_spat_cluster <- showSpatialCorFeats(spat_cor_netw_DT, 
-                                            use_clus_name = "spat_netw_clus",
-                                            selected_clusters = 6, 
-                                            show_top_feats = 1)
-```
-
-![Ranking of spatial correlated groups. Size indicates the number
-spatial genes per
-group.](images/visium_mouse_brain/36-rankSpatialCorGroups.png)
-
-- Create the metagene enrichment score per co-expression cluster.
-
-``` r
-
-cluster_genes_DT <- showSpatialCorFeats(spat_cor_netw_DT, 
-                                        use_clus_name = "spat_netw_clus", 
-                                        show_top_feats = 1)
-
-cluster_genes <- cluster_genes_DT$clus 
-names(cluster_genes) <- cluster_genes_DT$feat_ID
-
-visium_brain <- createMetafeats(visium_brain, 
-                                feat_clusters = cluster_genes, 
-                                name = "cluster_metagene")
-```
-
-- Plot the spatial distribution of the metagene enrichment scores of
-  each spatial co-expression cluster.
+- Plot the spatial distribution of the module scores.
 
 ``` r
 
 spatCellPlot(visium_brain,
-             spat_enr_names = "cluster_metagene",
-             cell_annotation_values = netw_ranks$clusters,
+             spat_enr_names = "spatial_module",
+             cell_annotation_values = as.character(coexpr$summary$module),
              point_size = 1, 
              cow_n_col = 5)
 ```
 
-![Spatial distribution of metagene enrichment scores per co-expression
-cluster.](images/visium_mouse_brain/37-spatCellPlot2D.png)
+![Spatial distribution of co-expression module
+scores.](images/visium_mouse_brain/37-spatCellPlot2D.png)
 
 ## 18 Spatially informed clusters
 
@@ -1221,19 +1171,19 @@ Once we identified spatial genes, we can use them to re-calculate the
 clusters based only on the expression information that follows spatial
 patterns.
 
-### 18.1 Get the top 30 genes per spatial co-expression cluster
+### 18.1 Get the top 30 genes per spatial co-expression module
+
+The genes most correlated with the rest of their module come first.
 
 ``` r
 
-coexpr_dt <- data.table::data.table(
-  genes = names(spat_cor_netw_DT$cor_clusters$spat_netw_clus),
-  cluster = spat_cor_netw_DT$cor_clusters$spat_netw_clus)
+coexpr_dt <- data.table::copy(coexpr$feats)
 
-data.table::setorder(coexpr_dt, cluster)
+data.table::setorder(coexpr_dt, module, -module_cor)
 
-top30_coexpr_dt <- coexpr_dt[, head(.SD, 30) , by = cluster]
+top30_coexpr_dt <- coexpr_dt[, head(.SD, 30), by = module]
 
-spatial_genes <- top30_coexpr_dt$genes
+spatial_genes <- top30_coexpr_dt$feat_ID
 ```
 
 ### 18.2 Re-calculate the clustering
@@ -1293,35 +1243,24 @@ spatial genes.](images/visium_mouse_brain/39-UMAP.png)
 ## 19 Spatial domains with HMRF
 
 Hidden Markov Random Field (HMRF) models capture spatial dependencies
-and segment tissue regions based on shared and gene expression patterns.
-
-- Run HMRF with different betas on top 30 genes per spatial
-  co-expression module. This step may take several minutes to run.
-
-``` r
-
-hmrf_folder <- file.path(results_folder, "HMRF")
-
-if(!file.exists(hmrf_folder)) dir.create(hmrf_folder, recursive = TRUE)
-
-HMRF_spatial_genes <- doHMRF(gobject = visium_brain,
-                            expression_values = "scaled",
-                            spatial_genes = spatial_genes, 
-                            k = 20,
-                            spatial_network_name="spatial_network",
-                            betas = c(0, 10, 5),
-                            output_folder = hmrf_folder)
-```
-
-- Add the HMRF results to the giotto object
+and segment tissue regions based on shared gene expression patterns.
+HMRF works best on a few spatially informed values per spot, here the
+co-expression module scores from above.
+[`runHMRF()`](https://giottosuite.com/dev/reference/runHMRF.md) fits
+several `betas` (the strength of the spatial smoothing) in one call;
+[`hmrfSummary()`](https://giottosuite.com/dev/reference/hmrfSummary.md)
+compares them. See the [spatial
+domains](https://giottosuite.com/dev/articles/spatial_domains.md)
+tutorial for details.
 
 ``` r
 
-visium_brain <- addHMRF(gobject = visium_brain, 
-                        HMRFoutput = HMRF_spatial_genes,
-                        k = 20, 
-                        betas_to_add = c(0, 10, 20, 30, 40),
-                        hmrf_name = "HMRF")
+visium_brain <- runHMRF(visium_brain,
+                        spat_enr_name = "spatial_module",
+                        spatial_network_name = "spatial_network",
+                        k = 20,
+                        betas = c(0, 5, 10, 20))
+hmrfSummary(visium_brain)
 ```
 
 - Plot the spatial distribution of the HMRF domains.
@@ -1329,7 +1268,7 @@ visium_brain <- addHMRF(gobject = visium_brain,
 ``` r
 
 spatPlot2D(gobject = visium_brain, 
-           cell_color = "HMRF_k20_b.40")
+           cell_color = "hmrf_k20_b10")
 ```
 
 ![Spatial distribution of HMRF
