@@ -22,10 +22,19 @@ This tutorial explains how to integrate MISTy with Giotto to analyze a human lun
 Setting up the work environment and loading necessary libraries.
 
 ```{r, eval=FALSE}
-# Configure Python environment for Giotto
-library(reticulate)
-use_python("C:/Users/your_username/anaconda3/envs/giotto_env/python.exe", required = TRUE)
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
 
+# MISTy, pathway activities and data handling (Bioconductor and CRAN)
+BiocManager::install(c("mistyR", "decoupleR", "OmnipathR", "SummarizedExperiment",
+                       "msigdbr", "janitor", "tidyverse"))
+```
+
+No Python is needed for this tutorial.
+
+```{r, eval=FALSE}
 # Load core libraries
 library(Giotto)
 library(mistyR)

@@ -20,6 +20,9 @@ knitr::include_graphics("images/ecosystem/modules.png")
 
 Giotto Suite is a set of packages built to effectively represent and analyze spatial-omics data. The modular nature of these packages make it easy to extend and further build upon the ecosystem. This page introduces each of the modules and outlines their purposes.
 
+All modules on this page install together with the two commands on the
+[Installation](installation.html) page.
+
 
 # Core modules
 
@@ -30,32 +33,14 @@ Giotto Suite's core modules are all installed by default. They do not usually ne
 
 [GiottoUtils](https://giotto-suite.github.io/GiottoUtils/) exports functionalities that are called internally by many of the other packages in the Giotto ecosystem. These range from things such as commonly used imports to pretty prints. Users should not need to directly interact with this package.
 
-To install GiottoUtils run:
-
-```{r, eval=FALSE}
-pak::pkg_install("giotto-suite/GiottoUtils")
-```
-
 ## GiottoClass
 
 [GiottoClass](https://giotto-suite.github.io/GiottoClass/) contains the `giotto` object and subobject class definitions and frameworks. Functionalities relating to data ingestion, basic object creation, data access within the Giotto object, and spatial operations are all found here. This package is depended upon by Giotto and all its functions are available when Giotto is loaded. Applications of this framework and convenience functions for loading specific technologies are found in the Giotto package.
-
-To install GiottoClass run:
-
-```{r, eval=FALSE}
-pak::pkg_install("giotto-suite/GiottoClass")
-```
 
 
 ## GiottoVisuals
 
 [GiottoVisuals](https://giotto-suite.github.io/GiottoVisuals/) contains the main visualization functions for Giotto Suite. These consist mainly of dimension reduction and spatial plots at both the aggreagated and subcellular level that are designed to work with the `giotto` class. Also found here are color scale helpers and plot output handlers.
-
-To install GiottoVisuals run:
-
-```{r, eval=FALSE}
-pak::pkg_install("giotto-suite/GiottoVisuals")
-```
 
 
 ## Giotto
@@ -72,12 +57,6 @@ pak::pkg_install("giotto-suite/GiottoVisuals")
 
 [GiottoData](https://giotto-suite.github.io/GiottoData/) provides example mini `giotto` objects and subobjects created from different technologies for testing Giotto Suite's capabilities rapidly and streamlining the tutorial experience. It also provides functions for easy download and import of publicly available datasets, either curated for Giotto, or available through [SODB](https://gene.ai.tencent.com/SpatialOmics/).
 
-To install GiottoData run:
-
-```{r, eval=FALSE}
-pak::pkg_install("giotto-suite/GiottoData")
-```
-
 
 The scripts used to create both the mini giotto objects and mini objects are available in the repository so that we may extend and/or improve them and that you may utilize them for your own purposes!
 
@@ -87,22 +66,9 @@ The scripts used to create both the mini giotto objects and mini objects are ava
 
 [GiottoDisk](https://giotto-suite.github.io/GiottoDisk/) keeps datasets larger than memory on disk, from import to analysis: expression, polygons and transcripts are stored in a project folder and read in chunks, while the `giotto` object and the analysis functions stay the same.
 
-To install GiottoDisk run:
-
-```{r, eval=FALSE}
-remotes::install_github("giotto-suite/GiottoUtils", ref = "dev")
-GiottoUtils::suite_install("GiottoDisk", install_arrow = TRUE)
-```
-
 ## GiottoConnect
 
 [GiottoConnect](https://giotto-suite.github.io/GiottoConnect/) connects Giotto with other ecosystems and tools: it converts Seurat, AnnData (`.h5ad`) and SpatialExperiment objects to and from Giotto, and runs external methods such as SPARK-X, MAST, Scrublet, ONTraC, Banksy, BayesSpace, CellChat and nnSVG on a `giotto` object. Python tools install their own environment on first use (see [Python in Giotto Suite](python.html)).
-
-To install GiottoConnect run:
-
-```{r, eval=FALSE}
-pak::pkg_install("giotto-suite/GiottoConnect")
-```
 
 ## GiottoDB
 

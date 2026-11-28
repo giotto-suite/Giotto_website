@@ -19,15 +19,10 @@ Example dataset: Vizgen's Mouse Brain Receptor Map data release.
 Some of the subobject data will be extracted to illustrate the transforms.
 
 ```{r, eval=FALSE}
-# Ensure Giotto Suite is installed
-if(!"Giotto" %in% installed.packages()) {
-  pak::pkg_install("giotto-suite/Giotto")
-}
-
-# Ensure Giotto Data is installed
-if(!"GiottoData" %in% installed.packages()) {
-  pak::pkg_install("giotto-suite/GiottoData")
-}
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
 ```
 
 ```{r, eval=FALSE}

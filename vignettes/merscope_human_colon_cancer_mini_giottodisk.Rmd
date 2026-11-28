@@ -46,8 +46,11 @@ cells.
 # Packages
 
 ```{r install, eval = FALSE}
-remotes::install_github("giotto-suite/GiottoUtils", ref = "dev")
-GiottoUtils::suite_install("GiottoDisk", install_arrow = TRUE)
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
+
 BiocManager::install(c("scran", "ComplexHeatmap"))
 install.packages(c("RcppHNSW", "wk"))
 ```
@@ -561,6 +564,4 @@ sessionInfo()
 ## [127] scales_1.4.0                crayon_1.5.3               
 ## [129] purrr_1.2.2                 GetoptLong_1.1.1           
 ## [131] rlang_1.3.0
-```
-NA
 ```

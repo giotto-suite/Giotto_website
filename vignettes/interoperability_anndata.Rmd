@@ -28,16 +28,11 @@ A mini Giotto object is used to keep the computational requirements low.
 # Start Giotto
 
 ```{r, eval=FALSE}
-# Ensure Giotto Suite, GiottoData and GiottoConnect are installed
-if (!"Giotto" %in% installed.packages()) {
-    pak::pkg_install("giotto-suite/Giotto")
-}
-if (!"GiottoData" %in% installed.packages()) {
-    pak::pkg_install("giotto-suite/GiottoData")
-}
-if (!"GiottoConnect" %in% installed.packages()) {
-    pak::pkg_install("giotto-suite/GiottoConnect")
-}
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
+
 
 library(Giotto)
 library(GiottoData)
