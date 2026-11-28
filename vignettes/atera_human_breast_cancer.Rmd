@@ -41,51 +41,22 @@ provides.
 *Note that currently transcript loading is needed for GiottoLens compatibility,
 but this is expected to change in the future.*
 
-# Install extra packages
+# Installation
 
 ## Giotto extensions
 
-This tutorial uses GiottoDisk for on-disk processing. These are preview dev
-builds off the dev and gsource Giotto package branches. If GiottoDisk has not
-been installed yet, use the following:
+Install Giotto Suite once, as on the [Installation](installation.html) page.
+This includes GiottoDisk and the optional packages this tutorial uses.
 
 ```{r install-giottodisk}
-# GiottoDisk install; also installs arrow (with zstd support) and tilework
-remotes::install_github("giotto-suite/GiottoUtils", ref = "dev")
-GiottoUtils::suite_install("GiottoDisk", install_arrow = TRUE)
-# Optional for matrix maths speedup:
-install.packages("GiottoKernels",
-    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org")
-)
-```
-
-## _SedonaDB_ and _DuckDB_ installation
-
-GiottoDisk runs spatial joins, such as the aggregation of transcripts into
-cells below, in SedonaDB when it is installed, and in DuckDB otherwise. Both
-are optional; without them it falls back to tiled terra operations, which are
-much slower at this scale.
-
-```{r install-spatial-engines}
-install.packages("sedonadb",
-    repos = c("https://apache.r-universe.dev", "https://cloud.r-project.org")
-)
-install.packages("duckdb")
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
 ```
 
 Loading SedonaDB can print messages about PROJ or GDAL data directories it did
 not find. They do not affect the steps in this tutorial.
-
-## _smotif_ installation
-
-The cell-cell interaction section at the end uses smotif and its Rust backend
-smotifrs to count cell type motifs:
-
-```{r install-smotif}
-install.packages(c("smotif", "smotifrs"),
-    repos = c("https://drieslab.r-universe.dev", "https://cloud.r-project.org")
-)
-```
 
 # Dataset explanation
 

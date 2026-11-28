@@ -58,15 +58,13 @@ motif analysis that found T cells deep inside tumour nests.
 # Setup
 
 ```{r install}
-# edgeicg, and edgeicgrs for its compiled (Rust) kernels, which are optional but
-# about 20 times faster; binaries from r-universe, no Rust toolchain needed
-install.packages(c("edgeicg", "edgeicgrs"),
-    repos = c("https://drieslab.r-universe.dev", getOption("repos")))
+# Install Giotto Suite once (see the Installation page)
+install.packages("GiottoUtils",
+    repos = c("https://giotto-suite.r-universe.dev", "https://cloud.r-project.org"))
+GiottoUtils::suite_install(ref = "disk_full", install_arrow = TRUE)
 # a gene set used below
 install.packages("msigdbr")
 ```
-
-Region-specific effects (the last analysis below) need edgeicg 0.2.0 or later.
 
 ```{r libs}
 library(arrow) # load before terra or GiottoClass
