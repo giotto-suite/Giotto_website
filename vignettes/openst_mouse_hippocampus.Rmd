@@ -41,6 +41,7 @@ if(!"Giotto" %in% installed.packages()) {
 
 ```{r, eval=FALSE}
 library(Giotto)
+library(GiottoConnect)
 
 # 1. set working directory
 results_folder <- "path/to/results"
@@ -52,7 +53,7 @@ results_folder <- "path/to/results"
 data_path <- "/path/to/data/"
 
 ## create the object directly from the h5ad file
-giotto_object <- GiottoConnect::anndataToGiotto(file.path(data_path, "openst_demo_adult_mouse_by_cell.h5ad"))
+giotto_object <- anndataToGiotto(file.path(data_path, "openst_demo_adult_mouse_by_cell.h5ad"))
 
 ## update instructions
 instructions(giotto_object, "save_plot") <- TRUE
@@ -236,8 +237,7 @@ knitr::include_graphics("images/openst_mouse_hippocampus/9-spatPlot2D.png")
 ## rank binarization
 ranktest <- binSpect(giotto_object, 
                      bin_method = "rank",
-                     calc_hub = TRUE, 
-                     hub_min_int = 5,
+
                      spatial_network_name = "spatial_network")
 
 spatFeatPlot2D(giotto_object, 

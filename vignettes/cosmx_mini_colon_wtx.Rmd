@@ -769,49 +769,28 @@ knitr::include_graphics("images/cosmx_mini_colon_wtx/16_module-scores.png")
 
 # Spatial neighborhood composition
 
+`cellProximityMotifs()` counts how often two cell types are neighbors in the
+spatial network, against the counts expected when the labels are shuffled.
+Pairs of neighbors (`size = 2`) give the proximity enrichment; see the
+[Atera breast cancer tutorial](atera_human_breast_cancer.html) for larger
+motifs.
+
 ```{r spatnet, eval = FALSE}
-proximity <- cellProximityEnrichment(
+proximity <- cellProximityMotifs(
   mini_cosmx, cluster_column = "cell_type_broad",
   spatial_network_name = "Delaunay_network",
-  number_of_simulations = 200, set_seed = TRUE, seed_number = SEED)
+  size = 2L, n_perm = 1000L, seed_number = SEED)
+
+head(proximity[order(-z), .(motif_id, observed, expected, fold, p_adj)], 8)
 ```
 
-```{r cp-barplot, fig.cap="Enriched and depleted cell type pairs against the shuffled null.", fig.width=9, fig.height=6, eval = FALSE}
-cellProximityBarplot(mini_cosmx, CPscore = proximity, min_orig_ints = 1,
-                     min_sim_ints = 1, p_val = 0.01)
+```{r cp-motifs, fig.cap="Enriched and depleted cell type pairs against the shuffled null.", fig.width=9, fig.height=6, eval = FALSE}
+plotMotifEnrichment(mini_cosmx, proximity)
 ```
 
-```{r cp-barplot-fig, echo = FALSE, out.width = "100%"}
-knitr::include_graphics("images/cosmx_mini_colon_wtx/17_cp-barplot.png")
-```
-
-```{r cp-heatmap, fig.cap="Proximity enrichment for every cell type pair.", fig.width=7.5, fig.height=6.5, eval = FALSE}
-cellProximityHeatmap(mini_cosmx, CPscore = proximity, order_cell_types = TRUE,
-                     scale = TRUE)
-```
-
-```{r cp-heatmap-fig, echo = FALSE, out.width = "100%"}
-knitr::include_graphics("images/cosmx_mini_colon_wtx/18_cp-heatmap.png")
-```
-
-The heatmap shows every pair at once, so the self-association above appears as
-a bright diagonal; off-diagonal warmth marks types that interleave, and cool
-off-diagonal cells mark compartments that exclude one another.
-
-```{r cp-network, fig.cap="The same scores as a graph; edge weight is enrichment.", fig.width=7.5, fig.height=6.5, eval = FALSE}
-cellProximityNetwork(mini_cosmx, CPscore = proximity, remove_self_edges = TRUE,
-                     only_show_enrichment_edges = FALSE, node_size = 4,
-                     node_text_size = 5)
-```
-
-```{r cp-network-fig, echo = FALSE, out.width = "100%"}
-knitr::include_graphics("images/cosmx_mini_colon_wtx/19_cp-network.png")
-```
-
-Edge thickness scales with the size of the score and edge color gives its sign:
-red where a pair is found together more often than chance, light green where it
-is found together less. Dropping the diagonal makes chains of mutually adjacent
-cell types easier to see than isolated pairs.
+Each cell type is enriched next to its own kind. Plasma cells, myeloid cells
+and endothelial cells also sit next to each other, and all three are depleted
+next to tumor cells.
 
 # Saving the object
 

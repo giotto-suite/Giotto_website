@@ -648,63 +648,27 @@ spatPlot(
 
 # Cell Neighborhood: Cell-Type/Cell-Type Interactions
 
-```{r, eval=FALSE}
-cell_proximities <- cellProximityEnrichment(gobject = SS_seqfish,
-                                            cluster_column = "cell_types",
-                                            spatial_network_name = "Delaunay_network",
-                                            adjust_method = "fdr",
-                                            number_of_simulations = 2000
-)
-
-## barplot
-cellProximityBarplot(gobject = SS_seqfish,
-                     CPscore = cell_proximities,
-                     min_orig_ints = 5, 
-                     min_sim_ints = 5
-)
-```
-
-![](images/seqfish_cortex/29-cellProximityBarplot.png)
+`cellProximityMotifs()` counts how often two cell types are neighbors in the
+spatial network, against the counts expected when the labels are shuffled.
+Pairs of neighbors (`size = 2`) give the proximity enrichment; see the
+[Atera breast cancer tutorial](atera_human_breast_cancer.html) for larger
+motifs.
 
 ```{r, eval=FALSE}
-## heatmap
-cellProximityHeatmap(gobject = SS_seqfish,
-                     CPscore = cell_proximities,
-                     order_cell_types = TRUE, 
-                     scale = TRUE,
-                     color_breaks = c(-1.5, 0, 1.5),
-                     color_names = c("blue", "white", "red")
+cell_proximities <- cellProximityMotifs(SS_seqfish,
+                                        spatial_network_name = "Delaunay_network",
+                                        cluster_column = "cell_types",
+                                        size = 2L,
+                                        n_perm = 1000L
 )
+
+head(cell_proximities[order(-z), .(motif_id, observed, expected, fold, p_adj)], 10)
+
+plotMotifEnrichment(SS_seqfish, cell_proximities)
 ```
 
-![](images/seqfish_cortex/30-cellProximityHeatmap.png)
-
-```{r, eval=FALSE}
-## network
-cellProximityNetwork(gobject = SS_seqfish,
-                     CPscore = cell_proximities, 
-                     remove_self_edges = TRUE,
-                     only_show_enrichment_edges = TRUE
-)
-```
-
-![](images/seqfish_cortex/31-cellProximityNetwork.png)
-
-```{r, eval=FALSE}
-## network with self-edges
-cellProximityNetwork(gobject = SS_seqfish, 
-                     CPscore = cell_proximities,
-                     remove_self_edges = FALSE, 
-                     self_loop_strength = 0.3,
-                     only_show_enrichment_edges = FALSE,
-                     rescale_edge_weights = TRUE,
-                     node_size = 8,
-                     edge_weight_range_depletion = c(1, 2),
-                     edge_weight_range_enrichment = c(2, 5)
-)
-```
-
-![](images/seqfish_cortex/32-cellProximityNetwork.png)
+Neurons of the same layer are enriched next to each other, as are L5
+eNeurons and Lhx6 iNeurons.
 
 ```{r, eval=FALSE}
 ## visualization of specific cell types
@@ -744,63 +708,39 @@ spatPlot(SS_seqfish,
 
 # Cell Neighborhood: Interaction Changed Features
 
-```{r, eval=FALSE}
-library(future)
-
-## select top 25th highest expressing genes
-gene_metadata <- fDataDT(SS_seqfish)
-
-plot(gene_metadata$nr_cells, gene_metadata$mean_expr)
-
-plot(gene_metadata$nr_cells, gene_metadata$mean_expr_det)
-
-quantile(gene_metadata$mean_expr_det)
-
-high_expressed_genes <- gene_metadata[mean_expr_det > quantile(mean_expr_det, 0.75)]$feat_ID
-
-## identify genes that are associated with proximity to other cell types
-plan("multisession", workers = 6)
-
-ICFsForesHighGenes <- findInteractionChangedFeats(
-    gobject = SS_seqfish,
-    selected_feats = high_expressed_genes,
-    spatial_network_name = "Delaunay_network",
-    cluster_column = "cell_types",
-    method = "classic",
-    diff_test = "permutation",
-    adjust_method = "fdr",
-    nr_permutations = 2000,
-    do_parallel = TRUE
-)
-
-## visualize all genes
-plotCellProximityFeats(SS_seqfish,
-                       icfObject = ICFsForesHighGenes,
-                       method = "dotplot")
-```
-
-![](images/seqfish_cortex/35-plotCellProximityFeats.png)
-
+`findInteractionChangedFeats()` finds genes whose expression in one cell type
+changes with its exposure to another (edgeICG), at three scales: direct
+contact, the paracrine range and the wider niche. See
+[interaction changed features](interaction_changed_features.html) for the
+method and its plots.
 
 ```{r, eval=FALSE}
-## filter genes
-ICFscoresFilt <- filterICF(ICFsForesHighGenes)
-
-## visualize subset of interaction changed genes (ICFs)
-ICF_genes <- c("Gna12", "Slc30a9", "Ets2", "Mkrn2", "Naglu", "Pkp4")
-ICF_genes_types <- c("L5 eNeuron", "L5 eNeuron", "Lhx6 iNeuron", "Olig", "astrocytes", "astrocytes")
-names(ICF_genes) <- ICF_genes_types
-
-plotICF(gobject = SS_seqfish,
-        icfObject = ICFsForesHighGenes,
-        source_type = "endothelial",
-        source_markers = c("Pltp", "Cldn5", "Apcdd1"),
-        ICF_feats = ICF_genes
-)
+icf <- findInteractionChangedFeats(SS_seqfish,
+                                   cluster_column = "cell_types")
+icf$edgeicg
 ```
 
-![](images/seqfish_cortex/36-plotICF.png)
+```
+EdgeICG: 523 cells, 10 types, 10000 genes, 18 pairs
+  hits: q < 0.05 and |log2 FC| >= 0.25 (q < 0.05 alone)
+  contact   0 (0)
+  paracrine 0 (0)
+  niche     1 (1), screen
+```
 
+Only 18 receiver and sender pairs have enough cells to test. One gene changes:
+Casp2 is lower in L6 eNeurons with more L5 eNeurons in their niche.
+
+```{r, eval=FALSE}
+icf$ICFscores[p.adj < 0.05, .(feats, cell_type, int_cell_type, scale, log2fc, p.adj)]
+
+plotICFOverview(SS_seqfish, icf, scale = "niche")
+
+plotICFPair(SS_seqfish, icf,
+            receiver = "L6 eNeuron",
+            sender = "L5 eNeuron",
+            scale = "niche")
+```
 
 # Cell Neighborhood: Ligand-Receptor Cell-Cell Communication
 
