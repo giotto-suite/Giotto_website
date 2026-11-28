@@ -16,6 +16,10 @@ Install Giotto, understand the object, and run your first workflow.
   classes](https://giottosuite.com/dev/articles/structure.md):
 - [A general Giotto
   workflow](https://giottosuite.com/dev/articles/general_workflow.md):
+- [General workflow: grid and spot-based
+  data](https://giottosuite.com/dev/articles/general_workflow_grid.md):
+- [General workflow: in situ imaging-based
+  data](https://giottosuite.com/dev/articles/general_workflow_insitu.md):
 - [Core
   Functions](https://giottosuite.com/dev/articles/core_functions.md):
 - [Frequently Asked
